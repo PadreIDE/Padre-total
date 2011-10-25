@@ -194,12 +194,34 @@ sub new {
 		Wx::DefaultPosition(),
 		Wx::DefaultSize(),
 	);
+	$self->{trace}->SetToolTip(
+		Wx::gettext("t\nToggle trace mode (see also the AutoTrace option).")
+	);
 
 	Wx::Event::EVT_CHECKBOX(
 		$self,
 		$self->{trace},
 		sub {
 			shift->trace_checked(@_);
+		},
+	);
+
+	$self->{sub_names} = Wx::Button->new(
+		$self,
+		-1,
+		Wx::gettext("Sub. Names"),
+		Wx::DefaultPosition(),
+		Wx::DefaultSize(),
+	);
+	$self->{sub_names}->SetToolTip(
+		Wx::gettext("S [[!]regex]\nList subroutine names [not] matching the regex.")
+	);
+
+	Wx::Event::EVT_BUTTON(
+		$self,
+		$self->{sub_names},
+		sub {
+			shift->sub_names_clicked(@_);
 		},
 	);
 
@@ -263,6 +285,8 @@ sub new {
 		Wx::HORIZONTAL(),
 	);
 	$file_11->Add( $self->{trace}, 0, Wx::ALL(), 5 );
+	$file_11->Add( 0, 0, 1, Wx::EXPAND(), 5 );
+	$file_11->Add( $self->{sub_names}, 0, Wx::ALL(), 5 );
 	$file_11->Add( 0, 0, 1, Wx::EXPAND(), 5 );
 
 	my $buttons = Wx::BoxSizer->new(Wx::HORIZONTAL());
@@ -328,6 +352,10 @@ sub quit_debugger_clicked {
 
 sub trace_checked {
 	$_[0]->main->error('Handler method trace_checked for event trace.OnCheckBox not implemented');
+}
+
+sub sub_names_clicked {
+	$_[0]->main->error('Handler method sub_names_clicked for event sub_names.OnButtonClick not implemented');
 }
 
 1;

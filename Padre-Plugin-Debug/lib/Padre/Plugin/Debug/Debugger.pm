@@ -38,6 +38,7 @@ sub _init {
 	$self->{save}         = {};
 	$self->{trace_status} = 'Trace = off';
 	$self->{var_val}      = {};
+	$self->{set_bp} = 0;
 
 	return $self;
 } #_init
@@ -106,7 +107,13 @@ sub debug_perl {
 	my $save = ( $self->{save}->{$filename} ||= {} );
 
 	# get bp's from db
-	$self->_get_bp_db();
+	# $self->_get_bp_db();	
+	if ( $self->{set_bp} == 0 ) {
+		# get bp's from db
+		$self->_get_bp_db();
+		$self->{set_bp} =1;
+		say "set_bp debug run";
+	}
 
 	unless ( $self->_set_debugger ) {
 		$main->error( Wx::gettext('Debugging failed. Did you check your program for syntax errors?') );
@@ -228,11 +235,18 @@ sub debug_step_in {
 		return;
 	}
 
-	p $self->{client}->show_breakpoints();
+	# p $self->{client}->show_breakpoints();
 	my $output = $self->{client}->buffer;
 	$output .= "\n" . $self->{client}->get_yvalue(0);
 	$self->{panel_debug_output}->debug_output($output);
 
+	if ( $self->{set_bp} == 0 ) {
+		# get bp's from db
+		$self->_get_bp_db();
+		$self->{set_bp} =1;
+		say "set_bp step in";
+	}
+	
 	$self->_set_debugger;
 
 	return;
@@ -262,11 +276,18 @@ sub debug_step_over {
 		return;
 	}
 
-	$self->{client}->show_breakpoints();
+	# $self->{client}->show_breakpoints();
 	my $output = $self->{client}->buffer;
 	$output .= "\n" . $self->{client}->get_yvalue(0);
 	$self->{panel_debug_output}->debug_output($output);
-
+	
+	if ( $self->{set_bp} == 0 ) {
+		# get bp's from db
+		$self->_get_bp_db();
+		$self->{set_bp} =1;
+		say "set_bp step over";
+	}
+	
 	$self->_set_debugger;
 
 	return;
@@ -296,11 +317,18 @@ sub debug_run_till {
 		return;
 	}
 
-	$self->{client}->show_breakpoints();
+	# $self->{client}->show_breakpoints();
 	my $output = $self->{client}->buffer;
 	$output .= "\n" . $self->{client}->get_yvalue(0);
 	$self->{panel_debug_output}->debug_output($output);
-
+	
+	if ( $self->{set_bp} == 0 ) {
+		# get bp's from db
+		$self->_get_bp_db();
+		$self->{set_bp} =1;
+		say "set_bp run till";
+	}
+	
 	$self->_set_debugger;
 
 	return;
@@ -328,11 +356,18 @@ sub debug_step_out {
 		return;
 	}
 
-	$self->{client}->show_breakpoints();
+	# $self->{client}->show_breakpoints();
 	my $output = $self->{client}->buffer;
 	$output .= "\n" . $self->{client}->get_yvalue(0);
 	$self->{panel_debug_output}->debug_output($output);
-
+	
+	if ( $self->{set_bp} == 0 ) {
+		# get bp's from db
+		$self->_get_bp_db();
+		$self->{set_bp} =1;
+		say "set_bp step out";
+	}
+	
 	$self->_set_debugger;
 
 	return;
@@ -369,7 +404,18 @@ sub display_trace {
 
 	return;
 }
+#######
+# sub display_trace
+#######
+sub display_sub_names {
+	my $self = shift;
+	
+	
+	$self->{panel_debug_output}->debug_output( $self->{client}->list_subroutine_names() );
+	
 
+	return;
+}
 #######
 #TODO Debug -> menu when in trunk
 #######
@@ -529,35 +575,6 @@ sub _output_variables {
 		}
 	}
 
-
-	# # 		my $val = $_;
-	# my @test = split m/ = /, $val;
-
-
-	# p @test;
-	# if ($_) {
-	# m/^([\$\@\%]\w+)/xm;
-	# my $var = $1;
-	# say "\$1: $1 \$2: $2";
-	# $auto_vars{$1} = {$2};
-
-	# $val =~ s/^$var//;
-	# p $1;
-	# say $val;
-
-	# if ( defined $test[0] ) {
-	# if ( defined $test[1] ) {
-	# $self->{auto_var_val}{$test[0]} = $test[1];
-	# } else {
-	# $self->{auto_var_val}{$test[0]} = BLANK;
-	# }
-	# }
-	# }
-	# }
-
-	# p %auto_vars;
-	# p $self->{auto_var_val};
-	# now let's update variable values in DebugVariables panel
 	$self->{panel_debug_variable}->update_variables( $self->{var_val}, $self->{auto_var_val} );
 
 	return;
@@ -606,11 +623,6 @@ sub _get_bp_db {
 
 		if ( $tuples[$_][1] =~ m/$self->{current_file}/ ) {
 
-			# set current file breakpoints and markers
-			# $self->{client}->set_breakpoint( $tuples[$_][1], $tuples[$_][2] );
-
-			# # 			$editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_BREAKPOINT() );
-
 			if ( $self->{client}->set_breakpoint( $tuples[$_][1], $tuples[$_][2] ) ) {
 				$editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_BREAKPOINT() );
 			} else {
@@ -631,6 +643,11 @@ sub _get_bp_db {
 			$self->{client}->set_breakpoint( $tuples[$_][1], $tuples[$_][2] );
 		}
 	}
+	
+	$self->{client}->show_breakpoints();
+	my $output = $self->{client}->buffer;
+	$self->{panel_debug_output}->debug_output($output);
+
 	return;
 }
 
@@ -641,6 +658,8 @@ sub _get_bp_db {
 sub _show_bp_autoload {
 	my $self = shift;
 
+	$self->_setup_db();
+	
 	#TODO is there a better way
 	my $editor = Padre::Current->editor;
 	$self->{current_file} = Padre::Current->document->filename;
@@ -662,14 +681,12 @@ sub _show_bp_autoload {
 			Padre::DB->do( 'update debug_breakpoints SET active = ? WHERE id = ?', {}, 0, $tuples[$_][0], );
 		}
 
-		# if ( $self->{client}->set_breakpoint( $tuples[$_][1], $tuples[$_][2] ) ) {
-		# $editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_BREAKPOINT() );
-		# }
-		# $self->{client}->set_breakpoint( $tuples[$_][1], $tuples[$_][2] );
-
-		# # 		$editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_BREAKPOINT() );
 	}
-
+	
+	$self->{client}->show_breakpoints();
+	my $output = $self->{client}->buffer;
+	$self->{panel_debug_output}->debug_output($output);
+	
 	return;
 }
 

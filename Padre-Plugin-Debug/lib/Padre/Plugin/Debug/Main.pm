@@ -49,7 +49,7 @@ sub set_up {
 
 	# Setup the debug button icons
 
-	# $self->{debug_output}->Disable;
+	$self->{sub_names}->Disable;
 
 	$self->{step_in}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_macro-stop-after-command') );
 	$self->{step_in}->Enable;
@@ -133,6 +133,16 @@ sub breakpoints_checked {
 	return;
 }
 
+#######
+# sub_names_clicked
+#######
+sub sub_names_clicked {
+	my $self = shift;
+
+	$self->{debugger}->display_sub_names();
+	
+	return;
+}
 
 #######
 # Clean up our Classes, Padre::Plugin, POD out of date as of v0.84
@@ -178,6 +188,7 @@ sub step_in_clicked {
 	$self->{display_value}->Enable;
 	$self->{quit_debugger}->Enable;
 	$self->{trace}->Enable;
+	$self->{sub_names}->Enable;
 
 	return;
 }
@@ -229,28 +240,13 @@ sub set_breakpoints_clicked {
 # sub trace_clicked
 #######
 sub trace_checked {
-	# my $self = shift;
 	my ( $self, $event ) = @_;
 
 	if ( $event->IsChecked ) {
-		# $self->{show_project} = 1;
 		$self->{debugger}->display_trace(1);
-
-		# say 'on_show_project_click yes';
-		# say $self->{show_project};
 	} else {
-		# $self->{show_project} = 0;
 		$self->{debugger}->display_trace(0);
-
-		# say 'on_show_project_click no';
-		# say $self->{show_project};
 	}
-
-	# $self->on_refresh_click();
-
-# # 	return;
-# }	
-	# $self->{debugger}->display_trace(1);
 
 	return;
 }
@@ -349,7 +345,6 @@ look at displaying variables yes, but in a nice table
 	}
 
 
-
 	sub toggle_trace {
 		my ($self) = @_;
 		$self->_send('t');
@@ -358,6 +353,7 @@ look at displaying variables yes, but in a nice table
 		$self->_prompt( \$buf );
 		return $buf;
 	}
+
 	
 	sub show_breakpoints {
 		my ($self) = @_;
@@ -365,6 +361,17 @@ look at displaying variables yes, but in a nice table
 		my $ret = $self->send_get('L');
 
 		return $ret;
+	}
+
+	
+	# S [[!]pattern]    List subroutine names [not] matching pattern.
+	sub list_subroutine_names {
+		my ($self, $pattern) = @_;
+		$self->_send('T');
+		my $buf = $self->_get;
+
+		$self->_prompt( \$buf );
+		return $buf;
 	}
 
 =cut
