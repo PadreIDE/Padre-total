@@ -139,7 +139,7 @@ sub set_up {
 	$self->_setup_db();
 
 	# Setup columns names and order here
-	my @column_headers = qw( Path Line ); # Active );
+	my @column_headers = qw( Path Line Active );
 	my $index          = 0;
 	for my $column_header (@column_headers) {
 		$self->{list}->InsertColumn( $index++, Wx::gettext($column_header) );
@@ -304,7 +304,7 @@ sub _update_list {
 	# carp($EVAL_ERROR);
 	# } else {
 
-	my $sql_select = 'ORDER BY filename DESC, line_number DESC';
+	my $sql_select = 'ORDER BY filename ASC, line_number ASC';
 	my @tuples     = $self->{debug_breakpoints}->select($sql_select);
 
 	# $item->SetId($idx);
@@ -319,13 +319,17 @@ sub _update_list {
 			if ( $self->{show_project} == 0 && $tuples[$_][1] =~ m/^$self->{current_file}/ ) {
 				$item->SetId($index);
 				$self->{list}->InsertItem($item);
+				if ( $tuples[$_][3] == 1 ) {
 				$self->{list}->SetItemTextColour( $index, BLUE );
+			} else {
+				$self->{list}->SetItemTextColour( $index, GRAY );
+				}
 				$self->{list}->SetItem( $index, 1, ( $tuples[$_][2] ) );
 				$tuples[$_][1] =~ s/^ $self->{project_dir} //sxm;
 				$self->{list}->SetItem( $index, 0, ( $tuples[$_][1] ) );
 
 				# TODO add when we have alternative markings
-				# $self->{list}->SetItem( $index++, 2, ( $tuples[$_][3] ) );
+				$self->{list}->SetItem( $index++, 2, ( $tuples[$_][3] ) );
 				$editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_BREAKPOINT() );
 
 			} elsif ( $self->{show_project} == 1 ) {
@@ -343,7 +347,7 @@ sub _update_list {
 				$self->{list}->SetItem( $index, 0, ( $tuples[$_][1] ) );
 
 				# TODO add when we have alternative markings
-				# $self->{list}->SetItem( $index++, 2, ( $tuples[$_][3] ) );
+				$self->{list}->SetItem( $index++, 2, ( $tuples[$_][3] ) );
 
 			}
 		}

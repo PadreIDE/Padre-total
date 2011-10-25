@@ -499,9 +499,11 @@ sub _output_variables {
 	#TODO Auto values kind of works, needs more attention
 
 	my $auto_values = $self->{client}->get_yvalue(0);
+
 	# p $auto_values;
 
 	$auto_values =~ s/^([\$\@\%]\w+)/:;$1/xmg;
+
 	# p $auto_values;
 
 	my @auto = split m/^:;/xm, $auto_values;
@@ -509,6 +511,7 @@ sub _output_variables {
 	#TODO, don't generate a ghost
 	#remove ghost at begining
 	shift @auto;
+
 	# p @auto;
 
 	# This is better I think, it's quicker
@@ -604,9 +607,19 @@ sub _get_bp_db {
 		if ( $tuples[$_][1] =~ m/$self->{current_file}/ ) {
 
 			# set current file breakpoints and markers
-			$self->{client}->set_breakpoint( $tuples[$_][1], $tuples[$_][2] );
-			
-			$editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_BREAKPOINT() );
+			# $self->{client}->set_breakpoint( $tuples[$_][1], $tuples[$_][2] );
+
+			# # 			$editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_BREAKPOINT() );
+
+			if ( $self->{client}->set_breakpoint( $tuples[$_][1], $tuples[$_][2] ) ) {
+				$editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_BREAKPOINT() );
+			} else {
+				$editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_NOT_BREAKABLE() );
+
+				#wright $tuples[$_][3] = 0
+				Padre::DB->do( 'update debug_breakpoints SET active = ? WHERE id = ?', {}, 0, $tuples[$_][0], );
+			}
+
 		}
 
 	}
@@ -614,7 +627,7 @@ sub _get_bp_db {
 
 		if ( $tuples[$_][1] =~ m/$self->{project_dir}/ ) {
 
-			# set common project files bp's in debugger
+			# 			# set common project files bp's in debugger
 			$self->{client}->set_breakpoint( $tuples[$_][1], $tuples[$_][2] );
 		}
 	}
@@ -640,8 +653,21 @@ sub _show_bp_autoload {
 		TRACE("show breakpoints autoload: self->{client}->set_breakpoint: $tuples[$_][1] => $tuples[$_][2]") if DEBUG;
 
 		# autoload of breakpoints and mark file
-		$self->{client}->set_breakpoint( $tuples[$_][1], $tuples[$_][2] );
-		$editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_BREAKPOINT() );
+		if ( $self->{client}->set_breakpoint( $tuples[$_][1], $tuples[$_][2] ) ) {
+			$editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_BREAKPOINT() );
+		} else {
+			$editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_NOT_BREAKABLE() );
+
+			#wright $tuples[$_][3] = 0
+			Padre::DB->do( 'update debug_breakpoints SET active = ? WHERE id = ?', {}, 0, $tuples[$_][0], );
+		}
+
+		# if ( $self->{client}->set_breakpoint( $tuples[$_][1], $tuples[$_][2] ) ) {
+		# $editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_BREAKPOINT() );
+		# }
+		# $self->{client}->set_breakpoint( $tuples[$_][1], $tuples[$_][2] );
+
+		# # 		$editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_BREAKPOINT() );
 	}
 
 	return;
