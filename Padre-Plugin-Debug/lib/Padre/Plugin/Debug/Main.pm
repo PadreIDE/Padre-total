@@ -50,6 +50,11 @@ sub set_up {
 	# Setup the debug button icons
 
 	$self->{sub_names}->Disable;
+	$self->{sub_name_regex}->Disable;
+	$self->{backtrace}->Disable;
+	$self->{list_actions}->Disable;
+	$self->{show_buffer}->Disable;
+	
 
 	$self->{step_in}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_macro-stop-after-command') );
 	$self->{step_in}->Enable;
@@ -139,11 +144,41 @@ sub breakpoints_checked {
 sub sub_names_clicked {
 	my $self = shift;
 
-	$self->{debugger}->display_sub_names();
+	$self->{debugger}->display_sub_names( $self->{sub_name_regex}->GetValue() );
 	
 	return;
 }
 
+#######
+# sub backtrace_clicked
+#######
+sub backtrace_clicked {
+	my $self = shift;
+
+	$self->{debugger}->display_backtrace();
+	
+	return;
+}
+#######
+# sub show_buffer_clicked
+#######
+sub show_buffer_clicked {
+	my $self = shift;
+
+	$self->{debugger}->display_buffer();
+	
+	return;
+}
+#######
+# sub list_actions_clicked
+#######
+sub list_actions_clicked {
+	my $self = shift;
+
+	$self->{debugger}->display_list_actions();
+	
+	return;
+}
 #######
 # Clean up our Classes, Padre::Plugin, POD out of date as of v0.84
 #######
@@ -189,6 +224,10 @@ sub step_in_clicked {
 	$self->{quit_debugger}->Enable;
 	$self->{trace}->Enable;
 	$self->{sub_names}->Enable;
+	$self->{sub_name_regex}->Enable;
+	$self->{backtrace}->Enable;
+	$self->{list_actions}->Enable;
+	$self->{show_buffer}->Enable;
 
 	return;
 }
@@ -330,48 +369,160 @@ look at displaying variables yes, but in a nice table
 
 =head2 Add the following to Debug::Client
 
-	sub get_yvalue {
-		my ( $self, $var ) = @_;
-		die "no parameter given\n" if not defined $var;
-
-		if ( $var =~ /^\d/ ) {
-			$self->_send("y $var");
-			my $buf = $self->_get;
-			$self->_prompt( \$buf );
-			return $buf;
-		}
-
-		# die "Unknown parameter '$var'\n";
-	}
-
-
-	sub toggle_trace {
-		my ($self) = @_;
-		$self->_send('t');
-		my $buf = $self->_get;
-
-		$self->_prompt( \$buf );
-		return $buf;
-	}
-
-	
-	sub show_breakpoints {
-		my ($self) = @_;
-
-		my $ret = $self->send_get('L');
-
-		return $ret;
-	}
-
-	
-	# S [[!]pattern]    List subroutine names [not] matching pattern.
-	sub list_subroutine_names {
-		my ($self, $pattern) = @_;
-		$self->_send('T');
-		my $buf = $self->_get;
-
-		$self->_prompt( \$buf );
-		return $buf;
-	}
+the following diff holds changes to be applied to Debug::Client, 
+until P-P-Debug is working in an initial form, I will just add the Patch here for now
 
 =cut
+
+--- /home/kevin/src/Padre/Debug-Client/lib/Debug/Client.pm
++++ /home/kevin/perl5/perlbrew/perls/perl-5.14.1/lib/site_perl/5.14.1/Debug/Client.pm
+@@ -1,7 +1,12 @@
+ package Debug::Client;
++
++use 5.010;
+ use strict;
+ use warnings;
+-use 5.006;
++
++# Turn on $OUTPUT_AUTOFLUSH
++$| = 1;
++use diagnostics;
+ 
+ our $VERSION = '0.12';
+ 
+@@ -266,9 +271,31 @@
+ 
+ =cut
+ 
++#T Produce a stack backtrace. 
+ sub get_stack_trace {
+ 	my ($self) = @_;
+ 	$self->_send('T');
++	my $buf = $self->_get;
++
++	$self->_prompt( \$buf );
++	return $buf;
++}
++
++#t Toggle trace mode (see also the AutoTrace option).
++sub toggle_trace {
++	my ($self) = @_;
++	$self->_send('t');
++	my $buf = $self->_get;
++
++	$self->_prompt( \$buf );
++	return $buf;
++}
++
++# S [[!]pattern]    List subroutine names [not] matching pattern.
++sub list_subroutine_names {
++	my ($self, $pattern) = @_;
++	# print "D-C $pattern \n";
++	$self->_send("S $pattern");
+ 	my $buf = $self->_get;
+ 
+ 	$self->_prompt( \$buf );
+@@ -302,12 +329,13 @@
+ 
+ =cut
+ 
+-
+ sub set_breakpoint {
+ 	my ( $self, $file, $line, $cond ) = @_;
+-
++	
+ 	$self->_send("f $file");
++	# $self->_send("b $file");
+ 	my $b = $self->_get;
++	# print $b . "\n";
+ 
+ 	# Already in t/eg/02-sub.pl.
+ 
+@@ -316,6 +344,7 @@
+ 	# if it was successful no reply
+ 	# if it failed we saw two possible replies
+ 	my $buf    = $self->_get;
++	# print $buf . "\n";
+ 	my $prompt = $self->_prompt( \$buf );
+ 	if ( $buf =~ /^Subroutine [\w:]+ not found\./ ) {
+ 
+@@ -332,6 +361,7 @@
+ 	return 1;
+ }
+ 
++
+ # apparently no clear success/error report for this
+ sub remove_breakpoint {
+ 	my ( $self, $file, $line ) = @_;
+@@ -362,6 +392,14 @@
+ 
+ =cut
+ 
++sub show_breakpoints {
++	my ($self) = @_;
++
++	my $ret = $self->send_get('L');
++
++	return $ret;
++}
++
+ sub list_break_watch_action {
+ 	my ($self) = @_;
+ 
+@@ -369,6 +407,9 @@
+ 	if ( not wantarray ) {
+ 		return $ret;
+ 	}
++
++	# short cut for direct output
++	# return $ret;
+ 
+ 	# t/eg/04-fib.pl:
+ 	#  17:      my $n = shift;
+@@ -446,6 +487,43 @@
+ 		return $data_ref;
+ 	}
+ 	die "Unknown parameter '$var'\n";
++}
++
++sub get_y_zero {
++	my $self = shift;
++
++	$self->_send("y 0");
++	my $buf = $self->_get;
++	$self->_prompt( \$buf );
++	return $buf;
++}
++
++#X [vars] Same as V currentpackage [vars] 
++sub get_x_vars {
++	my ($self, $pattern) = @_;
++	die "no pattern given\n" if not defined $pattern;
++	
++	$self->_send("X $pattern");
++	my $buf = $self->_get;
++	$self->_prompt( \$buf );
++	return $buf;
++}
++
++#V [pkg [vars]]
++
++# Display all (or some) variables in package (defaulting to main ) 
++# using a data pretty-printer (hashes show their keys and values so you see what's what, 
++# control characters are made printable, etc.). 
++# Make sure you don't put the type specifier (like $ ) there, just the symbol names, like this:
++
++sub get_v_vars {
++	my ($self, $pattern) = @_;
++	die "no pattern given\n" if not defined $pattern;
++	
++	$self->_send("V $pattern");
++	my $buf = $self->_get;
++	$self->_prompt( \$buf );
++	return $buf;
+ }
+ 
+ sub _parse_dumper {
+
+
+

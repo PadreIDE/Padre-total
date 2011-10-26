@@ -206,6 +206,22 @@ sub new {
 		},
 	);
 
+	$self->{show_buffer} = Wx::Button->new(
+		$self,
+		-1,
+		Wx::gettext("Show Buffer"),
+		Wx::DefaultPosition(),
+		Wx::DefaultSize(),
+	);
+
+	Wx::Event::EVT_BUTTON(
+		$self,
+		$self->{show_buffer},
+		sub {
+			shift->show_buffer_clicked(@_);
+		},
+	);
+
 	$self->{sub_names} = Wx::Button->new(
 		$self,
 		-1,
@@ -222,6 +238,55 @@ sub new {
 		$self->{sub_names},
 		sub {
 			shift->sub_names_clicked(@_);
+		},
+	);
+
+	$self->{sub_name_regex} = Wx::TextCtrl->new(
+		$self,
+		-1,
+		"!(IO::Socket|Carp)",
+		Wx::DefaultPosition(),
+		[ 130, -1 ],
+	);
+	$self->{sub_name_regex}->SetToolTip(
+		Wx::gettext("!(IO::Socket|Carp) are the subs used by Debug::Client, hence lets remove them")
+	);
+
+	$self->{backtrace} = Wx::Button->new(
+		$self,
+		-1,
+		Wx::gettext("BackTrace"),
+		Wx::DefaultPosition(),
+		Wx::DefaultSize(),
+	);
+	$self->{backtrace}->SetToolTip(
+		Wx::gettext("T\nProduce a stack backtrace.")
+	);
+
+	Wx::Event::EVT_BUTTON(
+		$self,
+		$self->{backtrace},
+		sub {
+			shift->backtrace_clicked(@_);
+		},
+	);
+
+	$self->{list_actions} = Wx::Button->new(
+		$self,
+		-1,
+		Wx::gettext("List Actions"),
+		Wx::DefaultPosition(),
+		Wx::DefaultSize(),
+	);
+	$self->{list_actions}->SetToolTip(
+		Wx::gettext("L [abw]\nList (default all) actions, breakpoints and watch expressions")
+	);
+
+	Wx::Event::EVT_BUTTON(
+		$self,
+		$self->{list_actions},
+		sub {
+			shift->list_actions_clicked(@_);
 		},
 	);
 
@@ -276,6 +341,14 @@ sub new {
 	$file_2->Add( $self->{display_value}, 0, Wx::ALL(), 5 );
 	$file_2->Add( $self->{quit_debugger}, 0, Wx::ALL(), 5 );
 
+	my $gSizer1 = Wx::GridSizer->new( 2, 2, 0, 0 );
+	$gSizer1->Add( $self->{trace}, 0, Wx::ALL(), 5 );
+	$gSizer1->Add( $self->{show_buffer}, 0, Wx::ALL(), 5 );
+	$gSizer1->Add( $self->{sub_names}, 0, Wx::ALL(), 5 );
+	$gSizer1->Add( $self->{sub_name_regex}, 0, Wx::ALL(), 5 );
+	$gSizer1->Add( $self->{backtrace}, 0, Wx::ALL(), 5 );
+	$gSizer1->Add( $self->{list_actions}, 0, Wx::ALL(), 5 );
+
 	my $file_11 = Wx::StaticBoxSizer->new(
 		Wx::StaticBox->new(
 			$self,
@@ -284,10 +357,7 @@ sub new {
 		),
 		Wx::HORIZONTAL(),
 	);
-	$file_11->Add( $self->{trace}, 0, Wx::ALL(), 5 );
-	$file_11->Add( 0, 0, 1, Wx::EXPAND(), 5 );
-	$file_11->Add( $self->{sub_names}, 0, Wx::ALL(), 5 );
-	$file_11->Add( 0, 0, 1, Wx::EXPAND(), 5 );
+	$file_11->Add( $gSizer1, 0, Wx::EXPAND(), 5 );
 
 	my $buttons = Wx::BoxSizer->new(Wx::HORIZONTAL());
 	$buttons->Add( $self->{info}, 0, Wx::ALL(), 5 );
@@ -316,6 +386,10 @@ sub breakpoints {
 
 sub trace {
 	$_[0]->{trace};
+}
+
+sub sub_name_regex {
+	$_[0]->{sub_name_regex};
 }
 
 sub breakpoints_checked {
@@ -354,8 +428,20 @@ sub trace_checked {
 	$_[0]->main->error('Handler method trace_checked for event trace.OnCheckBox not implemented');
 }
 
+sub show_buffer_clicked {
+	$_[0]->main->error('Handler method show_buffer_clicked for event show_buffer.OnButtonClick not implemented');
+}
+
 sub sub_names_clicked {
 	$_[0]->main->error('Handler method sub_names_clicked for event sub_names.OnButtonClick not implemented');
+}
+
+sub backtrace_clicked {
+	$_[0]->main->error('Handler method backtrace_clicked for event backtrace.OnButtonClick not implemented');
+}
+
+sub list_actions_clicked {
+	$_[0]->main->error('Handler method list_actions_clicked for event list_actions.OnButtonClick not implemented');
 }
 
 1;

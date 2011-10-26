@@ -4,6 +4,10 @@ use 5.010;
 use strict;
 use warnings;
 
+# Turn on $OUTPUT_AUTOFLUSH
+$| = 1;
+use diagnostics;
+
 # use Padre::Wx::Role::Main ();
 use Padre::Wx::Role::View ();
 use Padre::Wx             ();

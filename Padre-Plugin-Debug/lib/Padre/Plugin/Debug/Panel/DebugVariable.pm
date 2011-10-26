@@ -4,6 +4,10 @@ use 5.010;
 use strict;
 use warnings;
 
+# Turn on $OUTPUT_AUTOFLUSH
+$| = 1;
+use diagnostics;
+
 use Padre::Wx::Role::View;
 use Padre::Plugin::Debug::FBP::DebugVariable ();
 use Data::Printer { caller_info => 1, colored => 1, };
@@ -115,7 +119,8 @@ sub gettext_label {
 sub set_up {
 	my $self = shift;
 
-	$self->{show_project_variables} = 0;
+	$self->{show_local_variables} = 0;
+	$self->{show_global_variables} = 0;
 
 	# Setup the debug button icons
 	$self->{refresh}->SetBitmapLabel( Padre::Wx::Icon::find('actions/view-refresh') );
@@ -142,6 +147,7 @@ sub update_variables {
 	my $self             = shift;
 	my $var_val_ref      = shift;
 	my $auto_var_val_ref = shift;
+	my $auto_x_var_ref = shift;
 
 	my $item = Wx::ListItem->new;
 
@@ -162,7 +168,7 @@ sub update_variables {
 		$self->{variables}->SetItem( $index++, 1, $var_val_ref->{$var} );
 	}
 
-	if ( $self->{show_project_variables} == 1 ) {
+	if ( $self->{show_local_variables} == 1 ) {
 		foreach my $var ( keys %{$auto_var_val_ref} ) {
 
 			$item->SetId($index);
@@ -171,6 +177,17 @@ sub update_variables {
 
 			$self->{variables}->SetItem( $index,   0, $var );
 			$self->{variables}->SetItem( $index++, 1, $auto_var_val_ref->{$var} );
+		}
+	}	
+	if ( $self->{show_global_variables} == 1 ) {
+		foreach my $var ( keys %{$auto_x_var_ref} ) {
+
+			$item->SetId($index);
+			$self->{variables}->InsertItem($item);
+			$self->{variables}->SetItemTextColour( $index, GRAY );
+
+			$self->{variables}->SetItem( $index,   0, $var );
+			$self->{variables}->SetItem( $index++, 1, $auto_x_var_ref->{$var} );
 		}
 	}
 	Padre::Util::tidy_list( $self->{variables} );
@@ -186,25 +203,31 @@ sub on_refresh_click {
 }
 
 
-sub on_show_package_click {
+sub show_local_variables_checked {
 	my ( $self, $event ) = @_;
 
 	if ( $event->IsChecked ) {
-		$self->{show_project_variables} = 1;
-
-		# say 'on_show_project_click yes';
-		# say $self->{show_project};
+		$self->{show_local_variables} = 1;
 	} else {
-		$self->{show_project_variables} = 0;
-
-		# say 'on_show_project_click no';
-		# say $self->{show_project};
+		$self->{show_local_variables} = 0;
 	}
 
 	return;
 }
 
+sub show_global_variables_checked {
+	my ( $self, $event ) = @_;
 
+	if ( $event->IsChecked ) {
+		$self->{show_global_variables} = 1;
+		# say 'show_global_variables_checked yes';
+	} else {
+		$self->{show_global_variables} = 0;
+		# say 'show_global_variables_checked no';
+	}
+
+	return;
+}
 
 
 

@@ -59,22 +59,41 @@ sub new {
 	);
 	$self->{variables}->SetMinSize( Wx::DefaultSize() );
 
-	$self->{show_package} = Wx::CheckBox->new(
+	$self->{show_local_variables} = Wx::CheckBox->new(
 		$self,
 		-1,
-		Wx::gettext("package variables (0)"),
+		Wx::gettext("Show Local Variables (y 0)"),
 		Wx::DefaultPosition(),
 		Wx::DefaultSize(),
 	);
-	$self->{show_package}->SetToolTip(
-		Wx::gettext("show breakpoints in project")
+	$self->{show_local_variables}->SetToolTip(
+		Wx::gettext("y [level [vars]]\nDisplay all (or some) lexical variables (mnemonic: mY variables) in the current scope or level scopes higher. You can limit the variables that you see with vars which works exactly as it does for the V and X commands. Requires the PadWalker module version 0.08 or higher; will warn if this isn't installed. Output is pretty-printed in the same style as for V and the format is controlled by the same options.")
 	);
 
 	Wx::Event::EVT_CHECKBOX(
 		$self,
-		$self->{show_package},
+		$self->{show_local_variables},
 		sub {
-			shift->on_show_package_click(@_);
+			shift->show_local_variables_checked(@_);
+		},
+	);
+
+	$self->{show_global_variables} = Wx::CheckBox->new(
+		$self,
+		-1,
+		Wx::gettext("Show Global Variables"),
+		Wx::DefaultPosition(),
+		Wx::DefaultSize(),
+	);
+	$self->{show_global_variables}->SetToolTip(
+		Wx::gettext("TODO")
+	);
+
+	Wx::Event::EVT_CHECKBOX(
+		$self,
+		$self->{show_global_variables},
+		sub {
+			shift->show_global_variables_checked(@_);
 		},
 	);
 
@@ -89,7 +108,8 @@ sub new {
 		),
 		Wx::VERTICAL(),
 	);
-	$checkbox_sizer->Add( $self->{show_package}, 0, Wx::ALL(), 2 );
+	$checkbox_sizer->Add( $self->{show_local_variables}, 0, Wx::ALL(), 2 );
+	$checkbox_sizer->Add( $self->{show_global_variables}, 0, Wx::ALL(), 5 );
 
 	my $bSizer10 = Wx::BoxSizer->new(Wx::VERTICAL());
 	$bSizer10->Add( $button_sizer, 0, Wx::EXPAND(), 5 );
@@ -106,8 +126,12 @@ sub on_refresh_click {
 	$_[0]->main->error('Handler method on_refresh_click for event refresh.OnButtonClick not implemented');
 }
 
-sub on_show_package_click {
-	$_[0]->main->error('Handler method on_show_package_click for event show_package.OnCheckBox not implemented');
+sub show_local_variables_checked {
+	$_[0]->main->error('Handler method show_local_variables_checked for event show_local_variables.OnCheckBox not implemented');
+}
+
+sub show_global_variables_checked {
+	$_[0]->main->error('Handler method show_global_variables_checked for event show_global_variables.OnCheckBox not implemented');
 }
 
 1;

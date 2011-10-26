@@ -4,6 +4,10 @@ use 5.010;
 use strict;
 use warnings;
 
+# Turn on $OUTPUT_AUTOFLUSH
+$| = 1;
+use diagnostics;
+
 use Padre::Wx::Role::View;
 use Padre::Plugin::Debug::FBP::DebugOutput ();
 use Data::Printer { caller_info => 1, colored => 1, };

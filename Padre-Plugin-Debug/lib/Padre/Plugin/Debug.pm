@@ -1,9 +1,13 @@
 package Padre::Plugin::Debug;
 
-use 5.008;
+use 5.010;
 use strict;
 use warnings;
 use Padre::Plugin ();
+
+# Turn on $OUTPUT_AUTOFLUSH
+$| = 1;
+use diagnostics;
 
 our $VERSION = '0.02';
 our @ISA     = 'Padre::Plugin';

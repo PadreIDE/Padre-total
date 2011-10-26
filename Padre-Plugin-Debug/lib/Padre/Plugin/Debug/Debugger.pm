@@ -8,6 +8,10 @@ use Padre::Constant ();
 use Padre::Current  ();
 use Padre::Wx       ();
 
+# Turn on $OUTPUT_AUTOFLUSH
+$| = 1;
+use diagnostics;
+
 use Padre::Logger qw(TRACE DEBUG);
 use Data::Printer { caller_info => 1, colored => 1, };
 our $VERSION = '0.91';
@@ -38,7 +42,10 @@ sub _init {
 	$self->{save}         = {};
 	$self->{trace_status} = 'Trace = off';
 	$self->{var_val}      = {};
-	$self->{set_bp} = 0;
+	$self->{auto_var_val} = {};
+	$self->{auto_x_var}   = {};
+	$self->{set_bp}       = 0;
+	$self->{fudge}        = 0;
 
 	return $self;
 } #_init
@@ -107,11 +114,12 @@ sub debug_perl {
 	my $save = ( $self->{save}->{$filename} ||= {} );
 
 	# get bp's from db
-	# $self->_get_bp_db();	
+	# $self->_get_bp_db();
 	if ( $self->{set_bp} == 0 ) {
+
 		# get bp's from db
 		$self->_get_bp_db();
-		$self->{set_bp} =1;
+		$self->{set_bp} = 1;
 		say "set_bp debug run";
 	}
 
@@ -237,16 +245,17 @@ sub debug_step_in {
 
 	# p $self->{client}->show_breakpoints();
 	my $output = $self->{client}->buffer;
-	$output .= "\n" . $self->{client}->get_yvalue(0);
+	$output .= "\n" . $self->{client}->get_y_zero();
 	$self->{panel_debug_output}->debug_output($output);
 
 	if ( $self->{set_bp} == 0 ) {
+
 		# get bp's from db
 		$self->_get_bp_db();
-		$self->{set_bp} =1;
+		$self->{set_bp} = 1;
 		say "set_bp step in";
 	}
-	
+
 	$self->_set_debugger;
 
 	return;
@@ -278,16 +287,15 @@ sub debug_step_over {
 
 	# $self->{client}->show_breakpoints();
 	my $output = $self->{client}->buffer;
-	$output .= "\n" . $self->{client}->get_yvalue(0);
+	$output .= "\n" . $self->{client}->get_y_zero();
 	$self->{panel_debug_output}->debug_output($output);
-	
+
 	if ( $self->{set_bp} == 0 ) {
-		# get bp's from db
 		$self->_get_bp_db();
-		$self->{set_bp} =1;
+		$self->{set_bp} = 1;
 		say "set_bp step over";
 	}
-	
+
 	$self->_set_debugger;
 
 	return;
@@ -319,16 +327,15 @@ sub debug_run_till {
 
 	# $self->{client}->show_breakpoints();
 	my $output = $self->{client}->buffer;
-	$output .= "\n" . $self->{client}->get_yvalue(0);
+	$output .= "\n" . $self->{client}->get_y_zero();
 	$self->{panel_debug_output}->debug_output($output);
-	
+
 	if ( $self->{set_bp} == 0 ) {
-		# get bp's from db
 		$self->_get_bp_db();
-		$self->{set_bp} =1;
+		$self->{set_bp} = 1;
 		say "set_bp run till";
 	}
-	
+
 	$self->_set_debugger;
 
 	return;
@@ -358,16 +365,15 @@ sub debug_step_out {
 
 	# $self->{client}->show_breakpoints();
 	my $output = $self->{client}->buffer;
-	$output .= "\n" . $self->{client}->get_yvalue(0);
+	$output .= "\n" . $self->{client}->get_y_zero();
 	$self->{panel_debug_output}->debug_output($output);
-	
+
 	if ( $self->{set_bp} == 0 ) {
-		# get bp's from db
 		$self->_get_bp_db();
-		$self->{set_bp} =1;
+		$self->{set_bp} = 1;
 		say "set_bp step out";
 	}
-	
+
 	$self->_set_debugger;
 
 	return;
@@ -408,11 +414,40 @@ sub display_trace {
 # sub display_trace
 #######
 sub display_sub_names {
+	my $self  = shift;
+	my $regex = shift;
+
+	$self->{panel_debug_output}->debug_output( $self->{client}->list_subroutine_names($regex) );
+
+	return;
+}
+#######
+# sub display_backtrace
+#######
+sub display_backtrace {
 	my $self = shift;
-	
-	
-	$self->{panel_debug_output}->debug_output( $self->{client}->list_subroutine_names() );
-	
+
+	$self->{panel_debug_output}->debug_output( $self->{client}->get_stack_trace() );
+
+	return;
+}
+#######
+# sub display_buffer
+#######
+sub display_buffer {
+	my $self = shift;
+
+	$self->{panel_debug_output}->debug_output( $self->{client}->buffer() );
+
+	return;
+}
+#######
+# sub display_list_actions
+#######
+sub display_list_actions {
+	my $self = shift;
+
+	$self->{panel_debug_output}->debug_output( $self->{client}->show_breakpoints() );
 
 	return;
 }
@@ -541,10 +576,26 @@ sub _output_variables {
 			}
 		}
 	}
+	# only get local variables if required
+	if ( $self->{panel_debug_variable}->{show_local_variables} == 1 ) {
+		$self->get_local_variables();
+	}
+	# only get global variables if required
+	if ( $self->{panel_debug_variable}->{show_global_variables} == 1 ) {
+		$self->get_global_variables();
+	}
+	$self->{panel_debug_variable}->update_variables( $self->{var_val}, $self->{auto_var_val}, $self->{auto_x_var} );
 
-	#TODO Auto values kind of works, needs more attention
+	return;
+}
 
-	my $auto_values = $self->{client}->get_yvalue(0);
+#######
+# Composed Method get_variables
+#######
+sub get_local_variables {
+	my $self = shift;
+
+	my $auto_values = $self->{client}->get_y_zero();
 
 	# p $auto_values;
 
@@ -575,11 +626,52 @@ sub _output_variables {
 		}
 	}
 
-	$self->{panel_debug_variable}->update_variables( $self->{var_val}, $self->{auto_var_val} );
-
 	return;
 }
 
+#######
+# Composed Method get_variables
+#######
+sub get_global_variables {
+	my $self = shift;
+	
+	my $v_regex = '!(ENV|INC)';
+
+	my $auto_values = $self->{client}->get_x_vars($v_regex);
+
+	# p $auto_values;
+
+	$auto_values =~ s/^((?:[\$\@\%]\w+)|(?:[\$\@\%]\S+)|(?:File\w+))/:;$1/xmg;
+
+	# p $auto_values;
+
+	my @auto = split m/^:;/xm, $auto_values;
+
+	#TODO, don't generate a ghost
+	#remove ghost at begining
+	shift @auto;
+
+	# p @auto;
+
+	# This is better I think, it's quicker
+	$self->{auto_x_var} = {};
+
+	foreach (@auto) {
+		$_ =~ m/ = | => /;
+
+  		# $` before and $' after $#
+		if ( defined $` ) {
+			if ( defined $' ) {
+				$self->{auto_x_var}{$`} = $';
+			} else {
+				$self->{auto_x_var}{$`} = BLANK;
+			}
+		}
+	}
+
+	# p $self->{auto_x_var};
+	return;
+}
 
 #######
 # Internal method _setup_db connector
@@ -639,14 +731,14 @@ sub _get_bp_db {
 
 		if ( $tuples[$_][1] =~ m/$self->{project_dir}/ ) {
 
-			# 			# set common project files bp's in debugger
+			# set common project files bp's in debugger
 			$self->{client}->set_breakpoint( $tuples[$_][1], $tuples[$_][2] );
 		}
 	}
-	
-	$self->{client}->show_breakpoints();
-	my $output = $self->{client}->buffer;
-	$self->{panel_debug_output}->debug_output($output);
+
+	# $self->{client}->show_breakpoints();
+	# my $output = $self->{client}->buffer;
+	# $self->{panel_debug_output}->debug_output($output);
 
 	return;
 }
@@ -659,7 +751,7 @@ sub _show_bp_autoload {
 	my $self = shift;
 
 	$self->_setup_db();
-	
+
 	#TODO is there a better way
 	my $editor = Padre::Current->editor;
 	$self->{current_file} = Padre::Current->document->filename;
@@ -682,11 +774,11 @@ sub _show_bp_autoload {
 		}
 
 	}
-	
-	$self->{client}->show_breakpoints();
-	my $output = $self->{client}->buffer;
-	$self->{panel_debug_output}->debug_output($output);
-	
+
+	# $self->{client}->show_breakpoints();
+	# my $output = $self->{client}->buffer;
+	# $self->{panel_debug_output}->debug_output($output);
+
 	return;
 }
 
