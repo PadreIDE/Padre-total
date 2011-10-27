@@ -11,6 +11,7 @@ use Padre::Wx       ();
 # Turn on $OUTPUT_AUTOFLUSH
 $| = 1;
 use diagnostics;
+use utf8;
 
 use Padre::Logger qw(TRACE DEBUG);
 use Data::Printer { caller_info => 1, colored => 1, };
@@ -142,6 +143,7 @@ sub _set_debugger {
 
 	my $editor = $current->editor            or return;
 	my $file   = $self->{client}->{filename} or return;
+	p $file;
 	my $row    = $self->{client}->{row}      or return;
 
 	# Open the file if needed
@@ -635,7 +637,7 @@ sub get_local_variables {
 sub get_global_variables {
 	my $self = shift;
 	
-	my $v_regex = '!(ENV|INC)';
+	my $v_regex = '!(ENV|INC|SIG)';
 
 	my $auto_values = $self->{client}->get_x_vars($v_regex);
 

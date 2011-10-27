@@ -7,6 +7,7 @@ use warnings;
 # Turn on $OUTPUT_AUTOFLUSH
 $| = 1;
 use diagnostics;
+use utf8;
 
 use Padre::Wx::Role::View;
 use Padre::Plugin::Debug::FBP::DebugOutput ();

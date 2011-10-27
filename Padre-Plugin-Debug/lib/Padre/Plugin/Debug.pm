@@ -8,6 +8,7 @@ use Padre::Plugin ();
 # Turn on $OUTPUT_AUTOFLUSH
 $| = 1;
 use diagnostics;
+use utf8;
 
 our $VERSION = '0.02';
 our @ISA     = 'Padre::Plugin';

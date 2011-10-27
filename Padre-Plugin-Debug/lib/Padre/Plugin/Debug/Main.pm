@@ -7,6 +7,7 @@ use warnings;
 # Turn on $OUTPUT_AUTOFLUSH
 $| = 1;
 use diagnostics;
+use utf8;
 
 use Padre::Wx                         ();
 use Padre::Plugin::Debug::FBP::MainFB ();
@@ -343,6 +344,12 @@ inspired by vcs options
 
 changed breakpoint margin marker to ... so as to co-exist with diff margin markers,
 and avoid information contamination due to colour washout of previous SMALLRECT.
+Add Gray for not active with switched by debugger 
+
+add functionality from trunk so all icons mimic current debug implementation
+
+look at displaying variables yes, but in a nice table
+
 
 =head1 BUGS AND LIMITATIONS 
 
@@ -352,18 +359,35 @@ will need to look in future at features and background task to do this.
 
 Current thinking would be to compare bp time-stamp to History time-stamp if it had one
 
+=head2 debug options X & V sometimes produce the following
+
+	You can't FIRSTKEY with the %~ hash at /home/kevin/perl5/perlbrew/perls/perl-5.14.1/lib/5.14.1/dumpvar.pl line 380
+		...propagated at /home/kevin/perl5/perlbrew/perls/perl-5.14.1/lib/5.14.1/perl5db.pl line 2438.
+	 at /home/kevin/perl5/perlbrew/perls/perl-5.14.1/lib/5.14.1/perl5db.pl line 2438
+		DB::DB called at sandbox 06 line 29
+	Debugged program terminated.  Use q to quit or R to restart,
+	  use o inhibit_exit to avoid stopping after program termination,
+	  h q, h R or h o to get additional info.
+
+=head2 entities in file names
+
+	Printing in line 636 of /home/kevin/perl5/perlbrew/perls/perl-5.14.1/lib/site_perl/5.14.1/Debug/Client.pm:
+	"/usr/src/Padre/Pad�e-Plugin-Debug/scripts/ExSewi.pm"
+	Printing in line 146 of /usr/src/Padre/Padre-Plugin-Debug/lib/Padre/Plugin/Debug/Debugger.pm:
+	"/usr/src/Padre/Pad�e-Plugin-Debug/scripts/ExSewi.pm"
+	No such file or directory when trying to open '/usr/src/Padre/Pad�e-Plugin-Debug/scripts/ExSewi.pm' at /usr/src/Padre/Padre/lib/Padre/Wx/Main.pm line 4043.
+
 
 =head1 TODO 
 
-look at debug having its own margin (shared with code folding) and new icons, 
-current thinking two dots a coloured one for active and Gray for not active 
-with switch in breakpoint panel 
-
 get panels to integrate with Padre, play nice=yes, still not finished
 
-add functionality from trunk so all icons mimic current debug implementation
+re-look at panel layout
 
-look at displaying variables yes, but in a nice table
+Add methods to Debug::Client in trunk
+
+
+=head2 Tests & Notes
 
 =head1 Method 
 
@@ -376,7 +400,7 @@ until P-P-Debug is working in an initial form, I will just add the Patch here fo
 
 --- /home/kevin/src/Padre/Debug-Client/lib/Debug/Client.pm
 +++ /home/kevin/perl5/perlbrew/perls/perl-5.14.1/lib/site_perl/5.14.1/Debug/Client.pm
-@@ -1,7 +1,12 @@
+@@ -1,7 +1,14 @@
  package Debug::Client;
 +
 +use 5.010;
@@ -387,10 +411,12 @@ until P-P-Debug is working in an initial form, I will just add the Patch here fo
 +# Turn on $OUTPUT_AUTOFLUSH
 +$| = 1;
 +use diagnostics;
++use utf8;
++use Data::Printer { caller_info => 1, colored => 1, };
  
  our $VERSION = '0.12';
  
-@@ -266,9 +271,31 @@
+@@ -266,9 +273,31 @@
  
  =cut
  
@@ -422,7 +448,7 @@ until P-P-Debug is working in an initial form, I will just add the Patch here fo
  	my $buf = $self->_get;
  
  	$self->_prompt( \$buf );
-@@ -302,12 +329,13 @@
+@@ -302,12 +331,13 @@
  
  =cut
  
@@ -438,7 +464,7 @@ until P-P-Debug is working in an initial form, I will just add the Patch here fo
  
  	# Already in t/eg/02-sub.pl.
  
-@@ -316,6 +344,7 @@
+@@ -316,6 +346,7 @@
  	# if it was successful no reply
  	# if it failed we saw two possible replies
  	my $buf    = $self->_get;
@@ -446,7 +472,7 @@ until P-P-Debug is working in an initial form, I will just add the Patch here fo
  	my $prompt = $self->_prompt( \$buf );
  	if ( $buf =~ /^Subroutine [\w:]+ not found\./ ) {
  
-@@ -332,6 +361,7 @@
+@@ -332,6 +363,7 @@
  	return 1;
  }
  
@@ -454,7 +480,7 @@ until P-P-Debug is working in an initial form, I will just add the Patch here fo
  # apparently no clear success/error report for this
  sub remove_breakpoint {
  	my ( $self, $file, $line ) = @_;
-@@ -362,6 +392,14 @@
+@@ -362,6 +394,14 @@
  
  =cut
  
@@ -469,7 +495,7 @@ until P-P-Debug is working in an initial form, I will just add the Patch here fo
  sub list_break_watch_action {
  	my ($self) = @_;
  
-@@ -369,6 +407,9 @@
+@@ -369,6 +409,9 @@
  	if ( not wantarray ) {
  		return $ret;
  	}
@@ -479,7 +505,7 @@ until P-P-Debug is working in an initial form, I will just add the Patch here fo
  
  	# t/eg/04-fib.pl:
  	#  17:      my $n = shift;
-@@ -446,6 +487,43 @@
+@@ -446,6 +489,43 @@
  		return $data_ref;
  	}
  	die "Unknown parameter '$var'\n";
@@ -523,6 +549,11 @@ until P-P-Debug is working in an initial form, I will just add the Patch here fo
  }
  
  sub _parse_dumper {
-
-
-
+@@ -553,6 +633,7 @@
+ 		$content = $cont;
+ 	}
+ 	$self->{filename} = $file;
++	p $self->{filename};
+ 	$self->{row}      = $row;
+ 	return ( $module, $file, $row, $content );
+ }
