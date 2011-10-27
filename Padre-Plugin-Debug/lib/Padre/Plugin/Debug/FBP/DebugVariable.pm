@@ -86,7 +86,7 @@ sub new {
 		Wx::DefaultSize(),
 	);
 	$self->{show_global_variables}->SetToolTip(
-		Wx::gettext("TODO")
+		Wx::gettext("Intermitent Error, You can't FIRSTKEY with the %~ hash")
 	);
 
 	Wx::Event::EVT_CHECKBOX(

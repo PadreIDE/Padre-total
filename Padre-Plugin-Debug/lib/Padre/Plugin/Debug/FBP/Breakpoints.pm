@@ -30,6 +30,26 @@ sub new {
 		Wx::TAB_TRAVERSAL(),
 	);
 
+	$self->{delete_not_breakable} = Wx::BitmapButton->new(
+		$self,
+		-1,
+		Wx::NullBitmap(),
+		Wx::DefaultPosition(),
+		Wx::DefaultSize(),
+		Wx::BU_AUTODRAW(),
+	);
+	$self->{delete_not_breakable}->SetToolTip(
+		Wx::gettext("Delete MARKER_NOT_BREAKABLE\nCurrent File Only")
+	);
+
+	Wx::Event::EVT_BUTTON(
+		$self,
+		$self->{delete_not_breakable},
+		sub {
+			shift->delete_not_breakable_clicked(@_);
+		},
+	);
+
 	$self->{refresh} = Wx::BitmapButton->new(
 		$self,
 		-1,
@@ -99,6 +119,7 @@ sub new {
 	);
 
 	my $button_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL());
+	$button_sizer->Add( $self->{delete_not_breakable}, 0, Wx::ALL(), 5 );
 	$button_sizer->Add( 0, 0, 1, Wx::EXPAND(), 5 );
 	$button_sizer->Add( $self->{refresh}, 0, Wx::ALL(), 1 );
 	$button_sizer->Add( $self->{set_breakpoints}, 0, Wx::ALL(), 5 );
@@ -122,6 +143,10 @@ sub new {
 	$self->Layout;
 
 	return $self;
+}
+
+sub delete_not_breakable_clicked {
+	$_[0]->main->error('Handler method delete_not_breakable_clicked for event delete_not_breakable.OnButtonClick not implemented');
 }
 
 sub on_refresh_click {

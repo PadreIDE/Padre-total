@@ -133,6 +133,9 @@ sub set_up {
 	$self->{refresh}->SetBitmapLabel( Padre::Wx::Icon::find('actions/view-refresh') );
 	$self->{refresh}->Enable;
 
+	$self->{delete_not_breakable}->SetBitmapLabel( Padre::Wx::Icon::find('actions/window-close') );
+	$self->{delete_not_breakable}->Enable;
+
 	$self->{set_breakpoints}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_macro-insert-breakpoint') );
 	$self->{set_breakpoints}->Enable;
 
@@ -172,6 +175,18 @@ sub on_refresh_click {
 	# say 'on_refresh_click';
 	$self->_update_list();
 
+	return;
+}
+
+#######
+# event handler delete_not_breakable_clicked
+#######
+sub delete_not_breakable_clicked {
+	my $self = shift;
+	$self->{debug_breakpoints}->delete("WHERE filename = \"$self->{current_file}\" AND active = 0");
+
+	#TODO update margin markers
+	$self->_update_list();
 	return;
 }
 
@@ -338,12 +353,13 @@ sub _update_list {
 
 				# TODO add when we have alternative markings
 				$self->{list}->SetItem( $index++, 2, ( $tuples[$_][3] ) );
+
 				# $editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_BREAKPOINT() );
 
 			} elsif ( $self->{show_project} == 1 ) {
 				$item->SetId($index);
 				$self->{list}->InsertItem($item);
-				
+
 				# make current file blue
 				if ( $tuples[$_][1] =~ m/^$self->{current_file}/ ) {
 					$self->{list}->SetItemTextColour( $index, BLUE );
