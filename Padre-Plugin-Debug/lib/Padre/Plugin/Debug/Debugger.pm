@@ -144,7 +144,7 @@ sub _set_debugger {
 	my $editor = $current->editor            or return;
 	my $file   = $self->{client}->{filename} or return;
 	p $file;
-	my $row    = $self->{client}->{row}      or return;
+	my $row = $self->{client}->{row} or return;
 
 	# Open the file if needed
 	if ( $editor->{Document}->filename ne $file ) {
@@ -456,19 +456,19 @@ sub display_list_actions {
 #######
 #TODO Debug -> menu when in trunk
 #######
-sub debug_perl_show_stack_trace {
-	my $self = shift;
-	$self->running or return;
+# sub debug_perl_show_stack_trace {
+# my $self = shift;
+# $self->running or return;
 
-	my $trace = $self->{client}->get_stack_trace;
-	my $str   = $trace;
-	if ( ref($trace) and ref($trace) eq 'ARRAY' ) {
-		$str = join "\n", @$trace;
-	}
-	$self->message($str);
+# # 	my $trace = $self->{client}->get_stack_trace;
+# my $str   = $trace;
+# if ( ref($trace) and ref($trace) eq 'ARRAY' ) {
+# $str = join "\n", @$trace;
+# }
+# $self->message($str);
 
-	return;
-}
+# # 	return;
+# }
 
 #######
 #TODO Debug -> menu when in trunk
@@ -578,12 +578,27 @@ sub _output_variables {
 			}
 		}
 	}
+
+	# Only enable global variables if we are debuging in a project
+	# why dose $self->{project_dir} contain the root when no magic file present
+	#TODO trying to stop debug X & V from crashing
+	my @magic_files = qw { Makefile.PL Build.PL dist.ini };
+	require File::Spec;
+	foreach (@magic_files) {
+
+		# say $_;
+		if ( -e File::Spec->catfile( $self->{project_dir}, $_ ) ) {
+			$self->{panel_debug_variable}->{show_global_variables}->Enable;
+		}
+	}
+
 	# only get local variables if required
-	if ( $self->{panel_debug_variable}->{show_local_variables} == 1 ) {
+	if ( $self->{panel_debug_variable}->{local_variables} == 1 ) {
 		$self->get_local_variables();
 	}
+
 	# only get global variables if required
-	if ( $self->{panel_debug_variable}->{show_global_variables} == 1 ) {
+	if ( $self->{panel_debug_variable}->{global_variables} == 1 ) {
 		$self->get_global_variables();
 	}
 	$self->{panel_debug_variable}->update_variables( $self->{var_val}, $self->{auto_var_val}, $self->{auto_x_var} );
@@ -607,7 +622,6 @@ sub get_local_variables {
 
 	my @auto = split m/^:;/xm, $auto_values;
 
-	#TODO, don't generate a ghost
 	#remove ghost at begining
 	shift @auto;
 
@@ -636,7 +650,7 @@ sub get_local_variables {
 #######
 sub get_global_variables {
 	my $self = shift;
-	
+
 	my $v_regex = '!(ENV|INC|SIG)';
 
 	my $auto_values = $self->{client}->get_x_vars($v_regex);
@@ -649,7 +663,6 @@ sub get_global_variables {
 
 	my @auto = split m/^:;/xm, $auto_values;
 
-	#TODO, don't generate a ghost
 	#remove ghost at begining
 	shift @auto;
 
@@ -661,7 +674,7 @@ sub get_global_variables {
 	foreach (@auto) {
 		$_ =~ m/ = | => /;
 
-  		# $` before and $' after $#
+		# $` before and $' after $#
 		if ( defined $` ) {
 			if ( defined $' ) {
 				$self->{auto_x_var}{$`} = $';
@@ -697,13 +710,12 @@ sub _setup_db {
 sub _get_bp_db {
 	my $self = shift;
 
-	#TODO should realy test follow someware
 	$self->_setup_db();
 	my $editor = Padre::Current->editor;
 
 	$self->{project_dir} = Padre::Current->document->project_dir;
 
-	# p $self->{project_dir};
+	p $self->{project_dir};
 	$self->{current_file} = Padre::Current->document->filename;
 
 	# p $self->{current_file};
@@ -862,13 +874,6 @@ sub _show_debug_variable {
 
 1;
 
-# TODO: which panel
-# Keep the debugger window open even after ending the script
-
-# Copyright 2008-2011 The Padre development team as listed in Padre.pm.
-# LICENSE
-# This program is free software; you can redistribute it and/or
-# modify it under the same terms as Perl 5 itself.
 
 __END__
 
@@ -901,3 +906,8 @@ current is not a Perl document.
 Returns true if debugger successfully started.
 
 =cut
+
+# Copyright 2008-2011 The Padre development team as listed in Padre.pm.
+# LICENSE
+# This program is free software; you can redistribute it and/or
+# modify it under the same terms as Perl 5 itself.

@@ -120,8 +120,11 @@ sub gettext_label {
 sub set_up {
 	my $self = shift;
 
-	$self->{show_local_variables} = 0;
-	$self->{show_global_variables} = 0;
+	$self->{local_variables} = 0;
+	$self->{global_variables} = 0;
+	
+	#turn off unless in project
+	$self->{show_global_variables}->Disable;
 
 	# Setup the debug button icons
 	$self->{refresh}->SetBitmapLabel( Padre::Wx::Icon::find('actions/view-refresh') );
@@ -169,7 +172,7 @@ sub update_variables {
 		$self->{variables}->SetItem( $index++, 1, $var_val_ref->{$var} );
 	}
 
-	if ( $self->{show_local_variables} == 1 ) {
+	if ( $self->{local_variables} == 1 ) {
 		foreach my $var ( keys %{$auto_var_val_ref} ) {
 
 			$item->SetId($index);
@@ -180,7 +183,7 @@ sub update_variables {
 			$self->{variables}->SetItem( $index++, 1, $auto_var_val_ref->{$var} );
 		}
 	}	
-	if ( $self->{show_global_variables} == 1 ) {
+	if ( $self->{global_variables} == 1 ) {
 		foreach my $var ( keys %{$auto_x_var_ref} ) {
 
 			$item->SetId($index);
@@ -208,9 +211,9 @@ sub show_local_variables_checked {
 	my ( $self, $event ) = @_;
 
 	if ( $event->IsChecked ) {
-		$self->{show_local_variables} = 1;
+		$self->{local_variables} = 1;
 	} else {
-		$self->{show_local_variables} = 0;
+		$self->{local_variables} = 0;
 	}
 
 	return;
@@ -220,10 +223,10 @@ sub show_global_variables_checked {
 	my ( $self, $event ) = @_;
 
 	if ( $event->IsChecked ) {
-		$self->{show_global_variables} = 1;
+		$self->{global_variables} = 1;
 		# say 'show_global_variables_checked yes';
 	} else {
-		$self->{show_global_variables} = 0;
+		$self->{global_variables} = 0;
 		# say 'show_global_variables_checked no';
 	}
 
