@@ -582,13 +582,15 @@ sub _output_variables {
 	# Only enable global variables if we are debuging in a project
 	# why dose $self->{project_dir} contain the root when no magic file present
 	#TODO trying to stop debug X & V from crashing
-	my @magic_files = qw { Makefile.PL Build.PL dist.ini };
+	my @magic_files = qw { Makefile.PL Build.PL dist.ini padre.yml};
 	require File::Spec;
 	foreach (@magic_files) {
-
-		# say $_;
 		if ( -e File::Spec->catfile( $self->{project_dir}, $_ ) ) {
 			$self->{panel_debug_variable}->{show_global_variables}->Enable;
+			if ( $self->{current_file} =~ m/[^(pm)]$/ ) {
+				$self->{panel_debug_variable}->{show_global_variables}->Disable;
+				$self->{panel_debug_variable}->{global_variables} = 0;
+			}
 		}
 	}
 
