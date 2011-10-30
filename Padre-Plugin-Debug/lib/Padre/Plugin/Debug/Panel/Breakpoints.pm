@@ -224,22 +224,20 @@ sub on_show_project_click {
 sub delete_project_bp_clicked {
 	my $self = shift;
 
-	if ( $self->{show_project} == 1 ) {
+	my $sql_select = 'ORDER BY filename ASC';
+	my @tuples     = $self->{debug_breakpoints}->select($sql_select);
 
-		# my $sql_select = 'ORDER BY filename ASC';
-		my @tuples = $self->{debug_breakpoints}->select();
+	my $index = 0;
 
-		my $index = 0;
+	for ( 0 .. $#tuples ) {
 
-		for ( 0 .. $#tuples ) {
+		if ( $tuples[$_][1] =~ m/^ $self->{project_dir} /sxm ) {
 
-			if ( $tuples[$_][1] =~ m/^ $self->{project_dir} /sxm ) {
-
-				$self->{debug_breakpoints}->delete("WHERE filename = \"$self->{project_dir}\" ");
-			}
+			$self->{debug_breakpoints}->delete("WHERE filename = \"$tuples[$_][1]\" ");
 		}
 	}
 
+	$self->on_refresh_click();
 	return;
 }
 
