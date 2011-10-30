@@ -3,8 +3,9 @@ use strict;
 use warnings;
 use 5.006;
 
-our $VERSION = '0.12';
+our $VERSION = '0.13_01';
 
+use utf8;
 use IO::Socket;
 use Carp ();
 
@@ -266,9 +267,46 @@ when called in array context.
 
 =cut
 
+#T Produce a stack backtrace. 
 sub get_stack_trace {
 	my ($self) = @_;
 	$self->_send('T');
+	my $buf = $self->_get;
+
+	$self->_prompt( \$buf );
+	return $buf;
+}
+
+=head2 toggle_trace
+
+Sends the stack trace command C<t> Toggle trace mode (see also the AutoTrace option).
+
+=cut
+#######
+# sub toggle_trace
+#######
+sub toggle_trace {
+	my ($self) = @_;
+	$self->_send('t');
+	my $buf = $self->_get;
+
+	$self->_prompt( \$buf );
+	return $buf;
+}
+
+=head2 list_subroutine_names
+
+Sends the stack trace command C<S> [[!]pattern] 
+List subroutine names [not] matching pattern.
+
+=cut
+#######
+# sub list_subroutine_names
+#######
+sub list_subroutine_names {
+	my ($self, $pattern) = @_;
+	# print "D-C $pattern \n";
+	$self->_send("S $pattern");
 	my $buf = $self->_get;
 
 	$self->_prompt( \$buf );
@@ -302,12 +340,13 @@ sub run {
 
 =cut
 
-
 sub set_breakpoint {
 	my ( $self, $file, $line, $cond ) = @_;
-
+	
 	$self->_send("f $file");
+	# $self->_send("b $file");
 	my $b = $self->_get;
+	# print $b . "\n";
 
 	# Already in t/eg/02-sub.pl.
 
@@ -316,6 +355,7 @@ sub set_breakpoint {
 	# if it was successful no reply
 	# if it failed we saw two possible replies
 	my $buf    = $self->_get;
+	# print $buf . "\n";
 	my $prompt = $self->_prompt( \$buf );
 	if ( $buf =~ /^Subroutine [\w:]+ not found\./ ) {
 
@@ -332,6 +372,9 @@ sub set_breakpoint {
 	return 1;
 }
 
+=head2 remove_breakpoint
+
+=cut
 # apparently no clear success/error report for this
 sub remove_breakpoint {
 	my ( $self, $file, $line ) = @_;
@@ -342,6 +385,24 @@ sub remove_breakpoint {
 	$self->_send("B $line");
 	my $buf = $self->_get;
 	return 1;
+}
+
+=head2 show_breakpoints
+
+The data as (L) prints in the command line debugger.
+
+ $d->show_breakpoints();
+
+=cut
+#######
+# show_breakpoints
+#######
+sub show_breakpoints {
+	my ($self) = @_;
+
+	my $ret = $self->send_get('L');
+
+	return $ret;
 }
 
 =head2 list_break_watch_action
@@ -369,6 +430,9 @@ sub list_break_watch_action {
 	if ( not wantarray ) {
 		return $ret;
 	}
+
+	# short cut for direct output
+	# return $ret;
 
 	# t/eg/04-fib.pl:
 	#  17:      my $n = shift;
@@ -448,6 +512,73 @@ sub get_value {
 	die "Unknown parameter '$var'\n";
 }
 
+=head2 get_y_zero
+
+ $d->get_y_zero();
+ 
+=cut
+#######
+# sub get_y_zero
+#######
+sub get_y_zero {
+	my $self = shift;
+
+	$self->_send("y 0");
+	my $buf = $self->_get;
+	$self->_prompt( \$buf );
+	return $buf;
+}
+
+
+
+=head2 get_v_vars
+
+V [pkg [vars]]
+
+Display all (or some) variables in package (defaulting to main ) 
+using a data pretty-printer (hashes show their keys and values so you see what's what, 
+control characters are made printable, etc.). 
+Make sure you don't put the type specifier (like $ ) there, just the symbol names, like this:
+
+ $d->get_v_vars(regex);
+
+=cut
+#######
+# sub get_v_vars
+#######
+sub get_v_vars {
+	my ($self, $pattern) = @_;
+	#TODO test for valid pattern ?
+	die "no pattern given\n" if not defined $pattern;
+	
+	$self->_send("V $pattern");
+	my $buf = $self->_get;
+	$self->_prompt( \$buf );
+	return $buf;
+}
+
+=head2 get_x_vars
+
+X [vars] Same as V currentpackage [vars]
+
+ $d->get_v_vars(regex);
+
+=cut
+#######
+# sub get_x_vars
+#######
+sub get_x_vars {
+	my ($self, $pattern) = @_;
+	die "no pattern given\n" if not defined $pattern;
+	
+	$self->_send("X $pattern");
+	my $buf = $self->_get;
+	$self->_prompt( \$buf );
+	return $buf;
+}
+
+=head3 _parse_dumper
+=cut
 sub _parse_dumper {
 	my ($str) = @_;
 	return $str;
@@ -455,6 +586,8 @@ sub _parse_dumper {
 
 # TODO shall we add a timeout and/or a number to count down the number
 # sysread calls that return 0 before deciding it is really done
+=head3 _get
+=cut
 sub _get {
 	my ($self) = @_;
 
@@ -482,6 +615,8 @@ sub _get {
 # Extracts and prompt that looks like this:   DB<3> $
 # puts the number from the prompt in $self->{prompt} and also returns it.
 # See 00-internal.t for test cases
+=head3 _prompt
+=cut
 sub _prompt {
 	my ( $self, $buf ) = @_;
 
@@ -508,6 +643,8 @@ sub _prompt {
 #    $row       is the current row number
 #    $content   is the content of the current row
 # see 00-internal.t for test cases
+=head3 _process_line
+=cut
 sub _process_line {
 	my ( $self, $buf ) = @_;
 
@@ -540,11 +677,11 @@ sub _process_line {
 
 	# the last line before
 	# main::(t/eg/01-add.pl:8):  my $z = $x + $y;
-	if ($line =~ /^([\w:]*)                  # module
+	if ($line =~ m{^([\w:]*)                  # module
                   \(   ([^\)]*):(\d+)   \)   # (file:row)
                   :\t?                        # :
                   (.*)                       # content
-                  /mx
+                  }mx
 		)
 	{
 		( $module, $file, $row, $content ) = ( $1, $2, $3, $4 );
@@ -553,11 +690,12 @@ sub _process_line {
 		$content = $cont;
 	}
 	$self->{filename} = $file;
+	print "filename: $self->{filename}\n";
 	$self->{row}      = $row;
 	return ( $module, $file, $row, $content );
 }
 
-=head get
+=head2 get
 
 Actually I think this is an internal method....
 
@@ -586,6 +724,8 @@ sub get {
 	}
 }
 
+=head3 _send
+=cut
 sub _send {
 	my ( $self, $input ) = @_;
 
@@ -593,6 +733,8 @@ sub _send {
 	print { $self->{new_sock} } "$input\n";
 }
 
+=head2 send_get
+=cut
 sub send_get {
 	my ( $self, $input ) = @_;
 	$self->_send($input);
@@ -600,9 +742,17 @@ sub send_get {
 	return $self->get;
 }
 
-sub filename { return $_[0]->{filename} }
-sub row      { return $_[0]->{row} }
+#removed as not used
+# =head2 filename
+# =cut
+# sub filename { return $_[0]->{filename} }
 
+# =head2 row
+# =cut
+# sub row      { return $_[0]->{row} }
+
+=head3 _logger
+=cut
 sub _logger {
 	print "LOG: $_[0]\n" if $ENV{DEBUG_LOGGER};
 }
