@@ -76,7 +76,7 @@ sub new {
 		Wx::NullBitmap(),
 		Wx::DefaultPosition(),
 		Wx::DefaultSize(),
-		Wx::BU_AUTODRAW() | Wx::NO_BORDER(),
+		Wx::BU_AUTODRAW(),
 	);
 	$self->{set_breakpoints}->SetToolTip(
 		Wx::gettext("Set Breakpoints (toggle)")
@@ -118,10 +118,30 @@ sub new {
 		},
 	);
 
+	$self->{delete_project_bp} = Wx::BitmapButton->new(
+		$self,
+		-1,
+		Wx::NullBitmap(),
+		Wx::DefaultPosition(),
+		Wx::DefaultSize(),
+		Wx::BU_AUTODRAW(),
+	);
+	$self->{delete_project_bp}->SetToolTip(
+		Wx::gettext("TODO delete_project_bp")
+	);
+
+	Wx::Event::EVT_BUTTON(
+		$self,
+		$self->{delete_project_bp},
+		sub {
+			shift->delete_project_bp_clicked(@_);
+		},
+	);
+
 	my $button_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL());
 	$button_sizer->Add( $self->{delete_not_breakable}, 0, Wx::ALL(), 5 );
 	$button_sizer->Add( 0, 0, 1, Wx::EXPAND(), 5 );
-	$button_sizer->Add( $self->{refresh}, 0, Wx::ALL(), 1 );
+	$button_sizer->Add( $self->{refresh}, 0, Wx::ALL(), 5 );
 	$button_sizer->Add( $self->{set_breakpoints}, 0, Wx::ALL(), 5 );
 
 	my $checkbox_sizer = Wx::StaticBoxSizer->new(
@@ -130,9 +150,11 @@ sub new {
 			-1,
 			Wx::gettext("Show"),
 		),
-		Wx::VERTICAL(),
+		Wx::HORIZONTAL(),
 	);
 	$checkbox_sizer->Add( $self->{show_project}, 0, Wx::ALL(), 2 );
+	$checkbox_sizer->Add( 0, 0, 1, Wx::EXPAND(), 5 );
+	$checkbox_sizer->Add( $self->{delete_project_bp}, 0, Wx::ALL(), 5 );
 
 	my $bSizer10 = Wx::BoxSizer->new(Wx::VERTICAL());
 	$bSizer10->Add( $button_sizer, 0, Wx::EXPAND(), 5 );
@@ -159,6 +181,10 @@ sub set_breakpoints_clicked {
 
 sub on_show_project_click {
 	$_[0]->main->error('Handler method on_show_project_click for event show_project.OnCheckBox not implemented');
+}
+
+sub delete_project_bp_clicked {
+	$_[0]->main->error('Handler method delete_project_bp_clicked for event delete_project_bp.OnButtonClick not implemented');
 }
 
 1;

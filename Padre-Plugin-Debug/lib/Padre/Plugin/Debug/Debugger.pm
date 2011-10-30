@@ -15,7 +15,7 @@ use utf8;
 
 use Padre::Logger qw(TRACE DEBUG);
 use Data::Printer { caller_info => 1, colored => 1, };
-our $VERSION = '0.91';
+our $VERSION = '0.13';
 
 use constant {
 	BLANK => qq{},
@@ -208,8 +208,8 @@ sub debug_quit {
 	my $current = Padre::Current->new;
 
 	# $current->main->show_debug(0);
-	$self->show_debug_output(0);
-	$self->show_debug_variable(0);
+	# $self->show_debug_output(0);
+	# $self->show_debug_variable(0);
 	$current->editor->MarkerDeleteAll( Padre::Constant::MARKER_LOCATION() );
 
 	# Detach the debugger
@@ -582,7 +582,7 @@ sub _output_variables {
 	# Only enable global variables if we are debuging in a project
 	# why dose $self->{project_dir} contain the root when no magic file present
 	#TODO trying to stop debug X & V from crashing
-	my @magic_files = qw { Makefile.PL Build.PL dist.ini padre.yml};
+	my @magic_files = qw { Makefile.PL Build.PL dist.ini };
 	require File::Spec;
 	foreach (@magic_files) {
 		if ( -e File::Spec->catfile( $self->{project_dir}, $_ ) ) {
@@ -591,6 +591,7 @@ sub _output_variables {
 				$self->{panel_debug_variable}->{show_global_variables}->Disable;
 				$self->{panel_debug_variable}->{global_variables} = 0;
 			}
+			#TODO need to remember state and re-activate when in a .pm file look at when in trunk
 		}
 	}
 
@@ -653,9 +654,8 @@ sub get_local_variables {
 sub get_global_variables {
 	my $self = shift;
 
-	my $v_regex = '!(ENV|INC|SIG)';
-
-	my $auto_values = $self->{client}->get_x_vars($v_regex);
+	my $var_regex = '!(INC|ENV|SIG)';
+	my $auto_values = $self->{client}->get_x_vars($var_regex);
 
 	# p $auto_values;
 

@@ -15,7 +15,7 @@ use Padre::Wx             ();
 use Padre::Plugin::Debug::FBP::Breakpoints;
 use English qw( -no_match_vars ); # Avoids regex performance penalty
 
-our $VERSION = '0.01';
+our $VERSION = '0.13';
 our @ISA     = qw{
 	Padre::Wx::Role::View
 	Padre::Plugin::Debug::FBP::Breakpoints
@@ -136,8 +136,12 @@ sub set_up {
 	$self->{delete_not_breakable}->SetBitmapLabel( Padre::Wx::Icon::find('actions/window-close') );
 	$self->{delete_not_breakable}->Enable;
 
-	$self->{set_breakpoints}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_macro-insert-breakpoint') );
+	# $self->{set_breakpoints}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_macro-insert-breakpoint') );
+	$self->{set_breakpoints}->SetBitmapLabel( Padre::Wx::Icon::find('actions/breakpoints') );
 	$self->{set_breakpoints}->Enable;
+
+	$self->{delete_project_bp}->SetBitmapLabel( Padre::Wx::Icon::find('actions/x-document-close') );
+	$self->{delete_project_bp}->Disable;
 
 	# Update the checkboxes with their corresponding values in the
 	# configuration
@@ -198,17 +202,43 @@ sub on_show_project_click {
 
 	if ( $event->IsChecked ) {
 		$self->{show_project} = 1;
+		$self->{delete_project_bp}->Enable;
 
 		# say 'on_show_project_click yes';
 		# say $self->{show_project};
 	} else {
 		$self->{show_project} = 0;
+		$self->{delete_project_bp}->Disable;
 
 		# say 'on_show_project_click no';
 		# say $self->{show_project};
 	}
 
 	$self->on_refresh_click();
+
+	return;
+}
+#######
+# event handler delete_project_bp_clicked
+#######
+sub delete_project_bp_clicked {
+	my $self = shift;
+
+	if ( $self->{show_project} == 1 ) {
+
+		# my $sql_select = 'ORDER BY filename ASC';
+		my @tuples = $self->{debug_breakpoints}->select();
+
+		my $index = 0;
+
+		for ( 0 .. $#tuples ) {
+
+			if ( $tuples[$_][1] =~ m/^ $self->{project_dir} /sxm ) {
+
+				$self->{debug_breakpoints}->delete("WHERE filename = \"$self->{project_dir}\" ");
+			}
+		}
+	}
 
 	return;
 }
@@ -341,11 +371,11 @@ sub _update_list {
 				$item->SetId($index);
 				$self->{list}->InsertItem($item);
 				if ( $tuples[$_][3] == 1 ) {
-				$self->{list}->SetItemTextColour( $index, BLUE );
-				$editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_BREAKPOINT() );
-			} else {
-				$self->{list}->SetItemTextColour( $index, GRAY );
-				$editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_NOT_BREAKABLE() );
+					$self->{list}->SetItemTextColour( $index, BLUE );
+					$editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_BREAKPOINT() );
+				} else {
+					$self->{list}->SetItemTextColour( $index, GRAY );
+					$editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_NOT_BREAKABLE() );
 				}
 				$self->{list}->SetItem( $index, 1, ( $tuples[$_][2] ) );
 				$tuples[$_][1] =~ s/^ $self->{project_dir} //sxm;

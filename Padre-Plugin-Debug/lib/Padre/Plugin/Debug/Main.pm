@@ -16,7 +16,7 @@ use Padre::Util                       ();
 use Padre::Logger qw(TRACE DEBUG);
 
 use Data::Printer { caller_info => 1, colored => 1, };
-our $VERSION = '0.02';
+our $VERSION = '0.13';
 use parent qw( Padre::Plugin::Debug::FBP::MainFB );
 
 
@@ -55,21 +55,29 @@ sub set_up {
 	$self->{backtrace}->Disable;
 	$self->{list_actions}->Disable;
 	$self->{show_buffer}->Disable;
-	
 
-	$self->{step_in}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_macro-stop-after-command') );
-	$self->{step_in}->Enable;
+	# $self->{step_in}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_macro-stop-after-command') );
+	# $self->{launch_debugger}->SetBitmapLabel( Padre::Wx::Icon::find('actions/morpho2') );
+	# $self->{debugger}->Enable;
 
-	$self->{step_over}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_macro-stop-after-procedure') );
+	# $self->{step_in}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_macro-stop-after-command') );
+	$self->{step_in}->SetBitmapLabel( Padre::Wx::Icon::find('actions/step_in') );
+	$self->{step_in}->Disable;
+
+	# $self->{step_over}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_macro-stop-after-procedure') );
+	$self->{step_over}->SetBitmapLabel( Padre::Wx::Icon::find('actions/step_over') );
 	$self->{step_over}->Disable;
 
-	$self->{step_out}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_macro-jump-back') );
+	# $self->{step_out}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_macro-jump-back') );
+	$self->{step_out}->SetBitmapLabel( Padre::Wx::Icon::find('actions/step_out') );
 	$self->{step_out}->Disable;
 
-	$self->{run_till}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_tools-macro') );
+	# $self->{run_till}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_tools-macro') );
+	$self->{run_till}->SetBitmapLabel( Padre::Wx::Icon::find('actions/run_till') );
 	$self->{run_till}->Disable;
 
-	$self->{set_breakpoints}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_macro-insert-breakpoint') );
+	# $self->{set_breakpoints}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_macro-insert-breakpoint') );
+	$self->{set_breakpoints}->SetBitmapLabel( Padre::Wx::Icon::find('actions/breakpoints') );
 	$self->{set_breakpoints}->Disable;
 
 	$self->{trace}->Disable;
@@ -77,10 +85,60 @@ sub set_up {
 	$self->{display_value}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_macro-watch-variable') );
 	$self->{display_value}->Disable;
 
-	$self->{quit_debugger}->SetBitmapLabel( Padre::Wx::Icon::find('actions/stop') );
+	# $self->{quit_debugger}->SetBitmapLabel( Padre::Wx::Icon::find('actions/stop') );
+	$self->{quit_debugger}->SetBitmapLabel( Padre::Wx::Icon::find('actions/red_cross') );
 	$self->{quit_debugger}->Disable;
 
 	# $self->_setup_db();
+
+	return;
+}
+
+# sub launch_debugger_clicked {
+	# my $self = shift;
+
+# # 	return;
+# }
+
+########
+# Event check_debugger_checked
+########
+sub check_debugger_checked {
+	my ( $self, $event ) = @_;
+	my $main = $self->main;
+
+
+	if ( $event->IsChecked ) {
+		$self->{debugger}->show_debug_variable(1);
+		$self->{debugger}->show_debug_output(1);
+		$self->{step_in}->Enable;
+		$self->{step_over}->Enable;
+		$self->{step_out}->Enable;
+		$self->{run_till}->Enable;
+		$self->{display_value}->Enable;
+		$self->{quit_debugger}->Enable;
+
+		# $self->{trace}->Enable;
+		# $self->{sub_names}->Enable;
+		# $self->{sub_name_regex}->Enable;
+		# $self->{backtrace}->Enable;
+		# $self->{list_actions}->Enable;
+		# $self->{show_buffer}->Enable;
+
+	} else {
+		$self->{debugger}->debug_quit;
+		$self->{step_in}->Disable;
+		$self->{step_over}->Disable;
+		$self->{step_out}->Disable;
+		$self->{run_till}->Disable;
+		$self->{display_value}->Disable;
+		$self->{trace}->Disable;
+		$self->{debugger}->show_debug_variable(0);
+		$self->{debugger}->show_debug_output(0);
+
+	}
+
+	# 	$self->aui->Update;
 
 	return;
 }
@@ -89,9 +147,9 @@ sub set_up {
 # Event Handler on_debug_output_clicked
 # this is a naff loading method,
 ########
-sub on_debug_output_clicked {
-	my ( $self, $event ) = @_;
-	my $main = $self->main;
+# sub on_debug_output_clicked {
+	# my ( $self, $event ) = @_;
+	# my $main = $self->main;
 
 	# Construct debug output panel if it is not there
 	# unless ( $self->{panel_debug_output} ) {
@@ -108,13 +166,13 @@ sub on_debug_output_clicked {
 
 	# # 	$self->aui->Update;
 
-	return;
-}
+	# return;
+# }
 
 ########
 # Event Handler on_breakpoints_clicked
 ########
-sub breakpoints_checked {
+sub check_breakpoints_checked {
 	my ( $self, $event ) = @_;
 	my $main = $self->main;
 
@@ -127,7 +185,7 @@ sub breakpoints_checked {
 	if ( $event->IsChecked ) {
 		$main->left->show( $self->{panel_breakpoints} );
 		$self->{set_breakpoints}->Enable;
-		$self->{step_in}->Enable;
+		# $self->{step_in}->Enable;
 	} else {
 		$main->left->hide( $self->{panel_breakpoints} );
 		$self->{set_breakpoints}->Disable;
@@ -146,7 +204,7 @@ sub sub_names_clicked {
 	my $self = shift;
 
 	$self->{debugger}->display_sub_names( $self->{sub_name_regex}->GetValue() );
-	
+
 	return;
 }
 
@@ -157,7 +215,7 @@ sub backtrace_clicked {
 	my $self = shift;
 
 	$self->{debugger}->display_backtrace();
-	
+
 	return;
 }
 #######
@@ -167,7 +225,7 @@ sub show_buffer_clicked {
 	my $self = shift;
 
 	$self->{debugger}->display_buffer();
-	
+
 	return;
 }
 #######
@@ -177,7 +235,7 @@ sub list_actions_clicked {
 	my $self = shift;
 
 	$self->{debugger}->display_list_actions();
-	
+
 	return;
 }
 #######
@@ -316,8 +374,8 @@ sub quit_debugger_clicked {
 	$self->{display_value}->Disable;
 	$self->{trace}->Disable;
 
-	$main->left->hide( $self->{panel_breakpoints} );
-	$self->{breakpoints}->SetValue(0);
+	# $main->left->hide( $self->{panel_breakpoints} );
+	# $self->{breakpoints}->SetValue(0);
 
 	return;
 }
@@ -393,167 +451,8 @@ Add methods to Debug::Client in trunk
 
 =head2 Add the following to Debug::Client
 
-the following diff holds changes to be applied to Debug::Client, 
-until P-P-Debug is working in an initial form, I will just add the Patch here for now
+you will need to get Debug::Client 0.13_01 from Padre trunk
+
+for P-P-Debug to work
 
 =cut
-
---- /home/kevin/src/Padre/Debug-Client/lib/Debug/Client.pm
-+++ /home/kevin/perl5/perlbrew/perls/perl-5.14.1/lib/site_perl/5.14.1/Debug/Client.pm
-@@ -1,7 +1,14 @@
- package Debug::Client;
-+
-+use 5.010;
- use strict;
- use warnings;
--use 5.006;
-+
-+# Turn on $OUTPUT_AUTOFLUSH
-+$| = 1;
-+use diagnostics;
-+use utf8;
-+use Data::Printer { caller_info => 1, colored => 1, };
- 
- our $VERSION = '0.12';
- 
-@@ -266,9 +273,31 @@
- 
- =cut
- 
-+#T Produce a stack backtrace. 
- sub get_stack_trace {
- 	my ($self) = @_;
- 	$self->_send('T');
-+	my $buf = $self->_get;
-+
-+	$self->_prompt( \$buf );
-+	return $buf;
-+}
-+
-+#t Toggle trace mode (see also the AutoTrace option).
-+sub toggle_trace {
-+	my ($self) = @_;
-+	$self->_send('t');
-+	my $buf = $self->_get;
-+
-+	$self->_prompt( \$buf );
-+	return $buf;
-+}
-+
-+# S [[!]pattern]    List subroutine names [not] matching pattern.
-+sub list_subroutine_names {
-+	my ($self, $pattern) = @_;
-+	# print "D-C $pattern \n";
-+	$self->_send("S $pattern");
- 	my $buf = $self->_get;
- 
- 	$self->_prompt( \$buf );
-@@ -302,12 +331,13 @@
- 
- =cut
- 
--
- sub set_breakpoint {
- 	my ( $self, $file, $line, $cond ) = @_;
--
-+	
- 	$self->_send("f $file");
-+	# $self->_send("b $file");
- 	my $b = $self->_get;
-+	# print $b . "\n";
- 
- 	# Already in t/eg/02-sub.pl.
- 
-@@ -316,6 +346,7 @@
- 	# if it was successful no reply
- 	# if it failed we saw two possible replies
- 	my $buf    = $self->_get;
-+	# print $buf . "\n";
- 	my $prompt = $self->_prompt( \$buf );
- 	if ( $buf =~ /^Subroutine [\w:]+ not found\./ ) {
- 
-@@ -332,6 +363,7 @@
- 	return 1;
- }
- 
-+
- # apparently no clear success/error report for this
- sub remove_breakpoint {
- 	my ( $self, $file, $line ) = @_;
-@@ -362,6 +394,14 @@
- 
- =cut
- 
-+sub show_breakpoints {
-+	my ($self) = @_;
-+
-+	my $ret = $self->send_get('L');
-+
-+	return $ret;
-+}
-+
- sub list_break_watch_action {
- 	my ($self) = @_;
- 
-@@ -369,6 +409,9 @@
- 	if ( not wantarray ) {
- 		return $ret;
- 	}
-+
-+	# short cut for direct output
-+	# return $ret;
- 
- 	# t/eg/04-fib.pl:
- 	#  17:      my $n = shift;
-@@ -446,6 +489,43 @@
- 		return $data_ref;
- 	}
- 	die "Unknown parameter '$var'\n";
-+}
-+
-+sub get_y_zero {
-+	my $self = shift;
-+
-+	$self->_send("y 0");
-+	my $buf = $self->_get;
-+	$self->_prompt( \$buf );
-+	return $buf;
-+}
-+
-+#X [vars] Same as V currentpackage [vars] 
-+sub get_x_vars {
-+	my ($self, $pattern) = @_;
-+	die "no pattern given\n" if not defined $pattern;
-+	
-+	$self->_send("X $pattern");
-+	my $buf = $self->_get;
-+	$self->_prompt( \$buf );
-+	return $buf;
-+}
-+
-+#V [pkg [vars]]
-+
-+# Display all (or some) variables in package (defaulting to main ) 
-+# using a data pretty-printer (hashes show their keys and values so you see what's what, 
-+# control characters are made printable, etc.). 
-+# Make sure you don't put the type specifier (like $ ) there, just the symbol names, like this:
-+
-+sub get_v_vars {
-+	my ($self, $pattern) = @_;
-+	die "no pattern given\n" if not defined $pattern;
-+	
-+	$self->_send("V $pattern");
-+	my $buf = $self->_get;
-+	$self->_prompt( \$buf );
-+	return $buf;
- }
- 
- sub _parse_dumper {
-@@ -553,6 +633,7 @@
- 		$content = $cont;
- 	}
- 	$self->{filename} = $file;
-+	p $self->{filename};
- 	$self->{row}      = $row;
- 	return ( $module, $file, $row, $content );
- }

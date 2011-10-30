@@ -12,7 +12,7 @@ use utf8;
 use Padre::Wx::Role::View;
 use Padre::Plugin::Debug::FBP::DebugVariable ();
 use Data::Printer { caller_info => 1, colored => 1, };
-our $VERSION = '0.01';
+our $VERSION = '0.13';
 
 our @ISA = qw{
 	Padre::Wx::Role::View
@@ -127,8 +127,9 @@ sub set_up {
 	$self->{show_global_variables}->Disable;
 
 	# Setup the debug button icons
-	$self->{refresh}->SetBitmapLabel( Padre::Wx::Icon::find('actions/view-refresh') );
-	$self->{refresh}->Disable;
+	# $self->{refresh}->SetBitmapLabel( Padre::Wx::Icon::find('actions/view-refresh') );
+	$self->{refresh}->SetBitmapLabel( Padre::Wx::Icon::find('actions/morpho2') );
+	# $self->{refresh}->Disable;
 
 	# Setup columns names and order here
 	my @column_headers = qw( Variable Value );

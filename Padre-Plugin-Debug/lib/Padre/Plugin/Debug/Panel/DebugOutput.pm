@@ -12,7 +12,7 @@ use utf8;
 use Padre::Wx::Role::View;
 use Padre::Plugin::Debug::FBP::DebugOutput ();
 use Data::Printer { caller_info => 1, colored => 1, };
-our $VERSION = '0.01';
+our $VERSION = '0.13';
 
 our @ISA = qw{
 	Padre::Wx::Role::View

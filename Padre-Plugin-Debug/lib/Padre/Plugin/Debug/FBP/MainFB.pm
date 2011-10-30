@@ -12,7 +12,7 @@ use warnings;
 use Padre::Wx ();
 use Padre::Wx::Role::Main ();
 
-our $VERSION = '0.01';
+our $VERSION = '0.13';
 our @ISA     = qw{
 	Padre::Wx::Role::Main
 	Wx::Dialog
@@ -31,19 +31,41 @@ sub new {
 		Wx::DEFAULT_DIALOG_STYLE() | Wx::RESIZE_BORDER(),
 	);
 
-	$self->{breakpoints} = Wx::CheckBox->new(
+	$self->{check_breakpoints} = Wx::CheckBox->new(
 		$self,
 		-1,
 		Wx::gettext("Breakpoints"),
 		Wx::DefaultPosition(),
 		Wx::DefaultSize(),
 	);
+	$self->{check_breakpoints}->SetToolTip(
+		Wx::gettext("Breakpoints Load Panel")
+	);
 
 	Wx::Event::EVT_CHECKBOX(
 		$self,
-		$self->{breakpoints},
+		$self->{check_breakpoints},
 		sub {
-			shift->breakpoints_checked(@_);
+			shift->check_breakpoints_checked(@_);
+		},
+	);
+
+	$self->{check_debugger} = Wx::CheckBox->new(
+		$self,
+		-1,
+		Wx::gettext("Debugger"),
+		Wx::DefaultPosition(),
+		Wx::DefaultSize(),
+	);
+	$self->{check_debugger}->SetToolTip(
+		Wx::gettext("Debugger Load Panel")
+	);
+
+	Wx::Event::EVT_CHECKBOX(
+		$self,
+		$self->{check_debugger},
+		sub {
+			shift->check_debugger_checked(@_);
 		},
 	);
 
@@ -322,7 +344,9 @@ sub new {
 		Wx::HORIZONTAL(),
 	);
 	$file_1->Add( 0, 0, 1, Wx::EXPAND(), 5 );
-	$file_1->Add( $self->{breakpoints}, 0, Wx::ALL(), 5 );
+	$file_1->Add( $self->{check_breakpoints}, 0, Wx::ALL(), 5 );
+	$file_1->Add( 0, 0, 1, Wx::EXPAND(), 5 );
+	$file_1->Add( $self->{check_debugger}, 0, Wx::ALL(), 5 );
 	$file_1->Add( 0, 0, 1, Wx::EXPAND(), 5 );
 
 	my $file_2 = Wx::StaticBoxSizer->new(
@@ -380,8 +404,12 @@ sub new {
 	return $self;
 }
 
-sub breakpoints {
-	$_[0]->{breakpoints};
+sub check_breakpoints {
+	$_[0]->{check_breakpoints};
+}
+
+sub check_debugger {
+	$_[0]->{check_debugger};
 }
 
 sub trace {
@@ -392,8 +420,12 @@ sub sub_name_regex {
 	$_[0]->{sub_name_regex};
 }
 
-sub breakpoints_checked {
-	$_[0]->main->error('Handler method breakpoints_checked for event breakpoints.OnCheckBox not implemented');
+sub check_breakpoints_checked {
+	$_[0]->main->error('Handler method check_breakpoints_checked for event check_breakpoints.OnCheckBox not implemented');
+}
+
+sub check_debugger_checked {
+	$_[0]->main->error('Handler method check_debugger_checked for event check_debugger.OnCheckBox not implemented');
 }
 
 sub step_in_clicked {
