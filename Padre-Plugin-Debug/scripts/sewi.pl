@@ -25,3 +25,6 @@ say $fred;
 say 'END';
 
 1;
+
+__END__
+
