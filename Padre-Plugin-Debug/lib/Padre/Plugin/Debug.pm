@@ -10,7 +10,7 @@ $| = 1;
 use diagnostics;
 use utf8;
 
-our $VERSION = '0.02';
+our $VERSION = '0.13';
 our @ISA     = 'Padre::Plugin';
 
 #######
@@ -123,6 +123,22 @@ sub clean_dialog {
 	}
 
 	return 1;
+}
+
+#########
+# We need plugin_enable
+# as we have an external dependency
+#########
+sub plugin_enable {
+
+	# Tests for external file in Path
+	require Debug::Client;
+
+	if ( $Debug::Client::VERSION eq '0.13_01' ) {
+		return 1;
+	} else {
+		return 0;
+	}
 }
 
 1;
