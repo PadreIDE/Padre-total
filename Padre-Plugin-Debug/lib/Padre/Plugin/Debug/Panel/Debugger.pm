@@ -500,6 +500,8 @@ sub debug_quit {
 	$self->{client}->quit;
 	delete $self->{client};
 	
+	$self->{trace_status}     = 'Trace = off';
+	$self->{trace}->SetValue(0);
 	$self->{trace}->Disable;
 	$self->{sub_names}->Disable;
 	$self->{sub_name_regex}->Disable;
