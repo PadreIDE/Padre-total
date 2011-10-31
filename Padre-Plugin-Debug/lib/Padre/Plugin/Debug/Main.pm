@@ -43,8 +43,8 @@ sub set_up {
 
 	$self->{debug_output_visable} = 0;
 	$self->{breakpoints_visable}  = 0;
-	require Padre::Plugin::Debug::Debugger;
-	$self->{debugger} = Padre::Plugin::Debug::Debugger->new($main);
+	# require Padre::Plugin::Debug::Debugger;
+	# $self->{debugger} = Padre::Plugin::Debug::Debugger->new($main);
 
 	# $self->{debugger}->setup();
 
@@ -106,11 +106,20 @@ sub set_up {
 sub check_debugger_checked {
 	my ( $self, $event ) = @_;
 	my $main = $self->main;
-
+	
+	# Construct breakpoint panel if it is not there
+	unless ( $self->{debugger} ) {
+		require Padre::Plugin::Debug::Panel::Debugger;
+		$self->{debugger} = Padre::Plugin::Debug::Panel::Debugger->new($main);
+	}
 
 	if ( $event->IsChecked ) {
-		$self->{debugger}->show_debug_variable(1);
-		$self->{debugger}->show_debug_output(1);
+		
+		$main->right->show( $self->{debugger} );
+		
+		# $self->{debugger}->show_debug_variable(1);
+		$self->{debugger}->{debug}->Show;
+		$self->{debugger}->{debug}->Enable;
 		$self->{step_in}->Enable;
 		$self->{step_over}->Enable;
 		$self->{step_out}->Enable;
@@ -126,6 +135,9 @@ sub check_debugger_checked {
 		# $self->{show_buffer}->Enable;
 
 	} else {
+		
+		$main->right->hide( $self->{debugger} );
+		
 		$self->{debugger}->debug_quit;
 		$self->{step_in}->Disable;
 		$self->{step_over}->Disable;
@@ -133,12 +145,12 @@ sub check_debugger_checked {
 		$self->{run_till}->Disable;
 		$self->{display_value}->Disable;
 		$self->{trace}->Disable;
-		$self->{debugger}->show_debug_variable(0);
+		# $self->{debugger}->show_debug_variable(0);
 		$self->{debugger}->show_debug_output(0);
 
 	}
 
-	# 	$self->aui->Update;
+	$self->aui->Update;
 
 	return;
 }
@@ -373,12 +385,15 @@ sub quit_debugger_clicked {
 	$self->{run_till}->Disable;
 	$self->{display_value}->Disable;
 	$self->{trace}->Disable;
-
+	
+	$self->{debugger}->show_debug_output(0);
+	
 	# $main->left->hide( $self->{panel_breakpoints} );
 	# $self->{breakpoints}->SetValue(0);
 
 	return;
 }
+
 
 1;
 

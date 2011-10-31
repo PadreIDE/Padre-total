@@ -18,6 +18,7 @@ my $fred = 'bloggs one';
 
 #bp 20, this is 19
 wh("foo");
+say $fred;
 
 eh($fred);
 say $fred;
