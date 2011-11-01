@@ -46,7 +46,10 @@ Module::Build::Scintilla::stc_builderclass()->new(
 		resources => {
 			homepage   => 'http://padre.perlide.org/',
 			repository => 'http://svn.perlide.org/padre/trunk/Wx-Scintilla/',
-		}
+		},
+		no_index => {
+			directory => [ qw<tools wx-scintilla cpp> ],
+		},
 	},
 	dist_abstract      => 'Scintilla source code editing component for wxWidgets',
 	extra_linker_flags => '-lwxmsw28u_scintilla',
