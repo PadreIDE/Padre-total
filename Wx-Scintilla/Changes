@@ -4,6 +4,9 @@ Revision history for Wx-Scintilla
     - Moved Wx::ScintillaTextCtrl to Wx::Scintilla::TextCtrl (ADAMK)
     - Moved Wx::ScintillaTextEvent to Wx::Scintilla::TextEvent (ADAMK)
     - Moved Wx::Event::EVT_STC_XXXXXX to Wx::Scintilla::EVT_XXXXXX (ADAMK)
+    - Generate Wx::Scintilla::Constants that contains the same
+      Scintilla constant names along with their POD documentation from
+      Scintilla.iface (AZAWAWI)
 
 0.32 2011.10.11
     - Released 0.31_02 as stable 0.32 (AZAWAWI)
