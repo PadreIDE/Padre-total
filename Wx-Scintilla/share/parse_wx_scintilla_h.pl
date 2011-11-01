@@ -4,9 +4,8 @@ use strict;
 use warnings;
 use Perl::Tidy ();
 
-my $filename = '../wx-scintilla/src/scintilla/include/Scintilla.iface';
+my $filename     = '../wx-scintilla/src/scintilla/include/Scintilla.iface';
 my $constants_pm = '../lib/Wx/Scintilla/Constants.pm';
-my $constants_pod = '../lib/Wx/Scintilla/Manual/Constants.pod',
 
 my %lexers = (
     SCLEX_PYTHON     => 'Python',
@@ -78,81 +77,86 @@ my %lexers = (
     SCLEX_SML        => 'SML',
     SCLEX_A68K       => 'A68K',
     SCLEX_MODULA     => 'Modula',
+    SCLEX_MARKDOWN   => 'Markdown',
 );
 
 print "Parsing $filename\n";
 open my $fh, $filename or die "Cannot open $filename\n";
-my $docs = '';
 my $source = <<'CODE';
 use constant {
 CODE
 my $doc_comment = undef;
-my $pod = '';
+my $pod         = '';
 while ( my $line = <$fh> ) {
     if ( $line =~ /^\s*$/ ) {
 
         # Empty line separator
         $doc_comment = undef;
+        $source .= "\n";
     }
     elsif ( $line =~ /^##/ ) {
 
         # ignore pure comments
     }
+    elsif ( $line =~ /^(get|fun)/ ) {
+
+        # Ignore documentation comment for functions
+        $doc_comment = undef;
+    }
     elsif ( $line =~ /^(#.+?)$/ ) {
 
         # Store documentation comments
-        my $comment = $1;
-        if ( $comment =~ /Lexical states for (\w+)/ ) {
-            
-            my $name = $lexers{$1};
-            if ( $name ) {
-                $pod .= "\n=head2 $name ($1) lexical states\n";
-            }
-            else {
-                die  "Cannot find $1 in \%lexers\n";
-            }
-
-        }
-        else {
-            $comment =~ s/^#\s*//;
-            $pod .= "\t$comment\n";
-        }
-        $doc_comment .= "\t$comment\n";
+        $doc_comment .= "$1\n";
 
     }
     elsif ( $line =~ /^\s*enu\s+(\w+)\s*=\s*(\w+)\s*$/ ) {
 
         # Enumeration
-        $doc_comment = "$1 enumeration\n";
-        $pod .= "\n=head2 $1 enumeration\n";
+        $doc_comment = "# $1 enumeration\n";
+        
     }
     elsif ( $line =~ /^\s*val\s+(\w+)\s*=(.+?)\s*$/ ) {
         if ( defined $doc_comment ) {
-            $source .= $doc_comment;
-            $doc_comment =~ s/\s+#\s+//g;
-            $docs .= "\n$doc_comment\n";
-            $pod .= "\n$doc_comment\n";
+            if ( $doc_comment =~ /#\s+Lexical states for (\w+)/ ) {
+
+                my $name = $lexers{$1};
+                if ($name) {
+
+                    $pod .= "\n=head2 $name ($1) lexical states\n\n";
+                }
+                else {
+                    die "Cannot find $1 in \%lexers\n";
+                }
+
+            } elsif($doc_comment =~ /#\s(\S+\s(?:enumeration))/) {
+                   $pod .= "\n=head2 $1\n\n";
+            } else {
+                my $pod_comment = $doc_comment;
+                $pod_comment =~ s/\s*#\s+//g;
+                $pod .= "\n$pod_comment\n";
+            }
+
+            $source .= $doc_comment if defined $doc_comment;
             $doc_comment = undef;
         }
         $source .= "\t$1 => $2,\n";
-        $docs .= sprintf( "%-20s (%s)\n\n", $1, $2 );
-        $pod .= sprintf( "%-20s (%s)\n\n", $1, $2 );
+        $pod .= sprintf( "\t%-30s (%s)\n", $1, $2 );
     }
 }
-$source .= "};\n";
 close $fh;
 
+$source .= <<"POD";
+};
 
-open $fh, '>', $constants_pod or die "Cannot write to $constants_pod\n";
-binmode $fh;
-print $fh <<"POD";
-package Wx::Scintilla::Manual;
+1;
+
+__END__
 
 =pod
 
 =head1 NAME
 
-Wx::Scintilla::Manual::Constants - A list of Wx::Scintilla constants
+Wx::Scintilla::Constants - A list of Wx::Scintilla constants
 
 =head1 CONSTANTS
 
@@ -171,7 +175,6 @@ it and/or modify it under the same terms as Perl itself.
 
 =cut
 POD
-close $fh;
 
 print "Perl tidy output in memory\n";
 my $output = '';

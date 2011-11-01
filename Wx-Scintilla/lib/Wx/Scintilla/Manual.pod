@@ -10,7 +10,9 @@ Wx::Scintilla::Manual - What is Wx::Scintilla, and how do I use it?
 
 =head1 WHAT IS WX::SCINTILLA?
 
-Initial version of Wx::Scintilla::Manual lives here
+=head2 Constants
+
+Scintilla constants can be here L<Wx::Scintilla::Constants>
 
 =head1 AUTHOR
 
