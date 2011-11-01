@@ -93,6 +93,7 @@ use constant {
     STYLE_LASTPREDEFINED => 39,
     STYLE_MAX            => 255,
 
+    # CharacterSet enumeration
     SC_CHARSET_ANSI        => 0,
     SC_CHARSET_DEFAULT     => 1,
     SC_CHARSET_BALTIC      => 186,
@@ -2149,6 +2150,9 @@ Invisible mark that only sets the line background colour.
 	STYLE_CALLTIP                  (38)
 	STYLE_LASTPREDEFINED           (39)
 	STYLE_MAX                      (255)
+
+=head2 CharacterSet enumeration
+
 	SC_CHARSET_ANSI                (0)
 	SC_CHARSET_DEFAULT             (1)
 	SC_CHARSET_BALTIC              (186)
@@ -2560,7 +2564,7 @@ When a lexer specifies its language as SCLEX_AUTOMATIC it receives avalue assign
 
 	SCLEX_AUTOMATIC                (1000)
 
-=head2 Python (SCLEX_PYTHON) lexical states
+=head2 Lexical states for SCLEX_PYTHON
 
 	SCE_P_DEFAULT                  (0)
 	SCE_P_COMMENTLINE              (1)
@@ -2579,7 +2583,7 @@ When a lexer specifies its language as SCLEX_AUTOMATIC it receives avalue assign
 	SCE_P_WORD2                    (14)
 	SCE_P_DECORATOR                (15)
 
-=head2 C/C++/JavaScript (SCLEX_CPP) lexical states
+=head2 Lexical states for SCLEX_CPP
 
 	SCE_C_DEFAULT                  (0)
 	SCE_C_COMMENT                  (1)
@@ -2604,7 +2608,7 @@ When a lexer specifies its language as SCLEX_AUTOMATIC it receives avalue assign
 	SCE_C_STRINGRAW                (20)
 	SCE_C_TRIPLEVERBATIM           (21)
 
-=head2 D (SCLEX_D) lexical states
+=head2 Lexical states for SCLEX_D
 
 	SCE_D_DEFAULT                  (0)
 	SCE_D_COMMENT                  (1)
@@ -2630,7 +2634,7 @@ When a lexer specifies its language as SCLEX_AUTOMATIC it receives avalue assign
 	SCE_D_WORD6                    (21)
 	SCE_D_WORD7                    (22)
 
-=head2 Tcl (SCLEX_TCL) lexical states
+=head2 Lexical states for SCLEX_TCL
 
 	SCE_TCL_DEFAULT                (0)
 	SCE_TCL_COMMENT                (1)
@@ -2655,7 +2659,7 @@ When a lexer specifies its language as SCLEX_AUTOMATIC it receives avalue assign
 	SCE_TCL_COMMENT_BOX            (20)
 	SCE_TCL_BLOCK_COMMENT          (21)
 
-=head2 HTML & Embedded JavaScript/VBScript (SCLEX_HTML) lexical states
+=head2 Lexical states for SCLEX_HTML, SCLEX_XML
 
 	SCE_H_DEFAULT                  (0)
 	SCE_H_TAG                      (1)
@@ -2805,7 +2809,7 @@ PHP
 	SCE_HPHP_HSTRING_VARIABLE      (126)
 	SCE_HPHP_OPERATOR              (127)
 
-=head2 Perl (SCLEX_PERL) lexical states
+=head2 Lexical states for SCLEX_PERL
 
 	SCE_PL_DEFAULT                 (0)
 	SCE_PL_ERROR                   (1)
@@ -2853,7 +2857,7 @@ PHP
 	SCE_PL_STRING_QX_VAR           (65)
 	SCE_PL_STRING_QR_VAR           (66)
 
-=head2 Ruby (SCLEX_RUBY) lexical states
+=head2 Lexical states for SCLEX_RUBY
 
 	SCE_RB_DEFAULT                 (0)
 	SCE_RB_ERROR                   (1)
@@ -2890,7 +2894,7 @@ PHP
 	SCE_RB_STDERR                  (40)
 	SCE_RB_UPPER_BOUND             (41)
 
-=head2 Visual Basic (SCLEX_VB) lexical states
+=head2 Lexical states for SCLEX_VB, SCLEX_VBSCRIPT, SCLEX_POWERBASIC
 
 	SCE_B_DEFAULT                  (0)
 	SCE_B_COMMENT                  (1)
@@ -2912,7 +2916,7 @@ PHP
 	SCE_B_HEXNUMBER                (17)
 	SCE_B_BINNUMBER                (18)
 
-=head2 Properties (SCLEX_PROPERTIES) lexical states
+=head2 Lexical states for SCLEX_PROPERTIES
 
 	SCE_PROPS_DEFAULT              (0)
 	SCE_PROPS_COMMENT              (1)
@@ -2921,7 +2925,7 @@ PHP
 	SCE_PROPS_DEFVAL               (4)
 	SCE_PROPS_KEY                  (5)
 
-=head2 Latex (SCLEX_LATEX) lexical states
+=head2 Lexical states for SCLEX_LATEX
 
 	SCE_L_DEFAULT                  (0)
 	SCE_L_COMMAND                  (1)
@@ -2937,7 +2941,7 @@ PHP
 	SCE_L_CMDOPT                   (11)
 	SCE_L_ERROR                    (12)
 
-=head2 Lua (SCLEX_LUA) lexical states
+=head2 Lexical states for SCLEX_LUA
 
 	SCE_LUA_DEFAULT                (0)
 	SCE_LUA_COMMENT                (1)
@@ -2961,7 +2965,7 @@ PHP
 	SCE_LUA_WORD8                  (19)
 	SCE_LUA_LABEL                  (20)
 
-=head2 Error List (SCLEX_ERRORLIST) lexical states
+=head2 Lexical states for SCLEX_ERRORLIST
 
 	SCE_ERR_DEFAULT                (0)
 	SCE_ERR_PYTHON                 (1)
@@ -2986,7 +2990,7 @@ PHP
 	SCE_ERR_JAVA_STACK             (20)
 	SCE_ERR_VALUE                  (21)
 
-=head2 Batch (SCLEX_BATCH) lexical states
+=head2 Lexical states for SCLEX_BATCH
 
 	SCE_BAT_DEFAULT                (0)
 	SCE_BAT_COMMENT                (1)
@@ -2997,7 +3001,7 @@ PHP
 	SCE_BAT_IDENTIFIER             (6)
 	SCE_BAT_OPERATOR               (7)
 
-=head2 Makefile (SCLEX_MAKEFILE) lexical states
+=head2 Lexical states for SCLEX_MAKEFILE
 
 	SCE_MAKE_DEFAULT               (0)
 	SCE_MAKE_COMMENT               (1)
@@ -3007,7 +3011,7 @@ PHP
 	SCE_MAKE_TARGET                (5)
 	SCE_MAKE_IDEOL                 (9)
 
-=head2 Diff (SCLEX_DIFF) lexical states
+=head2 Lexical states for SCLEX_DIFF
 
 	SCE_DIFF_DEFAULT               (0)
 	SCE_DIFF_COMMENT               (1)
@@ -3018,7 +3022,7 @@ PHP
 	SCE_DIFF_ADDED                 (6)
 	SCE_DIFF_CHANGED               (7)
 
-=head2 Apache Conf (SCLEX_CONF) lexical states
+=head2 Lexical states for SCLEX_CONF (Apache Configuration Files Lexer)
 
 	SCE_CONF_DEFAULT               (0)
 	SCE_CONF_COMMENT               (1)
@@ -3031,7 +3035,7 @@ PHP
 	SCE_CONF_IP                    (8)
 	SCE_CONF_DIRECTIVE             (9)
 
-=head2 Avenue (SCLEX_AVE) lexical states
+=head2 Lexical states for SCLEX_AVE, Avenue
 
 	SCE_AVE_DEFAULT                (0)
 	SCE_AVE_COMMENT                (1)
@@ -3049,7 +3053,7 @@ PHP
 	SCE_AVE_WORD5                  (15)
 	SCE_AVE_WORD6                  (16)
 
-=head2 Ada (SCLEX_ADA) lexical states
+=head2 Lexical states for SCLEX_ADA
 
 	SCE_ADA_DEFAULT                (0)
 	SCE_ADA_WORD                   (1)
@@ -3064,7 +3068,7 @@ PHP
 	SCE_ADA_COMMENTLINE            (10)
 	SCE_ADA_ILLEGAL                (11)
 
-=head2 Baan (SCLEX_BAAN) lexical states
+=head2 Lexical states for SCLEX_BAAN
 
 	SCE_BAAN_DEFAULT               (0)
 	SCE_BAAN_COMMENT               (1)
@@ -3078,7 +3082,7 @@ PHP
 	SCE_BAAN_STRINGEOL             (9)
 	SCE_BAAN_WORD2                 (10)
 
-=head2 Lisp (SCLEX_LISP) lexical states
+=head2 Lexical states for SCLEX_LISP
 
 	SCE_LISP_DEFAULT               (0)
 	SCE_LISP_COMMENT               (1)
@@ -3093,7 +3097,7 @@ PHP
 	SCE_LISP_SPECIAL               (11)
 	SCE_LISP_MULTI_COMMENT         (12)
 
-=head2 Eiffel (SCLEX_EIFFEL) lexical states
+=head2 Lexical states for SCLEX_EIFFEL and SCLEX_EIFFELKW
 
 	SCE_EIFFEL_DEFAULT             (0)
 	SCE_EIFFEL_COMMENTLINE         (1)
@@ -3105,7 +3109,7 @@ PHP
 	SCE_EIFFEL_IDENTIFIER          (7)
 	SCE_EIFFEL_STRINGEOL           (8)
 
-=head2 crontab (SCLEX_NNCRONTAB) lexical states
+=head2 Lexical states for SCLEX_NNCRONTAB (nnCron crontab Lexer)
 
 	SCE_NNCRONTAB_DEFAULT          (0)
 	SCE_NNCRONTAB_COMMENT          (1)
@@ -3119,7 +3123,7 @@ PHP
 	SCE_NNCRONTAB_ENVIRONMENT      (9)
 	SCE_NNCRONTAB_IDENTIFIER       (10)
 
-=head2 Forth (SCLEX_FORTH) lexical states
+=head2 Lexical states for SCLEX_FORTH (Forth Lexer)
 
 	SCE_FORTH_DEFAULT              (0)
 	SCE_FORTH_COMMENT              (1)
@@ -3134,7 +3138,7 @@ PHP
 	SCE_FORTH_STRING               (10)
 	SCE_FORTH_LOCALE               (11)
 
-=head2 Matlab (SCLEX_MATLAB) lexical states
+=head2 Lexical states for SCLEX_MATLAB
 
 	SCE_MATLAB_DEFAULT             (0)
 	SCE_MATLAB_COMMENT             (1)
@@ -3149,7 +3153,7 @@ single quoted string
 	SCE_MATLAB_IDENTIFIER          (7)
 	SCE_MATLAB_DOUBLEQUOTESTRING   (8)
 
-=head2 Scriptol (SCLEX_SCRIPTOL) lexical states
+=head2 Lexical states for SCLEX_SCRIPTOL
 
 	SCE_SCRIPTOL_DEFAULT           (0)
 	SCE_SCRIPTOL_WHITE             (1)
@@ -3168,7 +3172,7 @@ single quoted string
 	SCE_SCRIPTOL_CLASSNAME         (14)
 	SCE_SCRIPTOL_PREPROCESSOR      (15)
 
-=head2 Assembly (SCLEX_ASM) lexical states
+=head2 Lexical states for SCLEX_ASM
 
 	SCE_ASM_DEFAULT                (0)
 	SCE_ASM_COMMENT                (1)
@@ -3187,7 +3191,7 @@ single quoted string
 	SCE_ASM_EXTINSTRUCTION         (14)
 	SCE_ASM_COMMENTDIRECTIVE       (15)
 
-=head2 Fortran (SCLEX_FORTRAN) lexical states
+=head2 Lexical states for SCLEX_FORTRAN
 
 	SCE_F_DEFAULT                  (0)
 	SCE_F_COMMENT                  (1)
@@ -3205,7 +3209,7 @@ single quoted string
 	SCE_F_LABEL                    (13)
 	SCE_F_CONTINUATION             (14)
 
-=head2 CSS (SCLEX_CSS) lexical states
+=head2 Lexical states for SCLEX_CSS
 
 	SCE_CSS_DEFAULT                (0)
 	SCE_CSS_TAG                    (1)
@@ -3231,7 +3235,7 @@ single quoted string
 	SCE_CSS_EXTENDED_PSEUDOELEMENT (21)
 	SCE_CSS_MEDIA                  (22)
 
-=head2 Povray (SCLEX_POV) lexical states
+=head2 Lexical states for SCLEX_POV
 
 	SCE_POV_DEFAULT                (0)
 	SCE_POV_COMMENT                (1)
@@ -3251,7 +3255,7 @@ single quoted string
 	SCE_POV_WORD7                  (15)
 	SCE_POV_WORD8                  (16)
 
-=head2 Lout (SCLEX_LOUT) lexical states
+=head2 Lexical states for SCLEX_LOUT
 
 	SCE_LOUT_DEFAULT               (0)
 	SCE_LOUT_COMMENT               (1)
@@ -3265,7 +3269,7 @@ single quoted string
 	SCE_LOUT_IDENTIFIER            (9)
 	SCE_LOUT_STRINGEOL             (10)
 
-=head2 Escript (SCLEX_ESCRIPT) lexical states
+=head2 Lexical states for SCLEX_ESCRIPT
 
 	SCE_ESCRIPT_DEFAULT            (0)
 	SCE_ESCRIPT_COMMENT            (1)
@@ -3280,7 +3284,7 @@ single quoted string
 	SCE_ESCRIPT_WORD2              (10)
 	SCE_ESCRIPT_WORD3              (11)
 
-=head2 Postscript (SCLEX_PS) lexical states
+=head2 Lexical states for SCLEX_PS
 
 	SCE_PS_DEFAULT                 (0)
 	SCE_PS_COMMENT                 (1)
@@ -3299,7 +3303,7 @@ single quoted string
 	SCE_PS_BASE85STRING            (14)
 	SCE_PS_BADSTRINGCHAR           (15)
 
-=head2 NSIS (SCLEX_NSIS) lexical states
+=head2 Lexical states for SCLEX_NSIS
 
 	SCE_NSIS_DEFAULT               (0)
 	SCE_NSIS_COMMENT               (1)
@@ -3321,7 +3325,7 @@ single quoted string
 	SCE_NSIS_FUNCTIONDEF           (17)
 	SCE_NSIS_COMMENTBOX            (18)
 
-=head2 MMIXAL (SCLEX_MMIXAL) lexical states
+=head2 Lexical states for SCLEX_MMIXAL
 
 	SCE_MMIXAL_LEADWS              (0)
 	SCE_MMIXAL_COMMENT             (1)
@@ -3342,7 +3346,7 @@ single quoted string
 	SCE_MMIXAL_SYMBOL              (16)
 	SCE_MMIXAL_INCLUDE             (17)
 
-=head2 CLW (SCLEX_CLW) lexical states
+=head2 Lexical states for SCLEX_CLW
 
 	SCE_CLW_DEFAULT                (0)
 	SCE_CLW_LABEL                  (1)
@@ -3362,7 +3366,7 @@ single quoted string
 	SCE_CLW_ERROR                  (15)
 	SCE_CLW_DEPRECATED             (16)
 
-=head2 LOT (SCLEX_LOT) lexical states
+=head2 Lexical states for SCLEX_LOT
 
 	SCE_LOT_DEFAULT                (0)
 	SCE_LOT_HEADER                 (1)
@@ -3372,7 +3376,7 @@ single quoted string
 	SCE_LOT_FAIL                   (5)
 	SCE_LOT_ABORT                  (6)
 
-=head2 YAML (SCLEX_YAML) lexical states
+=head2 Lexical states for SCLEX_YAML
 
 	SCE_YAML_DEFAULT               (0)
 	SCE_YAML_COMMENT               (1)
@@ -3385,7 +3389,7 @@ single quoted string
 	SCE_YAML_ERROR                 (8)
 	SCE_YAML_OPERATOR              (9)
 
-=head2 TeX (SCLEX_TEX) lexical states
+=head2 Lexical states for SCLEX_TEX
 
 	SCE_TEX_DEFAULT                (0)
 	SCE_TEX_SPECIAL                (1)
@@ -3401,7 +3405,7 @@ single quoted string
 	SCE_METAPOST_TEXT              (5)
 	SCE_METAPOST_EXTRA             (6)
 
-=head2 Erlang (SCLEX_ERLANG) lexical states
+=head2 Lexical states for SCLEX_ERLANG
 
 	SCE_ERLANG_DEFAULT             (0)
 	SCE_ERLANG_COMMENT             (1)
@@ -3430,7 +3434,7 @@ single quoted string
 	SCE_ERLANG_MODULES_ATT         (24)
 	SCE_ERLANG_UNKNOWN             (31)
 
-=head2 Octave (SCLEX_OCTAVE) lexical states
+=head2 Lexical states for SCLEX_MSSQL
 
 	SCE_MSSQL_DEFAULT              (0)
 	SCE_MSSQL_COMMENT              (1)
@@ -3450,7 +3454,7 @@ single quoted string
 	SCE_MSSQL_DEFAULT_PREF_DATATYPE (15)
 	SCE_MSSQL_COLUMN_NAME_2        (16)
 
-=head2 Verilog (SCLEX_VERILOG) lexical states
+=head2 Lexical states for SCLEX_VERILOG
 
 	SCE_V_DEFAULT                  (0)
 	SCE_V_COMMENT                  (1)
@@ -3467,7 +3471,7 @@ single quoted string
 	SCE_V_STRINGEOL                (12)
 	SCE_V_USER                     (19)
 
-=head2 KIX (SCLEX_KIX) lexical states
+=head2 Lexical states for SCLEX_KIX
 
 	SCE_KIX_DEFAULT                (0)
 	SCE_KIX_COMMENT                (1)
@@ -3481,7 +3485,7 @@ single quoted string
 	SCE_KIX_OPERATOR               (9)
 	SCE_KIX_IDENTIFIER             (31)
 
-=head2 GUI4CLU (SCLEX_GUI4CLI) lexical states
+=head2 Lexical states for SCLEX_GUI4CLI
 
 	SCE_GC_DEFAULT                 (0)
 	SCE_GC_COMMENTLINE             (1)
@@ -3494,7 +3498,7 @@ single quoted string
 	SCE_GC_STRING                  (8)
 	SCE_GC_OPERATOR                (9)
 
-=head2 Specman (SCLEX_SPECMAN) lexical states
+=head2 Lexical states for SCLEX_SPECMAN
 
 	SCE_SN_DEFAULT                 (0)
 	SCE_SN_CODE                    (1)
@@ -3513,7 +3517,7 @@ single quoted string
 	SCE_SN_SIGNAL                  (14)
 	SCE_SN_USER                    (19)
 
-=head2 Au3 (SCLEX_AU3) lexical states
+=head2 Lexical states for SCLEX_AU3
 
 	SCE_AU3_DEFAULT                (0)
 	SCE_AU3_COMMENT                (1)
@@ -3532,7 +3536,7 @@ single quoted string
 	SCE_AU3_COMOBJ                 (14)
 	SCE_AU3_UDF                    (15)
 
-=head2 APDL (SCLEX_APDL) lexical states
+=head2 Lexical states for SCLEX_APDL
 
 	SCE_APDL_DEFAULT               (0)
 	SCE_APDL_COMMENT               (1)
@@ -3548,7 +3552,7 @@ single quoted string
 	SCE_APDL_ARGUMENT              (11)
 	SCE_APDL_FUNCTION              (12)
 
-=head2 Bash (SCLEX_BASH) lexical states
+=head2 Lexical states for SCLEX_BASH
 
 	SCE_SH_DEFAULT                 (0)
 	SCE_SH_ERROR                   (1)
@@ -3565,7 +3569,7 @@ single quoted string
 	SCE_SH_HERE_DELIM              (12)
 	SCE_SH_HERE_Q                  (13)
 
-=head2 Asn1 (SCLEX_ASN1) lexical states
+=head2 Lexical states for SCLEX_ASN1
 
 	SCE_ASN1_DEFAULT               (0)
 	SCE_ASN1_COMMENT               (1)
@@ -3579,7 +3583,7 @@ single quoted string
 	SCE_ASN1_TYPE                  (9)
 	SCE_ASN1_OPERATOR              (10)
 
-=head2 VHDL (SCLEX_VHDL) lexical states
+=head2 Lexical states for SCLEX_VHDL
 
 	SCE_VHDL_DEFAULT               (0)
 	SCE_VHDL_COMMENT               (1)
@@ -3597,7 +3601,7 @@ single quoted string
 	SCE_VHDL_STDTYPE               (13)
 	SCE_VHDL_USERWORD              (14)
 
-=head2 CAML (SCLEX_CAML) lexical states
+=head2 Lexical states for SCLEX_CAML
 
 	SCE_CAML_DEFAULT               (0)
 	SCE_CAML_IDENTIFIER            (1)
@@ -3616,7 +3620,7 @@ single quoted string
 	SCE_CAML_COMMENT2              (14)
 	SCE_CAML_COMMENT3              (15)
 
-=head2 Haskell (SCLEX_HASKELL) lexical states
+=head2 Lexical states for SCLEX_HASKELL
 
 	SCE_HA_DEFAULT                 (0)
 	SCE_HA_IDENTIFIER              (1)
@@ -3660,7 +3664,7 @@ Lexical states of SCLEX_TADS3
 	SCE_T3_USER3                   (19)
 	SCE_T3_BRACE                   (20)
 
-=head2 Rebol (SCLEX_REBOL) lexical states
+=head2 Lexical states for SCLEX_REBOL
 
 	SCE_REBOL_DEFAULT              (0)
 	SCE_REBOL_COMMENTLINE          (1)
@@ -3692,7 +3696,7 @@ Lexical states of SCLEX_TADS3
 	SCE_REBOL_WORD7                (27)
 	SCE_REBOL_WORD8                (28)
 
-=head2 SQL (SCLEX_SQL) lexical states
+=head2 Lexical states for SCLEX_SQL
 
 	SCE_SQL_DEFAULT                (0)
 	SCE_SQL_COMMENT                (1)
@@ -3717,7 +3721,7 @@ Lexical states of SCLEX_TADS3
 	SCE_SQL_USER4                  (22)
 	SCE_SQL_QUOTEDIDENTIFIER       (23)
 
-=head2 Smalltalk (SCLEX_SMALLTALK) lexical states
+=head2 Lexical states for SCLEX_SMALLTALK
 
 	SCE_ST_DEFAULT                 (0)
 	SCE_ST_STRING                  (1)
@@ -3737,7 +3741,7 @@ Lexical states of SCLEX_TADS3
 	SCE_ST_CHARACTER               (15)
 	SCE_ST_SPEC_SEL                (16)
 
-=head2 Flagship (SCLEX_FLAGSHIP) lexical states
+=head2 Lexical states for SCLEX_FLAGSHIP (clipper)
 
 	SCE_FS_DEFAULT                 (0)
 	SCE_FS_COMMENT                 (1)
@@ -3772,7 +3776,7 @@ Lexical states of SCLEX_TADS3
 	SCE_FS_IDENTIFIER_C            (30)
 	SCE_FS_STRINGEOL_C             (31)
 
-=head2 CSound (SCLEX_CSOUND) lexical states
+=head2 Lexical states for SCLEX_CSOUND
 
 	SCE_CSOUND_DEFAULT             (0)
 	SCE_CSOUND_COMMENT             (1)
@@ -3791,7 +3795,7 @@ Lexical states of SCLEX_TADS3
 	SCE_CSOUND_GLOBAL_VAR          (14)
 	SCE_CSOUND_STRINGEOL           (15)
 
-=head2 InnoSetup (SCLEX_INNOSETUP) lexical states
+=head2 Lexical states for SCLEX_INNOSETUP
 
 	SCE_INNO_DEFAULT               (0)
 	SCE_INNO_COMMENT               (1)
@@ -3807,7 +3811,7 @@ Lexical states of SCLEX_TADS3
 	SCE_INNO_STRING_SINGLE         (11)
 	SCE_INNO_IDENTIFIER            (12)
 
-=head2 Opal (SCLEX_OPAL) lexical states
+=head2 Lexical states for SCLEX_OPAL
 
 	SCE_OPAL_SPACE                 (0)
 	SCE_OPAL_COMMENT_BLOCK         (1)
@@ -3820,7 +3824,7 @@ Lexical states of SCLEX_TADS3
 	SCE_OPAL_BOOL_CONST            (8)
 	SCE_OPAL_DEFAULT               (32)
 
-=head2 Spice (SCLEX_SPICE) lexical states
+=head2 Lexical states for SCLEX_SPICE
 
 	SCE_SPICE_DEFAULT              (0)
 	SCE_SPICE_IDENTIFIER           (1)
@@ -3832,7 +3836,7 @@ Lexical states of SCLEX_TADS3
 	SCE_SPICE_VALUE                (7)
 	SCE_SPICE_COMMENTLINE          (8)
 
-=head2 Cmake (SCLEX_CMAKE) lexical states
+=head2 Lexical states for SCLEX_CMAKE
 
 	SCE_CMAKE_DEFAULT              (0)
 	SCE_CMAKE_COMMENT              (1)
@@ -3850,7 +3854,7 @@ Lexical states of SCLEX_TADS3
 	SCE_CMAKE_STRINGVAR            (13)
 	SCE_CMAKE_NUMBER               (14)
 
-=head2 Gap (SCLEX_GAP) lexical states
+=head2 Lexical states for SCLEX_GAP
 
 	SCE_GAP_DEFAULT                (0)
 	SCE_GAP_IDENTIFIER             (1)
@@ -3911,7 +3915,7 @@ Lexical state for SCLEX_PROGRESS
 	SCE_4GL_COMMENT5_              (30)
 	SCE_4GL_COMMENT6_              (31)
 
-=head2 Abaqus (SCLEX_ABAQUS) lexical states
+=head2 Lexical states for SCLEX_ABAQUS
 
 	SCE_ABAQUS_DEFAULT             (0)
 	SCE_ABAQUS_COMMENT             (1)
@@ -3927,7 +3931,7 @@ Lexical state for SCLEX_PROGRESS
 	SCE_ABAQUS_ARGUMENT            (11)
 	SCE_ABAQUS_FUNCTION            (12)
 
-=head2 Asymptote (SCLEX_ASYMPTOTE) lexical states
+=head2 Lexical states for SCLEX_ASYMPTOTE
 
 	SCE_ASY_DEFAULT                (0)
 	SCE_ASY_COMMENT                (1)
@@ -3942,7 +3946,7 @@ Lexical state for SCLEX_PROGRESS
 	SCE_ASY_COMMENTLINEDOC         (10)
 	SCE_ASY_WORD2                  (11)
 
-=head2 R (SCLEX_R) lexical states
+=head2 Lexical states for SCLEX_R
 
 	SCE_R_DEFAULT                  (0)
 	SCE_R_COMMENT                  (1)
@@ -4031,7 +4035,7 @@ Lexical state for SCLEX_PO
 	SCE_PO_MSGCTXT_TEXT            (7)
 	SCE_PO_FUZZY                   (8)
 
-=head2 Pascal (SCLEX_PASCAL) lexical states
+=head2 Lexical states for SCLEX_PASCAL
 
 	SCE_PAS_DEFAULT                (0)
 	SCE_PAS_IDENTIFIER             (1)
@@ -4082,7 +4086,7 @@ Lexical state for SCLEX_POWERPRO
 	SCE_POWERPRO_ALTQUOTE          (15)
 	SCE_POWERPRO_FUNCTION          (16)
 
-=head2 SML (SCLEX_SML) lexical states
+=head2 Lexical states for SCLEX_SML
 
 	SCE_SML_DEFAULT                (0)
 	SCE_SML_IDENTIFIER             (1)
@@ -4154,7 +4158,7 @@ Lexical state for SCLEX_TXT2TAGS
 	SCE_TXT2TAGS_PREPROC           (24)
 	SCE_TXT2TAGS_POSTPROC          (25)
 
-=head2 A68K (SCLEX_A68K) lexical states
+=head2 Lexical states for SCLEX_A68K
 
 	SCE_A68K_DEFAULT               (0)
 	SCE_A68K_COMMENT               (1)
@@ -4176,7 +4180,7 @@ Lexical state for SCLEX_TXT2TAGS
 	SCE_A68K_COMMENT_SPECIAL       (17)
 	SCE_A68K_COMMENT_DOXYGEN       (18)
 
-=head2 Modula (SCLEX_MODULA) lexical states
+=head2 Lexical states for SCLEX_MODULA
 
 	SCE_MODULA_DEFAULT             (0)
 	SCE_MODULA_COMMENT             (1)
