@@ -742,14 +742,14 @@ sub send_get {
 	return $self->get;
 }
 
-#removed as not used
+#these should be removed as not used
 # =head2 filename
 # =cut
-# sub filename { return $_[0]->{filename} }
+sub filename { return $_[0]->{filename} }
 
 # =head2 row
 # =cut
-# sub row      { return $_[0]->{row} }
+sub row      { return $_[0]->{row} }
 
 =head3 _logger
 =cut
