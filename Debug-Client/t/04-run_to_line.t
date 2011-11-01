@@ -14,9 +14,13 @@ import Test::Deep;
 plan( tests => 5 );
 
 my $debugger = start_debugger();
+my $perl5db_ver;
 
 {
 	my $out = $debugger->get;
+
+	$out =~ m/(1.\d{2})$/m;
+	$perl5db_ver = $1;
 
 	# Loading DB routines from perl5db.pl version 1.28
 	# Editor support available.
@@ -37,11 +41,20 @@ my $debugger = start_debugger();
 		or diag( $debugger->buffer );
 }
 
-{
+SKIP: {
+	skip( 'perl5db v1.34 dose not support "c [line|sub]"', 1 ) unless $perl5db_ver < 1.34;
 	my @out = $debugger->run(17);
 	cmp_deeply( \@out, [ 'main::f', 't/eg/02-sub.pl', 17, '   my $multi = $q * $w;' ], 'line 17' )
 		or diag( $debugger->buffer );
 }
+
+# {
+# my @out = $debugger->run(17);
+# my @out = $debugger->run(17);
+# cmp_deeply( \@out, [ 'main::f', 't/eg/02-sub.pl', 17, '   my $multi = $q * $w;' ], 'line 17' )
+# or diag( $debugger->buffer );
+
+# # }
 
 {
 
@@ -50,7 +63,15 @@ my $debugger = start_debugger();
 	#   h q, h R or h o to get additional info.
 	#   DB<1>
 	my $out = $debugger->run;
-	like( $out, qr/Debugged program terminated/ );
+	like( $out, qr/Debugged program terminated/, 'perl debug terminated' );
+
+	# Caused by perl5db.pl
+	# if ( $perl5db_ver < 1.34 ) {
+	# like( $out, qr/Debugged program terminated/ ,'test for quit perl5db version < 1.34'); # naff v1.33
+	# } else {
+	# like( $out, qr/Use (`q'|q) to quit or (`R'|R) to restart/ ,'test for quit perl5db version 1.34 or newer' ); # naff v1.34
+	# }
+
 }
 
 {
