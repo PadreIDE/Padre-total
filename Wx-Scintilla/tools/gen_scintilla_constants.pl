@@ -2,11 +2,21 @@
 
 use strict;
 use warnings;
-use Perl::Tidy ();
+use Module::Metadata ();
+use Perl::Tidy       ();
 
 my $filename     = '../wx-scintilla/src/scintilla/include/Scintilla.iface';
 my $constants_pm = '../lib/Wx/Scintilla/Constants.pm';
+my $scintilla_pm = '../lib/Wx/Scintilla.pm';
 
+# Find the version from Scintilla.pm
+my $scintilla = Module::Metadata->new_from_file($scintilla_pm);
+my $version   = $scintilla->version('Wx::Scintilla');
+unless ( $version ) {
+    die "Failed to find Wx::Scintilla \$VERSION";
+}
+
+# Parse the iface file
 print "Parsing $filename\n";
 open my $fh, $filename or die "Cannot open $filename\n";
 my $source = '';
@@ -65,9 +75,8 @@ while ( my $line = <$fh> ) {
 }
 close $fh;
 
-my $exported_constants = join(' ', @constants);
+my $exported_constants = join "\n", map { "    $_" } @constants;
 $source = <<"CODE" . $source;
-
 package Wx::Scintilla::Constants;
 
 ##
@@ -75,13 +84,15 @@ package Wx::Scintilla::Constants;
 ## PLEASE DO NOT EDIT
 ##
 
+use 5.008;
 use strict;
 use warnings;
 
 require Exporter;
-our \@ISA = qw(Exporter);
-our \@EXPORT = qw(
-    $exported_constants
+our \@VERSION = '$version';
+our \@ISA     = 'Exporter';
+our \@EXPORT  = qw(
+$exported_constants
 );
 
 use constant {
