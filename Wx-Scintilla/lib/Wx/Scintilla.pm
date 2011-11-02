@@ -267,7 +267,7 @@ Wx::Scintilla - Scintilla source code editing component for wxWidgets
         # Set the font
         my $font = Wx::Font->new( 10, wxTELETYPE, wxNORMAL, wxNORMAL );
         $self->SetFont($font);
-        $self->StyleSetFont( wxSTC_STYLE_DEFAULT, $font );
+        $self->StyleSetFont( Wx::Scintilla::STYLE_DEFAULT, $font );
         $self->StyleClearAll();
 
         # Set the various Perl lexer colors
@@ -288,10 +288,10 @@ Wx::Scintilla - Scintilla source code editing component for wxWidgets
         $self->StyleSetForeground( 17, Wx::Colour->new( 0xff, 0x00, 0x7f ) );
         $self->StyleSetForeground( 18, Wx::Colour->new( 0x7f, 0x7f, 0x00 ) );
         $self->StyleSetBold( 12, 1 );
-        $self->StyleSetSpec( wxSTC_H_TAG, "fore:#0000ff" );
+        $self->StyleSetSpec( Wx::Scintilla::SCE_H_TAG, "fore:#0000ff" );
 
         # set the lexer to Perl 5
-        $self->SetLexer(wxSTC_LEX_PERL);
+        $self->SetLexer(Wx::Scintilla::SCLEX_PERL);
 
         return $self;
     }

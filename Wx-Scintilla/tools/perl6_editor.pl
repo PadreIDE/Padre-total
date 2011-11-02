@@ -18,7 +18,7 @@ sub new {
 	# Set the font
 	my $font = Wx::Font->new( 10, wxTELETYPE, wxNORMAL, wxNORMAL );
 	$self->SetFont($font);
-	$self->StyleSetFont( wxSTC_STYLE_DEFAULT, $font );
+	$self->StyleSetFont( Wx::Scintilla::STYLE_DEFAULT, $font );
 	$self->StyleClearAll();
 
 	# Set the various Perl 6 lexer colors
