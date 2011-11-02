@@ -6,7 +6,7 @@ use warnings;
 
 # Load Wx::Scintilla
 use Wx::Scintilla ();
-use base 'Wx::ScintillaTextCtrl';
+use base 'Wx::Scintilla::TextCtrl';
 use Wx qw(:everything);
 use Wx::Event;
 

@@ -8,7 +8,7 @@ use Exporter ();
 use XSLoader ();
 use Wx       ();
 
-our $VERSION = '0.34';
+our $VERSION = '0.35_01';
 
 # Check for loaded Wx::STC
 BEGIN {
@@ -38,11 +38,11 @@ XSLoader::load 'Wx::Scintilla', $VERSION;
 no strict;
 
 package Wx::ScintillaTextCtrl;
-our $VERSION = '0.34';
+our $VERSION = '0.35_01';
 @ISA = qw(Wx::Control);
 
 package Wx::ScintillaTextEvent;
-our $VERSION = '0.34';
+our $VERSION = '0.35_01';
 @ISA = qw(Wx::CommandEvent);
 
 use strict;
@@ -254,7 +254,7 @@ Wx::Scintilla - Scintilla source code editing component for wxWidgets
 
     # Load Wx::Scintilla
     use Wx::Scintilla ();    # replaces use Wx::STC
-    use base 'Wx::ScintillaTextCtrl';    # replaces Wx::StyledTextCtrl
+    use base 'Wx::Scintilla::TextCtrl';    # replaces Wx::StyledTextCtrl
 
     use Wx qw(:everything);
     use Wx::Event;

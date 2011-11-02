@@ -21,7 +21,7 @@ package My::Scintilla::Editor;
 
 # Load Wx::Scintilla
 use Wx::Scintilla (); # replaces use Wx::STC
-use base 'Wx::ScintillaTextCtrl'; # replaces Wx::StyledTextCtrl
+use base 'Wx::Scintilla::TextCtrl'; # replaces Wx::StyledTextCtrl
 
 use Wx qw(:everything);
 use Wx::Event;

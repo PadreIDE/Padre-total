@@ -1,5 +1,8 @@
 Revision history for Wx-Scintilla
 
+0.35_01 TBA
+    - Wx::ScintillaTextCtrl -> Wx::Scintilla::TextCtrl in tools/ (AZAWAWI)
+
 0.34 2011.11.2
     - Released 0.33_03 as stable 0.34 (AZAWAWI)
 
