@@ -1,7 +1,20 @@
 Revision history for Wx-Scintilla
 
-0.35_01 TBA
+0.35_01 2011.11.2
     - Wx::ScintillaTextCtrl -> Wx::Scintilla::TextCtrl in tools/ (AZAWAWI)
+    - Upgrade to Scintilla 3.0. The following are the *related* changes:
+        - Paletted display support removed.
+        - New API to see if all lines are visible which can be used to
+          optimize processing fold structure notifications.
+        - Scrolling optimized by avoiding invalidation of fold margin when
+          redrawing whole window.
+        - Optimized SCI_MARKERNEXT.
+        - C++ lexer supports Pike hash quoted strings when turned on with
+          lexer.cpp.hashquoted.strings.
+        - Fixed incorrect line height with annotations in wrapped mode when
+          there are multiple views. Bug #3388159.
+        - Calltips may be displayed above the text as well as below.
+          Bug #3410830.
 
 0.34 2011.11.2
     - Released 0.33_03 as stable 0.34 (AZAWAWI)
