@@ -7,7 +7,9 @@
   [% INCLUDE cpan_search %]
   [% INCLUDE perl_documentation %]
   [% INCLUDE perl_tutorials %]
+  [% INCLUDE perl_news %]
   [% INCLUDE mailing_lists %]
+  [% INCLUDE other %]
 [% END %]
 
 [% BLOCK web_forums %]
@@ -15,7 +17,8 @@
 [% WRAPPER chrome/styled_panel %]
 <h2>Questions and Answers (Forums)</h2>
 <p>
-PerlMonks one of the biggest <a href="http://perlmonks.org/">Perl community support</a> sites.
+PerlMonks is one of the biggest <a href="http://perlmonks.org/">Perl community support</a> sites. Padre originally got
+its name partially to fit in the house of the Perl Monks.
 </p>
 <p>
 <a href="http://stackoverflow.com/questions/tagged/perl">StackOverflow Perl Questions</a> a programming Q&amp;A site.
@@ -73,12 +76,48 @@ Online version of the <a href="http://perldoc.perl.org/">Perl Documentation</a>
 </div>
 [% END %]
 
+[% BLOCK perl_news %]
+<div style="float: top;">
+[% WRAPPER chrome/styled_panel %]
+<h2>News about Perl</h2>
+<p>
+Ironman <a href="http://ironman.enlightenedperl.org/">Perl blog aggregator</a>.
+</p>
+<p>
+Perl Sphere <a href="http://perlsphere.net/">Perl blog aggregator</a>.
+</p>
+<p>
+<a href="http://perlbuzz.com/">Perl Buzz links and twitter</a> feed curated by Andy Lester.
+</p>
+<p>
+<a href="http://perlweekly.com/">Perl Weekly newsletter</a> curated by Gabor Szabo.
+</p>
+<div class="spacer" ></div>
+[% END %]
+</div>
+[% END %]
+
 
 [% BLOCK mailing_lists %]
 <div style="float: top;">
 [% WRAPPER chrome/styled_panel %]
 <h2>Mailing lists</h2>
 <p>
+There are lots of <a href="http://lists.perl.org/">Perl mailin lists</a> for different subject.
+Usually they are rather silent but the best experts lurk there.
+</p>
+<div class="spacer" ></div>
+[% END %]
+</div>
+[% END %]
+
+
+[% BLOCK other %]
+<div style="float: top;">
+[% WRAPPER chrome/styled_panel %]
+<h2>Other</h2>
+<p>
+<a href="http://prepan.org/">PrePAN</a>, social reviewing for Perl Modules.
 </p>
 <div class="spacer" ></div>
 [% END %]
