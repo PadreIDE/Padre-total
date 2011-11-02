@@ -1,3 +1,26 @@
 The pages of http://perlide.org/
-It is currently update manually by Gabor so in order for any changes 
-to these file to show up on the site, please ping szabgab
+It is currently update manually by Gabor so in order for any changes
+to these file to show up on the site, please ping szabgab.
+
+Tracking code used in each HTML page above the </body>
+
+<!-- Google Analytics code used by szabgab -->
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-12199211-2");
+pageTracker._setDomainName(".perlide.org");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+<!-- end Google analytics code -->
+
+<!-- GetClicky tracking code by szabgab -->
+<script src="//static.getclicky.com/js" type="text/javascript"></script>
+<script type="text/javascript">try{ clicky.init(66498706); }catch(e){}</script>
+<noscript><p><img alt="Clicky" width="1" height="1" src="//in.getclicky.com/66498706ns.gif" /></p></noscript>
+<!-- end of GetClicky tracking code -->
+
+
