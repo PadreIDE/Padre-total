@@ -12,6 +12,16 @@
   [% INCLUDE other %]
 [% END %]
 
+<!--
+
+WARNING: This page is linked from the Help menu of Padre since v0.91.
+If you feel the urge to move it please, resist.
+If you cannot resist, go for a walk.
+If that does not help make sure there is an
+automatic redirection from this URL to the new page.
+
+-->
+
 [% BLOCK web_forums %]
 <div style="float: top;">
 [% WRAPPER chrome/styled_panel %]
@@ -21,7 +31,8 @@ PerlMonks is one of the biggest <a href="http://perlmonks.org/">Perl community s
 its name partially to fit in the house of the Perl Monks.
 </p>
 <p>
-<a href="http://stackoverflow.com/questions/tagged/perl">StackOverflow Perl Questions</a> a programming Q&amp;A site.
+StackOverflow is a generic programming Q&amp;A site with a section dedicated to <a
+href="http://stackoverflow.com/questions/tagged/perl">Perl related Questions</a>
 </p>
 <div class="spacer" ></div>
 [% END %]
@@ -33,10 +44,12 @@ its name partially to fit in the house of the Perl Monks.
 [% WRAPPER chrome/styled_panel %]
 <h2>Searching for Perl modules on CPAN</h2>
 <p>
-Meta CPAN, a modern <a href="http://metacpan.org/">CPAN search engine</a>
+MetaCPAN, is a modern <a href="http://metacpan.org/">search engine for CPAN</a> that was launched in 2011.
+Some features it still missing but it is in active development. It also has a very nice interface.
 </p>
 <p>
-Search CPAN, the older <a href="http://search.cpan.org/">CPAN search engine</a>
+Search CPAN is the older <a href="http://search.cpan.org/">CPAN search engine</a>. It has been around
+for many years and it has a few very nice features you cannot find elsewhere.
 </p>
 <div class="spacer" ></div>
 [% END %]
@@ -48,7 +61,9 @@ Search CPAN, the older <a href="http://search.cpan.org/">CPAN search engine</a>
 [% WRAPPER chrome/styled_panel %]
 <h2>Perl Documentation</h2>
 <p>
-Online version of the <a href="http://perldoc.perl.org/">Perl Documentation</a>
+The standard <a href="http://perldoc.perl.org/">Documentation of Perl</a> that comes with Perl and so
+is available directly from Padre has an online version as well. Some people, especially non-Padre users
+will prefer that to their local copy.
 </p>
 <div class="spacer" ></div>
 [% END %]
