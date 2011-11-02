@@ -1,5 +1,8 @@
 Revision history for Wx-Scintilla
 
+0.34 2011.11.2
+    - Released 0.33_03 as stable 0.34 (AZAWAWI)
+
 0.33_03 2011.11.2
     Fixed 0.33_02 regressions regarding Wx constants support (AZAWAWI)
 
