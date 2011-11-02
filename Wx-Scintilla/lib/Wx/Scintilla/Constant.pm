@@ -104,6 +104,10 @@ our @EXPORT  = qw(
 	SC_CASE_MIXED
 	SC_CASE_UPPER
 	SC_CASE_LOWER
+	SC_FONT_SIZE_MULTIPLIER
+	SC_WEIGHT_NORMAL
+	SC_WEIGHT_SEMIBOLD
+	SC_WEIGHT_BOLD
 	INDIC_PLAIN
 	INDIC_SQUIGGLE
 	INDIC_TT
@@ -208,6 +212,8 @@ our @EXPORT  = qw(
 	SCVS_NONE
 	SCVS_RECTANGULARSELECTION
 	SCVS_USERACCESSIBLE
+	SC_TECHNOLOGY_DEFAULT
+	SC_TECHNOLOGY_DIRECTWRITE
 	KEYWORDSET_MAX
 	SC_TYPE_BOOLEAN
 	SC_TYPE_INTEGER
@@ -405,6 +411,7 @@ our @EXPORT  = qw(
 	SCE_C_GLOBALCLASS
 	SCE_C_STRINGRAW
 	SCE_C_TRIPLEVERBATIM
+	SCE_C_HASHQUOTEDSTRING
 	SCE_D_DEFAULT
 	SCE_D_COMMENT
 	SCE_D_COMMENTLINE
@@ -1863,6 +1870,15 @@ use constant {
 	SC_CASE_LOWER => 2,
 
 
+	SC_FONT_SIZE_MULTIPLIER => 100,
+
+
+	# FontWeight enumeration
+	SC_WEIGHT_NORMAL   => 400,
+	SC_WEIGHT_SEMIBOLD => 600,
+	SC_WEIGHT_BOLD     => 700,
+
+
 	# IndicatorStyle enumeration
 	INDIC_PLAIN       => 0,
 	INDIC_SQUIGGLE    => 1,
@@ -2073,6 +2089,10 @@ use constant {
 	SCVS_NONE                 => 0,
 	SCVS_RECTANGULARSELECTION => 1,
 	SCVS_USERACCESSIBLE       => 2,
+
+
+	SC_TECHNOLOGY_DEFAULT     => 0,
+	SC_TECHNOLOGY_DIRECTWRITE => 1,
 
 
 	# Maximum value of keywordSet parameter of SetKeyWords.
@@ -2303,6 +2323,7 @@ use constant {
 	SCE_C_GLOBALCLASS            => 19,
 	SCE_C_STRINGRAW              => 20,
 	SCE_C_TRIPLEVERBATIM         => 21,
+	SCE_C_HASHQUOTEDSTRING       => 22,
 
 	# Lexical states for SCLEX_D
 	SCE_D_DEFAULT                => 0,
@@ -3812,6 +3833,8 @@ use constant {
 	# Deprecated in 2.21
 	# The SC_CP_DBCS value can be used to indicate a DBCS mode for GTK+.
 	SC_CP_DBCS => 1,
+
+
 };
 
 1;
@@ -3957,6 +3980,13 @@ Invisible mark that only sets the line background colour.
 	SC_CASE_MIXED                  (0)
 	SC_CASE_UPPER                  (1)
 	SC_CASE_LOWER                  (2)
+	SC_FONT_SIZE_MULTIPLIER        (100)
+
+=head2 FontWeight enumeration
+
+	SC_WEIGHT_NORMAL               (400)
+	SC_WEIGHT_SEMIBOLD             (600)
+	SC_WEIGHT_BOLD                 (700)
 
 =head2 IndicatorStyle enumeration
 
@@ -4154,6 +4184,8 @@ If CARET_EVEN is not set, instead of having symmetrical UZs,the left and bottom 
 	SCVS_NONE                      (0)
 	SCVS_RECTANGULARSELECTION      (1)
 	SCVS_USERACCESSIBLE            (2)
+	SC_TECHNOLOGY_DEFAULT          (0)
+	SC_TECHNOLOGY_DIRECTWRITE      (1)
 
 Maximum value of keywordSet parameter of SetKeyWords.
 
@@ -4384,6 +4416,7 @@ When a lexer specifies its language as SCLEX_AUTOMATIC it receives avalue assign
 	SCE_C_GLOBALCLASS              (19)
 	SCE_C_STRINGRAW                (20)
 	SCE_C_TRIPLEVERBATIM           (21)
+	SCE_C_HASHQUOTEDSTRING         (22)
 
 =head2 Lexical states for SCLEX_D
 
