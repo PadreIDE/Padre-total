@@ -1,0 +1,88 @@
+[% DEFAULT
+  title="Perl Help sites and Perl tutorials"
+  description="Get help from other Perl programmers. Learn Perl."
+%]
+[% WRAPPER lib/xhtml_doc %]
+  [% INCLUDE web_forums %]
+  [% INCLUDE cpan_search %]
+  [% INCLUDE perl_documentation %]
+  [% INCLUDE perl_tutorials %]
+  [% INCLUDE mailing_lists %]
+[% END %]
+
+[% BLOCK web_forums %]
+<div style="float: top;">
+[% WRAPPER chrome/styled_panel %]
+<h2>Questions and Answers (Forums)</h2>
+<p>
+PerlMonks one of the biggest <a href="http://perlmonks.org/">Perl community support</a> sites.
+</p>
+<p>
+<a href="http://stackoverflow.com/questions/tagged/perl">StackOverflow Perl Questions</a> a programming Q&amp;A site.
+</p>
+<div class="spacer" ></div>
+[% END %]
+</div>
+[% END %]
+
+[% BLOCK cpan_search %]
+<div style="float: top;">
+[% WRAPPER chrome/styled_panel %]
+<h2>Searching for Perl modules on CPAN</h2>
+<p>
+Meta CPAN, a modern <a href="http://metacpan.org/">CPAN search engine</a>
+</p>
+<p>
+Search CPAN, the older <a href="http://search.cpan.org/">CPAN search engine</a>
+</p>
+<div class="spacer" ></div>
+[% END %]
+</div>
+[% END %]
+
+[% BLOCK perl_documentation %]
+<div style="float: top;">
+[% WRAPPER chrome/styled_panel %]
+<h2>Perl Documentation</h2>
+<p>
+Online version of the <a href="http://perldoc.perl.org/">Perl Documentation</a>
+</p>
+<div class="spacer" ></div>
+[% END %]
+</div>
+[% END %]
+
+[% BLOCK perl_tutorials %]
+<div style="float: top;">
+[% WRAPPER chrome/styled_panel %]
+<h2>Perl Tutorials and Books</h2>
+<p>
+<a href="http://szabgab.com/perl_tutorial.html">Perl tutorial</a> by Gabor Szabo.
+</p>
+<p>
+<a href="http://onyxneon.com/books/modern_perl/">Modern Perl Book</a> by chromatic.
+</p>
+<p>
+<a href="http://learnperl.scratchcomputing.com/">Learn Perl tutorial</a> by Eric Wilhelm.
+</p>
+<p>
+<a href="http://learn.perl.org/">Learn Perl</a> resources on perl.org
+</p>
+<div class="spacer" ></div>
+[% END %]
+</div>
+[% END %]
+
+
+[% BLOCK mailing_lists %]
+<div style="float: top;">
+[% WRAPPER chrome/styled_panel %]
+<h2>Mailing lists</h2>
+<p>
+</p>
+<div class="spacer" ></div>
+[% END %]
+</div>
+[% END %]
+
+
