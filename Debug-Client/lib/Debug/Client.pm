@@ -514,8 +514,18 @@ sub get_value {
 
 =head2 get_y_zero
 
- $d->get_y_zero();
- 
+From perldebug, but defaulted to y 0
+
+ y [level [vars]]
+
+Display all (or some) lexical variables (mnemonic: mY variables) in the current 
+scope or level scopes higher. You can limit the variables that you see with vars 
+which works exactly as it does for the V and X commands. Requires the PadWalker 
+module version 0.08 or higher; will warn if this isn't installed. 
+Output is pretty-printed in the same style as for V and the format is controlled by the same options.
+
+  $d->get_y_zero();
+
 =cut
 #######
 # sub get_y_zero
@@ -743,12 +753,12 @@ sub send_get {
 }
 
 #these should be removed as not used
-# =head2 filename
-# =cut
+=head2 filename
+=cut
 sub filename { return $_[0]->{filename} }
 
-# =head2 row
-# =cut
+=head2 row
+=cut
 sub row      { return $_[0]->{row} }
 
 =head3 _logger
@@ -770,6 +780,22 @@ Copyright 2008-2011 Gabor Szabo. L<http://szabgab.com/>
 
 This program is free software; you can redistribute it and/or
 modify it under the same terms as Perl 5 itself.
+
+=head1 BUGS AND LIMITATIONS
+
+when using perl5db.pl v1.34
+
+Debug::Client 0.13 tests are failing, due to changes in perl debugger.
+Debug::Client 0.13_01 skips added to failing tests.
+
+ c [line|sub]
+
+Continue, optionally inserting a one-time-only breakpoint at the specified line or subroutine.
+
+ c is now ignoring options [line|sub]
+
+and just performing c on it's own
+
 
 =head1 WARRANTY
 
