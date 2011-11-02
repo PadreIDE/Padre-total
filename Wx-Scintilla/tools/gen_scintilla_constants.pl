@@ -12,9 +12,9 @@ my $perltidyrc = File::Spec->catfile( $Bin, 'perltidyrc' );
 die "cannot find perltidy configuration file: $perltidyrc\n"
   unless -e $perltidyrc;
 
-my $filename     = '../wx-scintilla/src/scintilla/include/Scintilla.iface';
-my $constants_pm = '../lib/Wx/Scintilla/Constant.pm';
-my $scintilla_pm = '../lib/Wx/Scintilla.pm';
+my $filename     = "$Bin/../wx-scintilla/src/scintilla/include/Scintilla.iface";
+my $constants_pm = "$Bin/../lib/Wx/Scintilla/Constant.pm";
+my $scintilla_pm = "$Bin/../lib/Wx/Scintilla.pm";
 
 # Find the version from Scintilla.pm
 my $scintilla = Module::Metadata->new_from_file($scintilla_pm);
