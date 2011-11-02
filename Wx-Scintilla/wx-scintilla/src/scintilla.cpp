@@ -3973,12 +3973,6 @@ void wxScintillaTextCtrl::StyleSetFontEncoding(int style, wxFontEncoding encodin
 }
 
 
-// Perform one of the operations defined by the wxSTC_CMD_* constants.
-void wxScintillaTextCtrl::CmdKeyExecute(int cmd) {
-    SendMsg(cmd);
-}
-
-
 // Set the left and right margin in the edit area, measured in pixels.
 void wxScintillaTextCtrl::SetMargins(int left, int right) {
     SetMarginLeft(left);

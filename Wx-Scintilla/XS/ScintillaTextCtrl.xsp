@@ -1376,10 +1376,6 @@ int
 wxScintillaTextCtrl::GetCurrentLine()
 
 void
-wxScintillaTextCtrl::CmdKeyExecute( cmd )
-    int cmd
-
-void
 wxScintillaTextCtrl::SetMargins( left, right )
     int left
     int right

@@ -1,5 +1,8 @@
 Revision history for Wx-Scintilla
 
+0.33_02 TBA
+    - Removed wxSTC_CMD_ internal constants and CmdKeyExecute method (AZAWAWI)
+
 0.33_01 2011.11.2
     - Moved Wx::ScintillaTextCtrl to Wx::Scintilla::TextCtrl (ADAMK)
     - Moved Wx::ScintillaTextEvent to Wx::Scintilla::TextEvent (ADAMK)
