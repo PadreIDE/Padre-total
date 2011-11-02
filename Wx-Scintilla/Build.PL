@@ -21,7 +21,7 @@ Module::Build::Scintilla::stc_builderclass()->new(
 		'ExtUtils::XSpp'   => '0.1602',
 	},
 	requires => {
-		'perl'           => '5.008',
+		'perl' => '5.008',
 	},
 	needs_compiler => 0, # We will be doing our own XS compilation
 	add_to_cleanup => [
@@ -52,7 +52,7 @@ Module::Build::Scintilla::stc_builderclass()->new(
 			repository => 'http://svn.perlide.org/padre/trunk/Wx-Scintilla/',
 		},
 		no_index => {
-			directory => [ qw<tools wx-scintilla cpp> ],
+			directory => [qw<tools wx-scintilla cpp>],
 		},
 	},
 	dist_abstract      => 'Scintilla source code editing component for wxWidgets',
