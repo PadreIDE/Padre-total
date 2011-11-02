@@ -10,7 +10,7 @@ use strict;
 use warnings;
 
 require Exporter;
-our $VERSION = '0.33_02';
+our $VERSION = '0.33_03';
 our @ISA     = 'Exporter';
 our @EXPORT  = qw(
 	INVALID_POSITION

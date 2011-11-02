@@ -17,6 +17,8 @@ INCLUDE_COMMAND: $^X -MExtUtils::XSpp::Cmd -e xspp -- -t wx_typemap.xsp XS/Scint
 
 INCLUDE_COMMAND: $^X -MExtUtils::XSpp::Cmd -e xspp -- -t wx_typemap.xsp XS/ScintillaTextEvent.xsp
 
+#include "cpp/st_constants.cpp"
+
 #  //FIXME//tricky
 #if defined(__WXMSW__)
 #undef XS

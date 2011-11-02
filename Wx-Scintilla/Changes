@@ -1,6 +1,10 @@
 Revision history for Wx-Scintilla
 
-0.33_02 TBA
+0.33_03 2011.11.2
+    Fixed 0.33_02 regressions regarding Wx constants support (AZAWAWI)
+
+0.33_02 2011.11.2
+    ** BAD RELEASE **
     - Removed wxSTC_CMD_ internal constants and CmdKeyExecute method (AZAWAWI)
     - Removed unused st_constants.cpp (AZAWAWI)
     - Fixed tests, tools and SYNOPSIS to fully use Wx::Scintilla constants
