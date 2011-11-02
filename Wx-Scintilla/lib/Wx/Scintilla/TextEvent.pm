@@ -1,5 +1,6 @@
 package Wx::Scintilla::TextEvent;
 
+use 5.008;
 use strict;
 use warnings;
 

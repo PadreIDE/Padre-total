@@ -1,11 +1,24 @@
 package Wx::Scintilla;
 
+use 5.008;
 use strict;
 use warnings;
-use Carp ();
-use Wx   ();
+use Carp     ();
+use Exporter ();
+use XSLoader ();
+use Wx       ();
 
 our $VERSION = '0.33_01';
+
+# Check for loaded Wx::STC
+BEGIN {
+    if ( exists $INC{'Wx/STC.pm'} ) {
+        croak('Wx::Scintilla and Wx::STC and mutually exclusive');
+    }
+}
+
+# Import all of the constants
+use Wx::Scintilla::Constant;
 
 # Define Perl 6 lexer
 use constant {
@@ -15,20 +28,7 @@ use constant {
     wxSCINTILLA_P6_STRING  => 2,
 };
 
-# Export all the stuff that Wx::Scintilla::Constants::Exports
-require Exporter;
-our @ISA = qw(Exporter);
-use Wx::Scintilla::Constants;
-our @EXPORT = @Wx::Scintilla::Constants::EXPORT;
-
-# check for loaded Wx::STC
-if ( exists( $INC{'Wx/STC.pm'} ) ) {
-    croak(
-'Wx::Scintilla cannot be loaded alongside Wx::STC. Choose one and only one of the modules. '
-    );
-}
-
-require XSLoader;
+# Load the XS backend
 XSLoader::load 'Wx::Scintilla', $VERSION;
 
 #

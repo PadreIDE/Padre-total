@@ -6,7 +6,7 @@ use Module::Metadata ();
 use Perl::Tidy       ();
 
 my $filename     = '../wx-scintilla/src/scintilla/include/Scintilla.iface';
-my $constants_pm = '../lib/Wx/Scintilla/Constants.pm';
+my $constants_pm = '../lib/Wx/Scintilla/Constant.pm';
 my $scintilla_pm = '../lib/Wx/Scintilla.pm';
 
 # Find the version from Scintilla.pm
