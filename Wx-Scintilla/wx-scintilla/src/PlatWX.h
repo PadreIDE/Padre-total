@@ -22,5 +22,5 @@
 
 wxRect wxRectFromPRectangle(PRectangle prc);
 PRectangle PRectangleFromwxRect(wxRect rc);
-wxColour wxColourFromCA(const ColourAllocated& ca);
+wxColour wxColourFromCA(const ColourDesired& ca);
 
