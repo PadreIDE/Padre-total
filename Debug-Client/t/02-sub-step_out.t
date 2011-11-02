@@ -42,17 +42,17 @@ my $debugger = start_debugger();
 
 {
 	my @out = $debugger->step_in;
-	cmp_deeply( \@out, [ 'main::', 't/eg/02-sub.pl', 8, 'my $q = f($x, $y);' ], 'line 8' );
+	cmp_deeply( \@out, [ 'main::', 't/eg/02-sub.pl', 8, 'my $q = func1($x, $y);' ], 'line 8' );
 }
 
 {
 	my @out = $debugger->step_in;
-	cmp_deeply( \@out, [ 'main::f', 't/eg/02-sub.pl', 16, '   my ($q, $w) = @_;' ], 'line 16' );
+	cmp_deeply( \@out, [ 'main::func1', 't/eg/02-sub.pl', 16, '   my ($q, $w) = @_;' ], 'line 16' );
 }
 
 {
 	my @out = $debugger->step_in;
-	cmp_deeply( \@out, [ 'main::f', 't/eg/02-sub.pl', 17, '   my $multi = $q * $w;' ], 'line 17' )
+	cmp_deeply( \@out, [ 'main::func1', 't/eg/02-sub.pl', 17, '   my $multi = $q * $w;' ], 'line 17' )
 		or diag( $debugger->buffer );
 }
 
@@ -76,19 +76,19 @@ SKIP: {
 {
 	my $out = $debugger->step_in;
 	ok( $out =~ s/DB<\d+> $/DB<> /, 'replace number as it can be different on other versions of perl' );
-	is( $out, "main::(t/eg/02-sub.pl:10):\tmy \$t = f(19, 23);\n  DB<> ", 'out' );
+	is( $out, "main::(t/eg/02-sub.pl:10):\tmy \$t = func1(19, 23);\n  DB<> ", 'out' );
 }
 
 {
 	my @out = $debugger->step_in;
-	cmp_deeply( \@out, [ 'main::f', 't/eg/02-sub.pl', 16, '   my ($q, $w) = @_;' ], 'line 17' )
+	cmp_deeply( \@out, [ 'main::func1', 't/eg/02-sub.pl', 16, '   my ($q, $w) = @_;' ], 'line 17' )
 		or diag( $debugger->buffer );
 }
 
 {
 	my $out = $debugger->step_in;
 	ok( $out =~ s/DB<\d+> $/DB<> /, 'replace number as it can be different on other versions of perl' );
-	is( $out, "main::f(t/eg/02-sub.pl:17):\t   my \$multi = \$q * \$w;\n  DB<> ", 'out' );
+	is( $out, "main::func1(t/eg/02-sub.pl:17):\t   my \$multi = \$q * \$w;\n  DB<> ", 'out' );
 }
 
 {

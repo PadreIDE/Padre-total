@@ -43,8 +43,8 @@ my $perl5db_ver;
 
 SKIP: {
 	skip( 'perl5db v1.34 dose not support "c [line|sub]"', 1 ) unless $perl5db_ver < 1.34;
-	my @out = $debugger->run('f');
-	cmp_deeply( \@out, [ 'main::f', 't/eg/02-sub.pl', 16, '   my ($q, $w) = @_;' ], 'line 16' )
+	my @out = $debugger->run('func1');
+	cmp_deeply( \@out, [ 'main::func1', 't/eg/02-sub.pl', 16, '   my ($q, $w) = @_;' ], 'line 16' )
 		or diag( $debugger->buffer );
 }
 

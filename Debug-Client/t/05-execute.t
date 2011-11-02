@@ -104,14 +104,14 @@ TODO: {
 
 {
 	my @out = $debugger->run;
-	cmp_deeply( \@out, [ 'main::f', 't/eg/02-sub.pl', 18, '   my $add   = $q + $w;' ], 'line 18' )
+	cmp_deeply( \@out, [ 'main::func1', 't/eg/02-sub.pl', 18, '   my $add   = $q + $w;' ], 'line 18' )
 		or diag( $debugger->buffer );
 }
 
 # TODO maybe check if we can remove the breakpoint
 {
 	my @out = $debugger->run;
-	cmp_deeply( \@out, [ 'main::f', 't/eg/02-sub.pl', 18, '   my $add   = $q + $w;' ], 'line 18' )
+	cmp_deeply( \@out, [ 'main::func1', 't/eg/02-sub.pl', 18, '   my $add   = $q + $w;' ], 'line 18' )
 		or diag( $debugger->buffer );
 }
 

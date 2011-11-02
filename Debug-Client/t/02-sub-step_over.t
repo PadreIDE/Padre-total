@@ -42,7 +42,7 @@ my $debugger = start_debugger();
 
 {
 	my @out = $debugger->step_in;
-	cmp_deeply( \@out, [ 'main::', 't/eg/02-sub.pl', 8, 'my $q = f($x, $y);' ], 'line 8' )
+	cmp_deeply( \@out, [ 'main::', 't/eg/02-sub.pl', 8, 'my $q = func1($x, $y);' ], 'line 8' )
 		or diag( $debugger->buffer );
 }
 
@@ -67,7 +67,7 @@ SKIP: {
 {
 	my $out = $debugger->step_over;
 	ok( $out =~ s/DB<\d+> $/DB<> /, 'replace number as it can be different on other versions of perl' );
-	is( $out, "main::(t/eg/02-sub.pl:10):\tmy \$t = f(19, 23);\n  DB<> ", 'step over on simple statement' );
+	is( $out, "main::(t/eg/02-sub.pl:10):\tmy \$t = func1(19, 23);\n  DB<> ", 'step over on simple statement' );
 }
 
 {
