@@ -7,7 +7,7 @@ use warnings;
 use FindBin qw{ $Bin };
 
 # Load Wx::Scintilla
-use Wx::Scintilla 0.32 ();    # replaces use Wx::STC
+use Wx::Scintilla 0.34 ();    # replaces use Wx::STC
 use base 'Wx::Scintilla::TextCtrl';    # replaces Wx::StyledTextCtrl
 
 use Wx qw(:everything);
