@@ -9,6 +9,7 @@ use XSLoader ();
 use Wx       ();
 
 our $VERSION = '0.33_01';
+    $VERSION = eval $VERSION;
 
 # Check for loaded Wx::STC
 BEGIN {
