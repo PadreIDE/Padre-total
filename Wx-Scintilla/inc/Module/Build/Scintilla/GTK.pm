@@ -1,5 +1,6 @@
 package Module::Build::Scintilla::GTK;
 
+use 5.006;
 use strict;
 use warnings;
 use Module::Build::Scintilla;

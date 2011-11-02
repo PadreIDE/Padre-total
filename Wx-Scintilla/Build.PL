@@ -1,5 +1,5 @@
+use 5.006;
 use strict;
-use warnings;
 
 use lib 'inc';
 require Module::Build::Scintilla;
@@ -11,13 +11,17 @@ Module::Build::Scintilla::stc_builderclass()->new(
 	dist_author        => q{Ahmad M. Zawawi <ahmad.zawawi@gmail.com>},
 	dist_version_from  => 'lib/Wx/Scintilla.pm',
 	configure_requires => {
-		'Module::Build' => 0.36,
+		'perl'          => '5.006',
+		'Module::Build' => '0.36',
 	},
 	build_requires => {
 		'Test::More'       => 0,
 		'Alien::wxWidgets' => 0,
 		'Wx'               => 0,
 		'ExtUtils::XSpp'   => '0.1602',
+	},
+	requires => {
+		'perl'           => '5.008',
 	},
 	needs_compiler => 0, # We will be doing our own XS compilation
 	add_to_cleanup => [
