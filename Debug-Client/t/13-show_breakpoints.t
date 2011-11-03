@@ -68,3 +68,9 @@ my $debugger = start_debugger();
 {
 	$debugger->quit;
 }
+
+done_testing( );
+
+1;
+
+__END__

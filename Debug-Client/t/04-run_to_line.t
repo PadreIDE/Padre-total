@@ -11,7 +11,7 @@ import Test::More;
 require Test::Deep;
 import Test::Deep;
 
-plan( tests => 5 );
+# plan( tests => 5 );
 
 my $debugger = start_debugger();
 my $perl5db_ver;
@@ -77,3 +77,9 @@ SKIP: {
 {
 	$debugger->quit;
 }
+
+done_testing( );
+
+1;
+
+__END__

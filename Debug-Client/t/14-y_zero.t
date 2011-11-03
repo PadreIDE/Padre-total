@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 
 use strict;
 use warnings;
@@ -7,7 +7,6 @@ use warnings;
 $| = 1;
 
 use t::lib::Debugger;
-
 my ( $dir, $pid ) = start_script('t/eg/14-y_zero.pl');
 
 require Test::More;
@@ -15,7 +14,7 @@ import Test::More;
 require Test::Deep;
 import Test::Deep;
 
-plan( tests => 13 );
+# plan( tests => 13 );
 
 use_ok( 'PadWalker', '1.92' );
 
@@ -90,3 +89,9 @@ my $debugger = start_debugger();
 {
 	$debugger->quit;
 }
+
+done_testing( );
+
+1;
+
+__END__

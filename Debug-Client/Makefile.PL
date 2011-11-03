@@ -1,10 +1,7 @@
 use 5.006;
 use strict;
 use lib 'privinc';
-use inc::Module::Install 0.86;
-
-
-
+use inc::Module::Install 1.02;
 
 
 name 'Debug-Client';
@@ -15,7 +12,7 @@ requires 'perl'            => '5.006';
 requires 'Carp'            => '0';
 requires 'IO::Socket'      => '0',
         
-test_requires 'Test::More'    => '0.47';
+test_requires 'Test::More'    => '0.88';
 test_requires 'Test::Deep'    => '0';
 test_requires 'File::HomeDir' => '0';
 

@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use 5.006;
 
-our $VERSION = '0.13_01';
+our $VERSION = '0.13_02';
 
 use utf8;
 use IO::Socket;
@@ -267,7 +267,7 @@ when called in array context.
 
 =cut
 
-#T Produce a stack backtrace. 
+#T Produce a stack backtrace.
 sub get_stack_trace {
 	my ($self) = @_;
 	$self->_send('T');
@@ -282,6 +282,7 @@ sub get_stack_trace {
 Sends the stack trace command C<t> Toggle trace mode (see also the AutoTrace option).
 
 =cut
+
 #######
 # sub toggle_trace
 #######
@@ -300,11 +301,13 @@ Sends the stack trace command C<S> [[!]pattern]
 List subroutine names [not] matching pattern.
 
 =cut
+
 #######
 # sub list_subroutine_names
 #######
 sub list_subroutine_names {
-	my ($self, $pattern) = @_;
+	my ( $self, $pattern ) = @_;
+
 	# print "D-C $pattern \n";
 	$self->_send("S $pattern");
 	my $buf = $self->_get;
@@ -342,10 +345,12 @@ sub run {
 
 sub set_breakpoint {
 	my ( $self, $file, $line, $cond ) = @_;
-	
+
 	$self->_send("f $file");
+
 	# $self->_send("b $file");
 	my $b = $self->_get;
+
 	# print $b . "\n";
 
 	# Already in t/eg/02-sub.pl.
@@ -354,7 +359,8 @@ sub set_breakpoint {
 
 	# if it was successful no reply
 	# if it failed we saw two possible replies
-	my $buf    = $self->_get;
+	my $buf = $self->_get;
+
 	# print $buf . "\n";
 	my $prompt = $self->_prompt( \$buf );
 	if ( $buf =~ /^Subroutine [\w:]+ not found\./ ) {
@@ -375,6 +381,7 @@ sub set_breakpoint {
 =head2 remove_breakpoint
 
 =cut
+
 # apparently no clear success/error report for this
 sub remove_breakpoint {
 	my ( $self, $file, $line ) = @_;
@@ -394,6 +401,7 @@ The data as (L) prints in the command line debugger.
  $d->show_breakpoints();
 
 =cut
+
 #######
 # show_breakpoints
 #######
@@ -527,6 +535,7 @@ Output is pretty-printed in the same style as for V and the format is controlled
   $d->get_y_zero();
 
 =cut
+
 #######
 # sub get_y_zero
 #######
@@ -553,14 +562,16 @@ Make sure you don't put the type specifier (like $ ) there, just the symbol name
  $d->get_v_vars(regex);
 
 =cut
+
 #######
 # sub get_v_vars
 #######
 sub get_v_vars {
-	my ($self, $pattern) = @_;
+	my ( $self, $pattern ) = @_;
+
 	#TODO test for valid pattern ?
 	die "no pattern given\n" if not defined $pattern;
-	
+
 	$self->_send("V $pattern");
 	my $buf = $self->_get;
 	$self->_prompt( \$buf );
@@ -574,13 +585,14 @@ X [vars] Same as V currentpackage [vars]
  $d->get_v_vars(regex);
 
 =cut
+
 #######
 # sub get_x_vars
 #######
 sub get_x_vars {
-	my ($self, $pattern) = @_;
+	my ( $self, $pattern ) = @_;
 	die "no pattern given\n" if not defined $pattern;
-	
+
 	$self->_send("X $pattern");
 	my $buf = $self->_get;
 	$self->_prompt( \$buf );
@@ -589,6 +601,7 @@ sub get_x_vars {
 
 =head3 _parse_dumper
 =cut
+
 sub _parse_dumper {
 	my ($str) = @_;
 	return $str;
@@ -596,8 +609,10 @@ sub _parse_dumper {
 
 # TODO shall we add a timeout and/or a number to count down the number
 # sysread calls that return 0 before deciding it is really done
+
 =head3 _get
 =cut
+
 sub _get {
 	my ($self) = @_;
 
@@ -625,8 +640,10 @@ sub _get {
 # Extracts and prompt that looks like this:   DB<3> $
 # puts the number from the prompt in $self->{prompt} and also returns it.
 # See 00-internal.t for test cases
+
 =head3 _prompt
 =cut
+
 sub _prompt {
 	my ( $self, $buf ) = @_;
 
@@ -653,8 +670,10 @@ sub _prompt {
 #    $row       is the current row number
 #    $content   is the content of the current row
 # see 00-internal.t for test cases
+
 =head3 _process_line
 =cut
+
 sub _process_line {
 	my ( $self, $buf ) = @_;
 
@@ -687,10 +706,10 @@ sub _process_line {
 
 	# the last line before
 	# main::(t/eg/01-add.pl:8):  my $z = $x + $y;
-	if ($line =~ m{^([\w:]*)                  # module
-                  \(   ([^\)]*):(\d+)   \)   # (file:row)
-                  :\t?                        # :
-                  (.*)                       # content
+	if ($line =~ m{^([\w:]*) 			# module
+                  \( ([^\)]*):(\d+) \) 	# (file:row)
+                  :\t? 					# :
+                  (.*) 					# content
                   }mx
 		)
 	{
@@ -701,7 +720,7 @@ sub _process_line {
 	}
 	$self->{filename} = $file;
 	print "filename: $self->{filename}\n";
-	$self->{row}      = $row;
+	$self->{row} = $row;
 	return ( $module, $file, $row, $content );
 }
 
@@ -736,6 +755,7 @@ sub get {
 
 =head3 _send
 =cut
+
 sub _send {
 	my ( $self, $input ) = @_;
 
@@ -745,6 +765,7 @@ sub _send {
 
 =head2 send_get
 =cut
+
 sub send_get {
 	my ( $self, $input ) = @_;
 	$self->_send($input);
@@ -753,16 +774,20 @@ sub send_get {
 }
 
 #these should be removed as not used
+
 =head2 filename
 =cut
+
 sub filename { return $_[0]->{filename} }
 
 =head2 row
 =cut
-sub row      { return $_[0]->{row} }
+
+sub row { return $_[0]->{row} }
 
 =head3 _logger
 =cut
+
 sub _logger {
 	print "LOG: $_[0]\n" if $ENV{DEBUG_LOGGER};
 }
@@ -771,6 +796,14 @@ sub _logger {
 =head1 See Also
 
 L<GRID::Machine::remotedebugtut>
+
+=head1 AUTHORS
+
+Gabor Szabo E<lt>gabor@szabgab.comE<gt>
+
+Breno G. de Oliveira <garu at cpan.org>
+
+Kevin Dawson E<lt>bowtie@cpan.orgE<gt>
 
 =head1 COPYRIGHT
 
@@ -783,9 +816,8 @@ modify it under the same terms as Perl 5 itself.
 
 =head1 BUGS AND LIMITATIONS
 
+Debug::Client 0.12 tests are failing, due to changes in perl debugger, 
 when using perl5db.pl v1.34
-
-Debug::Client 0.13 tests are failing, due to changes in perl debugger.
 Debug::Client 0.13_01 skips added to failing tests.
 
  c [line|sub]
