@@ -43,40 +43,26 @@ sub set_up {
 
 	$self->{debug_output_visable} = 0;
 	$self->{breakpoints_visable}  = 0;
-	# require Padre::Plugin::Debug::Debugger;
-	# $self->{debugger} = Padre::Plugin::Debug::Debugger->new($main);
-
-	# $self->{debugger}->setup();
 
 	# Setup the debug button icons
-
 	$self->{sub_names}->Disable;
 	$self->{sub_name_regex}->Disable;
 	$self->{backtrace}->Disable;
 	$self->{list_actions}->Disable;
 	$self->{show_buffer}->Disable;
 
-	# $self->{step_in}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_macro-stop-after-command') );
-	# $self->{launch_debugger}->SetBitmapLabel( Padre::Wx::Icon::find('actions/morpho2') );
-	# $self->{debugger}->Enable;
-
-	# $self->{step_in}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_macro-stop-after-command') );
 	$self->{step_in}->SetBitmapLabel( Padre::Wx::Icon::find('actions/step_in') );
 	$self->{step_in}->Disable;
 
-	# $self->{step_over}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_macro-stop-after-procedure') );
 	$self->{step_over}->SetBitmapLabel( Padre::Wx::Icon::find('actions/step_over') );
 	$self->{step_over}->Disable;
 
-	# $self->{step_out}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_macro-jump-back') );
 	$self->{step_out}->SetBitmapLabel( Padre::Wx::Icon::find('actions/step_out') );
 	$self->{step_out}->Disable;
 
-	# $self->{run_till}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_tools-macro') );
 	$self->{run_till}->SetBitmapLabel( Padre::Wx::Icon::find('actions/run_till') );
 	$self->{run_till}->Disable;
 
-	# $self->{set_breakpoints}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_macro-insert-breakpoint') );
 	$self->{set_breakpoints}->SetBitmapLabel( Padre::Wx::Icon::find('actions/breakpoints') );
 	$self->{set_breakpoints}->Disable;
 
@@ -85,20 +71,11 @@ sub set_up {
 	$self->{display_value}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_macro-watch-variable') );
 	$self->{display_value}->Disable;
 
-	# $self->{quit_debugger}->SetBitmapLabel( Padre::Wx::Icon::find('actions/stop') );
 	$self->{quit_debugger}->SetBitmapLabel( Padre::Wx::Icon::find('actions/red_cross') );
 	$self->{quit_debugger}->Disable;
 
-	# $self->_setup_db();
-
 	return;
 }
-
-# sub launch_debugger_clicked {
-	# my $self = shift;
-
-# # 	return;
-# }
 
 ########
 # Event check_debugger_checked
@@ -106,7 +83,7 @@ sub set_up {
 sub check_debugger_checked {
 	my ( $self, $event ) = @_;
 	my $main = $self->main;
-	
+
 	# Construct breakpoint panel if it is not there
 	unless ( $self->{debugger} ) {
 		require Padre::Plugin::Debug::Panel::Debugger;
@@ -114,10 +91,9 @@ sub check_debugger_checked {
 	}
 
 	if ( $event->IsChecked ) {
-		
+
 		$main->right->show( $self->{debugger} );
-		
-		# $self->{debugger}->show_debug_variable(1);
+
 		$self->{debugger}->{debug}->Show;
 		$self->{debugger}->{debug}->Enable;
 		$self->{step_in}->Enable;
@@ -127,17 +103,10 @@ sub check_debugger_checked {
 		$self->{display_value}->Enable;
 		$self->{quit_debugger}->Enable;
 
-		# $self->{trace}->Enable;
-		# $self->{sub_names}->Enable;
-		# $self->{sub_name_regex}->Enable;
-		# $self->{backtrace}->Enable;
-		# $self->{list_actions}->Enable;
-		# $self->{show_buffer}->Enable;
-
 	} else {
-		
+
 		$main->right->hide( $self->{debugger} );
-		
+
 		$self->{debugger}->debug_quit;
 		$self->{step_in}->Disable;
 		$self->{step_over}->Disable;
@@ -145,7 +114,6 @@ sub check_debugger_checked {
 		$self->{run_till}->Disable;
 		$self->{display_value}->Disable;
 		$self->{trace}->Disable;
-		# $self->{debugger}->show_debug_variable(0);
 		$self->{debugger}->show_debug_output(0);
 
 	}
@@ -154,32 +122,6 @@ sub check_debugger_checked {
 
 	return;
 }
-
-########
-# Event Handler on_debug_output_clicked
-# this is a naff loading method,
-########
-# sub on_debug_output_clicked {
-	# my ( $self, $event ) = @_;
-	# my $main = $self->main;
-
-	# Construct debug output panel if it is not there
-	# unless ( $self->{panel_debug_output} ) {
-	# require Padre::Plugin::Debug::DebugOutput;
-	# $self->{panel_debug_output} = Padre::Plugin::Debug::DebugOutput->new($main);
-	# }
-
-	# # 	if ( $event->IsChecked ) {
-	# $main->bottom->show( $self->{panel_debug_output} );
-	# } else {
-	# $main->bottom->hide( $self->{panel_debug_output} );
-	# delete $self->{panel_debug_output};
-	# }
-
-	# # 	$self->aui->Update;
-
-	# return;
-# }
 
 ########
 # Event Handler on_breakpoints_clicked
@@ -197,7 +139,6 @@ sub check_breakpoints_checked {
 	if ( $event->IsChecked ) {
 		$main->left->show( $self->{panel_breakpoints} );
 		$self->{set_breakpoints}->Enable;
-		# $self->{step_in}->Enable;
 	} else {
 		$main->left->hide( $self->{panel_breakpoints} );
 		$self->{set_breakpoints}->Disable;
@@ -209,47 +150,7 @@ sub check_breakpoints_checked {
 	return;
 }
 
-#######
-# sub_names_clicked
-#######
-sub sub_names_clicked {
-	my $self = shift;
 
-	$self->{debugger}->display_sub_names( $self->{sub_name_regex}->GetValue() );
-
-	return;
-}
-
-#######
-# sub backtrace_clicked
-#######
-sub backtrace_clicked {
-	my $self = shift;
-
-	$self->{debugger}->display_backtrace();
-
-	return;
-}
-#######
-# sub show_buffer_clicked
-#######
-sub show_buffer_clicked {
-	my $self = shift;
-
-	$self->{debugger}->display_buffer();
-
-	return;
-}
-#######
-# sub list_actions_clicked
-#######
-sub list_actions_clicked {
-	my $self = shift;
-
-	$self->{debugger}->display_list_actions();
-
-	return;
-}
 #######
 # Clean up our Classes, Padre::Plugin, POD out of date as of v0.84
 #######
@@ -257,10 +158,10 @@ sub plugin_disable {
 	my $self = shift;
 
 	# Close the dialog if it is hanging around
-	$self->unload_panel_breakpoints;
-
-	# $self->unpanel_debug_output;
-
+	delete $self->{panel_breakpoints};
+	$self->{debugger}->show_debug_output(0);
+	$self->aui->Update;
+	
 	# Unload all our child classes
 	$self->unload(
 		qw{
@@ -270,7 +171,7 @@ sub plugin_disable {
 			Padre::Plugin::Debug::FBP::Breakpoints
 			Padre::Plugin::Debug::Panel::DebugVariable
 			Padre::Plugin::Debug::FBP::DebugVariable
-			Padre::Plugin::Debug::Debugger
+			Padre::Plugin::Debug::Panel::Debugger
 			Debug::Client
 			}
 	);
@@ -279,7 +180,8 @@ sub plugin_disable {
 	return 1;
 }
 
-
+##########################
+# event handlers for simulation button bar
 #######
 # sub step_in_clicked
 #######
@@ -347,20 +249,6 @@ sub set_breakpoints_clicked {
 	return;
 }
 #######
-# sub trace_clicked
-#######
-sub trace_checked {
-	my ( $self, $event ) = @_;
-
-	if ( $event->IsChecked ) {
-		$self->{debugger}->display_trace(1);
-	} else {
-		$self->{debugger}->display_trace(0);
-	}
-
-	return;
-}
-#######
 # sub display_value
 #######
 sub display_value_clicked {
@@ -385,15 +273,68 @@ sub quit_debugger_clicked {
 	$self->{run_till}->Disable;
 	$self->{display_value}->Disable;
 	$self->{trace}->Disable;
-	
+
 	$self->{debugger}->show_debug_output(0);
-	
-	# $main->left->hide( $self->{panel_breakpoints} );
-	# $self->{breakpoints}->SetValue(0);
 
 	return;
 }
 
+#########################
+# event handlers for debug output options
+#######
+# sub trace_clicked
+#######
+sub trace_checked {
+	my ( $self, $event ) = @_;
+
+	if ( $event->IsChecked ) {
+		$self->{debugger}->display_trace(1);
+	} else {
+		$self->{debugger}->display_trace(0);
+	}
+
+	return;
+}
+#######
+# sub show_buffer_clicked
+#######
+sub show_buffer_clicked {
+	my $self = shift;
+
+	$self->{debugger}->display_buffer();
+
+	return;
+}
+#######
+# sub_names_clicked
+#######
+sub sub_names_clicked {
+	my $self = shift;
+
+	$self->{debugger}->display_sub_names( $self->{sub_name_regex}->GetValue() );
+
+	return;
+}
+#######
+# sub backtrace_clicked
+#######
+sub backtrace_clicked {
+	my $self = shift;
+
+	$self->{debugger}->display_backtrace();
+
+	return;
+}
+#######
+# sub list_actions_clicked
+#######
+sub list_actions_clicked {
+	my $self = shift;
+
+	$self->{debugger}->display_list_actions();
+
+	return;
+}
 
 1;
 
@@ -466,7 +407,7 @@ Add methods to Debug::Client in trunk
 
 =head2 Add the following to Debug::Client
 
-you will need to get Debug::Client 0.13_01 from Padre trunk
+you will need to get Debug::Client 0.13_02 from Padre trunk or CPAN
 
 for P-P-Debug to work
 

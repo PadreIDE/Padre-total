@@ -24,8 +24,11 @@ sub padre_interfaces {
 
 		# used by Main, and by Padre::Plugin::FormBuilder
 		'Padre::Wx'             => '0.91',
+		# 'Wx::Dialog'            => '0.91',
+		# 'Wx::Panel'             => '0.91',
 		'Padre::Wx::Main'       => '0.91',
 		'Padre::Wx::Role::Main' => '0.91',
+		'Padre::Wx::Role::View' => '0.91',
 		'Padre::Logger'         => '0.91',
 		'Padre::Current'        => '0.91',
 		'Padre::Util'           => '0.91',
@@ -94,12 +97,13 @@ sub plugin_disable {
 	$self->unload(
 		qw{
 			Padre::Plugin::Debug::Main
-			Padre::Plugin::Debug::FBP::MainFB
-			Padre::Plugin::Debug::DebugOutput
+			Padre::Plugin::Debug::Panel::DebugOutput
 			Padre::Plugin::Debug::FBP::DebugOutput
-			Padre::Plugin::Debug::Breakpoints
+			Padre::Plugin::Debug::Panel::Breakpoints
 			Padre::Plugin::Debug::FBP::Breakpoints
-			Padre::Plugin::Debug::Wx::Debugger
+			Padre::Plugin::Debug::Panel::DebugVariable
+			Padre::Plugin::Debug::FBP::DebugVariable
+			Padre::Plugin::Debug::Panel::Debugger
 			Debug::Client
 			}
 	);
@@ -142,3 +146,9 @@ sub plugin_enable {
 }
 
 1;
+
+=head1 P-P-Debug 
+
+See other Packages for more POD
+
+=cut
