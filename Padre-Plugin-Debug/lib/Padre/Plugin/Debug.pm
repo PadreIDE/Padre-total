@@ -10,7 +10,7 @@ $| = 1;
 use diagnostics;
 use utf8;
 
-our $VERSION = '0.13';
+our $VERSION = '0.13_02';
 our @ISA     = 'Padre::Plugin';
 
 #######
