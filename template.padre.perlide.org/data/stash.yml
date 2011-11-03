@@ -20,9 +20,13 @@ about:
   - title: y2011
     events:
       - date: 2011 November 3
+        url: http://perlnews.org/2011/11/metacpan-org-one-year-old/
+        title: metacpan.org one year old
+        comment: by Leo Lapworth
+      - date: 2011 November 3
         url: http://blogs.perl.org/users/olaf_alders/2011/11/happy-birthday-metacpan.html
         title: Happy Birthday, MetaCPAN!
-        comment: by Olaf Alders 
+        comment: by Olaf Alders
       - date: 2011 September 29
         url: http://ahmadzawawi.blogspot.com/2011/09/padres-new-find-in-files.html
         title: Finding files in Padre
