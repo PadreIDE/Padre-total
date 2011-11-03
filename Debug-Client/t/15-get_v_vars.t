@@ -56,11 +56,22 @@ my $debugger = start_debugger();
 }
 
 {
-	my @out = $debugger->get_y_zero();
-	cmp_deeply( \@out, [ '$line = 0' ], 'y_0 $line = 0' )
-		or diag( $debugger->buffer );
+	ok( $debugger->filename() =~ m/14-y_zero.pl/, 'filename 14-y_zero.pl' );
 }
 
+{
+	ok( $debugger->row() =~ m/14/, 'row 14' );
+}
+
+{
+	ok( $debugger->get_v_vars('$0') =~ m/14-y_zero.pl/, 'get_v_vars($0)' );
+
+}
+
+{
+	ok( $debugger->get_v_vars() =~ m/14-y_zero.pl/, 'get_v_vars()' );
+
+}
 {
 	my @out = $debugger->toggle_trace;
 	cmp_deeply( \@out, [ 'Trace = off' ], 'Trace off' )
@@ -74,6 +85,16 @@ my $debugger = start_debugger();
 	cmp_deeply( \@out, [ "\$line = $_" ], "y_0 \$line = $_" )
 		or diag( $debugger->buffer );
 	}
+}
+
+{
+	ok( $debugger->list_subroutine_names('!(IO::Socket|Carp)') =~ m/[^(IO::Socket|Carp)]/, 'list_subroutine_names( !(ENV|SIG|INC) )' );
+
+}
+
+{
+	ok( $debugger->list_subroutine_names() =~ m/(IO::Socket|Carp)/, 'list_subroutine_names()' );
+
 }
 
 {

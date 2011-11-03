@@ -180,32 +180,40 @@ sub buffer {
 
 =head2 quit
 
+ $debugger->quit();
+
 =cut
 
 sub quit { $_[0]->_send('q') }
 
 =head2 show_line
 
+ $debugger->show_line();
+
 =cut
 
-sub show_line { $_[0]->send_get('.') }
+sub show_line { $_[0]->_send_get('.') }
 
 
 =head2 step_in
 
+ $debugger->step_in();
+
 =cut
 
-sub step_in { $_[0]->send_get('s') }
+sub step_in { $_[0]->_send_get('s') }
 
 =head2 step_over
 
+ $debugger->step_over();
+
 =cut
 
-sub step_over { $_[0]->send_get('n') }
+sub step_over { $_[0]->_send_get('n') }
 
 =head2 step_out
 
- my ($prompt, $module, $file, $row, $content, $return_value) = $debugger->step_out;
+ my ($prompt, $module, $file, $row, $content, $return_value) = $debugger->step_out();
 
 Where $prompt is just a number, probably useless
 
@@ -279,7 +287,9 @@ sub get_stack_trace {
 
 =head2 toggle_trace
 
-Sends the stack trace command C<t> Toggle trace mode (see also the AutoTrace option).
+Sends the stack trace command C<t> Toggle trace mode.
+
+ $debugger->toggle_trace();
 
 =cut
 
@@ -307,9 +317,13 @@ List subroutine names [not] matching pattern.
 #######
 sub list_subroutine_names {
 	my ( $self, $pattern ) = @_;
+	
+	if ( defined $pattern ) {
+		$self->_send("S $pattern");
+	} else {
+		$self->_send('S');
+	}
 
-	# print "D-C $pattern \n";
-	$self->_send("S $pattern");
 	my $buf = $self->_get;
 
 	$self->_prompt( \$buf );
@@ -330,9 +344,9 @@ the script. (Like pressing c in the debugger).
 sub run {
 	my ( $self, $param ) = @_;
 	if ( not defined $param ) {
-		$self->send_get('c');
+		$self->_send_get('c');
 	} else {
-		$self->send_get("c $param");
+		$self->_send_get("c $param");
 	}
 }
 
@@ -408,7 +422,7 @@ The data as (L) prints in the command line debugger.
 sub show_breakpoints {
 	my ($self) = @_;
 
-	my $ret = $self->send_get('L');
+	my $ret = $self->_send_get('L');
 
 	return $ret;
 }
@@ -434,7 +448,7 @@ In case of no condition the last one will be the number 1.
 sub list_break_watch_action {
 	my ($self) = @_;
 
-	my $ret = $self->send_get('L');
+	my $ret = $self->_send_get('L');
 	if ( not wantarray ) {
 		return $ret;
 	}
@@ -470,7 +484,6 @@ sub list_break_watch_action {
 
 	return ( $prompt, \@breakpoints );
 }
-
 
 =head2 execute_code
 
@@ -549,7 +562,6 @@ sub get_y_zero {
 }
 
 
-
 =head2 get_v_vars
 
 V [pkg [vars]]
@@ -570,9 +582,12 @@ sub get_v_vars {
 	my ( $self, $pattern ) = @_;
 
 	#TODO test for valid pattern ?
-	die "no pattern given\n" if not defined $pattern;
-
-	$self->_send("V $pattern");
+	# die "no pattern given\n" if not defined $pattern;
+	if ( defined $pattern ) {
+		$self->_send("V $pattern");
+	} else {
+		$self->_send('V');
+	}
 	my $buf = $self->_get;
 	$self->_prompt( \$buf );
 	return $buf;
@@ -591,26 +606,73 @@ X [vars] Same as V currentpackage [vars]
 #######
 sub get_x_vars {
 	my ( $self, $pattern ) = @_;
-	die "no pattern given\n" if not defined $pattern;
 
-	$self->_send("X $pattern");
+	# die "no pattern given\n" if not defined $pattern;
+	if ( defined $pattern ) {
+		$self->_send("X $pattern");
+	} else {
+		$self->_send('X');
+	}
+
 	my $buf = $self->_get;
 	$self->_prompt( \$buf );
 	return $buf;
 }
 
 
+=head2 get
 
-sub _parse_dumper {
-	my ($str) = @_;
-	return $str;
+Actually I think this is an internal method....
+
+In SCALAR context will return all the buffer collected since the last command.
+
+In LIST context will return ($prompt, $module, $file, $row, $content)
+Where $prompt is the what the standard debugger uses for prompt. Probably not too
+interesting.
+$file and $row describe the location of the next instructions.
+$content is the actual line - this is probably not too interesting as it is 
+in the editor. $module is just the name of the module in which the current execution is.
+
+=cut
+
+sub get {
+	my ($self) = @_;
+
+	my $buf = $self->_get;
+
+	if (wantarray) {
+		$self->_prompt( \$buf );
+		my ( $module, $file, $row, $content ) = $self->_process_line( \$buf );
+		return ( $module, $file, $row, $content );
+	} else {
+		return $buf;
+	}
 }
 
+
+=head2 filename
+
+ $debugger->filename();
+
+=cut
+
+sub filename { return $_[0]->{filename} }
+
+=head2 row
+
+ $debugger->row();
+
+=cut
+
+sub row { return $_[0]->{row} }
+
+#########################################
+#### Internal Methods
+#######
+# Internal Method _get
+#######
 # TODO shall we add a timeout and/or a number to count down the number
 # sysread calls that return 0 before deciding it is really done
-
-
-
 sub _get {
 	my ($self) = @_;
 
@@ -632,31 +694,24 @@ sub _get {
 	return $buf;
 }
 
-# This is an internal method.
-# It takes one argument which is a reference to a scalar that contains the
-# the text sent by the debugger.
-# Extracts and prompt that looks like this:   DB<3> $
-# puts the number from the prompt in $self->{prompt} and also returns it.
-# See 00-internal.t for test cases
-
-
-
-sub _prompt {
-	my ( $self, $buf ) = @_;
-
-	if ( not defined $buf or not ref $buf or ref $buf ne 'SCALAR' ) {
-		Carp::croak('_prompt should be called with a reference to a scalar');
-	}
-
-	my $prompt;
-	if ( $$buf =~ s/\s*DB<(\d+)>\s*$// ) {
-		$prompt = $1;
-	}
-	chomp($$buf);
-
-	return $self->{prompt} = $prompt;
+#######
+# Internal Method _logger
+#######
+sub _logger {
+	print "LOG: $_[0]\n" if $ENV{DEBUG_LOGGER};
 }
 
+#######
+# Internal Method _parse_dumper
+#######
+sub _parse_dumper {
+	my ($str) = @_;
+	return $str;
+}
+
+#######
+# Internal Method _process_line
+#######
 # Internal method that receives a reference to a scalar
 # containing the data printed by the debugger
 # If the output indicates that the debugger terminated return '<TERMINATED>'
@@ -667,9 +722,6 @@ sub _prompt {
 #    $row       is the current row number
 #    $content   is the content of the current row
 # see 00-internal.t for test cases
-
-
-
 sub _process_line {
 	my ( $self, $buf ) = @_;
 
@@ -720,33 +772,28 @@ sub _process_line {
 	return ( $module, $file, $row, $content );
 }
 
-=head2 get
+#######
+# Internal Method _prompt
+#######
+# It takes one argument which is a reference to a scalar that contains the
+# the text sent by the debugger.
+# Extracts and prompt that looks like this:   DB<3> $
+# puts the number from the prompt in $self->{prompt} and also returns it.
+# See 00-internal.t for test cases
+sub _prompt {
+	my ( $self, $buf ) = @_;
 
-Actually I think this is an internal method....
-
-In SCALAR context will return all the buffer collected since the last command.
-
-In LIST context will return ($prompt, $module, $file, $row, $content)
-Where $prompt is the what the standard debugger uses for prompt. Probably not too
-interesting.
-$file and $row describe the location of the next instructions.
-$content is the actual line - this is probably not too interesting as it is 
-in the editor. $module is just the name of the module in which the current execution is.
-
-=cut
-
-sub get {
-	my ($self) = @_;
-
-	my $buf = $self->_get;
-
-	if (wantarray) {
-		$self->_prompt( \$buf );
-		my ( $module, $file, $row, $content ) = $self->_process_line( \$buf );
-		return ( $module, $file, $row, $content );
-	} else {
-		return $buf;
+	if ( not defined $buf or not ref $buf or ref $buf ne 'SCALAR' ) {
+		Carp::croak('_prompt should be called with a reference to a scalar');
 	}
+
+	my $prompt;
+	if ( $$buf =~ s/\s*DB<(\d+)>\s*$// ) {
+		$prompt = $1;
+	}
+	chomp($$buf);
+
+	return $self->{prompt} = $prompt;
 }
 
 #######
@@ -759,74 +806,20 @@ sub _send {
 	print { $self->{new_sock} } "$input\n";
 }
 
-=head2 send_get
-=cut
-
-sub send_get {
+#######
+# Internal Method _send_get
+#######
+sub _send_get {
 	my ( $self, $input ) = @_;
 	$self->_send($input);
 
 	return $self->get;
 }
 
-#these should be removed as not used
 
-=head2 filename
-=cut
+1;
 
-sub filename { return $_[0]->{filename} }
-
-=head2 row
-=cut
-
-sub row { return $_[0]->{row} }
-
-
-
-sub _logger {
-	print "LOG: $_[0]\n" if $ENV{DEBUG_LOGGER};
-}
-
-=head1 INTERNAL METHODS
-
-=head3 _get
-=cut
-
-=head3 _logger
-=cut
-
-=head3 _parse_dumper
-=cut
-
-=head3 _process_line
-=cut
-
-=head3 _prompt
-=cut
-
-=head3 _send
-=cut
-
-=head1 See Also
-
-L<GRID::Machine::remotedebugtut>
-
-=head1 AUTHORS
-
-Gabor Szabo E<lt>gabor@szabgab.comE<gt>
-
-Breno G. de Oliveira <garu at cpan.org>
-
-Kevin Dawson E<lt>bowtie@cpan.orgE<gt>
-
-=head1 COPYRIGHT
-
-Copyright 2008-2011 Gabor Szabo. L<http://szabgab.com/>
-
-=head1 LICENSE
-
-This program is free software; you can redistribute it and/or
-modify it under the same terms as Perl 5 itself.
+__END__
 
 =head1 BUGS AND LIMITATIONS
 
@@ -842,6 +835,38 @@ Continue, optionally inserting a one-time-only breakpoint at the specified line 
 
 and just performing c on it's own
 
+=head1 INTERNAL METHODS
+
+=head3 _get
+
+=head3 _logger
+
+=head3 _parse_dumper
+
+=head3 _process_line
+
+=head3 _prompt
+
+=head3 _send
+
+=head3 _send_get
+
+=head1 AUTHORS
+
+Gabor Szabo E<lt>gabor@szabgab.comE<gt>
+
+Breno G. de Oliveira E<lt>garu at cpan.orgE<gt>
+
+Kevin Dawson E<lt>bowtie@cpan.orgE<gt>
+
+=head1 COPYRIGHT
+
+Copyright 2008-2011 Gabor Szabo. L<http://szabgab.com/>
+
+=head1 LICENSE
+
+This program is free software; you can redistribute it and/or
+modify it under the same terms as Perl 5 itself.
 
 =head1 WARRANTY
 
@@ -854,6 +879,8 @@ that's your problem.
 Originally started out from the remoteport.pl script from 
 Pro Perl Debugging written by Richard Foley.
 
-=cut
+=head1 See Also
 
-1;
+L<GRID::Machine::remotedebugtut>
+
+=cut

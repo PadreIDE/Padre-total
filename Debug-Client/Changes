@@ -1,9 +1,14 @@
 v0.13_03 2011.11.xx
     Updates to POD use $debugger throughout instead of $d (BOWTIE)
+    Add a test for get_v_vars (BOWTIE)
+    Add a test for get_y_zero (BOWTIE)
+    Add a test for list_subroutine_names (BOWTIE)
+    
 
 v0.13_02 2011.11.03
     re-factor eg/02-sub.pl, change sub f to sub func1 (BOWTIE)
     Add a test for get_y_zero (BOWTIE)
+    Add a test for toggle_trace (BOWTIE)
     Updates to POD to complement new Methods (BOWTIE)
 
 v0.13_01 2011.11.02
