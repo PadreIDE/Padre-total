@@ -99,7 +99,7 @@ void Font::Create(const FontParameters &fp) {
     wxFont* font = new wxFont(fp.size,
                     wxDEFAULT,
                     fp.italic ? wxITALIC :  wxNORMAL,
-                    fp.weight ? wxBOLD : wxNORMAL,
+                    (fp.weight == wxSTC_WEIGHT_BOLD) ? wxBOLD : wxNORMAL,
                     false,
                     stc2wx(fp.faceName),
                     encoding);

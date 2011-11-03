@@ -1,5 +1,8 @@
 Revision history for Wx-Scintilla
 
+0.35_02 2011.11.3
+    - Fixed bold font bug reported by Kevin Dawson [BOWTIE] (AZAWAWI)
+
 0.35_01 2011.11.2
     - Wx::ScintillaTextCtrl -> Wx::Scintilla::TextCtrl in tools/ (AZAWAWI)
     - Upgrade to Scintilla 3.0. The following are the *related* changes:

@@ -91,6 +91,8 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSTC_EOL_CR 1
 #define wxSTC_EOL_LF 2
 
+#define wxSTC_WEIGHT_BOLD 700
+
 // The SC_CP_UTF8 value can be used to enter Unicode mode.
 // This is the same value as CP_UTF8 in Windows
 #define wxSTC_CP_UTF8 65001

@@ -125,7 +125,7 @@ public:
     void OnPaint(wxPaintEvent& WXUNUSED(evt))
     {
         wxAutoBufferedPaintDC dc(this);
-        Surface* surfaceWindow = Surface::Allocate(0);
+        Surface* surfaceWindow = Surface::Allocate(SC_TECHNOLOGY_DEFAULT);
         surfaceWindow->Init(&dc, m_ct->wDraw.GetID());
         m_ct->PaintCT(surfaceWindow);
         surfaceWindow->Release();
@@ -728,7 +728,7 @@ sptr_t ScintillaWX::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam)
 void ScintillaWX::DoPaint(wxDC* dc, wxRect rect) {
 
     paintState = painting;
-    Surface* surfaceWindow = Surface::Allocate(0);
+    Surface* surfaceWindow = Surface::Allocate(vs.technology);
     surfaceWindow->Init(dc, wMain.GetID());
     rcPaint = PRectangleFromwxRect(rect);
     PRectangle rcClient = GetClientRectangle();
