@@ -112,13 +112,13 @@ Other planned methods:
 
 The constructor can get two parameters: host and port.
 
-  my $d = Debug::Client->new;
+  my $debugger = Debug::Client->new;
 
-  my $d = Debug::Client->new(host => 'remote.hots.com', port => 4242);
+  my $debugger = Debug::Client->new(host => 'remote.hots.com', port => 4242);
    
 Immediately after the object creation one needs to call
 
-  $d->listen;
+  $debugger->listen;
   
 TODO: Is there any reason to separate the two?
 
@@ -318,12 +318,12 @@ sub list_subroutine_names {
 
 =head2 run
 
-  $d->run;
+  $debugger->run;
   
 Will run till the next breakpoint or watch or the end of
 the script. (Like pressing c in the debugger).
 
-  $d->run($param)
+  $debugger->run($param)
 
 =cut
 
@@ -339,7 +339,7 @@ sub run {
 
 =head2 set_breakpoint
 
- $d->set_breakpoint($file, $line, $condition);
+ $debugger->set_breakpoint($file, $line, $condition);
 
 =cut
 
@@ -398,7 +398,7 @@ sub remove_breakpoint {
 
 The data as (L) prints in the command line debugger.
 
- $d->show_breakpoints();
+ $debugger->show_breakpoints();
 
 =cut
 
@@ -474,7 +474,7 @@ sub list_break_watch_action {
 
 =head2 execute_code
 
-  $d->execute_code($some_code_to_execute);
+  $debugger->execute_code($some_code_to_execute);
 
 =cut
 
@@ -491,7 +491,7 @@ sub execute_code {
 
 =head2 get_value
 
- my $value = $d->get_value($x);
+ my $value = $debugger->get_value($x);
 
 If $x is a scalar value, $value will contain that value.
 If it is a reference to a SCALAR, ARRAY or HASH then $value should be the
@@ -532,7 +532,7 @@ which works exactly as it does for the V and X commands. Requires the PadWalker
 module version 0.08 or higher; will warn if this isn't installed. 
 Output is pretty-printed in the same style as for V and the format is controlled by the same options.
 
-  $d->get_y_zero();
+  $debugger->get_y_zero();
 
 =cut
 
@@ -559,7 +559,7 @@ using a data pretty-printer (hashes show their keys and values so you see what's
 control characters are made printable, etc.). 
 Make sure you don't put the type specifier (like $ ) there, just the symbol names, like this:
 
- $d->get_v_vars(regex);
+ $debugger->get_v_vars(regex);
 
 =cut
 
@@ -582,7 +582,7 @@ sub get_v_vars {
 
 X [vars] Same as V currentpackage [vars]
 
- $d->get_v_vars(regex);
+ $debugger->get_v_vars(regex);
 
 =cut
 
@@ -599,8 +599,7 @@ sub get_x_vars {
 	return $buf;
 }
 
-=head3 _parse_dumper
-=cut
+
 
 sub _parse_dumper {
 	my ($str) = @_;
@@ -610,8 +609,7 @@ sub _parse_dumper {
 # TODO shall we add a timeout and/or a number to count down the number
 # sysread calls that return 0 before deciding it is really done
 
-=head3 _get
-=cut
+
 
 sub _get {
 	my ($self) = @_;
@@ -641,8 +639,7 @@ sub _get {
 # puts the number from the prompt in $self->{prompt} and also returns it.
 # See 00-internal.t for test cases
 
-=head3 _prompt
-=cut
+
 
 sub _prompt {
 	my ( $self, $buf ) = @_;
@@ -671,8 +668,7 @@ sub _prompt {
 #    $content   is the content of the current row
 # see 00-internal.t for test cases
 
-=head3 _process_line
-=cut
+
 
 sub _process_line {
 	my ( $self, $buf ) = @_;
@@ -753,9 +749,9 @@ sub get {
 	}
 }
 
-=head3 _send
-=cut
-
+#######
+# Internal Method _send
+#######
 sub _send {
 	my ( $self, $input ) = @_;
 
@@ -785,13 +781,31 @@ sub filename { return $_[0]->{filename} }
 
 sub row { return $_[0]->{row} }
 
-=head3 _logger
-=cut
+
 
 sub _logger {
 	print "LOG: $_[0]\n" if $ENV{DEBUG_LOGGER};
 }
 
+=head1 INTERNAL METHODS
+
+=head3 _get
+=cut
+
+=head3 _logger
+=cut
+
+=head3 _parse_dumper
+=cut
+
+=head3 _process_line
+=cut
+
+=head3 _prompt
+=cut
+
+=head3 _send
+=cut
 
 =head1 See Also
 
