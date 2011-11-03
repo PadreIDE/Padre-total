@@ -134,7 +134,7 @@ sub plugin_enable {
 	# Tests for external file in Path
 	require Debug::Client;
 
-	if ( $Debug::Client::VERSION eq '0.13_01' ) {
+	if ( $Debug::Client::VERSION eq '0.13_02' ) {
 		return 1;
 	} else {
 		return 0;
