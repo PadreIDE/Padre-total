@@ -459,12 +459,12 @@ sub running {
 	my $main = $self->main;
 
 	unless ( $self->{client} ) {
-		$main->message(
-			Wx::gettext(
-				"The debugger is not running.\nYou can start the debugger using one of the commands 'Step In', 'Step Over', or 'Run till Breakpoint' in the Debug menu."
-			),
-			Wx::gettext('Debugger not running')
-		);
+		# $main->message(
+			# Wx::gettext(
+				# "The debugger is not running.\nYou can start the debugger using one of the commands 'Step In', 'Step Over', or 'Run till Breakpoint' in the Debug menu."
+			# ),
+			# Wx::gettext('Debugger not running')
+		# );
 		return;
 	}
 
@@ -538,7 +538,7 @@ sub debug_step_in {
 			return;
 		}
 
-		# No need to make first step
+# 		# No need to make first step
 		return;
 	}
 
