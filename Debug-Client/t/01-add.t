@@ -12,7 +12,7 @@ import Test::More;
 require Test::Deep;
 import Test::Deep;
 
-plan( tests => 8 );
+plan( tests => 9 );
 
 diag("PID $pid");
 my $debugger = start_debugger();
@@ -60,7 +60,14 @@ isa_ok( $debugger, 'Debug::Client' );
 	cmp_deeply( \@out, [ 'main::', 't/eg/01-add.pl', 8, 'my $z = $x + $y;' ], 'line 8' )
 		or diag( $debugger->buffer );
 }
+
 {
-	$debugger->quit;
-	sleep 1;
+	my $out = $debugger->quit;
+	like( $out, qr/1/, 'debugger quit' );
 }
+
+done_testing( );
+
+1;
+
+__END__

@@ -11,7 +11,7 @@ import Test::More;
 require Test::Deep;
 import Test::Deep;
 
-plan( tests => 4 );
+plan( tests => 5 );
 
 my $debugger = start_debugger();
 
@@ -46,5 +46,12 @@ my $debugger = start_debugger();
 }
 
 {
-	$debugger->quit;
+	my $out = $debugger->quit;
+	like( $out, qr/1/, 'debugger quit' );
 }
+
+done_testing( );
+
+1;
+
+__END__

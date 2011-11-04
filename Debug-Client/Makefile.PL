@@ -1,21 +1,30 @@
 use 5.006;
 use strict;
 use lib 'privinc';
-use inc::Module::Install 1.02;
+use inc::Module::Install 1.04;
 
-
+# Define metadata
 name 'Debug-Client';
 license 'perl';
-author 'Gabor Szabo';
-all_from 'lib/Debug/Client.pm';
-requires 'perl'            => '5.006';
-requires 'Carp'            => '0';
-requires 'IO::Socket'      => '0',
-        
-test_requires 'Test::More'    => '0.88';
-test_requires 'Test::Deep'    => '0';
-test_requires 'File::HomeDir' => '0';
+author 'Gabor Szabo <gabor@szabgab.com>';
+author 'Breno G. de Oliveira <garu at cpan.org>';
+author 'Kevin Dawson <bowtie@cpan.org>';
+perl_version '5.006';
 
+# All from our core
+all_from 'lib/Debug/Client.pm';
+
+# required modules from CPAN
+requires 'perl'       => '5.006';
+requires 'Carp'       => '1.20';
+requires 'IO::Socket' => '1.31';
+requires 'PadWalker'  => '1.92';
+
+test_requires 'Test::More'    => '0.98';
+test_requires 'Test::Deep'    => '0.108';
+test_requires 'File::HomeDir' => '0.98';
+
+# additinal
 no_index 'directory' => qw{ t xt eg share inc privinc };
 homepage 'http://padre.perlide.org/';
 bugtracker 'http://padre.perlide.org/trac';

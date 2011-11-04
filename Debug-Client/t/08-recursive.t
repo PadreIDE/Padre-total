@@ -10,7 +10,7 @@ import Test::More;
 require Test::Deep;
 import Test::Deep;
 
-# plan( tests => 42 );
+plan( tests => 43 );
 our $TODO;
 
 use Data::Dumper qw(Dumper);
@@ -290,7 +290,8 @@ TODO: {
 }
 
 {
-	$debugger->quit;
+	my $out = $debugger->quit;
+	like( $out, qr/1/, 'debugger quit' );
 }
 
 done_testing( );

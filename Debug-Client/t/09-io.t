@@ -15,7 +15,7 @@ import Test::More;
 require Test::Deep;
 import Test::Deep;
 
-plan( tests => 23 );
+plan( tests => 24 );
 
 diag("Dir '$dir' Path '$path'");
 
@@ -130,10 +130,9 @@ my $prefix = ( substr( $], 0, 5 ) eq '5.006' ) ? "Default die handler restored.\
 }
 
 {
-	$debugger->quit;
-	sleep 1;
+	my $out = $debugger->quit;
+	like( $out, qr/1/, 'debugger quit' );
 }
-
 
 {
 	my $out = slurp("$path/out");
@@ -141,3 +140,9 @@ my $prefix = ( substr( $], 0, 5 ) eq '5.006' ) ? "Default die handler restored.\
 	my $err = slurp("$path/err");
 	is( $err, "${prefix}Two\nFive\n", 'STDERR has everything' );
 }
+
+done_testing( );
+
+1;
+
+__END__

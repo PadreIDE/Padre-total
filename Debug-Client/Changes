@@ -1,4 +1,5 @@
-v0.13_03 2011.11.xx
+v0.13_03 2011.11.04
+    Tweak some tests (BOWTIE)
     Updates to POD use $debugger throughout instead of $d (BOWTIE)
     Add a test for get_v_vars (BOWTIE)
     Add a test for get_y_zero (BOWTIE)

@@ -60,16 +60,22 @@ push @tests, {
 
 plan tests => 2 + scalar @tests;
 
-my $d = Debug::Client->new;
-foreach my $t (@tests) {
-	my $out    = $t->{out};
-	my $prompt = $d->_prompt( \$out );
-	my @res    = $d->_process_line( \$out );
-	cmp_deeply( [ $prompt, @res ], $t->{exp} );
+my $debugger = Debug::Client->new;
+foreach my $tests (@tests) {
+	my $out    = $tests->{out};
+	my $prompt = $debugger->_prompt( \$out );
+	my @res    = $debugger->_process_line( \$out );
+	cmp_deeply( [ $prompt, @res ], $tests->{exp} );
 }
 
-eval { $d->_prompt(); };
-like $@, qr{_prompt should be called with a reference to a scalar}, '_prompt without param';
+eval { $debugger->_prompt(); };
+like($@, qr{_prompt should be called with a reference to a scalar}, '_prompt without param');
 
-eval { $d->_prompt('hello'); };
-like $@, qr{_prompt should be called with a reference to a scalar}, '_prompt without param';
+eval { $debugger->_prompt('hello'); };
+like($@, qr{_prompt should be called with a reference to a scalar}, '_prompt without param');
+
+done_testing( );
+
+1;
+
+__END__

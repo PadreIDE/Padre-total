@@ -10,7 +10,7 @@ import Test::More;
 require Test::Deep;
 import Test::Deep;
 
-plan( tests => 3 );
+plan( tests => 4 );
 
 my $debugger = start_debugger();
 
@@ -36,7 +36,12 @@ my $debugger = start_debugger();
 }
 
 {
-	$debugger->quit;
+	my $out = $debugger->quit;
+	like( $out, qr/1/, 'debugger quit' );
 }
 
-# TODO add something that checks the debugger really exited.
+done_testing( );
+
+1;
+
+__END__

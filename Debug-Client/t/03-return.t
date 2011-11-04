@@ -10,7 +10,7 @@ import Test::More;
 require Test::Deep;
 import Test::Deep;
 
-plan( tests => 13 );
+plan( tests => 14 );
 
 my $debugger = start_debugger();
 
@@ -106,5 +106,12 @@ bar'
 }
 
 {
-	$debugger->quit;
+	my $out = $debugger->quit;
+	like( $out, qr/1/, 'debugger quit' );
 }
+
+done_testing( );
+
+1;
+
+__END__

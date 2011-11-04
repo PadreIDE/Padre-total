@@ -12,7 +12,7 @@ import Test::Deep;
 
 our $TODO; # needed becasue Test::More is required and not used
 
-plan( tests => 18 );
+plan( tests => 19 );
 
 my $debugger = start_debugger();
 
@@ -126,5 +126,12 @@ TODO: {
 }
 
 {
-	$debugger->quit;
+	my $out = $debugger->quit;
+	like( $out, qr/1/, 'debugger quit' );
 }
+
+done_testing( );
+
+1;
+
+__END__

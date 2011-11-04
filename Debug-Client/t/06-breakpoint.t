@@ -10,7 +10,7 @@ import Test::More;
 require Test::Deep;
 import Test::Deep;
 
-plan( tests => 6 );
+plan( tests => 7 );
 
 my $debugger = start_debugger();
 
@@ -45,7 +45,6 @@ my $debugger = start_debugger();
 		or diag( $debugger->buffer );
 }
 
-
 {
 
 	# Debugged program terminated.  Use q to quit or R to restart,
@@ -57,5 +56,12 @@ my $debugger = start_debugger();
 }
 
 {
-	$debugger->quit;
+	my $out = $debugger->quit;
+	like( $out, qr/1/, 'debugger quit' );
 }
+
+done_testing( );
+
+1;
+
+__END__

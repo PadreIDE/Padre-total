@@ -14,7 +14,7 @@ import Test::More;
 require Test::Deep;
 import Test::Deep;
 
-# plan( tests => 13 );
+plan( tests => 13 );
 
 use_ok( 'PadWalker', '1.92' );
 

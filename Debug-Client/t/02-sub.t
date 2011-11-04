@@ -12,7 +12,7 @@ import Test::More;
 require Test::Deep;
 import Test::Deep;
 
-plan( tests => 26 );
+plan( tests => 27 );
 
 my $debugger = start_debugger();
 
@@ -137,5 +137,12 @@ SKIP: {
 }
 
 {
-	$debugger->quit;
+	my $out = $debugger->quit;
+	like( $out, qr/1/, 'debugger quit' );
 }
+
+done_testing( );
+
+1;
+
+__END__

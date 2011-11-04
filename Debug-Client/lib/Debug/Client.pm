@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use 5.006;
 
-our $VERSION = '0.13_02';
+our $VERSION = '0.13_03';
 
 use utf8;
 use IO::Socket;
@@ -677,7 +677,7 @@ sub _get {
 	my ($self) = @_;
 
 	#my $remote_host = gethostbyaddr($sock->sockaddr(), AF_INET) || 'remote';
-	my $buf = '';
+	my $buf = q{};
 	while ( $buf !~ /DB<\d+>/ ) {
 		my $ret = $self->{new_sock}->sysread( $buf, 1024, length $buf );
 		if ( not defined $ret ) {

@@ -11,7 +11,7 @@ import Test::More;
 require Test::Deep;
 import Test::Deep;
 
-plan( tests => 1 );
+plan( tests => 2 );
 
 diag("PID $pid");
 my $debugger = start_debugger();
@@ -26,6 +26,12 @@ isa_ok( $debugger, 'Debug::Client' );
 }
 
 {
-	$debugger->quit;
-	sleep 1;
+	my $out = $debugger->quit;
+	like( $out, qr/1/, 'debugger quit' );
 }
+
+done_testing( );
+
+1;
+
+__END__
