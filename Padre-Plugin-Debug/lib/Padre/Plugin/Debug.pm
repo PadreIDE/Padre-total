@@ -10,7 +10,7 @@ $| = 1;
 use diagnostics;
 use utf8;
 
-our $VERSION = '0.13_02';
+our $VERSION = '0.13_03';
 our @ISA     = 'Padre::Plugin';
 
 #######
@@ -39,7 +39,7 @@ sub padre_interfaces {
 # Define Plugin Name required
 #######
 sub plugin_name {
-	return Wx::gettext('Padre Debug... Beta');
+	return Wx::gettext('Padre Debug... RC1');
 }
 
 #######
@@ -138,7 +138,7 @@ sub plugin_enable {
 	# Tests for external file in Path
 	require Debug::Client;
 
-	if ( $Debug::Client::VERSION eq '0.13_02' ) {
+	if ( $Debug::Client::VERSION eq '0.13_03' ) {
 		return 1;
 	} else {
 		return 0;
@@ -149,6 +149,28 @@ sub plugin_enable {
 
 =head1 P-P-Debug 
 
-See other Packages for more POD
+Is a new Panel based interface to Perl -d
+
+terminology from perldebug
+
+Panel's inc:
+
+ Debugger, right
+ Breakpoints, left
+ Debug-Output, bottom (only when debugger is running)
+
+The debug-simulator is only because we are running as a plugin_enable
+suggest you only use the two check marks at top.
+
+You can use the Padre tool bar simulator, but there is no auto update of icons 
+between sim-bar and panels though.
+
+See Padre::Plugin::Debug::Main for more POD
+
+Requires Debug::Client 0.13_03
+
+Author => bowtie
+
+And all becasus Alias said RTFM :)
 
 =cut
