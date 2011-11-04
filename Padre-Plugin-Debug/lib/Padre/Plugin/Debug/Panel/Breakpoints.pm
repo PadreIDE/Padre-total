@@ -394,6 +394,9 @@ sub _update_list {
 				} else {
 					$self->{list}->SetItemTextColour( $index, DARK_GREEN );
 				}
+				if ( $tuples[$_][3] == 0 ) {
+					$self->{list}->SetItemTextColour( $index, GRAY );
+				}
 				$self->{list}->SetItem( $index, 1, ( $tuples[$_][2] ) );
 				$tuples[$_][1] =~ s/^ $self->{project_dir} //sxm;
 				$self->{list}->SetItem( $index, 0, ( $tuples[$_][1] ) );
