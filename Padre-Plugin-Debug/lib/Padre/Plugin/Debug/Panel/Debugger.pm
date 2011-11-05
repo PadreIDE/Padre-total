@@ -390,7 +390,7 @@ sub debug_perl {
 		host => $host,
 		port => $port,
 	);
-	$self->{client}->listen;
+	$self->{client}->listener;
 
 	$self->{file} = $filename;
 
