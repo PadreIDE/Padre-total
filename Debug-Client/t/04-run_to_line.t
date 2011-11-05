@@ -21,6 +21,7 @@ my $perl5db_ver;
 
 	$out =~ m/(1.\d{2})$/m;
 	$perl5db_ver = $1;
+	diag("perl5db version $perl5db_ver");
 
 	# Loading DB routines from perl5db.pl version 1.28
 	# Editor support available.

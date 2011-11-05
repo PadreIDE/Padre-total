@@ -30,13 +30,30 @@ isa_ok( $debugger, 'Debug::Client' );
 	# main::(t/eg/01-add.pl:4):	$| = 1;
 	#   DB<1>
 
-	like( $out, qr/Loading DB routines from perl5db.pl version/, 'loading line' );
+	# Loading DB routines from perl5db.pl version 1.32
+	# Editor support available.
+	#
+	# Enter h or `h h' for help, or `man perldebug' for more help.
+	#
+	# main::(01-add.pl:4):	$| = 1;
+	#   DB<1>
+
+	# Loading DB routines from perl5db.pl version 1.33
+	# Editor support available.
+	#
+	# Enter h or `h h' for help, or `man perldebug' for more help.
+	#
+	# main::(01-add.pl:4):	$| = 1;
+	#	DB<1>
+
+	like( $out, qr{Loading DB routines from perl5db.pl version}, 'loading line' );
 	like( $out, qr{main::\(t/eg/01-add.pl:4\):\s*\$\| = 1;},     'line 4' );
 }
 
 
 {
 	my @out = $debugger->step_in;
+	diag("@out");
 	cmp_deeply( \@out, [ 'main::', 't/eg/01-add.pl', 6, 'my $x = 1;' ], 'line 6' )
 		or diag( $debugger->buffer );
 }

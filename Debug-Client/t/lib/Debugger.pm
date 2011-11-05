@@ -8,7 +8,7 @@ use File::Spec;
 
 
 use Exporter;
-use vars qw(@ISA @EXPORT);
+our (@ISA, @EXPORT);
 @ISA = ('Exporter');
 
 @EXPORT = qw(start_script start_debugger slurp rc_file);
@@ -42,7 +42,7 @@ sub start_script {
 sub start_debugger {
     require Debug::Client;
     my $debugger = Debug::Client->new(host => $host, port => $port);
-    $debugger->listen;
+    $debugger->listener;
     return $debugger;
 }
 

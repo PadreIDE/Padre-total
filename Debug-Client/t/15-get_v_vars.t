@@ -36,9 +36,7 @@ my $debugger = start_debugger();
 }
 
 {
-	my @out = $debugger->toggle_trace;
-	cmp_deeply( \@out, [ 'Trace = on' ], 'Trace on' )
-		or diag( $debugger->buffer );
+	ok( $debugger->toggle_trace =~ m/Trace = on/, 'Trace on' );
 }
 
 {
@@ -72,10 +70,9 @@ my $debugger = start_debugger();
 	ok( $debugger->get_v_vars() =~ m/14-y_zero.pl/, 'get_v_vars()' );
 
 }
+
 {
-	my @out = $debugger->toggle_trace;
-	cmp_deeply( \@out, [ 'Trace = off' ], 'Trace off' )
-		or diag( $debugger->buffer );
+	ok( $debugger->toggle_trace =~ m/Trace = off/, 'Trace off' );
 }
 
 {
