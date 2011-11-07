@@ -10,7 +10,7 @@ $| = 1;
 use diagnostics;
 use utf8;
 
-our $VERSION = '0.13_04';
+our $VERSION = '0.13_05';
 our @ISA     = 'Padre::Plugin';
 
 #######
@@ -138,7 +138,7 @@ sub plugin_enable {
 	# Tests for external file in Path
 	require Debug::Client;
 
-	if ( $Debug::Client::VERSION eq '0.13_04' ) {
+	if ( $Debug::Client::VERSION eq '0.13_05' ) {
 		return 1;
 	} else {
 		return 0;
