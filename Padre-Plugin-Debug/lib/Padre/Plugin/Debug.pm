@@ -167,7 +167,7 @@ between sim-bar and panels though.
 
 See Padre::Plugin::Debug::Main for more POD
 
-Requires Debug::Client 0.13_04
+Requires Debug::Client 0.13_05
 
 Author => bowtie
 
