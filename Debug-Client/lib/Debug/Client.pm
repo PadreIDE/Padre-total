@@ -1,9 +1,10 @@
 package Debug::Client;
+
+use 5.008;
 use strict;
 use warnings;
-use 5.008;
 
-our $VERSION = '0.13_04';
+our $VERSION = '0.13_05';
 
 use utf8;
 use IO::Socket;
@@ -129,7 +130,7 @@ sub new {
 	my $self = bless {}, $class;
 
 	%args = (
-		host => 'localhost', port => 12345,
+		host => 'localhost', port => 24642,
 		%args
 	);
 
@@ -150,7 +151,7 @@ Use $debugger->listener instead
 =cut
 
 sub listen {
-	my ($self, @args) = @_;
+	my ( $self, @args ) = @_;
 	$self->listener(@args);
 	return;
 }
@@ -164,6 +165,7 @@ See C<new>
  $debugger->listener
 
 =cut
+
 #######
 # Method listener
 #######
@@ -228,6 +230,7 @@ Return the internal debugger pointer to the line last executed, and print out th
  $debugger->show_line();
 
 =cut
+
 #######
 # Method show_line
 #######
@@ -249,6 +252,7 @@ If an expression is supplied that includes function calls, it too will be single
 Expresions not supported. 
 
 =cut
+
 #######
 # Method step_in
 #######
@@ -262,6 +266,7 @@ sub step_in {
  $debugger->step_over();
 
 =cut
+
 #######
 # Method step_over
 #######
@@ -713,6 +718,7 @@ sub get {
  $debugger->filename();
 
 =cut
+
 #######
 # Method filename
 #######
@@ -726,6 +732,7 @@ sub filename {
  $debugger->row();
 
 =cut
+
 #######
 # Method row
 #######
@@ -746,16 +753,19 @@ sub _get {
 
 	#my $remote_host = gethostbyaddr($sock->sockaddr(), AF_INET) || 'remote';
 	my $buf = q{};
+	my $ret;
 	while ( $buf !~ /DB<\d+>/ ) {
-		my $ret = $self->{new_sock}->sysread( $buf, 1024, length $buf );
+		$ret = $self->{new_sock}->sysread( $buf, 1024, length $buf );
 		if ( not defined $ret ) {
 			carp $!; # TODO better error handling?
 		}
-		_logger("---- ret '$ret'\n$buf\n---");
+
+		# _logger("---- ret '$ret'\n$buf\n---");
 		if ( not $ret ) {
 			last;
 		}
 	}
+	_logger("---- ret $ret\n$buf\n---");
 	_logger("_get done");
 
 	$self->{buffer} = $buf;
@@ -801,42 +811,54 @@ sub _process_line {
 	if ( $$buf =~ /Debugged program terminated/ ) {
 		return '<TERMINATED>';
 	}
-
+	
 	my @parts = split /\n/, $$buf;
+
 	my $line = pop @parts;
 
+	#TODO $line is where all CPAN_Testers errors come from
 	# try to debug some test reports
 	# http://www.nntp.perl.org/group/perl.cpan.testers/2009/12/msg6542852.html
 	if ( not defined $line ) {
-		carp("Debug::Client: Line is undef. Buffer is '$$buf'");
+		croak("Debug::Client: Line is undef. Buffer is $$buf");
 	}
-	_logger("Line: '$line'");
-	my $cont;
-	if ( $line =~ /^\d+:   \s*  (.*)$/x ) {
-		$cont = $1;
-		$line = pop @parts;
-		_logger("Line2: '$line'");
+
+	# _logger("Line1: $line");
+	my $cont = 0;
+	if ($line) {
+		if ( $line =~ /^\d+:   \s*  (.*)$/x ) {
+			$cont = $1;
+			$line = pop @parts;
+
+			# _logger("Line2: $line");
+		}
 	}
 
 	$$buf = join "\n", @parts;
-	my ( $module, $file, $row, $content );
+	my ( $module, $file, $row, $content ) = q{ };
 
 	# the last line before
 	# main::(t/eg/01-add.pl:8):  my $z = $x + $y;
+
 	if ($line =~ m{^([\w:]*) 			# module
                   \( ([^\)]*):(\d+) \) 	# (file:row)
                   :\t? 					# :
                   (.*) 					# content
                   }mx
-		)
-	{
-		( $module, $file, $row, $content ) = ( $1, $2, $3, $4 );
-	}
+			)
+		{
+			( $module, $file, $row, $content ) = ( $1, $2, $3, $4 );
+		}
+
 	if ($cont) {
 		$content = $cont;
 	}
-	$self->{filename} = $file;
-	print "filename: $self->{filename}\n";
+
+	if ($file) {
+
+		$self->{filename} = $file;
+		print "filename: $self->{filename}\n";
+	}
 	$self->{row} = $row;
 	return ( $module, $file, $row, $content );
 }
@@ -852,6 +874,8 @@ sub _process_line {
 sub _prompt {
 	my ( $self, $buf ) = @_;
 
+	# _logger("-prompt buf: $$buf");
+
 	if ( not defined $buf or not ref $buf or ref $buf ne 'SCALAR' ) {
 		croak('_prompt should be called with a reference to a scalar');
 	}
@@ -859,6 +883,7 @@ sub _prompt {
 	my $prompt;
 	if ( $$buf =~ s/\s*DB<(\d+)>\s*$// ) {
 		$prompt = $1;
+		_logger("prompt: $prompt");
 	}
 	chomp($$buf);
 

@@ -1,8 +1,11 @@
+#!/usr/bin/env perl
+
 use strict;
 use warnings;
+# Turn on $OUTPUT_AUTOFLUSH
+$| = 1;
 
 use t::lib::Debugger;
-
 
 my ( $dir, $pid ) = start_script('t/eg/12-package.pl');
 

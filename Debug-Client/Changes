@@ -1,6 +1,12 @@
+0.13_05 2011.11.07
+    - default port changed to 24642 as port 12345 regestered to "Italk Chat System" (BOWTIE)
+    - _process_line is where all the generated errors from cpantesters come from
+      $count = 0; and some tewaks to $line to suppress errors when buffer is empty (BOWTIE)
+
 0.13_04 2011.11.05
     - Perl::Critic Error Subroutine "listen" is a homonym for builtin function
       listen changed to listerner (BOWTIE)
+    - using ReuseAddr as Reuse has bean deprecated (BOWTIE)
     - Perl::Critic severity => 5, & severity => 4, pass now (BOWTIE)
     - tweak to test t/02... (BOWTIE)
 

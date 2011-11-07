@@ -1,5 +1,10 @@
+#!/usr/bin/env perl
+
 use strict;
 use warnings;
+
+# Turn on $OUTPUT_AUTOFLUSH
+$| = 1;
 
 use Test::More tests => 1;
 

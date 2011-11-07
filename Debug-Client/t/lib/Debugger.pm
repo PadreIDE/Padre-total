@@ -1,6 +1,8 @@
 package t::lib::Debugger;
 use strict;
 use warnings;
+# Turn on $OUTPUT_AUTOFLUSH
+$| = 1;
 
 use File::Temp qw(tempdir);
 use File::HomeDir;
@@ -14,7 +16,7 @@ our (@ISA, @EXPORT);
 @EXPORT = qw(start_script start_debugger slurp rc_file);
 
 my $host = 'localhost';
-my $port = 12345 + int rand(1000);
+my $port = 24642 + int rand(1000);
 
 sub start_script {
     my ($file) = @_;

@@ -1,5 +1,9 @@
+#!/usr/bin/env perl
+
 use strict;
 use warnings;
+# Turn on $OUTPUT_AUTOFLUSH
+$| = 1;
 
 use t::lib::Debugger;
 
