@@ -27,6 +27,7 @@ use constant {
 	DARK_GREEN => Wx::Colour->new( 0x00, 0x90, 0x00 ),
 	BLUE       => Wx::Colour->new('blue'),
 	GRAY       => Wx::Colour->new('gray'),
+	DARK_GRAY  => Wx::Colour->new( 0x7f, 0x7f, 0x7f ),
 	BLACK      => Wx::Colour->new('black'),
 };
 
@@ -248,6 +249,8 @@ sub set_breakpoints_clicked {
 	my $self    = shift;
 	my $main    = $self->main;
 	my $current = $main->current;
+	
+	$self->_setup_db;
 
 	# $self->running or return;
 	my $editor = Padre::Current->editor;
@@ -372,7 +375,7 @@ sub _update_list {
 					$self->{list}->SetItemTextColour( $index, BLUE );
 					$editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_BREAKPOINT() );
 				} else {
-					$self->{list}->SetItemTextColour( $index, GRAY );
+					$self->{list}->SetItemTextColour( $index, DARK_GRAY );
 					$editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_NOT_BREAKABLE() );
 				}
 				$self->{list}->SetItem( $index, 1, ( $tuples[$_][2] ) );
@@ -395,7 +398,7 @@ sub _update_list {
 					$self->{list}->SetItemTextColour( $index, DARK_GREEN );
 				}
 				if ( $tuples[$_][3] == 0 ) {
-					$self->{list}->SetItemTextColour( $index, GRAY );
+					$self->{list}->SetItemTextColour( $index, DARK_GRAY );
 				}
 				$self->{list}->SetItem( $index, 1, ( $tuples[$_][2] ) );
 				$tuples[$_][1] =~ s/^ $self->{project_dir} //sxm;

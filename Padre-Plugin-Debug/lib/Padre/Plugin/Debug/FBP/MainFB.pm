@@ -12,7 +12,7 @@ use warnings;
 use Padre::Wx ();
 use Padre::Wx::Role::Main ();
 
-our $VERSION = '0.13';
+our $VERSION = '0.01';
 our @ISA     = qw{
 	Padre::Wx::Role::Main
 	Wx::Dialog
@@ -66,6 +66,26 @@ sub new {
 		$self->{check_debugger},
 		sub {
 			shift->check_debugger_checked(@_);
+		},
+	);
+
+	$self->{launch_debug} = Wx::BitmapButton->new(
+		$self,
+		-1,
+		Wx::NullBitmap(),
+		Wx::DefaultPosition(),
+		Wx::DefaultSize(),
+		Wx::BU_AUTODRAW(),
+	);
+	$self->{launch_debug}->SetToolTip(
+		Wx::gettext("launch debug enviroment ( 1 2 or 3 panels ?)")
+	);
+
+	Wx::Event::EVT_BUTTON(
+		$self,
+		$self->{launch_debug},
+		sub {
+			shift->launch_debug_clicked(@_);
 		},
 	);
 
@@ -155,10 +175,10 @@ sub new {
 		Wx::NullBitmap(),
 		Wx::DefaultPosition(),
 		Wx::DefaultSize(),
-		Wx::BU_AUTODRAW() | Wx::NO_BORDER(),
+		Wx::BU_AUTODRAW(),
 	);
 	$self->{set_breakpoints}->SetToolTip(
-		Wx::gettext("Set Breakpoint")
+		Wx::gettext("Set Breakpoint \ncurrent line toggle\n( b File Line_No )")
 	);
 
 	Wx::Event::EVT_BUTTON(
@@ -195,7 +215,7 @@ sub new {
 		Wx::NullBitmap(),
 		Wx::DefaultPosition(),
 		Wx::DefaultSize(),
-		Wx::BU_AUTODRAW() | Wx::NO_BORDER(),
+		Wx::BU_AUTODRAW(),
 	);
 	$self->{quit_debugger}->SetToolTip(
 		Wx::gettext("Quit Debugger")
@@ -209,113 +229,10 @@ sub new {
 		},
 	);
 
-	$self->{trace} = Wx::CheckBox->new(
-		$self,
-		-1,
-		Wx::gettext("Trace"),
-		Wx::DefaultPosition(),
-		Wx::DefaultSize(),
-	);
-	$self->{trace}->SetToolTip(
-		Wx::gettext("t\nToggle trace mode (see also the AutoTrace option).")
-	);
-
-	Wx::Event::EVT_CHECKBOX(
-		$self,
-		$self->{trace},
-		sub {
-			shift->trace_checked(@_);
-		},
-	);
-
-	$self->{show_buffer} = Wx::Button->new(
-		$self,
-		-1,
-		Wx::gettext("Show Buffer"),
-		Wx::DefaultPosition(),
-		Wx::DefaultSize(),
-	);
-
-	Wx::Event::EVT_BUTTON(
-		$self,
-		$self->{show_buffer},
-		sub {
-			shift->show_buffer_clicked(@_);
-		},
-	);
-
-	$self->{sub_names} = Wx::Button->new(
-		$self,
-		-1,
-		Wx::gettext("Sub. Names"),
-		Wx::DefaultPosition(),
-		Wx::DefaultSize(),
-	);
-	$self->{sub_names}->SetToolTip(
-		Wx::gettext("S [[!]regex]\nList subroutine names [not] matching the regex.")
-	);
-
-	Wx::Event::EVT_BUTTON(
-		$self,
-		$self->{sub_names},
-		sub {
-			shift->sub_names_clicked(@_);
-		},
-	);
-
-	$self->{sub_name_regex} = Wx::TextCtrl->new(
-		$self,
-		-1,
-		"!(IO::Socket|Carp)",
-		Wx::DefaultPosition(),
-		[ 130, -1 ],
-	);
-	$self->{sub_name_regex}->SetToolTip(
-		Wx::gettext("!(IO::Socket|Carp) are the subs used by Debug::Client, hence lets remove them")
-	);
-
-	$self->{backtrace} = Wx::Button->new(
-		$self,
-		-1,
-		Wx::gettext("BackTrace"),
-		Wx::DefaultPosition(),
-		Wx::DefaultSize(),
-	);
-	$self->{backtrace}->SetToolTip(
-		Wx::gettext("T\nProduce a stack backtrace.")
-	);
-
-	Wx::Event::EVT_BUTTON(
-		$self,
-		$self->{backtrace},
-		sub {
-			shift->backtrace_clicked(@_);
-		},
-	);
-
-	$self->{list_actions} = Wx::Button->new(
-		$self,
-		-1,
-		Wx::gettext("List Actions"),
-		Wx::DefaultPosition(),
-		Wx::DefaultSize(),
-	);
-	$self->{list_actions}->SetToolTip(
-		Wx::gettext("L [abw]\nList (default all) actions, breakpoints and watch expressions")
-	);
-
-	Wx::Event::EVT_BUTTON(
-		$self,
-		$self->{list_actions},
-		sub {
-			shift->list_actions_clicked(@_);
-		},
-	);
-
 	$self->{info} = Wx::StaticText->new(
 		$self,
 		-1,
-		Wx::gettext("info: read POD in Main.pm"),
+		Wx::gettext("Two items for a primary menu topic\nThree icons for Toolbar\nInfo: read POD in Main.pm"),
 	);
 
 	my $close_button = Wx::Button->new(
@@ -339,7 +256,7 @@ sub new {
 		Wx::StaticBox->new(
 			$self,
 			-1,
-			Wx::gettext("View -> Show Debug"),
+			Wx::gettext("These go in menu, View -> or Debug ->"),
 		),
 		Wx::HORIZONTAL(),
 	);
@@ -353,10 +270,11 @@ sub new {
 		Wx::StaticBox->new(
 			$self,
 			-1,
-			Wx::gettext("Debug Buttons"),
+			Wx::gettext("Toolbar icons, we now, only need 3"),
 		),
 		Wx::HORIZONTAL(),
 	);
+	$file_2->Add( $self->{launch_debug}, 0, Wx::ALL(), 5 );
 	$file_2->Add( $self->{step_in}, 0, Wx::ALL(), 5 );
 	$file_2->Add( $self->{step_over}, 0, Wx::ALL(), 5 );
 	$file_2->Add( $self->{step_out}, 0, Wx::ALL(), 5 );
@@ -364,24 +282,6 @@ sub new {
 	$file_2->Add( $self->{set_breakpoints}, 0, Wx::ALL(), 5 );
 	$file_2->Add( $self->{display_value}, 0, Wx::ALL(), 5 );
 	$file_2->Add( $self->{quit_debugger}, 0, Wx::ALL(), 5 );
-
-	my $gSizer1 = Wx::GridSizer->new( 2, 2, 0, 0 );
-	$gSizer1->Add( $self->{trace}, 0, Wx::ALL(), 5 );
-	$gSizer1->Add( $self->{show_buffer}, 0, Wx::ALL(), 5 );
-	$gSizer1->Add( $self->{sub_names}, 0, Wx::ALL(), 5 );
-	$gSizer1->Add( $self->{sub_name_regex}, 0, Wx::ALL(), 5 );
-	$gSizer1->Add( $self->{backtrace}, 0, Wx::ALL(), 5 );
-	$gSizer1->Add( $self->{list_actions}, 0, Wx::ALL(), 5 );
-
-	my $file_11 = Wx::StaticBoxSizer->new(
-		Wx::StaticBox->new(
-			$self,
-			-1,
-			Wx::gettext("Options"),
-		),
-		Wx::HORIZONTAL(),
-	);
-	$file_11->Add( $gSizer1, 0, Wx::EXPAND(), 5 );
 
 	my $buttons = Wx::BoxSizer->new(Wx::HORIZONTAL());
 	$buttons->Add( $self->{info}, 0, Wx::ALL(), 5 );
@@ -391,7 +291,6 @@ sub new {
 	my $vsizer = Wx::BoxSizer->new(Wx::VERTICAL());
 	$vsizer->Add( $file_1, 0, Wx::EXPAND(), 5 );
 	$vsizer->Add( $file_2, 0, Wx::EXPAND(), 5 );
-	$vsizer->Add( $file_11, 1, Wx::EXPAND(), 5 );
 	$vsizer->Add( $buttons, 0, Wx::EXPAND(), 3 );
 	$vsizer->Add( $self->{m_staticline5}, 0, Wx::EXPAND() | Wx::ALL(), 5 );
 
@@ -412,20 +311,16 @@ sub check_debugger {
 	$_[0]->{check_debugger};
 }
 
-sub trace {
-	$_[0]->{trace};
-}
-
-sub sub_name_regex {
-	$_[0]->{sub_name_regex};
-}
-
 sub check_breakpoints_checked {
 	$_[0]->main->error('Handler method check_breakpoints_checked for event check_breakpoints.OnCheckBox not implemented');
 }
 
 sub check_debugger_checked {
 	$_[0]->main->error('Handler method check_debugger_checked for event check_debugger.OnCheckBox not implemented');
+}
+
+sub launch_debug_clicked {
+	$_[0]->main->error('Handler method launch_debug_clicked for event launch_debug.OnButtonClick not implemented');
 }
 
 sub step_in_clicked {
@@ -454,26 +349,6 @@ sub display_value_clicked {
 
 sub quit_debugger_clicked {
 	$_[0]->main->error('Handler method quit_debugger_clicked for event quit_debugger.OnButtonClick not implemented');
-}
-
-sub trace_checked {
-	$_[0]->main->error('Handler method trace_checked for event trace.OnCheckBox not implemented');
-}
-
-sub show_buffer_clicked {
-	$_[0]->main->error('Handler method show_buffer_clicked for event show_buffer.OnButtonClick not implemented');
-}
-
-sub sub_names_clicked {
-	$_[0]->main->error('Handler method sub_names_clicked for event sub_names.OnButtonClick not implemented');
-}
-
-sub backtrace_clicked {
-	$_[0]->main->error('Handler method backtrace_clicked for event backtrace.OnButtonClick not implemented');
-}
-
-sub list_actions_clicked {
-	$_[0]->main->error('Handler method list_actions_clicked for event list_actions.OnButtonClick not implemented');
 }
 
 1;

@@ -10,7 +10,7 @@ $| = 1;
 use diagnostics;
 use utf8;
 
-our $VERSION = '0.13_05';
+our $VERSION = '0.13_06';
 our @ISA     = 'Padre::Plugin';
 
 #######
@@ -138,7 +138,7 @@ sub plugin_enable {
 	# Tests for external file in Path
 	require Debug::Client;
 
-	if ( $Debug::Client::VERSION eq '0.13_05' ) {
+	if ( $Debug::Client::VERSION eq '0.13_06' ) {
 		return 1;
 	} else {
 		return 0;
@@ -167,7 +167,7 @@ between sim-bar and panels though.
 
 See Padre::Plugin::Debug::Main for more POD
 
-Requires Debug::Client 0.13_05
+Requires Debug::Client 0.13_06
 
 Author => bowtie
 

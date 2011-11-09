@@ -30,6 +30,7 @@ use constant {
 	DARK_GREEN => Wx::Colour->new( 0x00, 0x90, 0x00 ),
 	BLUE       => Wx::Colour->new('blue'),
 	GRAY       => Wx::Colour->new('gray'),
+	DARK_GRAY  => Wx::Colour->new( 0x7f, 0x7f, 0x7f ),
 	BLACK      => Wx::Colour->new('black'),
 };
 
@@ -177,7 +178,6 @@ sub set_up {
 	$self->{debug}->SetBitmapLabel( Padre::Wx::Icon::find('actions/morpho2') );
 	$self->{debug}->Enable;
 
-
 	$self->{step_in}->SetBitmapLabel( Padre::Wx::Icon::find('actions/step_in') );
 	$self->{step_in}->Hide;
 
@@ -195,14 +195,24 @@ sub set_up {
 
 	$self->{quit_debugger}->SetBitmapLabel( Padre::Wx::Icon::find('actions/red_cross') );
 	$self->{quit_debugger}->Enable;
-	
+
+	$self->{list_action}->SetBitmapLabel( Padre::Wx::Icon::find('actions/L') );
+	$self->{list_action}->Disable;
+
+	$self->{dot}->SetBitmapLabel( Padre::Wx::Icon::find('actions/dot') );
+	$self->{dot}->Disable;
+
+	$self->{view_around}->SetBitmapLabel( Padre::Wx::Icon::find('actions/v') );
+	$self->{view_around}->Disable;
+
 	$self->{trace}->Disable;
 	$self->{sub_names}->Disable;
 	$self->{sub_name_regex}->Disable;
 	$self->{backtrace}->Disable;
-	$self->{list_actions}->Disable;
-	$self->{show_buffer}->Disable;
-	
+
+	# $self->{list_actions}->Disable;
+	# $self->{show_buffer}->Disable;
+
 
 	# $self->{refresh}->Disable;
 
@@ -264,7 +274,7 @@ sub update_variables {
 
 			$item->SetId($index);
 			$self->{variables}->InsertItem($item);
-			$self->{variables}->SetItemTextColour( $index, GRAY );
+			$self->{variables}->SetItemTextColour( $index, DARK_GRAY );
 
 			$self->{variables}->SetItem( $index,   0, $var );
 			$self->{variables}->SetItem( $index++, 1, $auto_x_var_ref->{$var} );
@@ -287,18 +297,25 @@ sub on_debug_clicked {
 	$self->{step_out}->Show;
 	$self->{run_till}->Show;
 	$self->{display_value}->Show;
-	
+
 	$self->{trace}->Enable;
 	$self->{sub_names}->Enable;
 	$self->{sub_name_regex}->Enable;
 	$self->{backtrace}->Enable;
-	$self->{list_actions}->Enable;
-	$self->{show_buffer}->Enable;
-	
-	
+
+	# $self->{list_actions}->Enable;
+	# $self->{show_buffer}->Enable;
+	$self->{list_action}->Enable;
+	$self->{dot}->Enable;
+	$self->{view_around}->Enable;
+
+
 	$self->{debug}->Hide;
 	$self->debug_perl;
 	$main->aui->Update;
+	if ( $self->{panel_debug_output} ) {
+		$self->{panel_debug_output}->debug_output( $self->{client}->_show_help );
+	}
 	return;
 }
 
@@ -459,11 +476,12 @@ sub running {
 	my $main = $self->main;
 
 	unless ( $self->{client} ) {
+
 		# $main->message(
-			# Wx::gettext(
-				# "The debugger is not running.\nYou can start the debugger using one of the commands 'Step In', 'Step Over', or 'Run till Breakpoint' in the Debug menu."
-			# ),
-			# Wx::gettext('Debugger not running')
+		# Wx::gettext(
+		# "The debugger is not running.\nYou can start the debugger using one of the commands 'Step In', 'Step Over', or 'Run till Breakpoint' in the Debug menu."
+		# ),
+		# Wx::gettext('Debugger not running')
 		# );
 		return;
 	}
@@ -499,27 +517,31 @@ sub debug_quit {
 	# Detach the debugger
 	$self->{client}->quit;
 	delete $self->{client};
-	
-	$self->{trace_status}     = 'Trace = off';
+
+	$self->{trace_status} = 'Trace = off';
 	$self->{trace}->SetValue(0);
 	$self->{trace}->Disable;
 	$self->{sub_names}->Disable;
 	$self->{sub_name_regex}->Disable;
 	$self->{backtrace}->Disable;
-	$self->{list_actions}->Disable;
-	$self->{show_buffer}->Disable;
-	
+
+	# $self->{list_actions}->Disable;
+	# $self->{show_buffer}->Disable;
+	$self->{list_action}->Disable;
+	$self->{dot}->Disable;
+	$self->{view_around}->Disable;
+
 	$self->{step_in}->Hide;
 	$self->{step_over}->Hide;
 	$self->{step_out}->Hide;
 	$self->{run_till}->Hide;
 	$self->{display_value}->Hide;
-	
-	$self->{var_val} = {};
+
+	$self->{var_val}      = {};
 	$self->{auto_var_val} = {};
-	$self->{auto_x_var} = {};
+	$self->{auto_x_var}   = {};
 	$self->update_variables( $self->{var_val}, $self->{auto_var_val}, $self->{auto_x_var} );
-	
+
 	$self->{debug}->Show;
 	$self->show_debug_output(0);
 	return;
@@ -538,7 +560,7 @@ sub debug_step_in {
 			return;
 		}
 
-# 		# No need to make first step
+		# 		# No need to make first step
 		return;
 	}
 
@@ -552,9 +574,10 @@ sub debug_step_in {
 	}
 
 	# p $self->{client}->show_breakpoints();
-	my $output = $self->{client}->buffer;
-	$output .= "\n" . $self->{client}->get_y_zero();
-	$self->{panel_debug_output}->debug_output($output);
+	# my $output = $self->{client}->buffer;
+	# $output .= "\n" . $self->{client}->get_y_zero();
+	# $self->{panel_debug_output}->debug_output($output);
+	$self->{panel_debug_output}->debug_output( $self->{client}->buffer );
 
 	if ( $self->{set_bp} == 0 ) {
 
@@ -735,7 +758,8 @@ sub display_sub_names {
 sub sub_names_clicked {
 	my $self = shift;
 
-	$self->{panel_debug_output}->debug_output( $self->{client}->list_subroutine_names($self->{sub_name_regex}->GetValue() ));
+	$self->{panel_debug_output}
+		->debug_output( $self->{client}->list_subroutine_names( $self->{sub_name_regex}->GetValue() ) );
 
 	return;
 }
@@ -772,17 +796,27 @@ sub display_buffer {
 #######
 # Event handler show_buffer_clicked
 #######
-sub show_buffer_clicked {
-	my $self = shift;
+# sub show_buffer_clicked {
+# my $self = shift;
 
-	$self->{panel_debug_output}->debug_output( $self->{client}->buffer() );
+# # 	$self->{panel_debug_output}->debug_output( $self->{client}->buffer() );
 
-	return;
-}
+# # 	return;
+# }
 #######
 # sub display_list_actions pass through
 #######
 sub display_list_actions {
+	my $self = shift;
+
+	$self->{panel_debug_output}->debug_output( $self->{client}->show_breakpoints() );
+
+	return;
+}
+#######
+# Event handler L_clicked
+#######
+sub L_clicked {
 	my $self = shift;
 
 	$self->{panel_debug_output}->debug_output( $self->{client}->show_breakpoints() );
@@ -796,6 +830,26 @@ sub list_actions_clicked {
 	my $self = shift;
 
 	$self->{panel_debug_output}->debug_output( $self->{client}->show_breakpoints() );
+
+	return;
+}
+#######
+# Event dot_clicked
+#######
+sub dot_clicked {
+	my $self = shift;
+
+	$self->{panel_debug_output}->debug_output( $self->{client}->show_line() );
+
+	return;
+}
+#######
+# Event v_clicked
+#######
+sub v_clicked {
+	my $self = shift;
+
+	$self->{panel_debug_output}->debug_output( $self->{client}->show_view() );
 
 	return;
 }

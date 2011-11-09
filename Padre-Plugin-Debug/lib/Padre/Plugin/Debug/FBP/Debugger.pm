@@ -12,7 +12,7 @@ use warnings;
 use Padre::Wx ();
 use Padre::Wx::Role::Main ();
 
-our $VERSION = '0.13';
+our $VERSION = '0.01';
 our @ISA     = qw{
 	Padre::Wx::Role::Main
 	Wx::Panel
@@ -26,7 +26,7 @@ sub new {
 		$parent,
 		-1,
 		Wx::DefaultPosition(),
-		[ 195, 530 ],
+		[ 235, 530 ],
 		Wx::TAB_TRAVERSAL(),
 	);
 
@@ -236,19 +236,22 @@ sub new {
 		},
 	);
 
-	$self->{show_buffer} = Wx::Button->new(
+	$self->{backtrace} = Wx::Button->new(
 		$self,
 		-1,
-		Wx::gettext("Show Buffer"),
+		Wx::gettext("BackTrace"),
 		Wx::DefaultPosition(),
 		Wx::DefaultSize(),
+	);
+	$self->{backtrace}->SetToolTip(
+		Wx::gettext("T\nProduce a stack backtrace.")
 	);
 
 	Wx::Event::EVT_BUTTON(
 		$self,
-		$self->{show_buffer},
+		$self->{backtrace},
 		sub {
-			shift->show_buffer_clicked(@_);
+			shift->backtrace_clicked(@_);
 		},
 	);
 
@@ -278,46 +281,96 @@ sub new {
 		Wx::DefaultPosition(),
 		[ 130, -1 ],
 	);
+	$self->{sub_name_regex}->SetMaxLength(21);
 	$self->{sub_name_regex}->SetToolTip(
 		Wx::gettext("!(IO::Socket|Carp) are the subs used by Debug::Client, hence lets remove them")
 	);
 
-	$self->{backtrace} = Wx::Button->new(
+	$self->{dot} = Wx::BitmapButton->new(
 		$self,
 		-1,
-		Wx::gettext("BackTrace"),
+		Wx::NullBitmap(),
 		Wx::DefaultPosition(),
 		Wx::DefaultSize(),
+		Wx::BU_AUTODRAW(),
 	);
-	$self->{backtrace}->SetToolTip(
-		Wx::gettext("T\nProduce a stack backtrace.")
+	$self->{dot}->SetToolTip(
+		Wx::gettext(".        Return to the executed line.")
 	);
 
 	Wx::Event::EVT_BUTTON(
 		$self,
-		$self->{backtrace},
+		$self->{dot},
 		sub {
-			shift->backtrace_clicked(@_);
+			shift->dot_clicked(@_);
 		},
 	);
 
-	$self->{list_actions} = Wx::Button->new(
+	$self->{view_around} = Wx::BitmapButton->new(
 		$self,
 		-1,
-		Wx::gettext("List Actions"),
+		Wx::NullBitmap(),
 		Wx::DefaultPosition(),
 		Wx::DefaultSize(),
+		Wx::BU_AUTODRAW(),
 	);
-	$self->{list_actions}->SetToolTip(
+	$self->{view_around}->SetToolTip(
+		Wx::gettext("v [line]    View window around line.")
+	);
+
+	Wx::Event::EVT_BUTTON(
+		$self,
+		$self->{view_around},
+		sub {
+			shift->v_clicked(@_);
+		},
+	);
+
+	$self->{list_action} = Wx::BitmapButton->new(
+		$self,
+		-1,
+		Wx::NullBitmap(),
+		Wx::DefaultPosition(),
+		Wx::DefaultSize(),
+		Wx::BU_AUTODRAW(),
+	);
+	$self->{list_action}->SetToolTip(
 		Wx::gettext("L [abw]\nList (default all) actions, breakpoints and watch expressions")
 	);
 
 	Wx::Event::EVT_BUTTON(
 		$self,
-		$self->{list_actions},
+		$self->{list_action},
 		sub {
-			shift->list_actions_clicked(@_);
+			shift->L_clicked(@_);
 		},
+	);
+
+	$self->{m_bpButton24} = Wx::BitmapButton->new(
+		$self,
+		-1,
+		Wx::NullBitmap(),
+		Wx::DefaultPosition(),
+		Wx::DefaultSize(),
+		Wx::BU_AUTODRAW(),
+	);
+
+	$self->{m_bpButton25} = Wx::BitmapButton->new(
+		$self,
+		-1,
+		Wx::NullBitmap(),
+		Wx::DefaultPosition(),
+		Wx::DefaultSize(),
+		Wx::BU_AUTODRAW(),
+	);
+
+	$self->{m_bpButton26} = Wx::BitmapButton->new(
+		$self,
+		-1,
+		Wx::NullBitmap(),
+		Wx::DefaultPosition(),
+		Wx::DefaultSize(),
+		Wx::BU_AUTODRAW(),
 	);
 
 	my $button_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL());
@@ -340,13 +393,21 @@ sub new {
 	$checkbox_sizer->Add( $self->{show_local_variables}, 0, Wx::ALL(), 2 );
 	$checkbox_sizer->Add( $self->{show_global_variables}, 0, Wx::ALL(), 5 );
 
-	my $gSizer1 = Wx::GridSizer->new( 0, 2, 0, 0 );
-	$gSizer1->Add( $self->{trace}, 0, Wx::ALL(), 5 );
-	$gSizer1->Add( $self->{show_buffer}, 0, Wx::ALL(), 5 );
-	$gSizer1->Add( $self->{sub_names}, 0, Wx::ALL(), 5 );
-	$gSizer1->Add( $self->{sub_name_regex}, 0, Wx::ALL(), 5 );
-	$gSizer1->Add( $self->{backtrace}, 0, Wx::ALL(), 5 );
-	$gSizer1->Add( $self->{list_actions}, 0, Wx::ALL(), 5 );
+	my $doo = Wx::FlexGridSizer->new( 0, 2, 0, 0 );
+	$doo->SetFlexibleDirection(Wx::BOTH());
+	$doo->SetNonFlexibleGrowMode(Wx::FLEX_GROWMODE_SPECIFIED());
+	$doo->Add( $self->{trace}, 0, Wx::ALL(), 5 );
+	$doo->Add( $self->{backtrace}, 0, Wx::ALL(), 5 );
+	$doo->Add( $self->{sub_names}, 0, Wx::ALL(), 5 );
+	$doo->Add( $self->{sub_name_regex}, 1, Wx::ALL(), 5 );
+
+	my $option_button_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL());
+	$option_button_sizer->Add( $self->{dot}, 0, Wx::ALL(), 5 );
+	$option_button_sizer->Add( $self->{view_around}, 0, Wx::ALL(), 5 );
+	$option_button_sizer->Add( $self->{list_action}, 0, Wx::ALL(), 5 );
+	$option_button_sizer->Add( $self->{m_bpButton24}, 0, Wx::ALL(), 5 );
+	$option_button_sizer->Add( $self->{m_bpButton25}, 0, Wx::ALL(), 5 );
+	$option_button_sizer->Add( $self->{m_bpButton26}, 0, Wx::ALL(), 5 );
 
 	my $file_11 = Wx::StaticBoxSizer->new(
 		Wx::StaticBox->new(
@@ -354,9 +415,10 @@ sub new {
 			-1,
 			Wx::gettext("Debug-Output Options"),
 		),
-		Wx::HORIZONTAL(),
+		Wx::VERTICAL(),
 	);
-	$file_11->Add( $gSizer1, 0, Wx::EXPAND(), 5 );
+	$file_11->Add( $doo, 1, 0, 5 );
+	$file_11->Add( $option_button_sizer, 0, Wx::EXPAND(), 5 );
 
 	my $bSizer10 = Wx::BoxSizer->new(Wx::VERTICAL());
 	$bSizer10->Add( $button_sizer, 0, Wx::EXPAND(), 5 );
@@ -418,20 +480,24 @@ sub trace_checked {
 	$_[0]->main->error('Handler method trace_checked for event trace.OnCheckBox not implemented');
 }
 
-sub show_buffer_clicked {
-	$_[0]->main->error('Handler method show_buffer_clicked for event show_buffer.OnButtonClick not implemented');
+sub backtrace_clicked {
+	$_[0]->main->error('Handler method backtrace_clicked for event backtrace.OnButtonClick not implemented');
 }
 
 sub sub_names_clicked {
 	$_[0]->main->error('Handler method sub_names_clicked for event sub_names.OnButtonClick not implemented');
 }
 
-sub backtrace_clicked {
-	$_[0]->main->error('Handler method backtrace_clicked for event backtrace.OnButtonClick not implemented');
+sub dot_clicked {
+	$_[0]->main->error('Handler method dot_clicked for event dot.OnButtonClick not implemented');
 }
 
-sub list_actions_clicked {
-	$_[0]->main->error('Handler method list_actions_clicked for event list_actions.OnButtonClick not implemented');
+sub v_clicked {
+	$_[0]->main->error('Handler method v_clicked for event view_around.OnButtonClick not implemented');
+}
+
+sub L_clicked {
+	$_[0]->main->error('Handler method L_clicked for event list_action.OnButtonClick not implemented');
 }
 
 1;
