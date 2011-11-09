@@ -1,3 +1,10 @@
+0.13_06 2011.11.09
+    - Add Method show_view
+      modify method show_line
+      Add Method _show_help
+      Tweaks to tests for above
+      spell check POD (BOWTIE)
+
 0.13_05 2011.11.07
     - default port changed to 24642 as port 12345 regestered to "Italk Chat System" (BOWTIE)
     - _process_line is where all the generated errors from cpantesters come from

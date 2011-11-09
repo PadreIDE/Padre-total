@@ -17,9 +17,9 @@ import Test::More;
 require Test::Deep;
 import Test::Deep;
 
-plan( tests => 9 );
+plan( tests => 11 );
 
-diag("PID $pid");
+# diag("PID $pid");
 my $debugger = start_debugger();
 isa_ok( $debugger, 'Debug::Client' );
 
@@ -58,7 +58,7 @@ isa_ok( $debugger, 'Debug::Client' );
 
 {
 	my @out = $debugger->step_in;
-	diag("@out");
+	# diag("@out");
 	cmp_deeply( \@out, [ 'main::', 't/eg/01-add.pl', 6, 'my $x = 1;' ], 'line 6' )
 		or diag( $debugger->buffer );
 }
@@ -66,17 +66,39 @@ isa_ok( $debugger, 'Debug::Client' );
 {
 	my $out = $debugger->step_in;
 	ok( $out =~ s/DB<\d+> $/DB<> /, 'replace number as it can be different on other versions of perl' );
-	is( $out, "main::(t/eg/01-add.pl:7):\tmy \$y = 2;\n  DB<> ", 'line 7' ) or do {
+	is( $out, "main::(t/eg/01-add.pl:7):\tmy \$y = 2;\n  DB<> ", 'step_in line 7' ) or do {
 		$out =~ s/ /S/g;
 		diag($out);
 		}
 }
 
 {
-	my @out = $debugger->show_line;
-	cmp_deeply( \@out, [ 'main::', 't/eg/01-add.pl', 7, 'my $y = 2;' ], 'line 7' )
+	my $out = $debugger->show_line;
+	# diag($out);
+	is( $out, "main::(t/eg/01-add.pl:7):\tmy \$y = 2;", 'show_line line 7' )
 		or diag( $debugger->buffer );
 }
+
+{
+	my $out = $debugger->show_view;
+	# diag($out);
+	is( $out, "4:	\$| = 1;
+5 	
+6:	my \$x = 1;
+7==>	my \$y = 2;
+8:	my \$z = \$x + \$y;
+9 	
+10:	1;
+11 	
+12 	__END__", 'show_view8' )
+		or diag( $debugger->buffer );
+}
+
+{
+	my $out = $debugger->_show_help;
+	like( $out, qr{List/search source lines:}, '_show_help' );
+}
+
 {
 	my @out = $debugger->step_in;
 	cmp_deeply( \@out, [ 'main::', 't/eg/01-add.pl', 8, 'my $z = $x + $y;' ], 'line 8' )

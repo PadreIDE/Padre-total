@@ -4,7 +4,7 @@ use 5.008;
 use strict;
 use warnings;
 
-our $VERSION = '0.13_05';
+our $VERSION = '0.13_06';
 
 use utf8;
 use IO::Socket;
@@ -20,8 +20,8 @@ Debug::Client - client side code for perl debugger
   my $debugger = Debug::Client->new(host => $host, port => $port);
   $debugger->listener;
 
-Where $host is the hostname to be used by the script under test (SUT)
-to acces the machine where Debug::Client runs. If they are on the same machine
+Where $host is the host-name to be used by the script under test (SUT)
+to access the machine where Debug::Client runs. If they are on the same machine
 this should be C<localhost>.
 $port can be any port number where the Debug::Client could listen.
 
@@ -62,13 +62,13 @@ Once the script under test was launched we can call the following:
   my $value = $debugger->get_value('%phone_book');  $value is the dumped data?
   
   
-  $debugger->set_breakpoint( "file", 23 ); # 	set breakpoint on file, line
+  $debugger->set_breakpoint( "file", 23 ); # set breakpoint on file, line
 
   $debugger->get_stack_trace
 
 Other planned methods:
 
-  $debugger->set_breakpoint( "file", 23, COND ); # 	set breakpoint on file, line, on condition
+  $debugger->set_breakpoint( "file", 23, COND ); # set breakpoint on file, line, on condition
   $debugger->set_breakpoint( "file", subname, [COND] )
 
   $debugger->set_watch
@@ -85,7 +85,7 @@ Other planned methods:
   
   my $perl = $^X; # the perl might be a different perl
   my $host = 'localhost';
-  my $port = 12345;
+  my $port = 24642;
   my $pid = fork();
   die if not defined $pid;
   
@@ -115,7 +115,7 @@ The constructor can get two parameters: host and port.
 
   my $debugger = Debug::Client->new;
 
-  my $debugger = Debug::Client->new(host => 'remote.hots.com', port => 4242);
+  my $debugger = Debug::Client->new(host => 'remote.hots.com', port => 24642);
    
 Immediately after the object creation one needs to call
 
@@ -144,7 +144,7 @@ sub new {
 
 Has bean deprecated in this version 0.13_04 and all future versions starting with v0.14
 
-Perl::Critic Error Subroutine name is a homonym for builtin function
+Perl::Critic Error Subroutine name is a homonym for built-in function
 
 Use $debugger->listener instead
 
@@ -236,8 +236,40 @@ Return the internal debugger pointer to the line last executed, and print out th
 #######
 sub show_line {
 	my $self = shift;
-	return $self->_send_get('.');
+
+	# return $self->_send_get('.');
+	$self->_send('.');
+	my $buf = $self->_get;
+
+	$self->_prompt( \$buf );
+	return $buf;
 }
+
+=head2 show_view
+
+v [line]
+
+View a few lines of code around the current line.
+
+ $debugger->show_view();
+
+=cut
+
+#######
+# Method show_line
+#######
+sub show_view {
+	my $self = shift;
+
+	# return $self->_send_get('.');
+	$self->_send('v');
+	my $buf = $self->_get;
+
+	$self->_prompt( \$buf );
+	return $buf;
+}
+
+
 
 =head2 step_in
 
@@ -249,7 +281,7 @@ If an expression is supplied that includes function calls, it too will be single
 
  $debugger->step_in();
 
-Expresions not supported. 
+Expressions not supported. 
 
 =cut
 
@@ -498,14 +530,14 @@ In scalar context returns the list of all the breakpoints
 and watches as a text output. The data as (L) prints in the
 command line debugger.
 
-In list context it returns the promt number,
+In list context it returns the prompt number,
 and a list of hashes. Each hash has
 
   file =>
   line =>
   cond => 
 
-to provide the filename, line number and the condition of the breakpoint.
+to provide the file-name, line number and the condition of the breakpoint.
 In case of no condition the last one will be the number 1.
 
 =cut
@@ -811,7 +843,7 @@ sub _process_line {
 	if ( $$buf =~ /Debugged program terminated/ ) {
 		return '<TERMINATED>';
 	}
-	
+
 	my @parts = split /\n/, $$buf;
 
 	my $line = pop @parts;
@@ -845,10 +877,10 @@ sub _process_line {
                   :\t? 					# :
                   (.*) 					# content
                   }mx
-			)
-		{
-			( $module, $file, $row, $content ) = ( $1, $2, $3, $4 );
-		}
+		)
+	{
+		( $module, $file, $row, $content ) = ( $1, $2, $3, $4 );
+	}
 
 	if ($cont) {
 		$content = $cont;
@@ -912,7 +944,21 @@ sub _send_get {
 	return $self->get;
 }
 
+#######
+# Internal Method _show_help
+#######
+sub _show_help {
+	my $self = shift;
 
+	$self->_send('h');
+	my $buf = $self->_get;
+
+	$self->_prompt( \$buf );
+	$buf =~ s/(\e\[4m|\e\[24m|\e\[1m|\e\[0m)//mg;
+
+	# $buf =~ s/\e\[24m//mg;
+	return $buf;
+}
 1;
 
 __END__
@@ -946,6 +992,8 @@ and just performing c on it's own
 =head3 _send
 
 =head3 _send_get
+
+=head3 _show_help
 
 =head1 AUTHORS
 
