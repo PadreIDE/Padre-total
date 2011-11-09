@@ -12,29 +12,38 @@ camera {
 #declare P_Crater =
     pigment {
         leopard
-        colour_map { [0 rgb 0 transmit 0 ] [0.25 rgb 0.5 transmit 0 ] 
-                     [ 0.4 rgb 1 transmit 0 ]
-                     [0.5 rgb 0.5 transmit 1] }
+        colour_map { [0 rgb 1 transmit 1 ] 
+                     [0.9 rgb 1 transmit 1 ] 
+                     [ 0.925 rgb 1 transmit 0.5 ]
+                     [0.935 rgb 0 transmit  0.5]
+                     [1 rgb 0 transmit 0.5 ] }
         scale 0.1
+        
         warp {
             turbulence 0.05
         }
+        /*
         turbulence <0.3,0.1,0.3>*0.1
         octaves 8
-        //sine_wave
+        sine_wave
+        */
         
-        
-        scale 150
+        scale 50
     }
     
 #declare P_Crackle =
     pigment {
         crackle
         scale 15
-        turbulence 3
+        turbulence 2
+        color_map { [ 0 rgb 1 transmit 1] [0.15 rgb 1 transmit 1] [1 rgb 1 transmit 0] }
         
     }
 
+#default { finish {ambient 1}}
+global_settings {
+    ambient_light 1
+}
 
 sphere {
     <0,0,0> 100
@@ -42,22 +51,22 @@ sphere {
     material {
         texture {
             pigment { color rgb 0.5 }
-            finish { ambient 1 }
         }
-        texture {
-            pigment { 
-                average
-                pigment_map { 
-                    [ 1 P_Crater  ]
-                    [ 1 P_Crater rotate <30,15,5> translate 400 scale 0.3 ]
-                    [ 1 P_Crackle ]
-                    
+        texture { 
+            pigment { average
+                pigment_map {
+                    [P_Crackle ]
+                    [P_Crackle turbulence 1 translate 500]
+                    [P_Crackle turbulence 1.3 translate 1500 scale 3]
+                   
                 }
             }
-            finish { ambient 1 }
+        
         }
-
-            
+        texture { pigment { P_Crater } }
+        texture { pigment { P_Crater translate y*100 scale 5 } }
+        texture { pigment { P_Crater translate z*100 scale 5 frequency 0.25 phase 0.75 } }
+        
     }
     
 }
