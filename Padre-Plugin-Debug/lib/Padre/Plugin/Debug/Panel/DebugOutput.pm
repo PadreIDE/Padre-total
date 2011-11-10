@@ -65,7 +65,6 @@ sub view_label {
 	return Wx::gettext('Debug Output');
 }
 
-
 sub view_close {
 	my $self = shift;
 
@@ -79,6 +78,15 @@ sub view_close {
 	return;
 }
 
+sub view_icon {
+	my $self = shift;
+	# This method should return a valid Wx bitmap 
+	#### if exsists, other wise comment out hole method
+	# to be used as the icon for
+	# a notebook page (displayed alongside C<view_label>).
+	my $icon = Padre::Wx::Icon::find('actions/morpho3');
+	return $icon;
+}
 #
 #  sub view_icon {
 #  	my $self = shift;
@@ -118,7 +126,8 @@ sub debug_output {
 	#TODO change to DARK_RED
 	$self->{output}->SetForegroundColour(RED);
 	$self->{output}->ChangeValue($output);
-
+	
+	# don't use following as it triggers an event
 	# $self->{output}->AppendText($out_text . "\n");
 	return;
 }

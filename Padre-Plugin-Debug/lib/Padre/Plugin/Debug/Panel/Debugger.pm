@@ -119,6 +119,16 @@ sub view_close {
 	return;
 }
 
+sub view_icon {
+	my $self = shift;
+	# This method should return a valid Wx bitmap 
+	#### if exsists, other wise comment out hole method
+	# to be used as the icon for
+	# a notebook page (displayed alongside C<view_label>).
+	my $icon = Padre::Wx::Icon::find('actions/morpho3');
+	return $icon;
+}
+
 #
 #  sub view_icon {
 #  	my $self = shift;
@@ -579,13 +589,13 @@ sub debug_step_in {
 	# $self->{panel_debug_output}->debug_output($output);
 	$self->{panel_debug_output}->debug_output( $self->{client}->buffer );
 
-	if ( $self->{set_bp} == 0 ) {
+	# if ( $self->{set_bp} == 0 ) {
 
-		# get bp's from db
-		$self->_get_bp_db();
-		$self->{set_bp} = 1;
-		say "set_bp step in";
-	}
+# # 		# get bp's from db
+		# $self->_get_bp_db();
+		# $self->{set_bp} = 1;
+		# say "set_bp step in";
+	# }
 
 	$self->_set_debugger;
 
@@ -617,55 +627,16 @@ sub debug_step_over {
 	}
 
 	# $self->{client}->show_breakpoints();
-	my $output = $self->{client}->buffer;
-	$output .= "\n" . $self->{client}->get_y_zero();
-	$self->{panel_debug_output}->debug_output($output);
+	# my $output = $self->{client}->buffer;
+	# $output .= "\n" . $self->{client}->get_y_zero();
+	# $self->{panel_debug_output}->debug_output($output);
+	$self->{panel_debug_output}->debug_output( $self->{client}->buffer );
 
-	if ( $self->{set_bp} == 0 ) {
-		$self->_get_bp_db();
-		$self->{set_bp} = 1;
-		say "set_bp step over";
-	}
-
-	$self->_set_debugger;
-
-	return;
-}
-
-#######
-# Method debug_run_till
-#######
-sub debug_run_till {
-	my $self  = shift;
-	my $param = shift;
-	my $main  = $self->main;
-
-	unless ( $self->{client} ) {
-		unless ( $self->debug_perl ) {
-			$main->error( Wx::gettext('Debugger not running') );
-			return;
-		}
-	}
-
-	my ( $module, $file, $row, $content ) = $self->{client}->run($param);
-	if ( $module eq '<TERMINATED>' ) {
-		TRACE('TERMINATED') if DEBUG;
-		$self->{trace_status} = 'Trace = off';
-		$self->{panel_debug_output}->debug_status( $self->{trace_status} );
-		$self->debug_quit;
-		return;
-	}
-
-	# $self->{client}->show_breakpoints();
-	my $output = $self->{client}->buffer;
-	$output .= "\n" . $self->{client}->get_y_zero();
-	$self->{panel_debug_output}->debug_output($output);
-
-	if ( $self->{set_bp} == 0 ) {
-		$self->_get_bp_db();
-		$self->{set_bp} = 1;
-		say "set_bp run till";
-	}
+	# if ( $self->{set_bp} == 0 ) {
+		# $self->_get_bp_db();
+		# $self->{set_bp} = 1;
+		# say "set_bp step over";
+	# }
 
 	$self->_set_debugger;
 
@@ -695,15 +666,56 @@ sub debug_step_out {
 	}
 
 	# $self->{client}->show_breakpoints();
-	my $output = $self->{client}->buffer;
-	$output .= "\n" . $self->{client}->get_y_zero();
-	$self->{panel_debug_output}->debug_output($output);
+	# my $output = $self->{client}->buffer;
+	# $output .= "\n" . $self->{client}->get_y_zero();
+	# $self->{panel_debug_output}->debug_output($output);
+	$self->{panel_debug_output}->debug_output( $self->{client}->buffer );
 
-	if ( $self->{set_bp} == 0 ) {
-		$self->_get_bp_db();
-		$self->{set_bp} = 1;
-		say "set_bp step out";
+	# if ( $self->{set_bp} == 0 ) {
+		# $self->_get_bp_db();
+		# $self->{set_bp} = 1;
+		# say "set_bp step out";
+	# }
+
+	$self->_set_debugger;
+
+	return;
+}
+#######
+# Method debug_run_till
+#######
+sub debug_run_till {
+	my $self  = shift;
+	my $param = shift;
+	my $main  = $self->main;
+
+	unless ( $self->{client} ) {
+		unless ( $self->debug_perl ) {
+			$main->error( Wx::gettext('Debugger not running') );
+			return;
+		}
 	}
+
+	my ( $module, $file, $row, $content ) = $self->{client}->run($param);
+	if ( $module eq '<TERMINATED>' ) {
+		TRACE('TERMINATED') if DEBUG;
+		$self->{trace_status} = 'Trace = off';
+		$self->{panel_debug_output}->debug_status( $self->{trace_status} );
+		$self->debug_quit;
+		return;
+	}
+
+	# $self->{client}->show_breakpoints();
+	# my $output = $self->{client}->buffer;
+	# $output .= "\n" . $self->{client}->get_y_zero();
+	# $self->{panel_debug_output}->debug_output($output);
+	$self->{panel_debug_output}->debug_output( $self->{client}->buffer );
+
+	# if ( $self->{set_bp} == 0 ) {
+		# $self->_get_bp_db();
+		# $self->{set_bp} = 1;
+		# say "set_bp run till";
+	# }
 
 	$self->_set_debugger;
 
@@ -786,13 +798,13 @@ sub backtrace_clicked {
 #######
 # sub display_buffer pass through
 #######
-sub display_buffer {
-	my $self = shift;
+# sub display_buffer {
+	# my $self = shift;
 
-	$self->{panel_debug_output}->debug_output( $self->{client}->buffer() );
+# # 	$self->{panel_debug_output}->debug_output( $self->{client}->buffer() );
 
-	return;
-}
+# # 	return;
+# }
 #######
 # Event handler show_buffer_clicked
 #######
@@ -806,13 +818,13 @@ sub display_buffer {
 #######
 # sub display_list_actions pass through
 #######
-sub display_list_actions {
-	my $self = shift;
+# sub display_list_actions {
+	# my $self = shift;
 
-	$self->{panel_debug_output}->debug_output( $self->{client}->show_breakpoints() );
+# # 	$self->{panel_debug_output}->debug_output( $self->{client}->show_breakpoints() );
 
-	return;
-}
+# # 	return;
+# }
 #######
 # Event handler L_clicked
 #######
@@ -826,13 +838,13 @@ sub L_clicked {
 #######
 # Event handler list_actions_clicked
 #######
-sub list_actions_clicked {
-	my $self = shift;
+# sub list_actions_clicked {
+	# my $self = shift;
 
-	$self->{panel_debug_output}->debug_output( $self->{client}->show_breakpoints() );
+# # 	$self->{panel_debug_output}->debug_output( $self->{client}->show_breakpoints() );
 
-	return;
-}
+# # 	return;
+# }
 #######
 # Event dot_clicked
 #######
@@ -1151,6 +1163,7 @@ sub _get_bp_db {
 		}
 
 	}
+	#TODO this is causing bleading of BP's 
 	for ( 0 .. $#tuples ) {
 
 		if ( $tuples[$_][1] =~ m/$self->{project_dir}/ ) {
@@ -1367,14 +1380,14 @@ sub run_till_clicked {
 #######
 # event handler breakpoint_clicked
 #######
-sub set_breakpoints_clicked {
-	my $self = shift;
+# sub set_breakpoints_clicked {
+	# my $self = shift;
 
-	TRACE('set_breakpoints_clicked') if DEBUG;
-	$self->{panel_breakpoints}->set_breakpoints_clicked();
+# # 	TRACE('set_breakpoints_clicked') if DEBUG;
+	# $self->{panel_breakpoints}->set_breakpoints_clicked();
 
-	return;
-}
+# # 	return;
+# }
 #######
 # sub trace_clicked
 #######
@@ -1433,7 +1446,7 @@ __END__
 
 =head1 NAME
 
-Padre::Wx::Debugger - Interface to the Perl debugger.
+Padre::Plugin::Debug::Panel::Debugger - Interface to the Perl debugger.
 
 =head1 DESCRIPTION
 

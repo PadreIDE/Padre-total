@@ -43,13 +43,6 @@ sub set_up {
 
 	$self->{debug_output_visable} = 0;
 	$self->{breakpoints_visable}  = 0;
-
-	# Setup the debug button icons
-	# $self->{sub_names}->Disable;
-	# $self->{sub_name_regex}->Disable;
-	# $self->{backtrace}->Disable;
-	# $self->{list_actions}->Disable;
-	# $self->{show_buffer}->Disable;
 	
 	$self->{launch_debug}->SetBitmapLabel( Padre::Wx::Icon::find('actions/morpho3') );
 	$self->{launch_debug}->Enable;
@@ -99,11 +92,6 @@ sub check_debugger_checked {
 
 		$self->{debugger}->{debug}->Show;
 		$self->{debugger}->{debug}->Enable;
-		# $self->{step_in}->Enable;
-		# $self->{step_over}->Enable;
-		# $self->{step_out}->Enable;
-		# $self->{run_till}->Enable;
-		# $self->{display_value}->Enable;
 		$self->{quit_debugger}->Enable;
 
 	} else {
@@ -111,12 +99,6 @@ sub check_debugger_checked {
 		$main->right->hide( $self->{debugger} );
 
 		$self->{debugger}->debug_quit;
-		# $self->{step_in}->Disable;
-		# $self->{step_over}->Disable;
-		# $self->{step_out}->Disable;
-		# $self->{run_till}->Disable;
-		# $self->{display_value}->Disable;
-		# $self->{trace}->Disable;
 		$self->{debugger}->show_debug_output(0);
 
 	}
@@ -141,10 +123,8 @@ sub check_breakpoints_checked {
 
 	if ( $self->{check_breakpoints}->GetValue ) {
 		$main->left->show( $self->{panel_breakpoints} );
-		# $self->{set_breakpoints}->Enable;
 	} else {
 		$main->left->hide( $self->{panel_breakpoints} );
-		# $self->{set_breakpoints}->Disable;
 		delete $self->{panel_breakpoints};
 	}
 
@@ -205,20 +185,6 @@ sub launch_debug_clicked {
 sub step_in_clicked {
 	my $self = shift;
 
-	# TRACE('step_in_clicked') if DEBUG;
-	# $self->{debugger}->debug_step_in();
-	# $self->{step_over}->Enable;
-	# $self->{step_out}->Enable;
-	# $self->{run_till}->Enable;
-	# $self->{display_value}->Enable;
-	# $self->{quit_debugger}->Enable;
-	# $self->{trace}->Enable;
-	# $self->{sub_names}->Enable;
-	# $self->{sub_name_regex}->Enable;
-	# $self->{backtrace}->Enable;
-	# $self->{list_actions}->Enable;
-	# $self->{show_buffer}->Enable;
-
 	return;
 }
 #######
@@ -226,9 +192,6 @@ sub step_in_clicked {
 #######
 sub step_over_clicked {
 	my $self = shift;
-
-	# TRACE('step_over_clicked') if DEBUG;
-	# $self->{debugger}->debug_step_over;
 
 	return;
 }
@@ -238,9 +201,6 @@ sub step_over_clicked {
 sub step_out_clicked {
 	my $self = shift;
 
-	# TRACE('step_out_clicked') if DEBUG;
-	# $self->{debugger}->debug_step_out;
-
 	return;
 }
 #######
@@ -248,9 +208,6 @@ sub step_out_clicked {
 #######
 sub run_till_clicked {
 	my $self = shift;
-
-	# TRACE('run_till_clicked') if DEBUG;
-	# $self->{debugger}->debug_run_till;
 
 	return;
 }
@@ -276,9 +233,6 @@ sub set_breakpoints_clicked {
 sub display_value_clicked {
 	my $self = shift;
 
-	# TRACE('display_value') if DEBUG;
-	# $self->{debugger}->display_value();
-
 	return;
 }
 #######
@@ -290,73 +244,12 @@ sub quit_debugger_clicked {
 
 	TRACE('quit_debugger_clicked') if DEBUG;
 	$self->{debugger}->debug_quit;
-	# $self->{step_over}->Disable;
-	# $self->{step_out}->Disable;
-	# $self->{run_till}->Disable;
-	# $self->{display_value}->Disable;
-	# $self->{trace}->Disable;
 
 	$self->{debugger}->show_debug_output(0);
 
 	return;
 }
 
-#########################
-# event handlers for debug output options
-#######
-# sub trace_clicked
-#######
-# sub trace_checked {
-	# my ( $self, $event ) = @_;
-
-# # 	if ( $event->IsChecked ) {
-		# $self->{debugger}->display_trace(1);
-	# } else {
-		# $self->{debugger}->display_trace(0);
-	# }
-
-# # 	return;
-# }
-#######
-# sub show_buffer_clicked
-#######
-# sub show_buffer_clicked {
-	# my $self = shift;
-
-# # 	$self->{debugger}->display_buffer();
-
-# # 	return;
-# }
-#######
-# sub_names_clicked
-#######
-# sub sub_names_clicked {
-	# my $self = shift;
-
-# # 	$self->{debugger}->display_sub_names( $self->{sub_name_regex}->GetValue() );
-
-# # 	return;
-# }
-#######
-# sub backtrace_clicked
-#######
-# sub backtrace_clicked {
-	# my $self = shift;
-
-# # 	$self->{debugger}->display_backtrace();
-
-# # 	return;
-# }
-#######
-# sub list_actions_clicked
-#######
-# sub list_actions_clicked {
-	# my $self = shift;
-
-# # 	$self->{debugger}->display_list_actions();
-
-# # 	return;
-# }
 
 1;
 

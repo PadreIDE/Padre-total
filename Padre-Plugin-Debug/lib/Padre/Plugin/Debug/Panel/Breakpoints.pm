@@ -6,13 +6,14 @@ use warnings;
 
 # Turn on $OUTPUT_AUTOFLUSH
 $| = 1;
+
 use diagnostics;
 use utf8;
 
-# use Padre::Wx::Role::Main ();
 use Padre::Wx::Role::View ();
 use Padre::Wx             ();
 use Padre::Plugin::Debug::FBP::Breakpoints;
+
 use English qw( -no_match_vars ); # Avoids regex performance penalty
 
 our $VERSION = '0.13';
@@ -87,6 +88,16 @@ sub view_close {
 	return;
 }
 
+sub view_icon {
+	my $self = shift;
+	# This method should return a valid Wx bitmap 
+	#### if exsists, other wise comment out hole method
+	# to be used as the icon for
+	# a notebook page (displayed alongside C<view_label>).
+	my $icon = Padre::Wx::Icon::find('actions/morpho3');
+	return $icon;
+}
+
 #
 # sub view_icon {
 # 	my $self = shift;
@@ -137,7 +148,6 @@ sub set_up {
 	$self->{delete_not_breakable}->SetBitmapLabel( Padre::Wx::Icon::find('actions/window-close') );
 	$self->{delete_not_breakable}->Enable;
 
-	# $self->{set_breakpoints}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_macro-insert-breakpoint') );
 	$self->{set_breakpoints}->SetBitmapLabel( Padre::Wx::Icon::find('actions/breakpoints') );
 	$self->{set_breakpoints}->Enable;
 
@@ -166,30 +176,15 @@ sub set_up {
 	return;
 }
 
-#######
-# event handler on_refresh_click
-#######
-sub on_refresh_click {
-	my $self    = shift;
-	my $main    = $self->main;
-	my $current = $main->current;
-
-	$self->{project_dir}  = $current->document->project_dir;
-	$self->{current_file} = $current->document->filename;
-
-	# say 'on_refresh_click';
-	$self->_update_list();
-
-	return;
-}
-
+##########################
+# Event Handlers
 #######
 # event handler delete_not_breakable_clicked
 #######
 sub delete_not_breakable_clicked {
-	my $self = shift;
+	my $self   = shift;
 	my $editor = Padre::Current->editor;
-	
+
 	my $sql_select = "WHERE filename = \"$self->{current_file}\" AND active = 0";
 	my @tuples     = $self->{debug_breakpoints}->select($sql_select);
 
@@ -204,55 +199,23 @@ sub delete_not_breakable_clicked {
 	}
 	$self->{debug_breakpoints}->delete("WHERE filename = \"$self->{current_file}\" AND active = 0");
 
-	#TODO update margin markers
 	$self->_update_list();
 	return;
 }
 
 #######
-# event handler on_show_project_click
+# event handler on_refresh_click
 #######
-sub on_show_project_click {
-	my ( $self, $event ) = @_;
+sub on_refresh_click {
+	my $self    = shift;
+	my $main    = $self->main;
+	my $current = $main->current;
 
-	if ( $event->IsChecked ) {
-		$self->{show_project} = 1;
-		$self->{delete_project_bp}->Enable;
+	$self->{project_dir}  = $current->document->project_dir;
+	$self->{current_file} = $current->document->filename;
 
-		# say 'on_show_project_click yes';
-		# say $self->{show_project};
-	} else {
-		$self->{show_project} = 0;
-		$self->{delete_project_bp}->Disable;
+	$self->_update_list();
 
-		# say 'on_show_project_click no';
-		# say $self->{show_project};
-	}
-
-	$self->on_refresh_click();
-
-	return;
-}
-#######
-# event handler delete_project_bp_clicked
-#######
-sub delete_project_bp_clicked {
-	my $self = shift;
-
-	my $sql_select = 'ORDER BY filename ASC';
-	my @tuples     = $self->{debug_breakpoints}->select($sql_select);
-
-	my $index = 0;
-
-	for ( 0 .. $#tuples ) {
-
-		if ( $tuples[$_][1] =~ m/^ $self->{project_dir} /sxm ) {
-
-			$self->{debug_breakpoints}->delete("WHERE filename = \"$tuples[$_][1]\" ");
-		}
-	}
-
-	$self->on_refresh_click();
 	return;
 }
 
@@ -263,7 +226,7 @@ sub set_breakpoints_clicked {
 	my $self    = shift;
 	my $main    = $self->main;
 	my $current = $main->current;
-	
+
 	$self->_setup_db;
 
 	# $self->running or return;
@@ -271,7 +234,6 @@ sub set_breakpoints_clicked {
 	$self->{bp_file} = $editor->{Document}->filename;
 	$self->{bp_line} = $editor->GetCurrentLine + 1;
 
-	# p $current->project->root;
 	# dereferance array and test for contents
 	if ($#{ $self->{debug_breakpoints}
 				->select("WHERE filename = \"$self->{bp_file}\" AND line_number = \"$self->{bp_line}\"")
@@ -295,12 +257,58 @@ sub set_breakpoints_clicked {
 	return;
 }
 
+#######
+# event handler on_show_project_click
+#######
+sub on_show_project_click {
+	my ( $self, $event ) = @_;
 
-########
-# Debug Breakpoint DB
-########
+	if ( $event->IsChecked ) {
+		$self->{show_project} = 1;
+		$self->{delete_project_bp}->Enable;
+
+	} else {
+		$self->{show_project} = 0;
+		$self->{delete_project_bp}->Disable;
+
+	}
+
+	$self->on_refresh_click();
+
+	return;
+}
 
 #######
+# event handler delete_project_bp_clicked
+#######
+sub delete_project_bp_clicked {
+	my $self   = shift;
+	my $editor = Padre::Current->editor;
+
+	my $sql_select = 'ORDER BY filename ASC';
+	my @tuples     = $self->{debug_breakpoints}->select($sql_select);
+
+	my $index = 0;
+
+	for ( 0 .. $#tuples ) {
+
+		if ( $tuples[$_][1] =~ m/^ $self->{project_dir} /sxm ) {
+
+			#TODO need a background task to tidy up none current margin markers
+			$editor->MarkerDelete( $tuples[$_][2] - 1, Padre::Constant::MARKER_BREAKPOINT() );
+			$editor->MarkerDelete( $tuples[$_][2] - 1, Padre::Constant::MARKER_NOT_BREAKABLE() );
+			$self->{debug_breakpoints}->delete("WHERE filename = \"$tuples[$_][1]\" ");
+		}
+	}
+
+	$self->on_refresh_click();
+	return;
+}
+
+
+###############
+# Debug Breakpoint DB
+########
 # internal method _setup_db connector
 #######
 sub _setup_db {
@@ -309,9 +317,6 @@ sub _setup_db {
 	# set padre db relation
 	$self->{debug_breakpoints} = ('Padre::DB::DebugBreakpoints');
 
-	# p $self->{debug_breakpoints};
-	# p $self->{debug_breakpoints}->table_info;
-	# p $self->{debug_breakpoints}->select;
 	return;
 }
 
@@ -328,7 +333,6 @@ sub _add_bp_db {
 		last_used   => time(),
 	);
 
-	# p $self->{debug_breakpoints}->select;
 	return;
 }
 
@@ -340,13 +344,6 @@ sub _delete_bp_db {
 
 	$self->{debug_breakpoints}->delete("WHERE filename = \"$self->{bp_file}\" AND line_number = \"$self->{bp_line}\"");
 
-	# p $self->{debug_breakpoints}->select;
-	return;
-}
-
-sub test {
-	my $self = shift;
-	$self->_update_list();
 	return;
 }
 
@@ -364,18 +361,8 @@ sub _update_list {
 
 	my $editor = Padre::Current->editor;
 
-	# eval { $self->{debug_breakpoints}->select; };
-	# if ($EVAL_ERROR) {
-	# say "Oops $self->config_db is damaged";
-	# carp($EVAL_ERROR);
-	# } else {
-
 	my $sql_select = 'ORDER BY filename ASC, line_number ASC';
 	my @tuples     = $self->{debug_breakpoints}->select($sql_select);
-
-	# $item->SetId($idx);
-	# $self->{list}->InsertItem($item);
-	# $self->{list}->SetItemData( $index, 0 );
 
 	my $index = 0;
 

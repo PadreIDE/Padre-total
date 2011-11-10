@@ -24,14 +24,11 @@ sub set_breakpoints_clicked {
 
 	my $debug_breakpoints = ('Padre::DB::DebugBreakpoints');
 
-	my $editor = Padre::Current->editor;
+	my $editor  = Padre::Current->editor;
 	my $bp_file = $editor->{Document}->filename;
 	my $bp_line = $editor->GetCurrentLine + 1;
 
-	if ($#{ $debug_breakpoints->select("WHERE filename = \"$bp_file\" AND line_number = \"$bp_line\"")
-		} >= 0
-		)
-	{
+	if ( $#{ $debug_breakpoints->select("WHERE filename = \"$bp_file\" AND line_number = \"$bp_line\"") } >= 0 ) {
 
 		# say 'delete me';
 		$editor->MarkerDelete( $bp_line - 1, Padre::Constant::MARKER_BREAKPOINT() );
@@ -43,11 +40,11 @@ sub set_breakpoints_clicked {
 		# say 'create me';
 		$editor->MarkerAdd( $bp_line - 1, Padre::Constant::MARKER_BREAKPOINT() );
 		$debug_breakpoints->create(
-		filename    => $bp_file,
-		line_number => $bp_line,
-		active      => 1,
-		last_used   => time(),
-	);
+			filename    => $bp_file,
+			line_number => $bp_line,
+			active      => 1,
+			last_used   => time(),
+		);
 	}
 
 	return;
