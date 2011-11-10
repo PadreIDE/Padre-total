@@ -114,7 +114,7 @@ sub gettext_label {
 sub debug_output {
 	my $self   = shift;
 	my $output = shift;
-	
+
 	#TODO change to DARK_RED
 	$self->{output}->SetForegroundColour(RED);
 	$self->{output}->ChangeValue($output);

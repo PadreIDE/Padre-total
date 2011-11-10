@@ -188,6 +188,20 @@ sub on_refresh_click {
 #######
 sub delete_not_breakable_clicked {
 	my $self = shift;
+	my $editor = Padre::Current->editor;
+	
+	my $sql_select = "WHERE filename = \"$self->{current_file}\" AND active = 0";
+	my @tuples     = $self->{debug_breakpoints}->select($sql_select);
+
+	my $index = 0;
+
+	for ( 0 .. $#tuples ) {
+
+		# say 'delete me';
+		$editor->MarkerDelete( $tuples[$_][2] - 1, Padre::Constant::MARKER_BREAKPOINT() );
+		$editor->MarkerDelete( $tuples[$_][2] - 1, Padre::Constant::MARKER_NOT_BREAKABLE() );
+
+	}
 	$self->{debug_breakpoints}->delete("WHERE filename = \"$self->{current_file}\" AND active = 0");
 
 	#TODO update margin markers
