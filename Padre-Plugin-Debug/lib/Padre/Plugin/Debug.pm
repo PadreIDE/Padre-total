@@ -145,6 +145,17 @@ sub plugin_enable {
 	}
 }
 
+#######
+# Add icon to Plugin
+#######
+sub plugin_icon {
+	my $class = shift;
+	my $share = $class->plugin_directory_share or return;
+	my $file  = File::Spec->catfile( $share, 'icons', '16x16', 'morpho3.png' );
+	return unless -f $file;
+	return unless -r $file;
+	return Wx::Bitmap->new( $file, Wx::wxBITMAP_TYPE_PNG );
+}
 1;
 
 =head1 P-P-Debug 
