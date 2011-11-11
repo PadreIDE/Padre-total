@@ -6,13 +6,14 @@ package Padre::Plugin::Debug::FBP::Debugger;
 # To change this module edit the original .fbp file and regenerate.
 # DO NOT MODIFY THIS FILE BY HAND!
 
-use 5.008;
+use 5.008005;
+use utf8;
 use strict;
 use warnings;
 use Padre::Wx ();
 use Padre::Wx::Role::Main ();
 
-our $VERSION = '0.01';
+our $VERSION = '0.13_07';
 our @ISA     = qw{
 	Padre::Wx::Role::Main
 	Wx::Panel
@@ -206,7 +207,7 @@ sub new {
 		Wx::DefaultSize(),
 	);
 	$self->{show_global_variables}->SetToolTip(
-		Wx::gettext("Intermitent Error, You can't FIRSTKEY with the %~ hash")
+		Wx::gettext("working now with some gigery pokery to get around\nIntermitent Error, You can't FIRSTKEY with the %~ hash")
 	);
 
 	Wx::Event::EVT_CHECKBOX(
@@ -233,25 +234,6 @@ sub new {
 		$self->{trace},
 		sub {
 			shift->trace_checked(@_);
-		},
-	);
-
-	$self->{backtrace} = Wx::Button->new(
-		$self,
-		-1,
-		Wx::gettext("BackTrace"),
-		Wx::DefaultPosition(),
-		Wx::DefaultSize(),
-	);
-	$self->{backtrace}->SetToolTip(
-		Wx::gettext("T\nProduce a stack backtrace.")
-	);
-
-	Wx::Event::EVT_BUTTON(
-		$self,
-		$self->{backtrace},
-		sub {
-			shift->backtrace_clicked(@_);
 		},
 	);
 
@@ -342,11 +324,11 @@ sub new {
 		$self,
 		$self->{list_action},
 		sub {
-			shift->L_clicked(@_);
+			shift->list_action_clicked(@_);
 		},
 	);
 
-	$self->{m_bpButton24} = Wx::BitmapButton->new(
+	$self->{stacktrace} = Wx::BitmapButton->new(
 		$self,
 		-1,
 		Wx::NullBitmap(),
@@ -354,8 +336,19 @@ sub new {
 		Wx::DefaultSize(),
 		Wx::BU_AUTODRAW(),
 	);
+	$self->{stacktrace}->SetToolTip(
+		Wx::gettext("T\nProduce a stack backtrace.")
+	);
 
-	$self->{m_bpButton25} = Wx::BitmapButton->new(
+	Wx::Event::EVT_BUTTON(
+		$self,
+		$self->{stacktrace},
+		sub {
+			shift->stacktrace_clicked(@_);
+		},
+	);
+
+	$self->{module_versions} = Wx::BitmapButton->new(
 		$self,
 		-1,
 		Wx::NullBitmap(),
@@ -363,14 +356,36 @@ sub new {
 		Wx::DefaultSize(),
 		Wx::BU_AUTODRAW(),
 	);
+	$self->{module_versions}->SetToolTip(
+		Wx::gettext("M\nDisplay all loaded modules and their versions.")
+	);
 
-	$self->{m_bpButton26} = Wx::BitmapButton->new(
+	Wx::Event::EVT_BUTTON(
+		$self,
+		$self->{module_versions},
+		sub {
+			shift->module_versions_clicked(@_);
+		},
+	);
+
+	$self->{all_threads} = Wx::BitmapButton->new(
 		$self,
 		-1,
 		Wx::NullBitmap(),
 		Wx::DefaultPosition(),
 		Wx::DefaultSize(),
 		Wx::BU_AUTODRAW(),
+	);
+	$self->{all_threads}->SetToolTip(
+		Wx::gettext("E\nDisplay all thread ids the current one will be identified: <n>.")
+	);
+
+	Wx::Event::EVT_BUTTON(
+		$self,
+		$self->{all_threads},
+		sub {
+			shift->all_threads_clicked(@_);
+		},
 	);
 
 	my $button_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL());
@@ -397,7 +412,7 @@ sub new {
 	$doo->SetFlexibleDirection(Wx::BOTH());
 	$doo->SetNonFlexibleGrowMode(Wx::FLEX_GROWMODE_SPECIFIED());
 	$doo->Add( $self->{trace}, 0, Wx::ALL(), 5 );
-	$doo->Add( $self->{backtrace}, 0, Wx::ALL(), 5 );
+	$doo->Add( 0, 0, 1, Wx::EXPAND(), 5 );
 	$doo->Add( $self->{sub_names}, 0, Wx::ALL(), 5 );
 	$doo->Add( $self->{sub_name_regex}, 1, Wx::ALL(), 5 );
 
@@ -405,9 +420,9 @@ sub new {
 	$option_button_sizer->Add( $self->{dot}, 0, Wx::ALL(), 5 );
 	$option_button_sizer->Add( $self->{view_around}, 0, Wx::ALL(), 5 );
 	$option_button_sizer->Add( $self->{list_action}, 0, Wx::ALL(), 5 );
-	$option_button_sizer->Add( $self->{m_bpButton24}, 0, Wx::ALL(), 5 );
-	$option_button_sizer->Add( $self->{m_bpButton25}, 0, Wx::ALL(), 5 );
-	$option_button_sizer->Add( $self->{m_bpButton26}, 0, Wx::ALL(), 5 );
+	$option_button_sizer->Add( $self->{stacktrace}, 0, Wx::ALL(), 5 );
+	$option_button_sizer->Add( $self->{module_versions}, 0, Wx::ALL(), 5 );
+	$option_button_sizer->Add( $self->{all_threads}, 0, Wx::ALL(), 5 );
 
 	my $file_11 = Wx::StaticBoxSizer->new(
 		Wx::StaticBox->new(
@@ -480,10 +495,6 @@ sub trace_checked {
 	$_[0]->main->error('Handler method trace_checked for event trace.OnCheckBox not implemented');
 }
 
-sub backtrace_clicked {
-	$_[0]->main->error('Handler method backtrace_clicked for event backtrace.OnButtonClick not implemented');
-}
-
 sub sub_names_clicked {
 	$_[0]->main->error('Handler method sub_names_clicked for event sub_names.OnButtonClick not implemented');
 }
@@ -496,8 +507,20 @@ sub v_clicked {
 	$_[0]->main->error('Handler method v_clicked for event view_around.OnButtonClick not implemented');
 }
 
-sub L_clicked {
-	$_[0]->main->error('Handler method L_clicked for event list_action.OnButtonClick not implemented');
+sub list_action_clicked {
+	$_[0]->main->error('Handler method list_action_clicked for event list_action.OnButtonClick not implemented');
+}
+
+sub stacktrace_clicked {
+	$_[0]->main->error('Handler method stacktrace_clicked for event stacktrace.OnButtonClick not implemented');
+}
+
+sub module_versions_clicked {
+	$_[0]->main->error('Handler method module_versions_clicked for event module_versions.OnButtonClick not implemented');
+}
+
+sub all_threads_clicked {
+	$_[0]->main->error('Handler method all_threads_clicked for event all_threads.OnButtonClick not implemented');
 }
 
 1;

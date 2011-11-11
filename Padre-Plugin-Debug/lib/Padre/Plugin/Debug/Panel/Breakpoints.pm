@@ -1,27 +1,26 @@
 package Padre::Plugin::Debug::Panel::Breakpoints;
 
-use 5.010;
+use 5.008;
 use strict;
 use warnings;
 
 # Turn on $OUTPUT_AUTOFLUSH
-$| = 1;
-
-use diagnostics;
-use utf8;
+# $| = 1;
+# use diagnostics;
+# use utf8;
 
 use Padre::Wx::Role::View ();
 use Padre::Wx             ();
 use Padre::Plugin::Debug::FBP::Breakpoints;
 
-use English qw( -no_match_vars ); # Avoids regex performance penalty
+# use English qw( -no_match_vars ); # Avoids regex performance penalty
 
 our $VERSION = '0.13';
 our @ISA     = qw{
 	Padre::Wx::Role::View
 	Padre::Plugin::Debug::FBP::Breakpoints
 };
-use Data::Printer { caller_info => 1, colored => 1, };
+# use Data::Printer { caller_info => 1, colored => 1, };
 
 use constant {
 	RED        => Wx::Colour->new('red'),
@@ -90,7 +89,8 @@ sub view_close {
 
 sub view_icon {
 	my $self = shift;
-	# This method should return a valid Wx bitmap 
+
+	# This method should return a valid Wx bitmap
 	#### if exsists, other wise comment out hole method
 	# to be used as the icon for
 	# a notebook page (displayed alongside C<view_label>).
@@ -138,7 +138,7 @@ sub gettext_label {
 sub set_up {
 	my $self = shift;
 
-	$self->{debug_visable}       = 0;
+	# $self->{debug_visable}       = 0;
 	$self->{breakpoints_visable} = 0;
 
 	# Setup the debug button icons
@@ -161,7 +161,8 @@ sub set_up {
 
 	$self->_setup_db();
 
-	# Setup columns names and order here
+	# TODO Active should be droped, just on show for now
+	# Setup columns names, Active should be droped, just and order here
 	my @column_headers = qw( Path Line Active );
 	my $index          = 0;
 	for my $column_header (@column_headers) {
@@ -182,7 +183,9 @@ sub set_up {
 # event handler delete_not_breakable_clicked
 #######
 sub delete_not_breakable_clicked {
-	my $self   = shift;
+	my $self = shift;
+
+	#TODO there must be a better way than this
 	my $editor = Padre::Current->editor;
 
 	my $sql_select = "WHERE filename = \"$self->{current_file}\" AND active = 0";
@@ -231,26 +234,26 @@ sub set_breakpoints_clicked {
 
 	# $self->running or return;
 	my $editor = Padre::Current->editor;
-	$self->{bp_file} = $editor->{Document}->filename;
-	$self->{bp_line} = $editor->GetCurrentLine + 1;
+	$self->{current_file} = $current->document->filename;
+	$self->{current_line}      = $editor->GetCurrentLine + 1;
 
 	# dereferance array and test for contents
 	if ($#{ $self->{debug_breakpoints}
-				->select("WHERE filename = \"$self->{bp_file}\" AND line_number = \"$self->{bp_line}\"")
+				->select("WHERE filename = \"$self->{current_file}\" AND line_number = \"$self->{current_line}\"")
 		} >= 0
 		)
 	{
 
 		# say 'delete me';
-		$editor->MarkerDelete( $self->{bp_line} - 1, Padre::Constant::MARKER_BREAKPOINT() );
-		$editor->MarkerDelete( $self->{bp_line} - 1, Padre::Constant::MARKER_NOT_BREAKABLE() );
+		$editor->MarkerDelete( $self->{current_line} - 1, Padre::Constant::MARKER_BREAKPOINT() );
+		$editor->MarkerDelete( $self->{current_line} - 1, Padre::Constant::MARKER_NOT_BREAKABLE() );
 		$self->_delete_bp_db();
 
 	} else {
 
 		# say 'create me';
 		$self->{bp_active} = 1;
-		$editor->MarkerAdd( $self->{bp_line} - 1, Padre::Constant::MARKER_BREAKPOINT() );
+		$editor->MarkerAdd( $self->{current_line} - 1, Padre::Constant::MARKER_BREAKPOINT() );
 		$self->_add_bp_db();
 	}
 	$self->on_refresh_click();
@@ -294,7 +297,6 @@ sub delete_project_bp_clicked {
 
 		if ( $tuples[$_][1] =~ m/^ $self->{project_dir} /sxm ) {
 
-			#TODO need a background task to tidy up none current margin markers
 			$editor->MarkerDelete( $tuples[$_][2] - 1, Padre::Constant::MARKER_BREAKPOINT() );
 			$editor->MarkerDelete( $tuples[$_][2] - 1, Padre::Constant::MARKER_NOT_BREAKABLE() );
 			$self->{debug_breakpoints}->delete("WHERE filename = \"$tuples[$_][1]\" ");
@@ -327,8 +329,8 @@ sub _add_bp_db {
 	my $self = shift;
 
 	$self->{debug_breakpoints}->create(
-		filename    => $self->{bp_file},
-		line_number => $self->{bp_line},
+		filename    => $self->{current_file},
+		line_number => $self->{current_line},
 		active      => $self->{bp_active},
 		last_used   => time(),
 	);
@@ -342,7 +344,8 @@ sub _add_bp_db {
 sub _delete_bp_db {
 	my $self = shift;
 
-	$self->{debug_breakpoints}->delete("WHERE filename = \"$self->{bp_file}\" AND line_number = \"$self->{bp_line}\"");
+	$self->{debug_breakpoints}
+		->delete("WHERE filename = \"$self->{current_file}\" AND line_number = \"$self->{current_line}\"");
 
 	return;
 }
@@ -383,10 +386,8 @@ sub _update_list {
 				$tuples[$_][1] =~ s/^ $self->{project_dir} //sxm;
 				$self->{list}->SetItem( $index, 0, ( $tuples[$_][1] ) );
 
-				# TODO add when we have alternative markings
+				# TODO comment out just on show for now
 				$self->{list}->SetItem( $index++, 2, ( $tuples[$_][3] ) );
-
-				# $editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_BREAKPOINT() );
 
 			} elsif ( $self->{show_project} == 1 ) {
 				$item->SetId($index);
@@ -405,7 +406,7 @@ sub _update_list {
 				$tuples[$_][1] =~ s/^ $self->{project_dir} //sxm;
 				$self->{list}->SetItem( $index, 0, ( $tuples[$_][1] ) );
 
-				# TODO add when we have alternative markings
+				# TODO comment out just on show for now
 				$self->{list}->SetItem( $index++, 2, ( $tuples[$_][3] ) );
 
 			}

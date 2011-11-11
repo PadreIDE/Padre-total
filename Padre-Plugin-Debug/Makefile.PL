@@ -20,7 +20,7 @@ requires_from 'lib/Padre/Plugin/Debug/Panel/DebugVariable.pm';
 requires 'Padre' => '0.91';
 
 # required modules from CPAN
-requires 'Debug::Client' => '0.13_06';
+requires 'Debug::Client' => '0.13_07';
 requires 'Data::Printer' => '0.24';
 
 # Optional if you have used the share directory

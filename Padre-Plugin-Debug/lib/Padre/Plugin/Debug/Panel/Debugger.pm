@@ -1,6 +1,5 @@
 package Padre::Plugin::Debug::Panel::Debugger;
 
-
 use 5.010;
 use strict;
 use warnings;
@@ -33,36 +32,6 @@ use constant {
 	DARK_GRAY  => Wx::Colour->new( 0x7f, 0x7f, 0x7f ),
 	BLACK      => Wx::Colour->new('black'),
 };
-
-
-#######
-# new
-#######
-# sub new { # todo use a better object constructor
-# my $class = shift; # What class are we constructing?
-# my $self  = {};    # Allocate new memory
-# bless $self, $class; # Mark it of the right type
-# $self->_init(@_);    # Call _init with remaining args
-# return $self;
-# } #new
-
-# sub _init {
-# my ( $self, $main, @args ) = @_;
-
-# # 	$self->{main} = $main;
-
-# # 	$self->{client}       = undef;
-# $self->{file}         = undef;
-# $self->{save}         = {};
-# $self->{trace_status} = 'Trace = off';
-# $self->{var_val}      = {};
-# $self->{auto_var_val} = {};
-# $self->{auto_x_var}   = {};
-# $self->{set_bp}       = 0;
-# $self->{fudge}        = 0;
-
-# # 	return $self;
-# } #_init
 
 
 #######
@@ -129,15 +98,6 @@ sub view_icon {
 	return $icon;
 }
 
-#
-#  sub view_icon {
-#  	my $self = shift;
-#
-# 	# This method should return a valid Wx bitmap to be used as the icon for
-# 	# a notebook page (displayed alongside C<view_label>).
-# 	return;
-# }
-#
 sub view_start {
 	my $self = shift;
 
@@ -155,7 +115,7 @@ sub view_stop {
 }
 
 sub gettext_label {
-	Wx::gettext('Debugger');
+	Wx::gettext('Debugger 0.13_07');
 }
 ###############
 # Make Padre::Wx::Role::View happy end
@@ -214,17 +174,19 @@ sub set_up {
 
 	$self->{view_around}->SetBitmapLabel( Padre::Wx::Icon::find('actions/v') );
 	$self->{view_around}->Disable;
-
+	
+	$self->{stacktrace}->SetBitmapLabel( Padre::Wx::Icon::find('actions/T') );
+	$self->{stacktrace}->Disable;
+	
+	$self->{module_versions}->SetBitmapLabel( Padre::Wx::Icon::find('actions/M') );
+	$self->{module_versions}->Disable;
+	
+	$self->{all_threads}->SetBitmapLabel( Padre::Wx::Icon::find('actions/E') );
+	$self->{all_threads}->Disable;
+	
 	$self->{trace}->Disable;
 	$self->{sub_names}->Disable;
 	$self->{sub_name_regex}->Disable;
-	$self->{backtrace}->Disable;
-
-	# $self->{list_actions}->Disable;
-	# $self->{show_buffer}->Disable;
-
-
-	# $self->{refresh}->Disable;
 
 	# Setup columns names and order here
 	my @column_headers = qw( Variable Value );
@@ -296,38 +258,7 @@ sub update_variables {
 }
 
 
-sub on_debug_clicked {
-	my $self = shift;
-	my $main = $self->main;
 
-	$self->{quit_debugger}->Enable;
-	$self->show_debug_output(1);
-	$self->{step_in}->Show;
-	$self->{step_over}->Show;
-	$self->{step_out}->Show;
-	$self->{run_till}->Show;
-	$self->{display_value}->Show;
-
-	$self->{trace}->Enable;
-	$self->{sub_names}->Enable;
-	$self->{sub_name_regex}->Enable;
-	$self->{backtrace}->Enable;
-
-	# $self->{list_actions}->Enable;
-	# $self->{show_buffer}->Enable;
-	$self->{list_action}->Enable;
-	$self->{dot}->Enable;
-	$self->{view_around}->Enable;
-
-
-	$self->{debug}->Hide;
-	$self->debug_perl;
-	$main->aui->Update;
-	if ( $self->{panel_debug_output} ) {
-		$self->{panel_debug_output}->debug_output( $self->{client}->_show_help );
-	}
-	return;
-}
 
 
 sub show_local_variables_checked {
@@ -533,10 +464,10 @@ sub debug_quit {
 	$self->{trace}->Disable;
 	$self->{sub_names}->Disable;
 	$self->{sub_name_regex}->Disable;
-	$self->{backtrace}->Disable;
+	$self->{stacktrace}->Disable;
 
-	# $self->{list_actions}->Disable;
-	# $self->{show_buffer}->Disable;
+	$self->{module_versions}->Disable;
+	$self->{all_threads}->Disable;
 	$self->{list_action}->Disable;
 	$self->{dot}->Disable;
 	$self->{view_around}->Disable;
@@ -583,20 +514,7 @@ sub debug_step_in {
 		return;
 	}
 
-	# p $self->{client}->show_breakpoints();
-	# my $output = $self->{client}->buffer;
-	# $output .= "\n" . $self->{client}->get_y_zero();
-	# $self->{panel_debug_output}->debug_output($output);
 	$self->{panel_debug_output}->debug_output( $self->{client}->buffer );
-
-	# if ( $self->{set_bp} == 0 ) {
-
-# # 		# get bp's from db
-		# $self->_get_bp_db();
-		# $self->{set_bp} = 1;
-		# say "set_bp step in";
-	# }
-
 	$self->_set_debugger;
 
 	return;
@@ -626,18 +544,7 @@ sub debug_step_over {
 		return;
 	}
 
-	# $self->{client}->show_breakpoints();
-	# my $output = $self->{client}->buffer;
-	# $output .= "\n" . $self->{client}->get_y_zero();
-	# $self->{panel_debug_output}->debug_output($output);
 	$self->{panel_debug_output}->debug_output( $self->{client}->buffer );
-
-	# if ( $self->{set_bp} == 0 ) {
-		# $self->_get_bp_db();
-		# $self->{set_bp} = 1;
-		# say "set_bp step over";
-	# }
-
 	$self->_set_debugger;
 
 	return;
@@ -665,18 +572,7 @@ sub debug_step_out {
 		return;
 	}
 
-	# $self->{client}->show_breakpoints();
-	# my $output = $self->{client}->buffer;
-	# $output .= "\n" . $self->{client}->get_y_zero();
-	# $self->{panel_debug_output}->debug_output($output);
 	$self->{panel_debug_output}->debug_output( $self->{client}->buffer );
-
-	# if ( $self->{set_bp} == 0 ) {
-		# $self->_get_bp_db();
-		# $self->{set_bp} = 1;
-		# say "set_bp step out";
-	# }
-
 	$self->_set_debugger;
 
 	return;
@@ -705,18 +601,7 @@ sub debug_run_till {
 		return;
 	}
 
-	# $self->{client}->show_breakpoints();
-	# my $output = $self->{client}->buffer;
-	# $output .= "\n" . $self->{client}->get_y_zero();
-	# $self->{panel_debug_output}->debug_output($output);
 	$self->{panel_debug_output}->debug_output( $self->{client}->buffer );
-
-	# if ( $self->{set_bp} == 0 ) {
-		# $self->_get_bp_db();
-		# $self->{set_bp} = 1;
-		# say "set_bp run till";
-	# }
-
 	$self->_set_debugger;
 
 	return;
@@ -753,17 +638,7 @@ sub display_trace {
 
 	return;
 }
-#######
-# sub display_trace
-#######
-sub display_sub_names {
-	my $self  = shift;
-	my $regex = shift;
 
-	$self->{panel_debug_output}->debug_output( $self->{client}->list_subroutine_names($regex) );
-
-	return;
-}
 #######
 # Event handler sub_names_clicked
 #######
@@ -775,20 +650,11 @@ sub sub_names_clicked {
 
 	return;
 }
-#######
-# sub display_backtrace
-#######
-sub display_backtrace {
-	my $self = shift;
 
-	$self->{panel_debug_output}->debug_output( $self->{client}->get_stack_trace() );
-
-	return;
-}
 #######
 # Event handler backtrace_clicked
 #######
-sub backtrace_clicked {
+sub stacktrace_clicked {
 	my $self = shift;
 
 	$self->{panel_debug_output}->debug_output( $self->{client}->get_stack_trace() );
@@ -796,55 +662,37 @@ sub backtrace_clicked {
 	return;
 }
 #######
-# sub display_buffer pass through
+# Event handler module_versions_clicked
 #######
-# sub display_buffer {
-	# my $self = shift;
+sub module_versions_clicked {
+	my $self = shift;
 
-# # 	$self->{panel_debug_output}->debug_output( $self->{client}->buffer() );
+	$self->{panel_debug_output}->debug_output( $self->{client}->__send('M') );
 
-# # 	return;
-# }
+	return;
+}
 #######
-# Event handler show_buffer_clicked
+# Event handler all_threads_clicked
 #######
-# sub show_buffer_clicked {
-# my $self = shift;
+sub all_threads_clicked {
+	my $self = shift;
 
-# # 	$self->{panel_debug_output}->debug_output( $self->{client}->buffer() );
+	$self->{panel_debug_output}->debug_output( $self->{client}->__send_np('E') );
 
-# # 	return;
-# }
-#######
-# sub display_list_actions pass through
-#######
-# sub display_list_actions {
-	# my $self = shift;
+	return;
+}
 
-# # 	$self->{panel_debug_output}->debug_output( $self->{client}->show_breakpoints() );
-
-# # 	return;
-# }
 #######
-# Event handler L_clicked
+# Event handler list_action_clicked
 #######
-sub L_clicked {
+sub list_action_clicked {
 	my $self = shift;
 
 	$self->{panel_debug_output}->debug_output( $self->{client}->show_breakpoints() );
 
 	return;
 }
-#######
-# Event handler list_actions_clicked
-#######
-# sub list_actions_clicked {
-	# my $self = shift;
 
-# # 	$self->{panel_debug_output}->debug_output( $self->{client}->show_breakpoints() );
-
-# # 	return;
-# }
 #######
 # Event dot_clicked
 #######
@@ -865,22 +713,6 @@ sub v_clicked {
 
 	return;
 }
-#######
-#TODO Debug -> menu when in trunk
-#######
-# sub debug_perl_show_stack_trace {
-# my $self = shift;
-# $self->running or return;
-
-# # 	my $trace = $self->{client}->get_stack_trace;
-# my $str   = $trace;
-# if ( ref($trace) and ref($trace) eq 'ARRAY' ) {
-# $str = join "\n", @$trace;
-# }
-# $self->message($str);
-
-# # 	return;
-# }
 
 #######
 #TODO Debug -> menu when in trunk
@@ -1018,12 +850,6 @@ sub _output_variables {
 		}
 	}
 
-	# the preciding global variables is due to errors from following
-	# only get global variables if required
-	# if ( $self->{global_variables} == 1 ) {
-	# $self->get_global_variables();
-	# }
-
 	$self->update_variables( $self->{var_val}, $self->{auto_var_val}, $self->{auto_x_var} );
 
 	return;
@@ -1119,9 +945,6 @@ sub _setup_db {
 	# set padre db relation
 	$self->{debug_breakpoints} = ('Padre::DB::DebugBreakpoints');
 
-	# p $self->{debug_breakpoints};
-	# p $self->{debug_breakpoints}->table_info;
-	# p $self->{debug_breakpoints}->select;
 	return;
 }
 
@@ -1173,10 +996,6 @@ sub _get_bp_db {
 		}
 	}
 
-	# $self->{client}->show_breakpoints();
-	# my $output = $self->{client}->buffer;
-	# $self->{panel_debug_output}->debug_output($output);
-
 	return;
 }
 
@@ -1211,10 +1030,6 @@ sub _show_bp_autoload {
 		}
 
 	}
-
-	# $self->{client}->show_breakpoints();
-	# my $output = $self->{client}->buffer;
-	# $self->{panel_debug_output}->debug_output($output);
 
 	return;
 }
@@ -1273,54 +1088,44 @@ sub _show_debug_output {
 	return;
 }
 
-########
-# Panel Controler show debug output
-########
-# sub show_debug_variable {
-# my $self = shift;
-# my $main = $self->main;
-# my $show = shift;
 
-# This is the conditional operator. It works much like an if-then-else.
-# If the X is true then Y is evaluated and returned otherwise Z is evaluated and returned.
+#########################
+# event handler top row
+#######
+# sub on_debug_clicked
+#######
+sub on_debug_clicked {
+	my $self = shift;
+	my $main = $self->main;
 
-# The context it is called in propagates to Y and Z, so if the operator is called in
-# scalar context and X is true then Y will be evaluated in scalar context.
+	$self->{quit_debugger}->Enable;
+	$self->show_debug_output(1);
+	$self->{step_in}->Show;
+	$self->{step_over}->Show;
+	$self->{step_out}->Show;
+	$self->{run_till}->Show;
+	$self->{display_value}->Show;
 
-# The result of the operator is a valid lvalue (i.e. it can be assigned to).
-# Note, normal rules about lvalues (e.g. you can't assign to constants) still apply.
-# my $show = ( @_ ? ( $_[0] ? 1 : 0 ) : 1 );
+	$self->{trace}->Enable;
+	$self->{sub_names}->Enable;
+	$self->{sub_name_regex}->Enable;
+	$self->{stacktrace}->Enable;
 
-# Construct debug output panel if it is not there
-# unless ( $self->{panel_debug_variable} && $show == 1) {
-# require Padre::Plugin::Debug::Panel::DebugVariable;
-# $self->{panel_debug_variable} = Padre::Plugin::Debug::Panel::DebugVariable->new($main);
-# }
+	$self->{module_versions}->Enable;
+	$self->{all_threads}->Enable;
+	$self->{list_action}->Enable;
+	$self->{dot}->Enable;
+	$self->{view_around}->Enable;
 
-# # 	$self->_show_debug_variable($show);
 
-# # 	$main->aui->Update;
-
-# # 	return;
-# }
-########
-# Panel Launcher show debug variable
-########
-# sub _show_debug_variable {
-# my $self = shift;
-# my $main = $self->main;
-# my $show = shift;
-
-# # 	if ( $show == 1 ) {
-# $main->right->show( $self->{panel_debug_variable} );
-# } else {
-# $main->right->hide( $self->{panel_debug_variable} );
-# delete $self->{panel_debug_variable};
-# }
-
-# # 	return;
-# }
-
+	$self->{debug}->Hide;
+	$self->debug_perl;
+	$main->aui->Update;
+	if ( $self->{panel_debug_output} ) {
+		$self->{panel_debug_output}->debug_output( $self->{client}->_show_help );
+	}
+	return;
+}
 #######
 # sub step_in_clicked
 #######
@@ -1329,18 +1134,6 @@ sub step_in_clicked {
 
 	TRACE('step_in_clicked') if DEBUG;
 	$self->debug_step_in();
-
-	# $self->{step_over}->Enable;
-	# $self->{step_out}->Enable;
-	# $self->{run_till}->Enable;
-	# $self->{display_value}->Enable;
-	# $self->{quit_debugger}->Enable;
-	# $self->{trace}->Enable;
-	# $self->{sub_names}->Enable;
-	# $self->{sub_name_regex}->Enable;
-	# $self->{backtrace}->Enable;
-	# $self->{list_actions}->Enable;
-	# $self->{show_buffer}->Enable;
 
 	return;
 }
@@ -1351,7 +1144,7 @@ sub step_over_clicked {
 	my $self = shift;
 
 	TRACE('step_over_clicked') if DEBUG;
-	$self->debug_step_over;
+	$self->debug_step_over();
 
 	return;
 }
@@ -1362,10 +1155,11 @@ sub step_out_clicked {
 	my $self = shift;
 
 	TRACE('step_out_clicked') if DEBUG;
-	$self->debug_step_out;
+	$self->debug_step_out();
 
 	return;
 }
+
 #######
 # sub run_till_clicked
 #######
@@ -1373,21 +1167,43 @@ sub run_till_clicked {
 	my $self = shift;
 
 	TRACE('run_till_clicked') if DEBUG;
-	$self->debug_run_till;
+	$self->debug_run_till();
 
 	return;
 }
-#######
-# event handler breakpoint_clicked
-#######
-# sub set_breakpoints_clicked {
-	# my $self = shift;
 
-# # 	TRACE('set_breakpoints_clicked') if DEBUG;
-	# $self->{panel_breakpoints}->set_breakpoints_clicked();
+#######
+# sub display_value
+#######
+sub display_value_clicked {
+	my $self = shift;
 
-# # 	return;
-# }
+	TRACE('display_value') if DEBUG;
+	$self->display_value();
+
+	return;
+}
+
+#######
+# sub quit_debugger_clicked
+#######
+sub quit_debugger_clicked {
+	my $self = shift;
+
+	# my $main = $self->main;
+
+	TRACE('quit_debugger_clicked') if DEBUG;
+	$self->debug_quit;
+
+	$self->show_debug_output(0);
+
+	return;
+}
+
+##############################
+# Output Options
+#########
+
 #######
 # sub trace_clicked
 #######
@@ -1402,43 +1218,9 @@ sub trace_checked {
 
 	return;
 }
-#######
-# sub display_value
-#######
-sub display_value_clicked {
-	my $self = shift;
 
-	TRACE('display_value') if DEBUG;
-	$self->display_value();
 
-	return;
-}
-#######
-# sub quit_debugger_clicked
-#######
-sub quit_debugger_clicked {
-	my $self = shift;
-
-	# my $main = $self->main;
-
-	TRACE('quit_debugger_clicked') if DEBUG;
-	$self->debug_quit;
-
-	# $self->{step_over}->Disable;
-	# $self->{step_out}->Disable;
-	# $self->{run_till}->Disable;
-	# $self->{display_value}->Disable;
-	# $self->{trace}->Disable;
-
-	$self->show_debug_output(0);
-
-	# $main->left->hide( $self->{panel_breakpoints} );
-	# $self->{breakpoints}->SetValue(0);
-
-	return;
-}
 1;
-
 
 __END__
 

@@ -1,19 +1,19 @@
 package Padre::Plugin::Debug::Breakpoints;
 
-use 5.010;
+use 5.008;
 use strict;
 use warnings;
 
 # Turn on $OUTPUT_AUTOFLUSH
-$| = 1;
-use diagnostics;
-use utf8;
+# $| = 1;
+# use diagnostics;
+# use utf8;
 
-use English qw( -no_match_vars ); # Avoids regex performance penalty
+# use English qw( -no_match_vars ); # Avoids regex performance penalty
 
 our $VERSION = '0.13';
 
-use Data::Printer { caller_info => 1, colored => 1, };
+# use Data::Printer { caller_info => 1, colored => 1, };
 
 
 #######
@@ -50,6 +50,29 @@ sub set_breakpoints_clicked {
 	return;
 }
 
+#TODO finish when in trunk
+#######
+# function show_breakpoints
+# to be called when showing current file
+#######
+sub show_breakpoints {
+
+	my $editor            = Padre::Current->editor;
+	my $debug_breakpoints = ('Padre::DB::DebugBreakpoints');
+	my $bp_file           = $editor->{Document}->filename;
+	my $sql_select        = "WHERE BY filename = \"$bp_file\" ASC, line_number ASC";
+	my @tuples            = $debug_breakpoints->select($sql_select);
+
+	for ( 0 .. $#tuples ) {
+
+		if ( $tuples[$_][3] == 1 ) {
+			$editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_BREAKPOINT() );
+		} else {
+			$editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_NOT_BREAKABLE() );
+		}
+	}
+	return;
+}
 
 1;
 

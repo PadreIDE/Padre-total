@@ -6,11 +6,12 @@ use warnings;
 
 # Turn on $OUTPUT_AUTOFLUSH
 $| = 1;
+
 # use diagnostics;
 # use Data::Printer { caller_info => 1, colored => 1, };
 
 say 'START';
-use strict;
+
 foreach (0..7)
 {
  my $line = $_;

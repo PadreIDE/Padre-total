@@ -10,7 +10,7 @@ $| = 1;
 use diagnostics;
 use utf8;
 
-our $VERSION = '0.13_06';
+our $VERSION = '0.13_07';
 our @ISA     = 'Padre::Plugin';
 
 #######
@@ -20,18 +20,17 @@ sub padre_interfaces {
 	return (
 
 		# Default, required
-		'Padre::Plugin' => '0.91',
+		'Padre::Plugin' => '0.92',
 
 		# used by Main, and by Padre::Plugin::FormBuilder
-		'Padre::Wx'             => '0.91',
-		# 'Wx::Dialog'            => '0.91',
-		# 'Wx::Panel'             => '0.91',
-		'Padre::Wx::Main'       => '0.91',
-		'Padre::Wx::Role::Main' => '0.91',
-		'Padre::Wx::Role::View' => '0.91',
-		'Padre::Logger'         => '0.91',
-		'Padre::Current'        => '0.91',
-		'Padre::Util'           => '0.91',
+		'Padre::Wx'             => '0.92',
+		# 'Wx::Dialog'            => '0.92',
+		# 'Wx::Panel'             => '0.92',
+		'Padre::Wx::Main'       => '0.92',
+		'Padre::Wx::Role::View' => '0.92',
+		'Padre::Logger'         => '0.92',
+		'Padre::Current'        => '0.92',
+		'Padre::Util'           => '0.92',
 	);
 }
 
@@ -138,7 +137,7 @@ sub plugin_enable {
 	# Tests for external file in Path
 	require Debug::Client;
 
-	if ( $Debug::Client::VERSION eq '0.13_06' ) {
+	if ( $Debug::Client::VERSION eq '0.13_07' ) {
 		return 1;
 	} else {
 		return 0;
@@ -178,7 +177,7 @@ between sim-bar and panels though.
 
 See Padre::Plugin::Debug::Main for more POD
 
-Requires Debug::Client 0.13_06
+Requires Debug::Client 0.13_07
 
 Author => bowtie
 
