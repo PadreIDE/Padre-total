@@ -4,7 +4,7 @@ use 5.008;
 use strict;
 use warnings;
 
-our $VERSION = '0.13_06';
+our $VERSION = '0.13_07';
 
 use utf8;
 use IO::Socket;
@@ -943,7 +943,34 @@ sub _send_get {
 
 	return $self->get;
 }
+#######
+# Internal Method __send_padre
+# hidden undocumented
+######
+sub __send {
+	my ( $self, $input ) = @_;
+	$self->_send($input);
 
+	my $buf = $self->_get;
+
+	$self->_prompt( \$buf );
+
+	return $buf;
+}
+#######
+# Internal Method __send_np
+# hidden undocumented
+######
+sub __send_np {
+	my ( $self, $input ) = @_;
+	$self->_send($input);
+	print "input: $input\n";
+
+	my $buf = $self->_get;
+	print "buffer: $buf\n";
+	
+	return $buf;
+}
 #######
 # Internal Method _show_help
 #######

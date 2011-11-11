@@ -1,3 +1,6 @@
+0.13_07 2011.11.09
+    - Tweaks to tests for above (BOWTIE)
+    
 0.13_06 2011.11.09
     - Add Method show_view
       modify method show_line
