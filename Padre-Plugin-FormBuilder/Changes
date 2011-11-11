@@ -1,9 +1,9 @@
 Changes for Perl extension Padre-Plugin-FormBuilder
 
 0.04 to be released
+	- Updated to match changes in FBP::Perl 0.66
 	- Added support for previewing frames without crashing
 	- Removed the use of Mouse as it causes reloading problems
-	- Updated to match changes in FBP::Perl 0.61
 	- When in Padre mode use the new Wx::FOO style constants
 
 0.03 Tue 2 Aug 2011

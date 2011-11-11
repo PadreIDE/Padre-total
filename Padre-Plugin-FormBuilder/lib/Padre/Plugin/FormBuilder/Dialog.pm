@@ -34,6 +34,9 @@ use constant SINGLE => qw{
 use constant COMPLETE => qw{
 	complete_fbp
 	complete_shim
+};
+
+use constant FRAME => qw{
 	complete_app
 	complete_script
 };
@@ -51,7 +54,7 @@ sub new {
 
 	# Create the dialog
 	my $self = $class->SUPER::new($main);
-	$self->disable( OPTIONS, SINGLE );
+	$self->disable( OPTIONS, SINGLE, COMPLETE, FRAME );
 	$self->CenterOnParent;
 
 	# If we don't have a current project, disable the checkbox
@@ -100,15 +103,15 @@ sub browse_changed {
 
 	# Flush any existing state
 	$self->{xml} = undef;
-	$self->select->Clear;
-	$self->disable( OPTIONS, SINGLE );
+	SCOPE: {
+		my $lock = $self->lock_update;
+		$self->select->Clear;
+		$self->disable( OPTIONS, SINGLE, COMPLETE, FRAME );
+	}
 
 	# Attempt to load the file and parse out the dialog list
 	local $@;
 	eval {
-		# This might take a little while
-		my $lock = $self->main->lock('UPDATE');
-
 		# Load the file
 		require FBP;
 		$self->{xml} = FBP->new;
@@ -124,6 +127,7 @@ sub browse_changed {
 		die "No dialogs found" unless @$list;
 
 		# Populate the dialog list
+		my $lock = $self->lock_update;
 		$self->select->Append($list);
 		$self->select->SetSelection(0);
 
@@ -140,13 +144,13 @@ sub browse_changed {
 		}
 
 		# Enable the dialog list and buttons
-		$self->enable( OPTIONS, SINGLE );
+		$self->enable( OPTIONS, SINGLE, COMPLETE );
 
 		# We need at least one frame to build a complete application
 		if ( $self->{xml}->project->find_first( isa => 'FBP::Frame' ) ) {
-			$self->enable( COMPLETE );
+			$self->enable( FRAME );
 		} else {
-			$self->disable( COMPLETE );
+			$self->disable( FRAME );
 		}
 
 		# Indicate the FBP file is ok
