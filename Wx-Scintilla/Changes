@@ -1,11 +1,18 @@
 Revision history for Wx-Scintilla
 
+0.35_03 2011.11.13
+    - Updated Scintilla to 3.0.1 pre-release (AZAWAWI). Relevant changes are:
+        - Highlight "else" as a keyword for TCL in the same way as other
+          languages.
+        - Ensure pixmaps allocated before painting as there was a crash
+          when Scintilla drew without common initialisation calls.
+
 0.35_02 2011.11.3
     - Fixed bold font bug reported by Kevin Dawson [BOWTIE] (AZAWAWI)
 
 0.35_01 2011.11.2
     - Wx::ScintillaTextCtrl -> Wx::Scintilla::TextCtrl in tools/ (AZAWAWI)
-    - Upgrade to Scintilla 3.0. The following are the *related* changes:
+    - Upgrade to Scintilla 3.0 (AZAWAWI). The following are the *related* changes:
         - Paletted display support removed.
         - New API to see if all lines are visible which can be used to
           optimize processing fold structure notifications.
