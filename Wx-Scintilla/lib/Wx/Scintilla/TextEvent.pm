@@ -4,7 +4,7 @@ use 5.008;
 use strict;
 use warnings;
 
-our $VERSION = '0.35_02';
+our $VERSION = '0.35_03';
 our @ISA     = 'Wx::ScintillaTextEvent';
 
 1;
