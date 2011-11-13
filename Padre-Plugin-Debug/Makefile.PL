@@ -1,4 +1,4 @@
-use inc::Module::Install 1.04;
+use inc::Module::Install 1.00;
 
 # Define metadata
 name 'Padre-Plugin-Debug';
