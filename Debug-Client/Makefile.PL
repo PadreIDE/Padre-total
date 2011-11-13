@@ -10,6 +10,8 @@ license 'perl';
 author 'Gabor Szabo <gabor@szabgab.com>';
 author 'Breno G. de Oliveira <garu at cpan.org>';
 author 'Kevin Dawson <bowtie@cpan.org>';
+author 'Ahmad M. Zawawi <ahmad.zawawi@gmail.com>';
+
 perl_version '5.008';
 
 # All from our core

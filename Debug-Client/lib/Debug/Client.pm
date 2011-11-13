@@ -1030,6 +1030,8 @@ Breno G. de Oliveira E<lt>garu at cpan.orgE<gt>
 
 Kevin Dawson E<lt>bowtie@cpan.orgE<gt>
 
+Ahmad M. Zawawi E<lt>ahmad.zawawi@gmail.comE<gt>
+
 =head1 COPYRIGHT
 
 Copyright 2008-2011 Gabor Szabo. L<http://szabgab.com/>

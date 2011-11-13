@@ -1,4 +1,4 @@
-0.13_08 TBA
+0.13_08 2011.11.13
     - No newer ExtUtils::MakeMaker dependency. Removed a couple of unneeded test
     dependencies (AZAWAWI)
 
