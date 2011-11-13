@@ -1,3 +1,7 @@
+0.13_08 TBA
+    - No newer ExtUtils::MakeMaker dependency. Removed a couple of unneeded test
+    dependencies (AZAWAWI)
+
 0.13_07 2011.11.09
     - Tweaks to tests for above (BOWTIE)
     
