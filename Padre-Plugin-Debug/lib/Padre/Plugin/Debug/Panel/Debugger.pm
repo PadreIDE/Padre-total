@@ -809,7 +809,7 @@ sub quit {
 sub _output_variables {
 	my $self = shift;
 
-	foreach my $variable ( keys $self->{var_val} ) {
+	foreach my $variable ( keys %{$self->{var_val}} ) {
 		my $value;
 		eval { $value = $self->{client}->get_value($variable); };
 		if ($@) {
