@@ -137,7 +137,7 @@ sub plugin_enable {
 	# Tests for external file in Path
 	require Debug::Client;
 
-	if ( $Debug::Client::VERSION eq '0.13_07' ) {
+	if ( $Debug::Client::VERSION eq '0.13_08' ) {
 		return 1;
 	} else {
 		return 0;
@@ -177,7 +177,7 @@ between sim-bar and panels though.
 
 See Padre::Plugin::Debug::Main for more POD
 
-Requires Debug::Client 0.13_07
+Requires Debug::Client 0.13_08
 
 Author => bowtie
 
