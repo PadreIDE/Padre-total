@@ -166,22 +166,22 @@ sub set_up {
 	$self->{quit_debugger}->SetBitmapLabel( Padre::Wx::Icon::find('actions/red_cross') );
 	$self->{quit_debugger}->Enable;
 
-	$self->{list_action}->SetBitmapLabel( Padre::Wx::Icon::find('actions/L') );
+	$self->{list_action}->SetBitmapLabel( Padre::Wx::Icon::find('actions/4c-l') );
 	$self->{list_action}->Disable;
 
 	$self->{dot}->SetBitmapLabel( Padre::Wx::Icon::find('actions/dot') );
 	$self->{dot}->Disable;
 
-	$self->{view_around}->SetBitmapLabel( Padre::Wx::Icon::find('actions/v') );
+	$self->{view_around}->SetBitmapLabel( Padre::Wx::Icon::find('actions/76-v') );
 	$self->{view_around}->Disable;
 	
-	$self->{stacktrace}->SetBitmapLabel( Padre::Wx::Icon::find('actions/T') );
+	$self->{stacktrace}->SetBitmapLabel( Padre::Wx::Icon::find('actions/54-t') );
 	$self->{stacktrace}->Disable;
 	
-	$self->{module_versions}->SetBitmapLabel( Padre::Wx::Icon::find('actions/M') );
+	$self->{module_versions}->SetBitmapLabel( Padre::Wx::Icon::find('actions/4d-m') );
 	$self->{module_versions}->Disable;
 	
-	$self->{all_threads}->SetBitmapLabel( Padre::Wx::Icon::find('actions/E') );
+	$self->{all_threads}->SetBitmapLabel( Padre::Wx::Icon::find('actions/45-e') );
 	$self->{all_threads}->Disable;
 	
 	$self->{trace}->Disable;
