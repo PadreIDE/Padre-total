@@ -6,7 +6,7 @@ name           'Padre-Plugin-PerlTidy';
 license        'perl';
 author         'Brian Cassidy <bricas@cpan.org>';
 all_from       'lib/Padre/Plugin/PerlTidy.pm';
-requires       'Padre'      => '0.80';
+requires       'Padre'      => '0.92';
 requires       'Perl::Tidy' => '20101217';
 test_requires  'Test::More' => '0.42';
 

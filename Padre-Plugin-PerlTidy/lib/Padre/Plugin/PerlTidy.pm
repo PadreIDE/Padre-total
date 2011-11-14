@@ -20,9 +20,9 @@ use constant SELECTIONSIZE => 40;
 
 sub padre_interfaces {
 	return (
-		'Padre::Plugin'   => '0.91',
-		'Padre::Config'   => '0.91',
-		'Padre::Wx::Main' => '0.91',
+		'Padre::Plugin'   => '0.92',
+		'Padre::Config'   => '0.92',
+		'Padre::Wx::Main' => '0.92',
 	);
 }
 
