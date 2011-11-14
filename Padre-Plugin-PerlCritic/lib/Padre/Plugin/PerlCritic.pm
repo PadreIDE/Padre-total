@@ -16,10 +16,10 @@ our @ISA = 'Padre::Plugin';
 #######
 sub padre_interfaces {
 	return (
-		'Padre::Plugin'   => '0.91',
-		'Padre::Wx'       => '0.91',
-		'Padre::Wx::Main' => '0.91',
-		'Padre::Logger'   => '0.91',
+		'Padre::Plugin'   => '0.92',
+		'Padre::Wx'       => '0.92',
+		'Padre::Wx::Main' => '0.92',
+		'Padre::Logger'   => '0.92',
 	);
 }
 

@@ -7,7 +7,7 @@ license        'perl';
 author         'Kaare Rasmussen <kaare@cpan.org>';
 author         'Ahmad M. Zawawi <ahmad.zawawi@gmail.com>';
 all_from       'lib/Padre/Plugin/PerlCritic.pm';
-requires       'Padre'                   => '0.80';
+requires       'Padre'                   => '0.92';
 requires       'Perl::Critic'            => 0;
 test_requires  'Test::More'              => '0.47';
 no_index       'directory'               => qw{ t xt eg share inc};
