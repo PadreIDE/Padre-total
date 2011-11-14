@@ -1,0 +1,42 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Padre-Plugin-NYTProf-JA-20111115\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-10-23 11:08+0300\n"
+"PO-Revision-Date: 2011-11-15 01:46+0900\n"
+"Last-Translator: Kenichi Ishigaki <ishigaki@cpan.org>\n"
+"Language-Team: Japanese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Japanese\n"
+
+#: lib/Padre/Plugin/NYTProf.pm:16
+msgid "NYTProf - Perl Profiler"
+msgstr "NYTProf - Perlプロファイラ"
+
+#: lib/Padre/Plugin/NYTProf.pm:28
+msgid "Run Profiling"
+msgstr "プロファイルを実行する"
+
+#: lib/Padre/Plugin/NYTProf.pm:29
+msgid "Generate Profiling Report"
+msgstr "レポートを生成する"
+
+#: lib/Padre/Plugin/NYTProf.pm:30
+msgid "Show Generated Profiling Report"
+msgstr "生成したレポートを表示する"
+
+#: lib/Padre/Plugin/NYTProf.pm:34
+msgid "About"
+msgstr "このプラグインについて"
+
+#: lib/Padre/Plugin/NYTProf.pm:116
+msgid "This system is running NYTProf version "
+msgstr "このシステムが実行しているNYTProfのバージョン"
+
