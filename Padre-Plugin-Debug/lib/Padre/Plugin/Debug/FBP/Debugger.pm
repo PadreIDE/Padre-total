@@ -13,7 +13,7 @@ use warnings;
 use Padre::Wx ();
 use Padre::Wx::Role::Main ();
 
-our $VERSION = '0.13_07';
+our $VERSION = '0.01';
 our @ISA     = qw{
 	Padre::Wx::Role::Main
 	Wx::Panel
@@ -26,18 +26,18 @@ sub new {
 	my $self = $class->SUPER::new(
 		$parent,
 		-1,
-		Wx::DefaultPosition(),
+		Wx::DefaultPosition,
 		[ 235, 530 ],
-		Wx::TAB_TRAVERSAL(),
+		Wx::TAB_TRAVERSAL,
 	);
 
 	$self->{debug} = Wx::BitmapButton->new(
 		$self,
 		-1,
-		Wx::NullBitmap(),
-		Wx::DefaultPosition(),
-		Wx::DefaultSize(),
-		Wx::BU_AUTODRAW(),
+		Wx::NullBitmap,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+		Wx::BU_AUTODRAW,
 	);
 	$self->{debug}->SetToolTip(
 		Wx::gettext("Run Debug\nBLUE MORPHO CATERPILLAR \ncool bug")
@@ -54,10 +54,10 @@ sub new {
 	$self->{step_in} = Wx::BitmapButton->new(
 		$self,
 		-1,
-		Wx::NullBitmap(),
-		Wx::DefaultPosition(),
-		Wx::DefaultSize(),
-		Wx::BU_AUTODRAW() | Wx::NO_BORDER(),
+		Wx::NullBitmap,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+		Wx::BU_AUTODRAW | Wx::NO_BORDER,
 	);
 	$self->{step_in}->SetToolTip(
 		Wx::gettext("s [expr]\nSingle step. Executes until the beginning of another statement, descending into subroutine calls. If an expression is supplied that includes function calls, it too will be single-stepped.")
@@ -67,17 +67,17 @@ sub new {
 		$self,
 		$self->{step_in},
 		sub {
-			shift->step_in_clicked(@_);
+			shift->on_step_in_clicked(@_);
 		},
 	);
 
 	$self->{step_over} = Wx::BitmapButton->new(
 		$self,
 		-1,
-		Wx::NullBitmap(),
-		Wx::DefaultPosition(),
-		Wx::DefaultSize(),
-		Wx::BU_AUTODRAW() | Wx::NO_BORDER(),
+		Wx::NullBitmap,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+		Wx::BU_AUTODRAW | Wx::NO_BORDER,
 	);
 	$self->{step_over}->SetToolTip(
 		Wx::gettext("n [expr]\nNext. Executes over subroutine calls, until the beginning of the next statement. If an expression is supplied that includes function calls, those functions will be executed with stops before each statement.")
@@ -87,17 +87,17 @@ sub new {
 		$self,
 		$self->{step_over},
 		sub {
-			shift->step_over_clicked(@_);
+			shift->on_step_over_clicked(@_);
 		},
 	);
 
 	$self->{step_out} = Wx::BitmapButton->new(
 		$self,
 		-1,
-		Wx::NullBitmap(),
-		Wx::DefaultPosition(),
-		Wx::DefaultSize(),
-		Wx::BU_AUTODRAW() | Wx::NO_BORDER(),
+		Wx::NullBitmap,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+		Wx::BU_AUTODRAW | Wx::NO_BORDER,
 	);
 	$self->{step_out}->SetToolTip(
 		Wx::gettext("r\nContinue until the return from the current subroutine. Dump the return value if the PrintRet option is set (default).")
@@ -107,17 +107,17 @@ sub new {
 		$self,
 		$self->{step_out},
 		sub {
-			shift->step_out_clicked(@_);
+			shift->on_step_out_clicked(@_);
 		},
 	);
 
 	$self->{run_till} = Wx::BitmapButton->new(
 		$self,
 		-1,
-		Wx::NullBitmap(),
-		Wx::DefaultPosition(),
-		Wx::DefaultSize(),
-		Wx::BU_AUTODRAW() | Wx::NO_BORDER(),
+		Wx::NullBitmap,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+		Wx::BU_AUTODRAW | Wx::NO_BORDER,
 	);
 	$self->{run_till}->SetToolTip(
 		Wx::gettext("c [line|sub]\nContinue, optionally inserting a one-time-only breakpoint at the specified line or subroutine.")
@@ -127,17 +127,17 @@ sub new {
 		$self,
 		$self->{run_till},
 		sub {
-			shift->run_till_clicked(@_);
+			shift->on_run_till_clicked(@_);
 		},
 	);
 
 	$self->{display_value} = Wx::BitmapButton->new(
 		$self,
 		-1,
-		Wx::NullBitmap(),
-		Wx::DefaultPosition(),
-		Wx::DefaultSize(),
-		Wx::BU_AUTODRAW() | Wx::NO_BORDER(),
+		Wx::NullBitmap,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+		Wx::BU_AUTODRAW | Wx::NO_BORDER,
 	);
 	$self->{display_value}->SetToolTip(
 		Wx::gettext("Display Value")
@@ -147,17 +147,17 @@ sub new {
 		$self,
 		$self->{display_value},
 		sub {
-			shift->display_value_clicked(@_);
+			shift->on_display_value_clicked(@_);
 		},
 	);
 
 	$self->{quit_debugger} = Wx::BitmapButton->new(
 		$self,
 		-1,
-		Wx::NullBitmap(),
-		Wx::DefaultPosition(),
-		Wx::DefaultSize(),
-		Wx::BU_AUTODRAW() | Wx::NO_BORDER(),
+		Wx::NullBitmap,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+		Wx::BU_AUTODRAW | Wx::NO_BORDER,
 	);
 	$self->{quit_debugger}->SetToolTip(
 		Wx::gettext("Quit Debugger")
@@ -167,25 +167,25 @@ sub new {
 		$self,
 		$self->{quit_debugger},
 		sub {
-			shift->quit_debugger_clicked(@_);
+			shift->on_quit_debugger_clicked(@_);
 		},
 	);
 
 	$self->{variables} = Wx::ListCtrl->new(
 		$self,
 		-1,
-		Wx::DefaultPosition(),
-		Wx::DefaultSize(),
-		Wx::LC_REPORT() | Wx::LC_SINGLE_SEL(),
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+		Wx::LC_REPORT | Wx::LC_SINGLE_SEL,
 	);
-	$self->{variables}->SetMinSize( Wx::DefaultSize() );
+	$self->{variables}->SetMinSize( Wx::DefaultSize );
 
 	$self->{show_local_variables} = Wx::CheckBox->new(
 		$self,
 		-1,
 		Wx::gettext("Show Local Variables (y 0)"),
-		Wx::DefaultPosition(),
-		Wx::DefaultSize(),
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
 	);
 	$self->{show_local_variables}->SetToolTip(
 		Wx::gettext("y [level [vars]]\nDisplay all (or some) lexical variables (mnemonic: mY variables) in the current scope or level scopes higher. You can limit the variables that you see with vars which works exactly as it does for the V and X commands. Requires the PadWalker module version 0.08 or higher; will warn if this isn't installed. Output is pretty-printed in the same style as for V and the format is controlled by the same options.")
@@ -195,7 +195,7 @@ sub new {
 		$self,
 		$self->{show_local_variables},
 		sub {
-			shift->show_local_variables_checked(@_);
+			shift->on_show_local_variables_checked(@_);
 		},
 	);
 
@@ -203,8 +203,8 @@ sub new {
 		$self,
 		-1,
 		Wx::gettext("Show Global Variables"),
-		Wx::DefaultPosition(),
-		Wx::DefaultSize(),
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
 	);
 	$self->{show_global_variables}->SetToolTip(
 		Wx::gettext("working now with some gigery pokery to get around\nIntermitent Error, You can't FIRSTKEY with the %~ hash")
@@ -214,7 +214,7 @@ sub new {
 		$self,
 		$self->{show_global_variables},
 		sub {
-			shift->show_global_variables_checked(@_);
+			shift->on_show_global_variables_checked(@_);
 		},
 	);
 
@@ -222,8 +222,8 @@ sub new {
 		$self,
 		-1,
 		Wx::gettext("Trace"),
-		Wx::DefaultPosition(),
-		Wx::DefaultSize(),
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
 	);
 	$self->{trace}->SetToolTip(
 		Wx::gettext("t\nToggle trace mode (see also the AutoTrace option).")
@@ -233,7 +233,7 @@ sub new {
 		$self,
 		$self->{trace},
 		sub {
-			shift->trace_checked(@_);
+			shift->on_trace_checked(@_);
 		},
 	);
 
@@ -241,8 +241,8 @@ sub new {
 		$self,
 		-1,
 		Wx::gettext("Sub. Names"),
-		Wx::DefaultPosition(),
-		Wx::DefaultSize(),
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
 	);
 	$self->{sub_names}->SetToolTip(
 		Wx::gettext("S [[!]regex]\nList subroutine names [not] matching the regex.")
@@ -252,7 +252,7 @@ sub new {
 		$self,
 		$self->{sub_names},
 		sub {
-			shift->sub_names_clicked(@_);
+			shift->on_sub_names_clicked(@_);
 		},
 	);
 
@@ -260,7 +260,7 @@ sub new {
 		$self,
 		-1,
 		"!(IO::Socket|Carp)",
-		Wx::DefaultPosition(),
+		Wx::DefaultPosition,
 		[ 130, -1 ],
 	);
 	$self->{sub_name_regex}->SetMaxLength(21);
@@ -271,10 +271,10 @@ sub new {
 	$self->{dot} = Wx::BitmapButton->new(
 		$self,
 		-1,
-		Wx::NullBitmap(),
-		Wx::DefaultPosition(),
-		Wx::DefaultSize(),
-		Wx::BU_AUTODRAW(),
+		Wx::NullBitmap,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+		Wx::BU_AUTODRAW,
 	);
 	$self->{dot}->SetToolTip(
 		Wx::gettext(".        Return to the executed line.")
@@ -284,17 +284,17 @@ sub new {
 		$self,
 		$self->{dot},
 		sub {
-			shift->dot_clicked(@_);
+			shift->on_dot_clicked(@_);
 		},
 	);
 
 	$self->{view_around} = Wx::BitmapButton->new(
 		$self,
 		-1,
-		Wx::NullBitmap(),
-		Wx::DefaultPosition(),
-		Wx::DefaultSize(),
-		Wx::BU_AUTODRAW(),
+		Wx::NullBitmap,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+		Wx::BU_AUTODRAW,
 	);
 	$self->{view_around}->SetToolTip(
 		Wx::gettext("v [line]    View window around line.")
@@ -304,17 +304,17 @@ sub new {
 		$self,
 		$self->{view_around},
 		sub {
-			shift->v_clicked(@_);
+			shift->on_view_around_clicked(@_);
 		},
 	);
 
 	$self->{list_action} = Wx::BitmapButton->new(
 		$self,
 		-1,
-		Wx::NullBitmap(),
-		Wx::DefaultPosition(),
-		Wx::DefaultSize(),
-		Wx::BU_AUTODRAW(),
+		Wx::NullBitmap,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+		Wx::BU_AUTODRAW,
 	);
 	$self->{list_action}->SetToolTip(
 		Wx::gettext("L [abw]\nList (default all) actions, breakpoints and watch expressions")
@@ -324,17 +324,17 @@ sub new {
 		$self,
 		$self->{list_action},
 		sub {
-			shift->list_action_clicked(@_);
+			shift->on_list_action_clicked(@_);
 		},
 	);
 
 	$self->{stacktrace} = Wx::BitmapButton->new(
 		$self,
 		-1,
-		Wx::NullBitmap(),
-		Wx::DefaultPosition(),
-		Wx::DefaultSize(),
-		Wx::BU_AUTODRAW(),
+		Wx::NullBitmap,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+		Wx::BU_AUTODRAW,
 	);
 	$self->{stacktrace}->SetToolTip(
 		Wx::gettext("T\nProduce a stack backtrace.")
@@ -344,17 +344,17 @@ sub new {
 		$self,
 		$self->{stacktrace},
 		sub {
-			shift->stacktrace_clicked(@_);
+			shift->on_stacktrace_clicked(@_);
 		},
 	);
 
 	$self->{module_versions} = Wx::BitmapButton->new(
 		$self,
 		-1,
-		Wx::NullBitmap(),
-		Wx::DefaultPosition(),
-		Wx::DefaultSize(),
-		Wx::BU_AUTODRAW(),
+		Wx::NullBitmap,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+		Wx::BU_AUTODRAW,
 	);
 	$self->{module_versions}->SetToolTip(
 		Wx::gettext("M\nDisplay all loaded modules and their versions.")
@@ -364,17 +364,17 @@ sub new {
 		$self,
 		$self->{module_versions},
 		sub {
-			shift->module_versions_clicked(@_);
+			shift->on_module_versions_clicked(@_);
 		},
 	);
 
 	$self->{all_threads} = Wx::BitmapButton->new(
 		$self,
 		-1,
-		Wx::NullBitmap(),
-		Wx::DefaultPosition(),
-		Wx::DefaultSize(),
-		Wx::BU_AUTODRAW(),
+		Wx::NullBitmap,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+		Wx::BU_AUTODRAW,
 	);
 	$self->{all_threads}->SetToolTip(
 		Wx::gettext("E\nDisplay all thread ids the current one will be identified: <n>.")
@@ -384,18 +384,18 @@ sub new {
 		$self,
 		$self->{all_threads},
 		sub {
-			shift->all_threads_clicked(@_);
+			shift->on_all_threads_clicked(@_);
 		},
 	);
 
-	my $button_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL());
-	$button_sizer->Add( $self->{debug}, 0, Wx::ALL(), 1 );
-	$button_sizer->Add( $self->{step_in}, 0, Wx::ALL(), 5 );
-	$button_sizer->Add( $self->{step_over}, 0, Wx::ALL(), 5 );
-	$button_sizer->Add( $self->{step_out}, 0, Wx::ALL(), 5 );
-	$button_sizer->Add( $self->{run_till}, 0, Wx::ALL(), 5 );
-	$button_sizer->Add( $self->{display_value}, 0, Wx::ALL(), 5 );
-	$button_sizer->Add( $self->{quit_debugger}, 0, Wx::ALL(), 5 );
+	my $button_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
+	$button_sizer->Add( $self->{debug}, 0, Wx::ALL, 1 );
+	$button_sizer->Add( $self->{step_in}, 0, Wx::ALL, 5 );
+	$button_sizer->Add( $self->{step_over}, 0, Wx::ALL, 5 );
+	$button_sizer->Add( $self->{step_out}, 0, Wx::ALL, 5 );
+	$button_sizer->Add( $self->{run_till}, 0, Wx::ALL, 5 );
+	$button_sizer->Add( $self->{display_value}, 0, Wx::ALL, 5 );
+	$button_sizer->Add( $self->{quit_debugger}, 0, Wx::ALL, 5 );
 
 	my $checkbox_sizer = Wx::StaticBoxSizer->new(
 		Wx::StaticBox->new(
@@ -403,26 +403,26 @@ sub new {
 			-1,
 			Wx::gettext("Show"),
 		),
-		Wx::VERTICAL(),
+		Wx::VERTICAL,
 	);
-	$checkbox_sizer->Add( $self->{show_local_variables}, 0, Wx::ALL(), 2 );
-	$checkbox_sizer->Add( $self->{show_global_variables}, 0, Wx::ALL(), 5 );
+	$checkbox_sizer->Add( $self->{show_local_variables}, 0, Wx::ALL, 2 );
+	$checkbox_sizer->Add( $self->{show_global_variables}, 0, Wx::ALL, 5 );
 
 	my $doo = Wx::FlexGridSizer->new( 0, 2, 0, 0 );
-	$doo->SetFlexibleDirection(Wx::BOTH());
-	$doo->SetNonFlexibleGrowMode(Wx::FLEX_GROWMODE_SPECIFIED());
-	$doo->Add( $self->{trace}, 0, Wx::ALL(), 5 );
-	$doo->Add( 0, 0, 1, Wx::EXPAND(), 5 );
-	$doo->Add( $self->{sub_names}, 0, Wx::ALL(), 5 );
-	$doo->Add( $self->{sub_name_regex}, 1, Wx::ALL(), 5 );
+	$doo->SetFlexibleDirection(Wx::BOTH);
+	$doo->SetNonFlexibleGrowMode(Wx::FLEX_GROWMODE_SPECIFIED);
+	$doo->Add( $self->{trace}, 0, Wx::ALL, 5 );
+	$doo->Add( 0, 0, 1, Wx::EXPAND, 5 );
+	$doo->Add( $self->{sub_names}, 0, Wx::ALL, 5 );
+	$doo->Add( $self->{sub_name_regex}, 1, Wx::ALL, 5 );
 
-	my $option_button_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL());
-	$option_button_sizer->Add( $self->{dot}, 0, Wx::ALL(), 5 );
-	$option_button_sizer->Add( $self->{view_around}, 0, Wx::ALL(), 5 );
-	$option_button_sizer->Add( $self->{list_action}, 0, Wx::ALL(), 5 );
-	$option_button_sizer->Add( $self->{stacktrace}, 0, Wx::ALL(), 5 );
-	$option_button_sizer->Add( $self->{module_versions}, 0, Wx::ALL(), 5 );
-	$option_button_sizer->Add( $self->{all_threads}, 0, Wx::ALL(), 5 );
+	my $option_button_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
+	$option_button_sizer->Add( $self->{dot}, 0, Wx::ALL, 5 );
+	$option_button_sizer->Add( $self->{view_around}, 0, Wx::ALL, 5 );
+	$option_button_sizer->Add( $self->{list_action}, 0, Wx::ALL, 5 );
+	$option_button_sizer->Add( $self->{stacktrace}, 0, Wx::ALL, 5 );
+	$option_button_sizer->Add( $self->{module_versions}, 0, Wx::ALL, 5 );
+	$option_button_sizer->Add( $self->{all_threads}, 0, Wx::ALL, 5 );
 
 	my $file_11 = Wx::StaticBoxSizer->new(
 		Wx::StaticBox->new(
@@ -430,16 +430,16 @@ sub new {
 			-1,
 			Wx::gettext("Debug-Output Options"),
 		),
-		Wx::VERTICAL(),
+		Wx::VERTICAL,
 	);
 	$file_11->Add( $doo, 1, 0, 5 );
-	$file_11->Add( $option_button_sizer, 0, Wx::EXPAND(), 5 );
+	$file_11->Add( $option_button_sizer, 0, Wx::EXPAND, 5 );
 
-	my $bSizer10 = Wx::BoxSizer->new(Wx::VERTICAL());
-	$bSizer10->Add( $button_sizer, 0, Wx::EXPAND(), 5 );
-	$bSizer10->Add( $self->{variables}, 1, Wx::ALL() | Wx::EXPAND(), 5 );
-	$bSizer10->Add( $checkbox_sizer, 0, Wx::EXPAND(), 5 );
-	$bSizer10->Add( $file_11, 0, Wx::EXPAND(), 5 );
+	my $bSizer10 = Wx::BoxSizer->new(Wx::VERTICAL);
+	$bSizer10->Add( $button_sizer, 0, Wx::EXPAND, 5 );
+	$bSizer10->Add( $self->{variables}, 1, Wx::ALL | Wx::EXPAND, 5 );
+	$bSizer10->Add( $checkbox_sizer, 0, Wx::EXPAND, 5 );
+	$bSizer10->Add( $file_11, 0, Wx::EXPAND, 5 );
 
 	$self->SetSizer($bSizer10);
 	$self->Layout;
@@ -459,68 +459,68 @@ sub on_debug_clicked {
 	$_[0]->main->error('Handler method on_debug_clicked for event debug.OnButtonClick not implemented');
 }
 
-sub step_in_clicked {
-	$_[0]->main->error('Handler method step_in_clicked for event step_in.OnButtonClick not implemented');
+sub on_step_in_clicked {
+	$_[0]->main->error('Handler method on_step_in_clicked for event step_in.OnButtonClick not implemented');
 }
 
-sub step_over_clicked {
-	$_[0]->main->error('Handler method step_over_clicked for event step_over.OnButtonClick not implemented');
+sub on_step_over_clicked {
+	$_[0]->main->error('Handler method on_step_over_clicked for event step_over.OnButtonClick not implemented');
 }
 
-sub step_out_clicked {
-	$_[0]->main->error('Handler method step_out_clicked for event step_out.OnButtonClick not implemented');
+sub on_step_out_clicked {
+	$_[0]->main->error('Handler method on_step_out_clicked for event step_out.OnButtonClick not implemented');
 }
 
-sub run_till_clicked {
-	$_[0]->main->error('Handler method run_till_clicked for event run_till.OnButtonClick not implemented');
+sub on_run_till_clicked {
+	$_[0]->main->error('Handler method on_run_till_clicked for event run_till.OnButtonClick not implemented');
 }
 
-sub display_value_clicked {
-	$_[0]->main->error('Handler method display_value_clicked for event display_value.OnButtonClick not implemented');
+sub on_display_value_clicked {
+	$_[0]->main->error('Handler method on_display_value_clicked for event display_value.OnButtonClick not implemented');
 }
 
-sub quit_debugger_clicked {
-	$_[0]->main->error('Handler method quit_debugger_clicked for event quit_debugger.OnButtonClick not implemented');
+sub on_quit_debugger_clicked {
+	$_[0]->main->error('Handler method on_quit_debugger_clicked for event quit_debugger.OnButtonClick not implemented');
 }
 
-sub show_local_variables_checked {
-	$_[0]->main->error('Handler method show_local_variables_checked for event show_local_variables.OnCheckBox not implemented');
+sub on_show_local_variables_checked {
+	$_[0]->main->error('Handler method on_show_local_variables_checked for event show_local_variables.OnCheckBox not implemented');
 }
 
-sub show_global_variables_checked {
-	$_[0]->main->error('Handler method show_global_variables_checked for event show_global_variables.OnCheckBox not implemented');
+sub on_show_global_variables_checked {
+	$_[0]->main->error('Handler method on_show_global_variables_checked for event show_global_variables.OnCheckBox not implemented');
 }
 
-sub trace_checked {
-	$_[0]->main->error('Handler method trace_checked for event trace.OnCheckBox not implemented');
+sub on_trace_checked {
+	$_[0]->main->error('Handler method on_trace_checked for event trace.OnCheckBox not implemented');
 }
 
-sub sub_names_clicked {
-	$_[0]->main->error('Handler method sub_names_clicked for event sub_names.OnButtonClick not implemented');
+sub on_sub_names_clicked {
+	$_[0]->main->error('Handler method on_sub_names_clicked for event sub_names.OnButtonClick not implemented');
 }
 
-sub dot_clicked {
-	$_[0]->main->error('Handler method dot_clicked for event dot.OnButtonClick not implemented');
+sub on_dot_clicked {
+	$_[0]->main->error('Handler method on_dot_clicked for event dot.OnButtonClick not implemented');
 }
 
-sub v_clicked {
-	$_[0]->main->error('Handler method v_clicked for event view_around.OnButtonClick not implemented');
+sub on_view_around_clicked {
+	$_[0]->main->error('Handler method on_view_around_clicked for event view_around.OnButtonClick not implemented');
 }
 
-sub list_action_clicked {
-	$_[0]->main->error('Handler method list_action_clicked for event list_action.OnButtonClick not implemented');
+sub on_list_action_clicked {
+	$_[0]->main->error('Handler method on_list_action_clicked for event list_action.OnButtonClick not implemented');
 }
 
-sub stacktrace_clicked {
-	$_[0]->main->error('Handler method stacktrace_clicked for event stacktrace.OnButtonClick not implemented');
+sub on_stacktrace_clicked {
+	$_[0]->main->error('Handler method on_stacktrace_clicked for event stacktrace.OnButtonClick not implemented');
 }
 
-sub module_versions_clicked {
-	$_[0]->main->error('Handler method module_versions_clicked for event module_versions.OnButtonClick not implemented');
+sub on_module_versions_clicked {
+	$_[0]->main->error('Handler method on_module_versions_clicked for event module_versions.OnButtonClick not implemented');
 }
 
-sub all_threads_clicked {
-	$_[0]->main->error('Handler method all_threads_clicked for event all_threads.OnButtonClick not implemented');
+sub on_all_threads_clicked {
+	$_[0]->main->error('Handler method on_all_threads_clicked for event all_threads.OnButtonClick not implemented');
 }
 
 1;

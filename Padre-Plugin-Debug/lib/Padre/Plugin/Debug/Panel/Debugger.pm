@@ -3,19 +3,22 @@ package Padre::Plugin::Debug::Panel::Debugger;
 use 5.010;
 use strict;
 use warnings;
-use Padre::Constant ();
-use Padre::Current  ();
-use Padre::Wx       ();
 
 # Turn on $OUTPUT_AUTOFLUSH
 $| = 1;
 use diagnostics;
-use utf8;
+use utf8; # this don't work, the following would be nice
+# use feature 'unicode_strings';
 
+use Padre::Constant ();
+use Padre::Current  ();
+use Padre::Wx       ();
 use Padre::Logger qw(TRACE DEBUG);
 use Padre::Wx::Role::View;
 use Padre::Plugin::Debug::FBP::Debugger ();
+
 use Data::Printer { caller_info => 1, colored => 1, };
+
 our $VERSION = '0.13';
 
 our @ISA = qw{
@@ -258,40 +261,6 @@ sub update_variables {
 }
 
 
-
-
-
-sub show_local_variables_checked {
-	my ( $self, $event ) = @_;
-
-	if ( $event->IsChecked ) {
-		$self->{local_variables} = 1;
-	} else {
-		$self->{local_variables} = 0;
-	}
-
-	return;
-}
-
-sub show_global_variables_checked {
-	my ( $self, $event ) = @_;
-
-	if ( $event->IsChecked ) {
-		$self->{global_variables} = 1;
-
-		# say 'show_global_variables_checked yes';
-	} else {
-		$self->{global_variables} = 0;
-
-		# say 'show_global_variables_checked no';
-	}
-
-	return;
-}
-
-
-
-
 #######
 # sub debug_perl
 #######
@@ -326,13 +295,16 @@ sub debug_perl {
 	} elsif ( $config->run_save eq 'all_buffer' ) {
 		$main->on_save_all;
 	}
-
+	
+	#TODO I think this is where the Fup filenames are comming from, see POD in main
 	# Get the filename
 	my $filename = defined( $document->{file} ) ? $document->{file}->filename : undef;
 
 	# TODO: improve the message displayed to the user
 	# If the document is not saved, simply return for now
 	return unless $filename;
+	
+	#TODO how do we add debug options at startup such as threaded mode
 
 	# Set up the debugger
 	my $host = 'localhost';
@@ -392,7 +364,7 @@ sub _set_debugger {
 	if ( $editor->{Document}->filename ne $file ) {
 		$main->setup_editor($file);
 		$editor = $main->current->editor;
-		$self->_show_bp_autoload();
+		$self->_bp_autoload();
 	}
 
 	$editor->goto_line_centerize( $row - 1 );
@@ -430,7 +402,7 @@ sub running {
 	return !!Padre::Current->editor;
 }
 
-#######
+####### v1
 # sub debug_perl_jumpt_to
 #######
 sub debug_perl_jumpt_to {
@@ -495,15 +467,13 @@ sub debug_step_in {
 	my $self = shift;
 	my $main = $self->main;
 
-	unless ( $self->{client} ) {
-		unless ( $self->debug_perl ) {
-			$main->error( Wx::gettext('Debugger not running') );
-			return;
-		}
-
-		# 		# No need to make first step
-		return;
-	}
+	# unless ( $self->{client} ) {
+		# unless ( $self->debug_perl ) {
+			# $main->error( Wx::gettext('Debugger not running') );
+			# return;
+		# }
+		# return;
+	# }
 
 	my ( $module, $file, $row, $content ) = $self->{client}->step_in;
 	if ( $module eq '<TERMINATED>' ) {
@@ -527,12 +497,12 @@ sub debug_step_over {
 	my $self = shift;
 	my $main = $self->main;
 
-	unless ( $self->{client} ) {
-		unless ( $self->debug_perl ) {
-			$main->error( Wx::gettext('Debugger not running') );
-			return;
-		}
-	}
+	# unless ( $self->{client} ) {
+		# unless ( $self->debug_perl ) {
+			# $main->error( Wx::gettext('Debugger not running') );
+			# return;
+		# }
+	# }
 
 	my ( $module, $file, $row, $content ) = $self->{client}->step_over;
 	if ( $module eq '<TERMINATED>' ) {
@@ -557,10 +527,10 @@ sub debug_step_out {
 	my $self = shift;
 	my $main = $self->main;
 
-	unless ( $self->{client} ) {
-		$main->error( Wx::gettext('Debugger not running') );
-		return;
-	}
+	# unless ( $self->{client} ) {
+		# $main->error( Wx::gettext('Debugger not running') );
+		# return;
+	# }
 
 	my ( $module, $file, $row, $content ) = $self->{client}->step_out;
 	if ( $module eq '<TERMINATED>' ) {
@@ -577,6 +547,7 @@ sub debug_step_out {
 
 	return;
 }
+
 #######
 # Method debug_run_till
 #######
@@ -585,12 +556,12 @@ sub debug_run_till {
 	my $param = shift;
 	my $main  = $self->main;
 
-	unless ( $self->{client} ) {
-		unless ( $self->debug_perl ) {
-			$main->error( Wx::gettext('Debugger not running') );
-			return;
-		}
-	}
+	# unless ( $self->{client} ) {
+		# unless ( $self->debug_perl ) {
+			# $main->error( Wx::gettext('Debugger not running') );
+			# return;
+		# }
+	# }
 
 	my ( $module, $file, $row, $content ) = $self->{client}->run($param);
 	if ( $module eq '<TERMINATED>' ) {
@@ -609,6 +580,7 @@ sub debug_run_till {
 
 #######
 # sub display_trace
+# TODO this is yuck!
 #######
 sub display_trace {
 	my $self = shift;
@@ -639,82 +611,8 @@ sub display_trace {
 	return;
 }
 
-#######
-# Event handler sub_names_clicked
-#######
-sub sub_names_clicked {
-	my $self = shift;
 
-	$self->{panel_debug_output}
-		->debug_output( $self->{client}->list_subroutine_names( $self->{sub_name_regex}->GetValue() ) );
-
-	return;
-}
-
-#######
-# Event handler backtrace_clicked
-#######
-sub stacktrace_clicked {
-	my $self = shift;
-
-	$self->{panel_debug_output}->debug_output( $self->{client}->get_stack_trace() );
-
-	return;
-}
-#######
-# Event handler module_versions_clicked
-#######
-sub module_versions_clicked {
-	my $self = shift;
-
-	$self->{panel_debug_output}->debug_output( $self->{client}->__send('M') );
-
-	return;
-}
-#######
-# Event handler all_threads_clicked
-#######
-sub all_threads_clicked {
-	my $self = shift;
-
-	$self->{panel_debug_output}->debug_output( $self->{client}->__send_np('E') );
-
-	return;
-}
-
-#######
-# Event handler list_action_clicked
-#######
-sub list_action_clicked {
-	my $self = shift;
-
-	$self->{panel_debug_output}->debug_output( $self->{client}->show_breakpoints() );
-
-	return;
-}
-
-#######
-# Event dot_clicked
-#######
-sub dot_clicked {
-	my $self = shift;
-
-	$self->{panel_debug_output}->debug_output( $self->{client}->show_line() );
-
-	return;
-}
-#######
-# Event v_clicked
-#######
-sub v_clicked {
-	my $self = shift;
-
-	$self->{panel_debug_output}->debug_output( $self->{client}->show_view() );
-
-	return;
-}
-
-#######
+####### v1
 #TODO Debug -> menu when in trunk
 #######
 sub debug_perl_show_value {
@@ -735,8 +633,8 @@ sub debug_perl_show_value {
 	return;
 }
 
-#######
-# sub _debug_get_variable$line
+####### v1
+# sub _debug_get_variable $line
 #######
 sub _debug_get_variable {
 	my $self     = shift;
@@ -761,7 +659,7 @@ sub _debug_get_variable {
 	return $text;
 }
 
-#######
+####### v1
 # Method display_value
 #######
 sub display_value {
@@ -776,7 +674,7 @@ sub display_value {
 	return;
 }
 
-#######
+####### v1
 #TODO Debug -> menu when in trunk
 #######
 sub debug_perl_evaluate_expression {
@@ -1000,10 +898,10 @@ sub _get_bp_db {
 }
 
 #######
-# Composed Method, _show_bp_autoload
+# Composed Method, _bp_autoload
 # for an autoloaded file (current) display breakpoints in editor if any
 #######
-sub _show_bp_autoload {
+sub _bp_autoload {
 	my $self = shift;
 
 	$self->_setup_db();
@@ -1034,6 +932,8 @@ sub _show_bp_autoload {
 	return;
 }
 
+##########################################
+# Debugger-Output Controller
 ########
 # Panel Controler show debug output
 ########
@@ -1089,7 +989,7 @@ sub _show_debug_output {
 }
 
 
-#########################
+###############################################
 # event handler top row
 #######
 # sub on_debug_clicked
@@ -1129,7 +1029,7 @@ sub on_debug_clicked {
 #######
 # sub step_in_clicked
 #######
-sub step_in_clicked {
+sub on_step_in_clicked {
 	my $self = shift;
 
 	TRACE('step_in_clicked') if DEBUG;
@@ -1140,7 +1040,7 @@ sub step_in_clicked {
 #######
 # sub step_over_clicked
 #######
-sub step_over_clicked {
+sub on_step_over_clicked {
 	my $self = shift;
 
 	TRACE('step_over_clicked') if DEBUG;
@@ -1151,7 +1051,7 @@ sub step_over_clicked {
 #######
 # sub step_out_clicked
 #######
-sub step_out_clicked {
+sub on_step_out_clicked {
 	my $self = shift;
 
 	TRACE('step_out_clicked') if DEBUG;
@@ -1159,11 +1059,10 @@ sub step_out_clicked {
 
 	return;
 }
-
 #######
 # sub run_till_clicked
 #######
-sub run_till_clicked {
+sub on_run_till_clicked {
 	my $self = shift;
 
 	TRACE('run_till_clicked') if DEBUG;
@@ -1171,11 +1070,10 @@ sub run_till_clicked {
 
 	return;
 }
-
 #######
 # sub display_value
 #######
-sub display_value_clicked {
+sub on_display_value_clicked {
 	my $self = shift;
 
 	TRACE('display_value') if DEBUG;
@@ -1183,14 +1081,11 @@ sub display_value_clicked {
 
 	return;
 }
-
 #######
 # sub quit_debugger_clicked
 #######
-sub quit_debugger_clicked {
+sub on_quit_debugger_clicked {
 	my $self = shift;
-
-	# my $main = $self->main;
 
 	TRACE('quit_debugger_clicked') if DEBUG;
 	$self->debug_quit;
@@ -1200,14 +1095,45 @@ sub quit_debugger_clicked {
 	return;
 }
 
-##############################
-# Output Options
-#########
 
+###############################################
+# show
+#######
+# event on_show_local_variables_checked
+#######
+sub on_show_local_variables_checked {
+	my ( $self, $event ) = @_;
+
+	if ( $event->IsChecked ) {
+		$self->{local_variables} = 1;
+	} else {
+		$self->{local_variables} = 0;
+	}
+
+	return;
+}
+#######
+# event on_show_global_variables_checked
+#######
+sub on_show_global_variables_checked {
+	my ( $self, $event ) = @_;
+
+	if ( $event->IsChecked ) {
+		$self->{global_variables} = 1;
+	} else {
+		$self->{global_variables} = 0;
+	}
+
+	return;
+}
+
+
+#################################################
+# Output Options
 #######
 # sub trace_clicked
 #######
-sub trace_checked {
+sub on_trace_checked {
 	my ( $self, $event ) = @_;
 
 	if ( $event->IsChecked ) {
@@ -1215,6 +1141,77 @@ sub trace_checked {
 	} else {
 		$self->display_trace(0);
 	}
+
+	return;
+}
+#######
+# Event handler on_sub_names_clicked
+#######
+sub on_sub_names_clicked {
+	my $self = shift;
+
+	$self->{panel_debug_output}
+		->debug_output( $self->{client}->list_subroutine_names( $self->{sub_name_regex}->GetValue() ) );
+
+	return;
+}
+#######
+# Event on_dot_clicked
+#######
+sub on_dot_clicked {
+	my $self = shift;
+
+	$self->{panel_debug_output}->debug_output( $self->{client}->show_line() );
+
+	return;
+}
+#######
+# Event on_view_around_clicked
+#######
+sub on_view_around_clicked {
+	my $self = shift;
+
+	$self->{panel_debug_output}->debug_output( $self->{client}->show_view() );
+
+	return;
+}
+#######
+# Event handler on_list_action_clicked
+#######
+sub on_list_action_clicked {
+	my $self = shift;
+
+	$self->{panel_debug_output}->debug_output( $self->{client}->show_breakpoints() );
+
+	return;
+}
+#######
+# Event handler on_stacktrace_clicked 
+#######
+sub on_stacktrace_clicked {
+	my $self = shift;
+
+	$self->{panel_debug_output}->debug_output( $self->{client}->get_stack_trace() );
+
+	return;
+}
+#######
+# Event handler on_module_versions_clicked
+#######
+sub on_module_versions_clicked {
+	my $self = shift;
+
+	$self->{panel_debug_output}->debug_output( $self->{client}->__send('M') );
+
+	return;
+}
+#######
+# Event handler on_all_threads_clicked
+#######
+sub on_all_threads_clicked {
+	my $self = shift;
+
+	$self->{panel_debug_output}->debug_output( $self->{client}->__send_np('E') );
 
 	return;
 }
