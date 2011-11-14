@@ -17,6 +17,7 @@
     #include "wx/settings.h"
 #endif // WX_PRECOMP
 
+#include <vector>
 #include <ctype.h>
 
 #if wxUSE_DISPLAY
@@ -268,7 +269,11 @@ void SurfaceImpl::LineTo(int x_, int y_) {
 void SurfaceImpl::Polygon(Point *pts, int npts, ColourDesired fore, ColourDesired back) {
     PenColour(fore);
     BrushColour(back);
-    hdc->DrawPolygon(npts, (wxPoint*)pts);
+    std::vector<wxPoint> points;
+    for (int i=0; i< npts; i++) {
+            points.push_back(wxPoint(pts[i].x, pts[i].y));
+    }
+    hdc->DrawPolygon(npts, &points[0]);
 }
 
 void SurfaceImpl::RectangleDraw(PRectangle rc, ColourDesired fore, ColourDesired back) {

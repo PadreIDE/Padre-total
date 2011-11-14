@@ -1,5 +1,9 @@
 Revision history for Wx-Scintilla
 
+0.35_04 2011.11.14
+    - Fix SurfaceImpl::Polygon drawing bug that caused some markers to not be
+      drawn at all. This was introduced in 0.35_01 (AZAWAWI)
+
 0.35_03 2011.11.13
     - Updated Scintilla to 3.0.1 pre-release (AZAWAWI). Relevant changes are:
         - Highlight "else" as a keyword for TCL in the same way as other
