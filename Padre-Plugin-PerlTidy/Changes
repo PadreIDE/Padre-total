@@ -1,8 +1,7 @@
 Revision history for Perl extension Padre::Plugin::PerlTidy.
 
-    - Switch to Module::Install
-
-0.18
+0.18 2011.11.15
+    - Switch to Module::Install (BOWTIE)
     - Use PerlTidy from trunk/tools #1239 (BOWTIE)
 
 0.17  2011.02.14 
