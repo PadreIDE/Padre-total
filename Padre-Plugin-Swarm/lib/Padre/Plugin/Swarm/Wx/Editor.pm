@@ -7,6 +7,7 @@ use File::Basename;
 use Padre::Logger;
 use Padre::Constant;
 use Padre::Wx::Constant;
+use Wx::Scintilla::Constant 'SC_MARGIN_SYMBOL';
 use Class::XSAccessor {
     accessors => {
         resources=> 'resources',
@@ -248,7 +249,7 @@ sub _rig_editor_decoration {
     $editor->SetMarginWidth( SWARM_STC_MARGIN, 14 );
     $editor->SetMarginType(
         SWARM_STC_MARGIN, 
-        Wx::Scintilla::MARGIN_SYMBOL
+        SC_MARGIN_SYMBOL
     );
     $editor->SetMarginMask( SWARM_STC_MARGIN, SWARM_MARKER_MASK );
     
