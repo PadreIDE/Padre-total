@@ -205,9 +205,7 @@ sub generate_clicked {
 	) or return;
 
 	# Open the generated code as a new file
-	$self->main->new_document_from_string(
-		$code => 'application/x-perl',
-	);
+	$self->show($code);
 
 	return;
 }
@@ -330,17 +328,13 @@ sub complete_clicked {
 	# Generate the launch script for the app
 	if ( $self->complete_script->IsChecked ) {
 		my $code = $self->generate_script(%common) or return;
-		$self->main->new_document_from_string(
-			$code => 'application/x-perl',
-		);
+		$self->show($code);
 	}
 
 	# Generate the Wx::App root class
 	if ( $self->complete_app->IsChecked ) {
 		my $code = $self->generate_app(%common) or return;
-		$self->main->new_document_from_string(
-			$code => 'application/x-perl',
-		);
+		$self->show($code);
 	}
 
 	# Generate all of the FBP dialogs
@@ -356,9 +350,7 @@ sub complete_clicked {
 			) or return;
 
 			# Open the generated code as a new file
-			$self->main->new_document_from_string(
-				$code => 'application/x-perl',
-			);
+			$self->show($code);
 		}
 	}
 
@@ -479,6 +471,17 @@ sub dialog_class {
 
 ######################################################################
 # Support Methods
+
+# Display a generated document
+sub show {
+	my $self = shift;
+	my $code = shift;
+
+	# Fallback option, create a new document
+	$self->main->new_document_from_string(
+		$code => 'application/x-perl',
+	);
+}
 
 sub generator {
 	my $self  = shift;
