@@ -14,26 +14,30 @@
   location <0,0,0>
   up <0,CubeSide,0>
   right <CubeSide,0,0>
-  direction <0,0,CubeSide>
+  direction <0,0,-CubeSide>
   
   //look_at <0,0,200>
   //right <1,0,0> up <0,1,0>
   #switch (Face)
     #case (0)
       rotate -90*y
+    #break
     #case (1)
       rotate 90*y
     #break
     #case (2)
-      rotate -90*x
+      rotate z*180
+      rotate 90*x
     #break
     #case (3)
-        rotate 90 * x
+        rotate z*180
+        rotate -90 * x
     #break
     #case (4)
-        rotate 180*y
+        rotate y*180
+    #break
     #case (5)
-      //rotate 90*x
+      //rotate 180*y
     #break
   #end // End of conditional part
 
@@ -45,6 +49,59 @@
         CubeCamera(Face,Radius)
     }
 #end
+
+
+#macro CubeCameraOutside(Face,Radius)
+  #local CubeSide = sqrt( 1/3 ) * (Radius*2);
+  
+  spherical 
+  angle 40,40
+  
+  //perspective
+  //angle  40
+   
+  //orthographic
+  
+  location <0,0,1>
+  up <0,CubeSide,0>
+  right <CubeSide,0,0>
+  direction <0,0,-CubeSide>
+  
+  //look_at <0,0,200>
+  //right <1,0,0> up <0,1,0>
+  #switch (Face)
+    #case (0)
+      rotate -90*y
+    #break
+    #case (1)
+      rotate 90*y
+    #break
+    #case (2)
+      rotate z*180
+      rotate 90*x
+    #break
+    #case (3)
+        rotate z*180
+        rotate -90 * x
+    #break
+    #case (4)
+        rotate y*180
+    #break
+    #case (5)
+      //rotate 180*y
+    #break
+  #end // End of conditional part
+
+#end
+
+
+#macro PigmentCameraFaceOutside(Face,Radius)
+    camera_view {
+        CubeCameraOutside(Face,Radius)
+    }
+#end
+
+
 
 
 #macro CubeMapBoxes(Radius)
@@ -97,6 +154,63 @@ box { <0,0,0> <1,1,1>
     translate y*1000
 }
 #end
+
+
+
+        
+        
+#macro CubeMapBoxesOutside(Radius)
+box { <0,0,0> <1,1,1> 
+    texture { 
+        pigment { PigmentCameraFaceOutside(0,Radius) }
+        finish { ambient 1 } 
+     }
+     translate y*1005
+     
+}
+
+box { <0,0,0> <1,1,1> 
+    texture { 
+        pigment { PigmentCameraFaceOutside(1,Radius) } 
+        finish { ambient 1 } 
+    }
+    translate y*1004
+}
+
+box { <0,0,0> <1,1,1> 
+    texture { 
+        pigment { PigmentCameraFaceOutside(2,Radius) } 
+        finish { ambient 1 } 
+    }
+    translate y*1003
+}
+
+box { <0,0,0> <1,1,1> 
+    texture { 
+        pigment { PigmentCameraFaceOutside(3,Radius) } 
+        finish { ambient 1 } 
+    }
+    translate y*1002
+}
+
+box { <0,0,0> <1,1,1> 
+    texture { 
+        pigment { PigmentCameraFaceOutside(4,Radius) } 
+        finish { ambient 1 } 
+    }
+    translate y*1001
+}
+
+box { <0,0,0> <1,1,1> 
+    texture { 
+        pigment { PigmentCameraFaceOutside(5,Radius) } 
+        finish { ambient 1 } 
+    }
+    translate y*1000
+}
+#end
+
+
 
 #macro CubeMapCamera()
 // Box/Cube camera

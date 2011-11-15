@@ -1,11 +1,5 @@
 #include "cm_planets.inc"
 
-camera {
-    spherical 
-    angle 360
-    location <0,0,0>
-}
-
 #declare P_RedSwirl = 
     pigment {
         bozo
@@ -64,22 +58,3 @@ camera {
         color_map { CM_Abilene }
         scale 50
     }
-
-sphere {
-    <0,0,0> 100
-    hollow
-    material {
-        texture {
-            finish { ambient 1 }
-            pigment { average
-                pigment_map {
-                    [ 2 P_Banded frequency 0.1 ]
-                    [ P_Banded phase 0.4 frequency 0.3  ]
-                    [ P_Banded phase 0.55 frequency 0.6 colour_map { CM_Abilene }  ]
-                    [ P_Banded phase 0.333 warp { turbulence 0.5  } color_map { CM_Dusty } ]                    
-                }
-            }
-        }
-    }
-    
-}

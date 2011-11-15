@@ -1,7 +1,7 @@
 // cube mapping of planet sphere texture
 #version unofficial megapov 1.21;
 #include "pl_pigments.inc"
-
+#include "cm_planets.inc"
 
 
 sphere {
