@@ -323,8 +323,8 @@ sub complete_clicked {
 		fbp       => $fbp,
 		padre     => $self->padre_code,
 		version   => $self->version->GetValue || '0.01',
-		i18n      => 0,
-		i18n_trim => 0,
+		i18n      => $self->i18n,
+		i18n_trim => $self->i18n_trim,
 	);
 
 	# Generate the launch script for the app
