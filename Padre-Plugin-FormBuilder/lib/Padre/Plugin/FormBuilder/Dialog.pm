@@ -126,6 +126,13 @@ sub browse_changed {
 		];
 		die "No dialogs found" unless @$list;
 
+		# Find the project for the fbp file
+		my $project = $self->ide->project_manager->from_file($path);
+		if ( $project->isa('Padre::Project::Perl') ) {
+			my $version = $project->version;
+			$self->version->SetValue($version) if $version;
+		}
+
 		# Populate the dialog list
 		my $lock = $self->lock_update;
 		$self->select->Append($list);
