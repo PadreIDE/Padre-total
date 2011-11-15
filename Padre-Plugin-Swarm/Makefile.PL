@@ -1,7 +1,7 @@
 use inc::Module::Install::DSL 0.91;
 
 all_from      lib/Padre/Plugin/Swarm.pm
-requires      Padre                 0.91
+requires      Padre                 0.92
 requires      Wx::Socket            0
 requires      JSON              2.15
 requires      AnyEvent		0

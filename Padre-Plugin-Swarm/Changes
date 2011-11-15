@@ -1,5 +1,6 @@
 Changes for Perl extension Padre-Plugin-Swarm
-0.2	- unreleased
+0.2	- Tue Nov 15 21:36:55 EST 2011
+        - move depends to Padre 0.92
         - add margin symbol for feedback/comment
 	- add different cursor styling to indicate the original owner's cursor
         - add ghost cursors in the editor margin showing where other remote editors cursors are
