@@ -90,6 +90,12 @@ sub encapsulate {
 	$_[0]->encapsulation->GetSelection == 1;
 }
 
+sub project {
+	my $self = shift;
+	my $path = $self->path or return;
+	$self->ide->project_manager->from_file($path);
+}
+
 
 
 
@@ -127,7 +133,7 @@ sub browse_changed {
 		die "No dialogs found" unless @$list;
 
 		# Find the project for the fbp file
-		my $project = $self->ide->project_manager->from_file($path);
+		my $project = $self->project;
 		if ( $project->isa('Padre::Project::Perl') ) {
 			my $version = $project->version;
 			$self->version->SetValue($version) if $version;
@@ -474,10 +480,43 @@ sub dialog_class {
 
 # Display a generated document
 sub show {
-	my $self = shift;
-	my $code = shift;
+	my $self    = shift;
+	my $code    = shift;
+	my $main    = $self->main;
+	my $project = $self->project;
 
-	# Fallback option, create a new document
+	# Is this a module?
+	if ( $code =~ /^package\s+([\w:]+)/ ) {
+		# Where should the module be on the filesystem
+		my $module = $1;
+		my $path   = File::Spec->catfile(
+			$project->root,
+			'lib',
+			split( /::/, $module )
+		) . '.pm';
+
+		# Do we have the module open
+		my $id = $main->editor_of_file($path);
+		unless ( defined $id ) {
+			# Open the file if it exists on disk
+			if ( -f $path and -r $path ) {
+				$id = $main->setup_editor($path);
+				unless ( defined $id ) {
+					warn "Failed to open '$path'";
+					return;
+				}
+			}
+		}
+		if ( defined $id ) {
+			# Apply to the existing file by delta
+			my $editor   = $main->notebook->GetPage($id);
+			my $document = $editor->{Document} or return;
+			$document->text_replace($code);
+			return 1;
+		}
+	}
+
+	# Not open, does not exist, or no special handling
 	$self->main->new_document_from_string(
 		$code => 'application/x-perl',
 	);

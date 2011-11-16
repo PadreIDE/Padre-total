@@ -27,9 +27,9 @@ use warnings;
 # but we happen to know Padre uses all of them itself.
 use Class::Inspector 1.22 ();
 use Params::Util     1.00 ();
-use Padre::Plugin    0.91 ();
+use Padre::Plugin    0.93 ();
 use Padre::Util      0.81 ();
-use Padre::Wx        0.91 ();
+use Padre::Wx        0.93 ();
 
 our $VERSION = '0.04';
 our @ISA     = 'Padre::Plugin';
@@ -45,11 +45,15 @@ my $COUNT = 0;
 # Padre::Plugin Methods
 
 sub padre_interfaces {
-	'Padre::Plugin'         => 0.91,
-	'Padre::Util'           => 0.91,
-	'Padre::Task'           => 0.91,
-	'Padre::Wx'             => 0.91,
-	'Padre::Wx::Role::Main' => 0.91,
+	'Padre::Plugin'         => 0.93,
+	'Padre::Util'           => 0.93,
+	'Padre::Task'           => 0.93,
+	'Padre::Document'       => 0.93,
+	'Padre::Project'        => 0.93,
+	'Padre::Wx'             => 0.93,
+	'Padre::Wx::Role::Main' => 0.93,
+	'Padre::Wx::Main'       => 0.93,
+	'Padre::Wx::Editor'     => 0.93,
 }
 
 sub plugin_name {
