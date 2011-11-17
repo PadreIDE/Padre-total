@@ -4,7 +4,7 @@ use 5.008;
 use strict;
 use warnings;
 
-our $VERSION = '0.13_08';
+our $VERSION = '0.13_09';
 
 use utf8;
 use IO::Socket;
@@ -631,6 +631,39 @@ sub get_value {
 	return;
 }
 
+=head2 get_p_exp
+
+p expr
+
+Same as print {$DB::OUT} expr in the current package. 
+In particular, because this is just Perl's own print function, 
+this means that nested data structures and objects are not dumped, 
+unlike with the x command.
+
+The DB::OUT filehandle is opened to /dev/tty, 
+regardless of where STDOUT may be redirected to.
+From perldebug, but defaulted to y 0
+
+  $debugger->get_p_exp();
+
+=cut
+
+#######
+# sub get_p_exp
+#######
+sub get_p_exp {
+	my ( $self, $exp ) = @_;
+
+	unless ( defined $exp ) {
+		return;
+	}
+
+	$self->_send("p $exp");
+	my $buf = $self->_get;
+	$self->_prompt( \$buf );
+	return $buf;
+}
+
 =head2 get_y_zero
 
 From perldebug, but defaulted to y 0
@@ -658,7 +691,6 @@ sub get_y_zero {
 	$self->_prompt( \$buf );
 	return $buf;
 }
-
 
 =head2 get_v_vars
 
@@ -889,7 +921,7 @@ sub _process_line {
 	if ($file) {
 
 		$self->{filename} = $file;
-		print "filename: $self->{filename}\n";
+		# print "filename: $self->{filename}\n";
 	}
 	$self->{row} = $row;
 	return ( $module, $file, $row, $content );
@@ -964,10 +996,10 @@ sub __send {
 sub __send_np {
 	my ( $self, $input ) = @_;
 	$self->_send($input);
-	print "input: $input\n";
+	# print "input: $input\n";
 
 	my $buf = $self->_get;
-	print "buffer: $buf\n";
+	# print "buffer: $buf\n";
 	
 	return $buf;
 }
