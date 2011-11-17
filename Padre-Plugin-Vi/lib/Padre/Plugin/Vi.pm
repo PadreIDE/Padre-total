@@ -248,7 +248,7 @@ r for replacing current character
 =cut
 
 sub padre_interfaces {
-	'Padre::Plugin' => '0.91';
+	'Padre::Plugin' => '0.93';
 }
 
 sub plugin_enable {
@@ -265,7 +265,7 @@ sub plugin_enable {
 sub plugin_disable {
 	my ($self) = @_;
 
-	foreach my $editor ( Padre->ide->wx->main->pages ) {
+	foreach my $editor ( Padre->ide->wx->main->editors ) {
 		$self->editor_stop($editor);
 	}
 	delete $INC{"Padre/Plugin/Vi/Editor.pm"};
