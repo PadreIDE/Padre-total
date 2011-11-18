@@ -4,10 +4,9 @@ package Padre::Document::PSGI;
 
 use strict;
 use warnings;
-
+use Scalar::Util          ();
+use Padre::Document::Perl ();
 use Padre::Logger;
-use Padre::Document::Perl;
-use Padre::MimeTypes;
 
 our @ISA = 'Padre::Document::Perl';
 
@@ -30,12 +29,8 @@ use Class::XSAccessor accessors => [qw(icon_path icon_set panel plugin process)]
 =cut
 
 sub on_load {
-    my $self = shift;
-
     TRACE('->on_load') if DEBUG;
-
-    require Scalar::Util;
-    Scalar::Util::weaken( $self->{plugin} );
+    Scalar::Util::weaken( $_[0]->{plugin} );
 }
 
 =method set_tab_icon
