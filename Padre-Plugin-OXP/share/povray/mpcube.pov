@@ -144,7 +144,7 @@ sphere { <-CubeSide,-CubeSide,-CubeSide>/2 0.02
 }
 */
 
-/*
+///*
 sphere { <0,0,0> 1
     texture {
         pigment { average
@@ -165,13 +165,13 @@ sphere { <0,0,0> 1
             warp { turbulence 1 }
             scale 1/20
         }
-        finish { ambient .5 }
-        normal {   bozo
+        finish { ambient .5  crand 0.01}
+        normal {   crackle         
                     turbulence <5,1,5>
                     scale 3
             normal_map {
-            [ 0 crackle .12 scale 0.01 ]
-            [ 1 bumps 0.3 scale 0.04 ]
+            [ 0 crackle -0.52 scale 0.01 ]
+            [ 1 bumps -0.3 scale 0.04 ]
             }
             warp { turbulence .5 }
         }
@@ -189,40 +189,19 @@ sphere { <0,0,0> 1
             warp { turbulence 1 }
             scale 1/100
         }
+
         finish { ambient 0.5 }
     }
     no_shadow
+    inverse
     double_illuminate
 }
-*/
+//*/
 
-//
-sphere { <0,0,0> 1
-    texture {
-        pigment { average
-            pigment_map {
-                [ 
-                        wrinkles
-                        turbulence <5,1,5>
-                        color_map { CM_Earthy }
-                ]
-                [       ripples
-                        turbulence <5,2,5>
-                        color_map { CM_Greeny }
-                ]
-            }
-            scale 3
-            warp { turbulence 1 }
-            scale 20
-            warp { turbulence 1 }
-            scale 1/20
-        }
-        finish { ambient 1 }
-    }
-}
 
-//light_source { <2,2,-4> color rgb 1 }
 /*
+light_source { <0,2,4> color rgb 1 }
+light_source { <0,-2,-4> color rgb 1 }
 camera {
     perspective 
     location <2,0.1,2>
@@ -236,5 +215,8 @@ camera {
 // latlong camera (inside sphere)
 //camera { spherical angle 360 location <0,0,0> }
 
+///*
 CubeMapBoxes(Radius)
+CubeLight(4,Radius)
 CubeMapCamera()
+//*/

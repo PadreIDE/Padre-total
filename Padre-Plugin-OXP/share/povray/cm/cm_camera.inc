@@ -1,4 +1,37 @@
-#version unofficial megapov 1.21
+#version unofficial megapov 1.21;
+
+#macro CubeLight(Face,Radius)
+union {
+    
+light_source { <0,Radius * 4,0> color rgb .5 parallel point_at <0,0,0> }
+light_source { <0,Radius * 4,0> color rgb .5  rotate x*120 rotate y*120 parallel point_at <0,0,0> }
+light_source { <0,Radius * 4,0> color rgb .5  rotate x*120 rotate y*240 parallel point_at <0,0,0> }
+light_source { <0,Radius * 4,0> color rgb .5 rotate x*120  parallel point_at <0,0,0> }
+  #switch (Face)
+    #case (0)
+      rotate -90*y
+    #break
+    #case (1)
+      rotate 90*y
+    #break
+    #case (2)
+      rotate z*180
+      rotate 90*x
+    #break
+    #case (3)
+        rotate z*180
+        rotate -90 * x
+    #break
+    #case (4)
+        rotate y*180
+    #break
+    #case (5)
+      //rotate 180*y
+    #break
+  #end // End of conditional part
+
+}
+#end
 
 #macro CubeCamera(Face,Radius)
   #local CubeSide = sqrt( 1/3 ) * (Radius*2);

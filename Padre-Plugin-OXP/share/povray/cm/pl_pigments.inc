@@ -58,3 +58,14 @@
         color_map { CM_Abilene }
         scale 50
     }
+    
+    
+#declare P_Ocean = 
+    pigment {
+        waves turbulence 0.05
+        scale 0.1
+        color_map {
+            [ 0 color rgb <0.11,0.22,0.35> ]
+            [ 1 color rgb <0.6,0.9,.9554> ]
+        }
+}
