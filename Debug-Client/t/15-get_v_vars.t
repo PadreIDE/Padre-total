@@ -14,7 +14,7 @@ import Test::More;
 require Test::Deep;
 import Test::Deep;
 
-plan( tests => 18 );
+plan( tests => 13 );
 
 use_ok( 'PadWalker', '1.92' );
 
@@ -78,20 +78,7 @@ my $debugger = start_debugger();
 {
 	foreach (1..3) {
 	$debugger->run();
-	my @out = $debugger->get_y_zero();
-	cmp_deeply( \@out, [ "\$line = $_" ], "y_0 \$line = $_" )
-		or diag( $debugger->buffer );
 	}
-}
-
-{
-	ok( $debugger->list_subroutine_names('!(IO::Socket|Carp)') =~ m/[^(IO::Socket|Carp)]/, 'list_subroutine_names( !(ENV|SIG|INC) )' );
-
-}
-
-{
-	ok( $debugger->list_subroutine_names() =~ m/(IO::Socket|Carp)/, 'list_subroutine_names()' );
-
 }
 
 {

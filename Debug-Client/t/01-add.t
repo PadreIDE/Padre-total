@@ -95,8 +95,8 @@ isa_ok( $debugger, 'Debug::Client' );
 }
 
 {
-	my $out = $debugger->_show_help;
-	like( $out, qr{List/search source lines:}, '_show_help' );
+	my $out = $debugger->get_h_var;
+	like( $out, qr{List/search source lines:}, 'get_h_var' );
 }
 
 {

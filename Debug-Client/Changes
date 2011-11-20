@@ -1,3 +1,8 @@
+0.13_10 2011.11.20
+    - rename Method _show_help -> get_h_var
+      rename Method get_p_ext -> get_p_exp
+      Add tests for above (BOWTIE)
+
 0.13_09 2011.11.17
     - Add a Method get_p_ext (BOWTIE)
 

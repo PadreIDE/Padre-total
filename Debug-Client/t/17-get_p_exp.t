@@ -14,7 +14,7 @@ import Test::More;
 require Test::Deep;
 import Test::Deep;
 
-plan( tests => 13 );
+plan( tests => 14 );
 
 use_ok( 'PadWalker', '1.92' );
 
@@ -32,7 +32,7 @@ my $debugger = start_debugger();
 	#   DB<1>
 
 	like( $out, qr/Loading DB routines from perl5db.pl version/, 'loading line' );
-	like( $out, qr{main::(14-y_zero.pl:8):	$| = 1;},  'line 8' );
+	like( $out, qr{main::(14-y_zero.pl:8):	$| = 1;},             'line 8' );
 }
 
 {
@@ -49,35 +49,18 @@ my $debugger = start_debugger();
 
 {
 	my @out = $debugger->run;
-	cmp_deeply( \@out, ['main::', 't/eg/14-y_zero.pl', '14', ' print "$_ : $line \n";', ], 'line 14' )
+	cmp_deeply( \@out, [ 'main::', 't/eg/14-y_zero.pl', '14', ' print "$_ : $line \n";', ], 'line 14' )
 		or diag( $debugger->buffer );
 }
 
 {
-	ok( $debugger->filename() =~ m/14-y_zero.pl/, 'filename 14-y_zero.pl' );
-}
-
-{
-	ok( $debugger->row() =~ m/14/, 'row 14' );
-}
-
-{
-	ok( $debugger->get_x_vars('!(ENV|SIG|INC)') =~ m/14-y_zero.pl/, 'get_x_vars( !(ENV|SIG|INC) )' );
-
-}
-
-{
-	ok( $debugger->get_x_vars() =~ m/14-y_zero.pl/, 'get_x_vars()' );
-
-}
-
-{
-	ok( $debugger->toggle_trace =~ m/Trace = off/, 'Trace off' );
-}
-
-{
-	foreach (1..3) {
-	$debugger->run();
+	foreach ( 1 .. 3 ) {
+		$debugger->run();
+		my @out = $debugger->get_y_zero();
+		# cmp_deeply( \@out, ["\$line = $_"], "y_0 \$line = $_" )
+			# or diag( $debugger->buffer );
+		ok( $debugger->get_p_exp('$_') =~ m/$_/,    "get_p_exp \$_ = $_" );
+		ok( $debugger->get_p_exp('$line') =~ m/$_/, "get_p_exp \$line = $_" );
 	}
 }
 
@@ -95,7 +78,7 @@ my $debugger = start_debugger();
 	$debugger->quit;
 }
 
-done_testing( );
+done_testing();
 
 1;
 

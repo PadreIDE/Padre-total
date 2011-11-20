@@ -4,7 +4,7 @@ use 5.008;
 use strict;
 use warnings;
 
-our $VERSION = '0.13_09';
+our $VERSION = '0.13_10';
 
 use utf8;
 use IO::Socket;
@@ -140,7 +140,7 @@ sub new {
 	return $self;
 }
 
-=head2 listen
+=head1 Warning sub listen has bean deprecated
 
 Has bean deprecated in this version 0.13_04 and all future versions starting with v0.14
 
@@ -394,6 +394,7 @@ Sends the stack trace command C<t> Toggle trace mode.
 #######
 sub toggle_trace {
 	my ($self) = @_;
+
 	$self->_send('t');
 	my $buf = $self->_get;
 
@@ -490,6 +491,8 @@ sub set_breakpoint {
 }
 
 =head2 remove_breakpoint
+
+ $debugger->remove_breakpoint( $self, $file, $line );
 
 =cut
 
@@ -746,6 +749,40 @@ sub get_x_vars {
 	return $buf;
 }
 
+=head2 get_h_var
+
+Enter h or `h h' for help,
+For more help, type h cmd_letter, optional var
+
+ $debugger->get_h_var();
+
+=cut
+
+#######
+# sub get_h_var
+#######
+sub get_h_var {
+	my ( $self, $var ) = @_;
+
+	# $self->_send('h');
+	# my $buf = $self->_get;
+
+	# # 	$self->_prompt( \$buf );
+	# $buf =~ s/(\e\[4m|\e\[24m|\e\[1m|\e\[0m)//mg;
+
+	# # 	# $buf =~ s/\e\[24m//mg;
+	# return $buf;
+	if ( defined $var ) {
+		$self->_send("h $var");
+	} else {
+		$self->_send('h');
+	}
+
+	my $buf = $self->_get;
+	$buf =~ s/(\e\[4m|\e\[24m|\e\[1m|\e\[0m)//mg;
+	$self->_prompt( \$buf );
+	return $buf;
+}
 
 =head2 get
 
@@ -921,6 +958,7 @@ sub _process_line {
 	if ($file) {
 
 		$self->{filename} = $file;
+
 		# print "filename: $self->{filename}\n";
 	}
 	$self->{row} = $row;
@@ -976,6 +1014,21 @@ sub _send_get {
 	return $self->get;
 }
 #######
+# Internal Method _set_option help
+#######
+sub _set_option {
+	my ( $self, $option ) = @_;
+	unless ( defined $option ) {
+		return;
+	}
+
+	$self->_send("o $option");
+	my $buf = $self->_get;
+	$self->_prompt( \$buf );
+	return $buf;
+
+}
+#######
 # Internal Method __send_padre
 # hidden undocumented
 ######
@@ -996,28 +1049,16 @@ sub __send {
 sub __send_np {
 	my ( $self, $input ) = @_;
 	$self->_send($input);
+
 	# print "input: $input\n";
 
 	my $buf = $self->_get;
+
 	# print "buffer: $buf\n";
-	
+
 	return $buf;
 }
-#######
-# Internal Method _show_help
-#######
-sub _show_help {
-	my $self = shift;
 
-	$self->_send('h');
-	my $buf = $self->_get;
-
-	$self->_prompt( \$buf );
-	$buf =~ s/(\e\[4m|\e\[24m|\e\[1m|\e\[0m)//mg;
-
-	# $buf =~ s/\e\[24m//mg;
-	return $buf;
-}
 1;
 
 __END__
@@ -1052,7 +1093,7 @@ and just performing c on it's own
 
 =head3 _send_get
 
-=head3 _show_help
+=head3 _set_option
 
 =head1 AUTHORS
 
