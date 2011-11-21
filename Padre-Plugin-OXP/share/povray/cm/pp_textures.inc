@@ -32,16 +32,16 @@
             turbulence 0.05
             omega 0.1
             pigment_map {
-                [ P_GasGiant colour_map { GasColour[has_colour] } ]
-                [ P_GasGiant colour_map { GasColour[has_colour] } frequency 0.2 phase 0.5 ]
-                [ P_GasGiant colour_map { GasColour[has_colour] } frequency 0.6 phase 0.85 ]
+                [ P_GasGiant colour_map { GasColour[has_colour] } frequency 0.2 phase 0.25 ]
+                [ P_GasGiant colour_map { GasColour[has_colour] } frequency 0.1 phase 0.5 ]
+                [ P_GasGiant colour_map { GasColour[has_colour] } frequency 0.3 phase 0.85 ]
             }
-            scale 40
+            scale 80
             warp{
                 turbulence 0.5
                 omega 0.2
             }
-            scale 1/40
+            scale 1/80
         }
         finish { ambient 0.15 }
         
