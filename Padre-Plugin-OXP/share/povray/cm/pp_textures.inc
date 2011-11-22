@@ -26,6 +26,11 @@
 
 
 #macro Gas(has_colour,has_pattern)
+
+#local V_storm_eye = <0,0,1>;
+#local V_storm_eye_perturbed = vrotate( V_storm_eye , <0, 0, 0> );
+#local S_storm_eye = <0.2,0.1,0.1>;
+
     texture {
         pigment {
             average
@@ -42,6 +47,54 @@
                 omega 0.2
             }
             scale 1/80
+            
+            warp {
+                displace {
+                    spherical  scale S_storm_eye*3 translate <0,1,0>
+                    cubic_wave
+                    pigment_map { 
+                        
+                        [0 color rgb 0.5]
+                        [1 radial  phase 0.75
+                            triangle_wave
+                            color_map{[0 color rgb 0.5 ][1 color rgb 1]}
+                        ]
+                    }
+                    rotate x*90
+                    translate V_storm_eye_perturbed - V_storm_eye
+                    type 1
+                    
+                }
+            }
+            warp {
+                displace {
+                    spherical  scale S_storm_eye*2 translate <0,1,0>
+                    cubic_wave
+                    pigment_map { 
+                        
+                        [0 color rgb 0.5]
+                        [1 radial  phase 0.33
+                            triangle_wave
+                            color_map{[0 color rgb 0.5 ][1 color rgb 0.0]}
+                        ]
+                    }
+                    rotate x*90
+                    translate V_storm_eye_perturbed-V_storm_eye
+                    type 1
+                    
+                }
+            }
+
+            
+            /*
+            warp {
+                black_hole V_storm_eye_perturbed  vlength( S_storm_eye )
+                inverse
+                strength 2
+                falloff 2
+                
+            }   
+            */ 
         }
         finish { ambient 0.15 }
         

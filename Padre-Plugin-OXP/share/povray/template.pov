@@ -8,7 +8,7 @@
 sphere { <0,0,0> Radius
         hollow no_shadow inverse double_illuminate
         material {
-                Gas(1,0)
+                Gas(2,0)
         }
 }
 CubeMapBoxes(Radius)

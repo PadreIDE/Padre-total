@@ -1,12 +1,13 @@
 #version unofficial megapov 1.21;
 
 #macro CubeLight(Face,Radius)
+#local CubeSide = sqrt( 1/3 ) * (Radius*2);
 union {
     
-light_source { <0,Radius * 4,0> color rgb .5 parallel point_at <0,0,0> }
-light_source { <0,Radius * 4,0> color rgb .5  rotate x*120 rotate y*120 parallel point_at <0,0,0> }
-light_source { <0,Radius * 4,0> color rgb .5  rotate x*120 rotate y*240 parallel point_at <0,0,0> }
-light_source { <0,Radius * 4,0> color rgb .5 rotate x*120  parallel point_at <0,0,0> }
+light_source { <0,CubeSide * 4,0> color rgb .5  }
+light_source { <0,CubeSide * 4,0> color rgb .5  rotate x*120 rotate y*120 }
+light_source { <0,CubeSide * 4,0> color rgb .5  rotate x*120 rotate y*240 }
+light_source { <0,CubeSide * 4,0> color rgb .5 rotate x*120 }
   #switch (Face)
     #case (0)
       rotate -90*y
