@@ -40,7 +40,7 @@ sub stc_scintilla_dll {
 	my $self    = shift;
 	my $dllname = 'wxmsw';
 	my ( $major, $minor, $release ) = $self->stc_version_strings;
-	$dllname .= $major . $minor;
+	$dllname .= $release if $release;
 	$dllname .= 'u' if Alien::wxWidgets->config->{unicode};
 	$dllname .= 'd' if Alien::wxWidgets->config->{debug};
 	$dllname .= '_scintilla_vc.dll';

@@ -24,7 +24,7 @@ sub stc_scintilla_dll {
 	$dllname .= 'd' if Alien::wxWidgets->config->{debug};
 	$dllname .= '_scintilla-';
 	my ( $major, $minor, $release ) = $self->stc_version_strings;
-	$dllname .= $major . '.' . $minor . '.so';
+	$dllname .= $major . '.' . $minor . '.' . $release . '.so';
 	return $dllname;
 }
 
@@ -35,7 +35,7 @@ sub stc_scintilla_link {
 	$linkname .= 'd' if Alien::wxWidgets->config->{debug};
 	$linkname .= '_scintilla-';
 	my ( $major, $minor, $release ) = $self->stc_version_strings;
-	$linkname .= $major . '.' . $minor;
+	$linkname .= $major . '.' . $minor . '.' . $release;
 	return $linkname;
 }
 

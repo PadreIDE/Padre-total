@@ -130,9 +130,10 @@ sub ACTION_build {
 
 	# check wx widgets version
 	my $wxversion = Alien::wxWidgets->version;
-	if ( $wxversion !~ /^2\.008/ ) {
-		die("Wx::Scintilla does not support wxWidgets version $wxversion");
-	}
+	
+	#if ( $wxversion !~ /^2\.008/ ) {
+	#	die("Wx::Scintilla does not support wxWidgets version $wxversion");
+	#}
 
 	$self->stc_prebuild_check;
 

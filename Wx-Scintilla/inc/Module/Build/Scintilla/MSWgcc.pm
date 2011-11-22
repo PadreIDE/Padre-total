@@ -14,6 +14,7 @@ sub stc_scintilla_lib {
 	my $libname = 'libwxmsw';
 	my ( $major, $minor, $release ) = $self->stc_version_strings;
 	$libname .= $major . $minor;
+	$libname .= $release if $release;
 	$libname .= 'u' if Alien::wxWidgets->config->{unicode};
 	$libname .= 'd' if Alien::wxWidgets->config->{debug};
 	$libname .= '_scintilla.a';
@@ -25,6 +26,7 @@ sub stc_scintilla_dll {
 	my $dllname = 'wxmsw';
 	my ( $major, $minor, $release ) = $self->stc_version_strings;
 	$dllname .= $major . $minor;
+	$dllname .= $release if $release;
 	$dllname .= 'u' if Alien::wxWidgets->config->{unicode};
 	$dllname .= 'd' if Alien::wxWidgets->config->{debug};
 	$dllname .= '_scintilla_gcc.dll';
@@ -36,6 +38,7 @@ sub stc_scintilla_link {
 	my $linkname = '-lwxmsw';
 	my ( $major, $minor, $release ) = $class->stc_version_strings;
 	$linkname .= $major . $minor;
+	$linkname .= $release if $release;
 	$linkname .= 'u' if Alien::wxWidgets->config->{unicode};
 	$linkname .= 'd' if Alien::wxWidgets->config->{debug};
 	$linkname .= '_scintilla';
