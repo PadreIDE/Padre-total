@@ -1,7 +1,5 @@
 # use 5.008005;
 use strict;
-# what is 'privinc' ?
-# use lib 'privinc';
 use inc::Module::Install 1.00;
 
 # Define metadata
