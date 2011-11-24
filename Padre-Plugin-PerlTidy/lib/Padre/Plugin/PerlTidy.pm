@@ -5,13 +5,13 @@ use strict;
 use warnings;
 use File::Spec     ();
 use File::Basename ();
-use Params::Util   ();
+use Params::Util   1.04 ();
 use Padre::Current ();
 use Padre::Wx      ();
-use Padre::Plugin  ();
+use Padre::Plugin  0.92 ();
 use FindBin qw($Bin);
 
-our $VERSION = 0.18;
+our $VERSION = 0.19;
 our @ISA     = 'Padre::Plugin';
 
 # This constant is used when storing and restoring the cursor position.
@@ -160,37 +160,11 @@ sub _tidy {
 		$output = $main->output;
 	}
 
-	#	CLAUDIO: This code breaks the plugin, temporary disabled.
-	#	Have a look at Perl::Tidy line 126 for details: expecting a reference related to a file and not Wx::CommandEvent).
-	#	Talk to El_Che for more info.
-	#	if (not $perltidyrc) {
-	#		$perltidyrc = $document->project->config->config_perltidy;
-	#	}
-	#	if ($perltidyrc) {
-	#		$tidyargs{perltidyrc} = $perltidyrc;
-	#		$output->AppendText("Perl::Tidy running with project configuration $perltidyrc\n");
-	#	} else {
-	#		$output->AppendText("Perl::Tidy running with default or user configuration\n");
-	#	}
-
 	# TODO: suppress the senseless warning from PerlTidy
 	eval {
 		require Perl::Tidy;
 		Perl::Tidy::perltidy(%tidyargs);
 	};
-
-	#	CLAUDIO: This code breaks the plugin, temporary disabled.
-	#	Have a look at Perl::Tidy line 126 for details: expecting a reference related to a file and not Wx::CommandEvent).
-	#	Talk to El_Che for more info.
-	#	if (not $perltidyrc) {
-	#		$perltidyrc = $document->project->config->config_perltidy;
-	#	}
-	#	if ($perltidyrc) {
-	#		$tidyargs{perltidyrc} = $perltidyrc;
-	#		$output->AppendText("Perl::Tidy running with project configuration $perltidyrc\n");
-	#	} else {
-	#		$output->AppendText("Perl::Tidy running with default or user configuration\n");
-	#	}
 
 	if ( defined $errorfile ) {
 		$main->show_output(1);

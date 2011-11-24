@@ -1,5 +1,9 @@
 Revision history for Perl extension Padre::Plugin::PerlTidy.
 
+0.19 2011.11.24
+    - Restored missing Params::Util dependency (AZAWAWI)
+    - Removed is_padre_plugin dependency (AZAWAWI)
+
 0.18 2011.11.15
     - Switch to Module::Install (BOWTIE)
     - Use PerlTidy from trunk/tools #1239 (BOWTIE)
