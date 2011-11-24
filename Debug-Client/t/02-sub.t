@@ -17,7 +17,7 @@ import Test::More;
 require Test::Deep;
 import Test::Deep;
 
-plan( tests => 27 );
+plan( tests => 28 );
 
 my $debugger = start_debugger();
 
@@ -81,10 +81,16 @@ SKIP: {
 	cmp_deeply( \@out, [242], '$q is 11*22=242' )
 		or diag( $debugger->buffer );
 }
+
 {
 	my @out = $debugger->get_value('$z');
 	cmp_deeply( \@out, [''], '$z is empty' )
 		or diag( $debugger->buffer );
+}
+
+{
+	my $out = $debugger->get_value('2 + 3');
+	ok( $out == 5 , 'p "2 + 3"  = 5' );
 }
 
 {

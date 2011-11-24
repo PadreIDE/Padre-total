@@ -14,7 +14,7 @@ import Test::More;
 require Test::Deep;
 import Test::Deep;
 
-plan( tests => 13 );
+plan( tests => 18 );
 
 use_ok( 'PadWalker', '1.92' );
 
@@ -69,9 +69,19 @@ my $debugger = start_debugger();
 	my @out = $debugger->get_y_zero();
 	cmp_deeply( \@out, [ "\$line = $_" ], "y_0 \$line = $_" )
 		or diag( $debugger->buffer );
+	my $out = $debugger->get_value();
+	ok( $out == $_ , "\$_ = $out" );
 	}
 }
 
+{
+	my $out = $debugger->__send( 'p 2 + 3' );
+	ok( $out == 5, '__send' );	
+}
+{
+	my $out = $debugger->__send_np( 'p 2 + 3' );
+	like( $out, qr/[5]/, '__send_np' );	
+}
 {
 
 	# Debugged program terminated.  Use q to quit or R to restart,

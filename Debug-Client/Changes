@@ -1,3 +1,10 @@
+0.15 2011.11.24
+    - removed Method listen
+    - comment out list_subroutine_names & _set_option
+    - Modify Method get_value to accepect no values
+    - Modify get_p_exp
+    - Ammend test to support above (BOWTIE)
+
 0.14 2011.11.24
     - Released 0.13_10 as stable 0.14 (AZAWAWI)
 

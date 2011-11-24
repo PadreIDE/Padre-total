@@ -1,10 +1,10 @@
 package Debug::Client;
 
-use 5.008;
+use 5.008005;
 use strict;
 use warnings;
 
-our $VERSION = '0.14';
+our $VERSION = '0.15';
 
 use utf8;
 use IO::Socket;
@@ -142,7 +142,7 @@ sub new {
 
 =head1 Warning sub listen has bean deprecated
 
-Has bean deprecated in this version 0.13_04 and all future versions starting with v0.14
+Has bean deprecated since 0.13_04 and all future versions starting with v0.14
 
 Perl::Critic Error Subroutine name is a homonym for built-in function
 
@@ -150,11 +150,11 @@ Use $debugger->listener instead
 
 =cut
 
-sub listen {
-	my ( $self, @args ) = @_;
-	$self->listener(@args);
-	return;
-}
+# sub listen {
+	# my ( $self, @args ) = @_;
+	# $self->listener(@args);
+	# return;
+# }
 
 =head2 listener
 
@@ -402,30 +402,30 @@ sub toggle_trace {
 	return $buf;
 }
 
-=head2 list_subroutine_names
+# =head2 list_subroutine_names
 
-Sends the stack trace command C<S> [[!]pattern] 
-List subroutine names [not] matching pattern.
+# # Sends the stack trace command C<S> [[!]pattern] 
+# List subroutine names [not] matching pattern.
 
-=cut
+# # =cut
 
 #######
 # sub list_subroutine_names
 #######
-sub list_subroutine_names {
-	my ( $self, $pattern ) = @_;
+# sub list_subroutine_names {
+	# my ( $self, $pattern ) = @_;
 
-	if ( defined $pattern ) {
-		$self->_send("S $pattern");
-	} else {
-		$self->_send('S');
-	}
+# # 	if ( defined $pattern ) {
+		# $self->_send("S $pattern");
+	# } else {
+		# $self->_send('S');
+	# }
 
-	my $buf = $self->_get;
+# # 	my $buf = $self->_get;
 
-	$self->_prompt( \$buf );
-	return $buf;
-}
+# # 	$self->_prompt( \$buf );
+	# return $buf;
+# }
 
 =head2 run
 
@@ -616,22 +616,26 @@ value of that reference?
 # or its user) should actually call   x $var
 sub get_value {
 	my ( $self, $var ) = @_;
-	carp "no parameter given\n" if not defined $var;
 
-	if ( $var =~ /^\$/ ) {
-		$self->_send("p $var");
+	if ( not defined $var ) {
+		$self->_send('p');
 		my $buf = $self->_get;
 		$self->_prompt( \$buf );
 		return $buf;
-	} elsif ( $var =~ /\@/ or $var =~ /\%/ ) {
+	}
+	elsif ( $var =~ /\@/ or $var =~ /\%/ ) {
 		$self->_send("x \\$var");
 		my $buf = $self->_get;
 		$self->_prompt( \$buf );
 		my $data_ref = _parse_dumper($buf);
 		return $data_ref;
 	}
-	carp "Unknown parameter '$var'\n";
-	return;
+	else {
+		$self->_send("p $var");
+		my $buf = $self->_get;
+		$self->_prompt( \$buf );
+		return $buf;
+	}
 }
 
 =head2 get_p_exp
@@ -656,10 +660,6 @@ From perldebug, but defaulted to y 0
 #######
 sub get_p_exp {
 	my ( $self, $exp ) = @_;
-
-	unless ( defined $exp ) {
-		return;
-	}
 
 	$self->_send("p $exp");
 	my $buf = $self->_get;
@@ -1016,18 +1016,18 @@ sub _send_get {
 #######
 # Internal Method _set_option help
 #######
-sub _set_option {
-	my ( $self, $option ) = @_;
-	unless ( defined $option ) {
-		return;
-	}
+# sub _set_option {
+	# my ( $self, $option ) = @_;
+	# unless ( defined $option ) {
+		# return;
+	# }
 
-	$self->_send("o $option");
-	my $buf = $self->_get;
-	$self->_prompt( \$buf );
-	return $buf;
+# # 	$self->_send("o $option");
+	# my $buf = $self->_get;
+	# $self->_prompt( \$buf );
+	# return $buf;
 
-}
+# # }
 #######
 # Internal Method __send_padre
 # hidden undocumented

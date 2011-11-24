@@ -1,4 +1,4 @@
-# use 5.008005;
+use 5.008005;
 use strict;
 use inc::Module::Install 1.00;
 
@@ -10,17 +10,19 @@ author 'Breno G. de Oliveira <garu at cpan.org>';
 author 'Kevin Dawson <bowtie@cpan.org>';
 author 'Ahmad M. Zawawi <ahmad.zawawi@gmail.com>';
 
-perl_version '5.008';
+perl_version '5.008005';
 
 # All from our core
 all_from 'lib/Debug/Client.pm';
 
 # required modules from CPAN
-requires 'perl'             => '5.008';
-requires 'Carp'             => '1.20';
-requires 'IO::Socket'       => '1.31';
-requires 'IO::Socket::INET' => '1.31';
-requires 'PadWalker'        => '1.92';
+requires 'perl'                 => '5.008005';
+requires 'Carp'                 => '1.20';
+requires 'IO::Socket'           => '1.31';
+requires 'IO::Socket::INET'     => '1.31';
+requires 'PadWalker'            => '1.92';
+requires 'Term::ReadLine'       => '1.07';
+requires 'Term::ReadLine::Perl' => '1.0303';
 
 test_requires 'Test::More'    => '0.98';
 test_requires 'Test::Deep'    => '0.108';
