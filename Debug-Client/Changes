@@ -1,3 +1,6 @@
+0.14 2011.11.24
+    - Released 0.13_10 as stable 0.14 (AZAWAWI)
+
 0.13_10 2011.11.20
     - rename Method _show_help -> get_h_var
       rename Method get_p_ext -> get_p_exp
