@@ -631,7 +631,7 @@
                                     <property name="proportion">0</property>
                                     <object class="wxRadioBox" expanded="0">
                                         <property name="bg"></property>
-                                        <property name="choices">&quot;Plugin&quot; &quot;Session&quot; &quot;SessionFile&quot; &quot;Bookmark&quot; &quot;History&quot; &quot;HostConfig&quot; &quot;Snippets&quot; &quot;RecentlyUsed&quot; &quot;SyntaxHighlight&quot; &quot;LastPositionInFile&quot; &quot;DebugBreakpoints&quot;</property>
+                                        <property name="choices">&quot;Plugin&quot; &quot;Session&quot; &quot;SessionFile&quot; &quot;Bookmark&quot; &quot;History&quot; &quot;HostConfig&quot; &quot;Snippets&quot; &quot;RecentlyUsed&quot; &quot;LastPositionInFile&quot; &quot;DebugBreakpoints&quot;</property>
                                         <property name="context_help"></property>
                                         <property name="context_menu">1</property>
                                         <property name="enabled">1</property>

@@ -136,7 +136,6 @@ sub new {
 			"HostConfig",
 			"Snippets",
 			"RecentlyUsed",
-			"SyntaxHighlight",
 			"LastPositionInFile",
 			"DebugBreakpoints",
 		],
