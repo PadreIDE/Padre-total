@@ -157,6 +157,7 @@ sub new {
 	);
 
 	my $cancel = Wx::Button->new(
+		$self,
 		Wx::ID_CANCEL,
 		Wx::gettext("Close"),
 		Wx::DefaultPosition,
@@ -165,17 +166,10 @@ sub new {
 
 	$self->{m_notebook1} = Wx::Notebook->new(
 		$self,
-		$self,
 		-1,
-		Wx::Bitmap->new( File::ShareDir::dist_file( "Padre-Plugin-FormBuilder", "single.png" ), Wx::BITMAP_TYPE_ANY ),
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
-	);
-
-	my $m_staticText411 = Wx::StaticText->new(
-		$self->{m_panel1},
-		Wx::DefaultPosition,
-		Wx::DefaultSize,
+		Wx::NO_BORDER,
 	);
 
 	$self->{m_panel1} = Wx::Panel->new(
@@ -189,6 +183,13 @@ sub new {
 	my $m_bitmap41 = Wx::StaticBitmap->new(
 		$self->{m_panel1},
 		-1,
+		Wx::Bitmap->new( File::ShareDir::dist_file( "Padre-Plugin-FormBuilder", "single.png" ), Wx::BITMAP_TYPE_ANY ),
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+	);
+
+	my $m_staticText411 = Wx::StaticText->new(
+		$self->{m_panel1},
 		-1,
 		Wx::gettext("Generate Wx Application"),
 	);
@@ -205,6 +206,18 @@ sub new {
 	);
 	$self->{select}->SetSelection(0);
 	$self->{select}->Disable;
+
+	$self->{associate} = Wx::CheckBox->new(
+		$self->{m_panel1},
+		-1,
+		Wx::gettext("Associate with current project"),
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+	);
+	$self->{associate}->SetToolTip(
+		Wx::gettext("Generates embedded tracking data in the dialog code")
+	);
+	$self->{associate}->Disable;
 
 	$self->{preview} = Wx::Button->new(
 		$self->{m_panel1},
@@ -223,22 +236,10 @@ sub new {
 		},
 	);
 
-	$self->{associate} = Wx::CheckBox->new(
-		$self->{m_panel1},
-		-1,
-		Wx::gettext("Associate with current project"),
-		Wx::DefaultPosition,
-		Wx::DefaultSize,
-	);
-	$self->{associate}->SetToolTip(
-		Wx::gettext("Generates embedded tracking data in the dialog code")
-	);
-	$self->{associate}->Disable;
-
 	$self->{generate} = Wx::Button->new(
 		$self->{m_panel1},
 		-1,
-		Wx::gettext("Generate Single Dialog"),
+		Wx::gettext("Generate"),
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
 	);
@@ -348,7 +349,7 @@ sub new {
 	$self->{complete} = Wx::Button->new(
 		$self->{m_panel2},
 		-1,
-		Wx::gettext("Generate Wx Application"),
+		Wx::gettext("Generate"),
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
 	);
@@ -381,33 +382,57 @@ sub new {
 	$bSizer11->Add( $self->{translate}, 1, Wx::ALL | Wx::EXPAND, 5 );
 	$bSizer11->Add( $self->{encapsulation}, 1, Wx::ALL | Wx::EXPAND, 5 );
 
-
-	$buttons->Add( 50, 0, 1, Wx::EXPAND, 5 );
+	my $buttons = Wx::BoxSizer->new(Wx::HORIZONTAL);
 	$buttons->Add( $cancel, 0, Wx::ALL, 5 );
+	$buttons->Add( 50, 0, 1, Wx::EXPAND, 5 );
 
 	my $sizer2 = Wx::BoxSizer->new(Wx::VERTICAL);
 	$sizer2->Add( $bSizer9, 0, Wx::ALL | Wx::EXPAND, 5 );
 	$sizer2->Add( $bSizer6, 0, Wx::EXPAND, 5 );
 	$sizer2->Add( 0, 5, 0, Wx::EXPAND, 5 );
-	$sizer2->Add( $line1, 0, Wx::BOTTOM | Wx::EXPAND | Wx::TOP, 0 );
+	$sizer2->Add( $line1, 0, Wx::EXPAND | Wx::LEFT | Wx::RIGHT, 5 );
 	$sizer2->Add( $bSizer8, 0, Wx::ALL | Wx::EXPAND, 5 );
 	$sizer2->Add( $bSizer10, 0, Wx::EXPAND, 5 );
+	$sizer2->Add( $bSizer11, 0, Wx::EXPAND, 5 );
+	$sizer2->Add( $self->{padre}, 0, Wx::ALL, 5 );
+	$sizer2->Add( 0, 10, 0, Wx::EXPAND, 5 );
+	$sizer2->Add( $m_staticline41, 0, Wx::EXPAND | Wx::LEFT | Wx::RIGHT, 5 );
+	$sizer2->Add( $buttons, 0, Wx::EXPAND, 5 );
+
 	my $bSizer121 = Wx::BoxSizer->new(Wx::HORIZONTAL);
 	$bSizer121->Add( $m_bitmap41, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::RIGHT, 5 );
 	$bSizer121->Add( $m_staticText411, 0, Wx::ALIGN_BOTTOM | Wx::BOTTOM, 1 );
-	$bSizer14->Add( $bSizer121, 0, Wx::EXPAND, 5 );
+
+	my $bSizer5 = Wx::BoxSizer->new(Wx::HORIZONTAL);
+	$bSizer5->Add( $self->{select}, 1, Wx::ALIGN_CENTER_VERTICAL | Wx::ALL | Wx::EXPAND, 5 );
+
+	my $bSizer151 = Wx::BoxSizer->new(Wx::HORIZONTAL);
+	$bSizer151->Add( $self->{preview}, 0, Wx::TOP, 0 );
+	$bSizer151->Add( 0, 0, 1, Wx::EXPAND, 5 );
+	$bSizer151->Add( $self->{generate}, 0, 0, 5 );
+
+	my $bSizer14 = Wx::BoxSizer->new(Wx::VERTICAL);
+	$bSizer14->Add( $bSizer121, 0, Wx::EXPAND | Wx::LEFT | Wx::RIGHT, 5 );
+	$bSizer14->Add( $bSizer5, 0, Wx::EXPAND, 0 );
+	$bSizer14->Add( $self->{associate}, 0, Wx::ALIGN_BOTTOM | Wx::LEFT, 5 );
+	$bSizer14->Add( 0, 0, 1, Wx::EXPAND, 5 );
+	$bSizer14->Add( $bSizer151, 0, Wx::EXPAND, 0 );
+
+	$self->{m_panel1}->SetSizerAndFit($bSizer14);
+	$self->{m_panel1}->Layout;
+
 	my $bSizer12 = Wx::BoxSizer->new(Wx::HORIZONTAL);
 	$bSizer12->Add( $m_bitmap4, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::RIGHT, 5 );
 	$bSizer12->Add( $m_staticText41, 0, Wx::ALIGN_BOTTOM | Wx::BOTTOM, 1 );
 
 	my $bSizer15 = Wx::BoxSizer->new(Wx::VERTICAL);
-	$bSizer15->Add( $bSizer12, 0, Wx::ALL | Wx::EXPAND, 5 );
+	$bSizer15->Add( $bSizer12, 0, Wx::EXPAND | Wx::LEFT | Wx::RIGHT, 5 );
 	$bSizer15->Add( $self->{complete_fbp}, 0, Wx::ALL, 5 );
 	$bSizer15->Add( $self->{complete_shim}, 0, Wx::ALL, 5 );
 	$bSizer15->Add( $self->{complete_app}, 0, Wx::ALL, 5 );
 	$bSizer15->Add( $self->{complete_script}, 0, Wx::ALL, 5 );
 	$bSizer15->Add( 0, 0, 1, Wx::EXPAND, 5 );
-	$bSizer15->Add( $self->{complete}, 0, Wx::ALIGN_CENTER | Wx::ALL, 5 );
+	$bSizer15->Add( $self->{complete}, 0, Wx::ALIGN_RIGHT, 0 );
 
 	$self->{m_panel2}->SetSizerAndFit($bSizer15);
 	$self->{m_panel2}->Layout;
@@ -415,30 +440,10 @@ sub new {
 	$self->{m_notebook1}->AddPage( $self->{m_panel1}, Wx::gettext("Dialog"), 1 );
 	$self->{m_notebook1}->AddPage( $self->{m_panel2}, Wx::gettext("Application"), 0 );
 
-	$sizer2->Add( $bSizer11, 0, Wx::EXPAND, 5 );
-	$sizer2->Add( $self->{padre}, 0, Wx::ALL, 5 );
-	$sizer2->Add( 0, 10, 0, Wx::EXPAND, 5 );
-	$sizer2->Add( $m_staticline4, 0, Wx::EXPAND, 5 );
-	$sizer2->Add( $bSizer7, 0, Wx::ALL | Wx::EXPAND, 5 );
-	$sizer2->Add( $bSizer5, 0, Wx::EXPAND, 0 );
-	$sizer2->Add( $self->{associate}, 0, Wx::ALIGN_BOTTOM | Wx::LEFT, 5 );
-	$sizer2->Add( $self->{generate}, 0, Wx::ALIGN_LEFT | Wx::ALL, 5 );
-	$sizer2->Add( 0, 10, 1, Wx::EXPAND, 5 );
-	$sizer2->Add( $m_staticline41, 0, Wx::EXPAND, 5 );
-	$sizer2->Add( $bSizer12, 1, Wx::ALL | Wx::EXPAND, 5 );
-	$sizer2->Add( $self->{complete_fbp}, 0, Wx::ALL, 5 );
-	$sizer2->Add( $self->{complete_shim}, 0, Wx::ALL, 5 );
-	$sizer2->Add( $self->{complete_app}, 0, Wx::ALL, 5 );
-	$sizer2->Add( $self->{complete_script}, 0, Wx::ALL, 5 );
-	$sizer2->Add( $self->{complete}, 0, Wx::ALL, 5 );
-	$sizer2->Add( 0, 20, 0, Wx::EXPAND, 5 );
-	$sizer2->Add( $line2, 0, Wx::BOTTOM | Wx::EXPAND | Wx::TOP, 5 );
-	$sizer2->Add( $buttons, 0, Wx::EXPAND, 5 );
-
 	my $sizer1 = Wx::BoxSizer->new(Wx::HORIZONTAL);
 	$sizer1->Add( $sizer2, 0, Wx::EXPAND, 5 );
 	$sizer1->Add( 0, 0, 0, Wx::EXPAND, 5 );
-	$sizer1->Add( $self->{m_notebook1}, 0, Wx::EXPAND | Wx::ALL, 0 );
+	$sizer1->Add( $self->{m_notebook1}, 0, Wx::EXPAND, 0 );
 
 	$self->SetSizerAndFit($sizer1);
 	$self->Layout;
@@ -470,12 +475,12 @@ sub select {
 	$_[0]->{select};
 }
 
-sub preview {
-	$_[0]->{preview};
-}
-
 sub associate {
 	$_[0]->{associate};
+}
+
+sub preview {
+	$_[0]->{preview};
 }
 
 sub generate {

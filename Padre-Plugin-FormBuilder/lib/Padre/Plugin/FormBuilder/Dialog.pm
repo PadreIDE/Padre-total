@@ -511,7 +511,7 @@ sub show {
 			# Apply to the existing file by delta
 			my $editor   = $main->notebook->GetPage($id);
 			my $document = $editor->{Document} or return;
-			$document->text_replace($code);
+			$document->text_set($code);
 			return 1;
 		}
 	}
