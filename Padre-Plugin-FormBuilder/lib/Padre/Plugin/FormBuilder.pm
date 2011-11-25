@@ -27,9 +27,7 @@ use warnings;
 # but we happen to know Padre uses all of them itself.
 use Class::Inspector 1.22 ();
 use Params::Util     1.00 ();
-use Padre::Plugin    0.93 ();
-use Padre::Util      0.81 ();
-use Padre::Wx        0.93 ();
+use Padre::Plugin         ();
 
 our $VERSION = '0.04';
 our @ISA     = 'Padre::Plugin';

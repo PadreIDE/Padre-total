@@ -88,7 +88,7 @@ sub new {
 	my $m_staticText3 = Wx::StaticText->new(
 		$self,
 		-1,
-		Wx::gettext("Common Code Generation Options"),
+		Wx::gettext("Code Generation Options"),
 	);
 	$m_staticText3->SetFont(
 		Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" )
@@ -119,12 +119,11 @@ sub new {
 		[
 			"\"None:\"",
 			"Wx::gettext(\"Naive:\")",
-			"Wx::gettext(\"Smart\") . \":\"",
 		],
 		1,
 		Wx::RA_SPECIFY_COLS,
 	);
-	$self->{translate}->SetSelection(0);
+	$self->{translate}->SetSelection(2);
 
 	$self->{encapsulation} = Wx::RadioBox->new(
 		$self,
@@ -149,7 +148,7 @@ sub new {
 		Wx::DefaultSize,
 	);
 
-	my $m_staticline4 = Wx::StaticLine->new(
+	my $m_staticline41 = Wx::StaticLine->new(
 		$self,
 		-1,
 		Wx::DefaultPosition,
@@ -157,7 +156,15 @@ sub new {
 		Wx::LI_HORIZONTAL,
 	);
 
-	my $m_bitmap1 = Wx::StaticBitmap->new(
+	my $cancel = Wx::Button->new(
+		Wx::ID_CANCEL,
+		Wx::gettext("Close"),
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+	);
+
+	$self->{m_notebook1} = Wx::Notebook->new(
+		$self,
 		$self,
 		-1,
 		Wx::Bitmap->new( File::ShareDir::dist_file( "Padre-Plugin-FormBuilder", "single.png" ), Wx::BITMAP_TYPE_ANY ),
@@ -165,17 +172,32 @@ sub new {
 		Wx::DefaultSize,
 	);
 
-	my $m_staticText4 = Wx::StaticText->new(
-		$self,
-		-1,
-		Wx::gettext("Single Dialog"),
+	my $m_staticText411 = Wx::StaticText->new(
+		$self->{m_panel1},
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
 	);
-	$m_staticText4->SetFont(
+
+	$self->{m_panel1} = Wx::Panel->new(
+		$self->{m_notebook1},
+		-1,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+		Wx::TAB_TRAVERSAL,
+	);
+
+	my $m_bitmap41 = Wx::StaticBitmap->new(
+		$self->{m_panel1},
+		-1,
+		-1,
+		Wx::gettext("Generate Wx Application"),
+	);
+	$m_staticText411->SetFont(
 		Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" )
 	);
 
 	$self->{select} = Wx::Choice->new(
-		$self,
+		$self->{m_panel1},
 		-1,
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
@@ -185,7 +207,7 @@ sub new {
 	$self->{select}->Disable;
 
 	$self->{preview} = Wx::Button->new(
-		$self,
+		$self->{m_panel1},
 		-1,
 		Wx::gettext("Preview"),
 		Wx::DefaultPosition,
@@ -202,7 +224,7 @@ sub new {
 	);
 
 	$self->{associate} = Wx::CheckBox->new(
-		$self,
+		$self->{m_panel1},
 		-1,
 		Wx::gettext("Associate with current project"),
 		Wx::DefaultPosition,
@@ -214,7 +236,7 @@ sub new {
 	$self->{associate}->Disable;
 
 	$self->{generate} = Wx::Button->new(
-		$self,
+		$self->{m_panel1},
 		-1,
 		Wx::gettext("Generate Single Dialog"),
 		Wx::DefaultPosition,
@@ -230,16 +252,16 @@ sub new {
 		},
 	);
 
-	my $m_staticline41 = Wx::StaticLine->new(
-		$self,
+	$self->{m_panel2} = Wx::Panel->new(
+		$self->{m_notebook1},
 		-1,
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
-		Wx::LI_HORIZONTAL,
+		Wx::TAB_TRAVERSAL,
 	);
 
 	my $m_bitmap4 = Wx::StaticBitmap->new(
-		$self,
+		$self->{m_panel2},
 		-1,
 		Wx::Bitmap->new( File::ShareDir::dist_file( "Padre-Plugin-FormBuilder", "single.png" ), Wx::BITMAP_TYPE_ANY ),
 		Wx::DefaultPosition,
@@ -247,16 +269,16 @@ sub new {
 	);
 
 	my $m_staticText41 = Wx::StaticText->new(
-		$self,
+		$self->{m_panel2},
 		-1,
-		Wx::gettext("Wx Application"),
+		Wx::gettext("Generate Wx Application"),
 	);
 	$m_staticText41->SetFont(
 		Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" )
 	);
 
 	$self->{complete_fbp} = Wx::CheckBox->new(
-		$self,
+		$self->{m_panel2},
 		-1,
 		Wx::gettext("All dialog FBP classes"),
 		Wx::DefaultPosition,
@@ -273,7 +295,7 @@ sub new {
 	);
 
 	$self->{complete_shim} = Wx::CheckBox->new(
-		$self,
+		$self->{m_panel2},
 		-1,
 		Wx::gettext("All dialog shim subclasses"),
 		Wx::DefaultPosition,
@@ -290,7 +312,7 @@ sub new {
 	);
 
 	$self->{complete_app} = Wx::CheckBox->new(
-		$self,
+		$self->{m_panel2},
 		-1,
 		Wx::gettext("Root Wx::App class"),
 		Wx::DefaultPosition,
@@ -307,7 +329,7 @@ sub new {
 	);
 
 	$self->{complete_script} = Wx::CheckBox->new(
-		$self,
+		$self->{m_panel2},
 		-1,
 		Wx::gettext("Launch script for app (show first form)"),
 		Wx::DefaultPosition,
@@ -324,7 +346,7 @@ sub new {
 	);
 
 	$self->{complete} = Wx::Button->new(
-		$self,
+		$self->{m_panel2},
 		-1,
 		Wx::gettext("Generate Wx Application"),
 		Wx::DefaultPosition,
@@ -338,22 +360,6 @@ sub new {
 		sub {
 			shift->complete_clicked(@_);
 		},
-	);
-
-	my $line2 = Wx::StaticLine->new(
-		$self,
-		-1,
-		Wx::DefaultPosition,
-		Wx::DefaultSize,
-		Wx::LI_HORIZONTAL,
-	);
-
-	my $cancel = Wx::Button->new(
-		$self,
-		Wx::ID_CANCEL,
-		Wx::gettext("Close"),
-		Wx::DefaultPosition,
-		Wx::DefaultSize,
 	);
 
 	my $bSizer9 = Wx::BoxSizer->new(Wx::HORIZONTAL);
@@ -375,19 +381,7 @@ sub new {
 	$bSizer11->Add( $self->{translate}, 1, Wx::ALL | Wx::EXPAND, 5 );
 	$bSizer11->Add( $self->{encapsulation}, 1, Wx::ALL | Wx::EXPAND, 5 );
 
-	my $bSizer7 = Wx::BoxSizer->new(Wx::HORIZONTAL);
-	$bSizer7->Add( $m_bitmap1, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::RIGHT, 5 );
-	$bSizer7->Add( $m_staticText4, 0, Wx::ALIGN_BOTTOM | Wx::BOTTOM, 1 );
 
-	my $bSizer5 = Wx::BoxSizer->new(Wx::HORIZONTAL);
-	$bSizer5->Add( $self->{select}, 1, Wx::ALIGN_CENTER_VERTICAL | Wx::ALL | Wx::EXPAND, 5 );
-	$bSizer5->Add( $self->{preview}, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::BOTTOM | Wx::RIGHT | Wx::TOP, 5 );
-
-	my $bSizer12 = Wx::BoxSizer->new(Wx::HORIZONTAL);
-	$bSizer12->Add( $m_bitmap4, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::RIGHT, 5 );
-	$bSizer12->Add( $m_staticText41, 0, Wx::ALIGN_BOTTOM | Wx::BOTTOM, 1 );
-
-	my $buttons = Wx::BoxSizer->new(Wx::HORIZONTAL);
 	$buttons->Add( 50, 0, 1, Wx::EXPAND, 5 );
 	$buttons->Add( $cancel, 0, Wx::ALL, 5 );
 
@@ -398,6 +392,29 @@ sub new {
 	$sizer2->Add( $line1, 0, Wx::BOTTOM | Wx::EXPAND | Wx::TOP, 0 );
 	$sizer2->Add( $bSizer8, 0, Wx::ALL | Wx::EXPAND, 5 );
 	$sizer2->Add( $bSizer10, 0, Wx::EXPAND, 5 );
+	my $bSizer121 = Wx::BoxSizer->new(Wx::HORIZONTAL);
+	$bSizer121->Add( $m_bitmap41, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::RIGHT, 5 );
+	$bSizer121->Add( $m_staticText411, 0, Wx::ALIGN_BOTTOM | Wx::BOTTOM, 1 );
+	$bSizer14->Add( $bSizer121, 0, Wx::EXPAND, 5 );
+	my $bSizer12 = Wx::BoxSizer->new(Wx::HORIZONTAL);
+	$bSizer12->Add( $m_bitmap4, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::RIGHT, 5 );
+	$bSizer12->Add( $m_staticText41, 0, Wx::ALIGN_BOTTOM | Wx::BOTTOM, 1 );
+
+	my $bSizer15 = Wx::BoxSizer->new(Wx::VERTICAL);
+	$bSizer15->Add( $bSizer12, 0, Wx::ALL | Wx::EXPAND, 5 );
+	$bSizer15->Add( $self->{complete_fbp}, 0, Wx::ALL, 5 );
+	$bSizer15->Add( $self->{complete_shim}, 0, Wx::ALL, 5 );
+	$bSizer15->Add( $self->{complete_app}, 0, Wx::ALL, 5 );
+	$bSizer15->Add( $self->{complete_script}, 0, Wx::ALL, 5 );
+	$bSizer15->Add( 0, 0, 1, Wx::EXPAND, 5 );
+	$bSizer15->Add( $self->{complete}, 0, Wx::ALIGN_CENTER | Wx::ALL, 5 );
+
+	$self->{m_panel2}->SetSizerAndFit($bSizer15);
+	$self->{m_panel2}->Layout;
+
+	$self->{m_notebook1}->AddPage( $self->{m_panel1}, Wx::gettext("Dialog"), 1 );
+	$self->{m_notebook1}->AddPage( $self->{m_panel2}, Wx::gettext("Application"), 0 );
+
 	$sizer2->Add( $bSizer11, 0, Wx::EXPAND, 5 );
 	$sizer2->Add( $self->{padre}, 0, Wx::ALL, 5 );
 	$sizer2->Add( 0, 10, 0, Wx::EXPAND, 5 );
@@ -419,7 +436,9 @@ sub new {
 	$sizer2->Add( $buttons, 0, Wx::EXPAND, 5 );
 
 	my $sizer1 = Wx::BoxSizer->new(Wx::HORIZONTAL);
-	$sizer1->Add( $sizer2, 1, Wx::EXPAND, 5 );
+	$sizer1->Add( $sizer2, 0, Wx::EXPAND, 5 );
+	$sizer1->Add( 0, 0, 0, Wx::EXPAND, 5 );
+	$sizer1->Add( $self->{m_notebook1}, 0, Wx::EXPAND | Wx::ALL, 0 );
 
 	$self->SetSizerAndFit($sizer1);
 	$self->Layout;
