@@ -51,8 +51,9 @@ if ( $gettext ne 'xgettext (GNU gettext-tools) 0.17' ) {
 	die "Due to bug #1132 we only allow the use of v0.17 of xgettext\n";
 }
 
-print STDERR (join ' ', 'xgettext', '--keyword=_T', '--from-code=utf-8', '-o', $pot_file, '-f', $pmfiles, '--sort-output') . "\n" if $verbose;
-system( 'xgettext', '--keyword=_T', '--from-code=utf-8', '-o', $pot_file, '-f', $pmfiles, '--sort-output' ) == 0
+my @xgettext = ('xgettext', '--keyword=_T', '--from-code=utf-8', '-o', $pot_file, '-f', $pmfiles, '--sort-output');
+print STDERR (join ' ', @xgettext) . "\n" if $verbose;
+system( @xgettext ) == 0
 	or die 'xgettext exited with return code ' . ( $? >> 8 ) . "\n";
 
 # cleanup
