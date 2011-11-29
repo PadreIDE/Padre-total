@@ -1,34 +1,94 @@
 #version unofficial megapov 1.21;
 #include "cm_planets.inc";
 
-#declare RockyColour = array[4] {
-    CM_Martian,
-    CM_Grey,
-    CM_Martian,
+#declare RockyColour = array[8] {
+    CM_Martian
+    CM_Bland_Jovian
+    CM_Europa
+    CM_Grey
+    CM_Venus
+    CM_Europa
+    CM_earthy2_120_80
     CM_Grey
 };
 
-#declare GasColour = array[4] {
-    CM_Abilene
-    CM_Dusty
+#declare RockyPattern = array[4] {
+    pigment { granite scale 2 cubic_wave }
+    pigment { agate scale 4 agate_turb 2 }
+    pigment { wrinkles }
+    pigment { crackle cubic_wave turbulence 1 scale 3 }
+    
+};
+
+#declare RockyNormal = array[4] {
+    normal { granite scale 2 scallop_wave }
+    normal { agate scale 4 agate_turb 2 }
+    normal { wrinkles }
+    normal { crackle }
+};
+
+#declare GasColour = array[8] {
+    CM_dusty_0_255
     CM_Earthy
-    CM_Abilene
+    CM_Jovian
+    CM_neptune2_0_255
+    CM_Saturn
+    CM_Jupiter2
+    CM_Europa
+    CM_Venus
 };
 
 #declare P_GasGiant = pigment { gradient y }
 
-#macro Rocky(has_colour,has_pattern)
+#macro Rocky(has_colour,has_pattern,GalX,GalY,Modifier1,Modifier2)
     texture {
-        
+        pigment {
+            RockyPattern[has_pattern]
+            turbulence 2*((1+Modifier1)/2)
+            pigment_map {
+                [ 0      RockyPattern[has_pattern]
+                        translate <GalX,GalY,0>
+                        scale 10
+                        color_map { RockyColour[has_colour] }
+                ]
+                [ 1
+                        RockyPattern[has_pattern]
+                        translate <GalX,GalY,0>*-1
+                        color_map { RockyColour[has_colour] } 
+                        frequency 0.5
+                        phase 0.5 
+                ]
+            }            
+            scale 70 
+            warp { turbulence 0.3 + Modifier2/3 }
+            scale 1/70
+        }
+        finish { ambient 1 }
+        /*
+        normal {
+            RockyNormal[has_pattern]
+            translate <GalX,GalY,0>
+            
+            normal_map {
+                [0 bumps .3 scale 0.1 turbulence 0.1 ]
+                [1 wrinkles .3 scale 0.05 turbulence 0.03 ]
+            }
+        }
+        */
     }
 
 #end
 
 
-#macro Gas(has_colour,has_pattern)
+#macro Gas(has_colour,has_pattern,GalX,GalY,Modifier1,Modifier2)
 
+#local FM1_Rotate = (Modifier1-0.5) * 60;
+#local FM2_Rotate = (Modifier2-0.5) * 60;
 #local V_storm_eye = <0,0,1>;
-#local V_storm_eye_perturbed = vrotate( V_storm_eye , <0, 0, 0> );
+#local V_storm_eye_perturbed = vrotate(
+    vrotate( V_storm_eye , <FM2_Rotate, 0, 0> ) ,
+    <0,FM1_Rotate,0>
+);
 #local S_storm_eye = <0.2,0.1,0.1>;
 
     texture {
@@ -37,16 +97,18 @@
             turbulence 0.05
             omega 0.1
             pigment_map {
-                [ P_GasGiant colour_map { GasColour[has_colour] } frequency 0.2 phase 0.25 ]
+                [ P_GasGiant colour_map { GasColour[has_colour] } 
+                    frequency 1 * Modifier1 * Modifier2
+                    phase 0.25+Modifier1 ]
                 [ P_GasGiant colour_map { GasColour[has_colour] } frequency 0.1 phase 0.5 ]
-                [ P_GasGiant colour_map { GasColour[has_colour] } frequency 0.3 phase 0.85 ]
+                [ P_GasGiant colour_map { GasColour[has_colour] } frequency 0.3 phase 0.85+Modifier2 ]
             }
-            scale 80
-            warp{
-                turbulence 0.5
-                omega 0.2
+
+            scale 1/10
+            warp {
+                turbulence 0.01
             }
-            scale 1/80
+            scale 10
             
             warp {
                 displace {
@@ -55,9 +117,13 @@
                     pigment_map { 
                         
                         [0 color rgb 0.5]
-                        [1 radial  phase 0.75
-                            triangle_wave
-                            color_map{[0 color rgb 0.5 ][1 color rgb 1]}
+                        [1 spiral1 3  phase 0.75
+                            cubic_wave
+                            color_map{
+                                [0 color rgb 0.5 ]
+                                [0.5 color rgb 0.4]
+                                [1 color rgb 0.5]
+                            }
                         ]
                     }
                     rotate x*90
@@ -66,6 +132,8 @@
                     
                 }
             }
+            
+          
             warp {
                 displace {
                     spherical  scale S_storm_eye*2 translate <0,1,0>
@@ -73,9 +141,13 @@
                     pigment_map { 
                         
                         [0 color rgb 0.5]
-                        [1 radial  phase 0.33
-                            triangle_wave
-                            color_map{[0 color rgb 0.5 ][1 color rgb 0.0]}
+                        [1 spiral1 4  phase 0.33
+                            cubic_wave
+                            color_map{
+                                [0 color rgb 0.5 ]
+                                [0.5 color rgb 0.4]
+                                [1 color rgb 0.5]
+                            }
                         ]
                     }
                     rotate x*90
@@ -84,19 +156,29 @@
                     
                 }
             }
-
             
-            /*
+            scale y*2
             warp {
-                black_hole V_storm_eye_perturbed  vlength( S_storm_eye )
+                black_hole V_storm_eye_perturbed  vlength( S_storm_eye )*2
                 inverse
-                strength 2
-                falloff 2
+                strength 1.5
+                falloff 1
                 
-            }   
-            */ 
+            } 
+            scale y*1/2  
+          
+            translate <GalX,GalY,0>
+            scale 20
+            warp{
+                turbulence 0.15
+                omega 0.2
+                octaves 8 lambda 2.4
+            }
+            scale 1/20
+            translate -<GalX,GalY,0> 
+            
         }
-        finish { ambient 0.15 }
+        finish { ambient 1 }
         
     }
 
