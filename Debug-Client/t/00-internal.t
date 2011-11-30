@@ -11,7 +11,6 @@ use Test::Deep;
 my $PROMPT = re('^\d+$');
 
 # Testing some of the internal methods
-
 use Debug::Client;
 
 
@@ -66,11 +65,11 @@ push @tests, {
 plan tests => 2 + scalar @tests;
 
 my $debugger = Debug::Client->new;
-foreach my $tests (@tests) {
-	my $out    = $tests->{out};
+foreach my $test (@tests) {
+	my $out    = $test->{out};
 	my $prompt = $debugger->_prompt( \$out );
 	my @res    = $debugger->_process_line( \$out );
-	cmp_deeply( [ $prompt, @res ], $tests->{exp} );
+	cmp_deeply( [ $prompt, @res ], $test->{exp} ) or diag( [ $prompt, @res ], $test->{exp} );
 }
 
 eval { $debugger->_prompt(); };

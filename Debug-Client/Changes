@@ -1,3 +1,10 @@
+0.16 2011.11.30
+    - Add Methods list_subroutine_names, set_option, get_options, module
+    - tweak to return line & row from dot if all else fails
+    - tweak to Makefile dependances
+    - Ammend POD for above
+    - Ammend test to support above (BOWTIE)
+
 0.15 2011.11.24
     - removed Method listen
     - comment out list_subroutine_names & _set_option

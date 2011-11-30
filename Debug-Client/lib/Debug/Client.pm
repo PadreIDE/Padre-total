@@ -4,11 +4,15 @@ use 5.008005;
 use strict;
 use warnings;
 
-our $VERSION = '0.15';
+our $VERSION = '0.16';
 
 use utf8;
 use IO::Socket;
 use Carp qw(carp croak cluck);
+
+use constant {
+	BLANK => qq{ },
+};
 
 =head1 NAME
 
@@ -151,9 +155,9 @@ Use $debugger->listener instead
 =cut
 
 # sub listen {
-	# my ( $self, @args ) = @_;
-	# $self->listener(@args);
-	# return;
+# my ( $self, @args ) = @_;
+# $self->listener(@args);
+# return;
 # }
 
 =head2 listener
@@ -402,30 +406,30 @@ sub toggle_trace {
 	return $buf;
 }
 
-# =head2 list_subroutine_names
+=head2 list_subroutine_names
 
-# # Sends the stack trace command C<S> [[!]pattern] 
-# List subroutine names [not] matching pattern.
+Sends the stack trace command C<S> [[!]pattern] 
+List subroutine names [not] matching pattern.
 
-# # =cut
+=cut
 
 #######
 # sub list_subroutine_names
 #######
-# sub list_subroutine_names {
-	# my ( $self, $pattern ) = @_;
+sub list_subroutine_names {
+	my ( $self, $pattern ) = @_;
 
-# # 	if ( defined $pattern ) {
-		# $self->_send("S $pattern");
-	# } else {
-		# $self->_send('S');
-	# }
+	if ( defined $pattern ) {
+		$self->_send("S $pattern");
+	} else {
+		$self->_send('S');
+	}
 
-# # 	my $buf = $self->_get;
+	my $buf = $self->_get;
 
-# # 	$self->_prompt( \$buf );
-	# return $buf;
-# }
+	$self->_prompt( \$buf );
+	return $buf;
+}
 
 =head2 run
 
@@ -622,15 +626,13 @@ sub get_value {
 		my $buf = $self->_get;
 		$self->_prompt( \$buf );
 		return $buf;
-	}
-	elsif ( $var =~ /\@/ or $var =~ /\%/ ) {
+	} elsif ( $var =~ /\@/ or $var =~ /\%/ ) {
 		$self->_send("x \\$var");
 		my $buf = $self->_get;
 		$self->_prompt( \$buf );
 		my $data_ref = _parse_dumper($buf);
 		return $data_ref;
-	}
-	else {
+	} else {
 		$self->_send("p $var");
 		my $buf = $self->_get;
 		$self->_prompt( \$buf );
@@ -764,14 +766,6 @@ For more help, type h cmd_letter, optional var
 sub get_h_var {
 	my ( $self, $var ) = @_;
 
-	# $self->_send('h');
-	# my $buf = $self->_get;
-
-	# # 	$self->_prompt( \$buf );
-	# $buf =~ s/(\e\[4m|\e\[24m|\e\[1m|\e\[0m)//mg;
-
-	# # 	# $buf =~ s/\e\[24m//mg;
-	# return $buf;
 	if ( defined $var ) {
 		$self->_send("h $var");
 	} else {
@@ -782,6 +776,64 @@ sub get_h_var {
 	$buf =~ s/(\e\[4m|\e\[24m|\e\[1m|\e\[0m)//mg;
 	$self->_prompt( \$buf );
 	return $buf;
+}
+
+=head2 set_option
+
+o booloption ...
+
+Set each listed Boolean option to the value 1 .
+o anyoption? ...
+
+Print out the value of one or more options.
+o option=value ...
+
+Set the value of one or more options. If the value has internal whitespace, it should be quoted. For example, you could set o pager="less -MQeicsNfr" to call less with those specific options. You may use either single or double quotes, but if you do, you must escape any embedded instances of same sort of quote you began with, as well as any escaping any escapes that immediately precede that quote but which are not meant to escape the quote itself. In other words, you follow single-quoting rules irrespective of the quote; eg: o option='this isn\'t bad' or o option="She said, \"Isn't it?\"" .
+
+For historical reasons, the =value is optional, but defaults to 1 only where it is safe to do so--that is, mostly for Boolean options. It is always better to assign a specific value using = . The option can be abbreviated, but for clarity probably should not be. Several options can be set together. See Configurable Options for a list of these.
+
+ $debugger->set_option();
+
+=cut
+
+#######
+# Internal Method _set_option
+#######
+sub set_option {
+	my ( $self, $option ) = @_;
+
+	unless ( defined $option ) {
+		return;
+	}
+
+	$self->_send("o $option");
+	my $buf = $self->_get;
+	$self->_prompt( \$buf );
+	return $buf;
+
+}
+
+=head2 get_options
+
+o
+
+Display all options.
+
+ $debugger->get_options();
+
+=cut
+
+#######
+# Internal Method _get_options
+#######
+sub get_options {
+	my $self = shift;
+
+	$self->_send('o');
+	my $buf = $self->_get;
+	$self->_prompt( \$buf );
+	return $buf;
+
 }
 
 =head2 get
@@ -825,6 +877,7 @@ sub get {
 #######
 sub filename {
 	my $self = shift;
+
 	return $self->{filename};
 }
 
@@ -839,9 +892,24 @@ sub filename {
 #######
 sub row {
 	my $self = shift;
+
 	return $self->{row};
 }
 
+=head2 module
+
+ $debugger->module();
+
+=cut
+
+#######
+# Method module
+#######
+sub module {
+	my $self = shift;
+
+	return $self->{module};
+}
 #########################################
 #### Internal Methods
 #######
@@ -914,8 +982,13 @@ sub _process_line {
 	}
 
 	my @parts = split /\n/, $$buf;
-
-	my $line = pop @parts;
+	
+	my $line = BLANK;
+	my $module  = BLANK;
+	my $file    = BLANK;
+	my $row     = BLANK;
+	my $content = BLANK;
+	$line = pop @parts;
 
 	#TODO $line is where all CPAN_Testers errors come from
 	# try to debug some test reports
@@ -930,18 +1003,22 @@ sub _process_line {
 		if ( $line =~ /^\d+:   \s*  (.*)$/x ) {
 			$cont = $1;
 			$line = pop @parts;
+			# my $next_line = pop @parts;
+		# if ( defined $next_line ) {
+			# $line = pop @parts;
+		# }
 
 			# _logger("Line2: $line");
 		}
 	}
 
 	$$buf = join "\n", @parts;
-	my ( $module, $file, $row, $content ) = q{ };
+	# my ( $module, $file, $row, $content ) = q{ };
 
 	# the last line before
 	# main::(t/eg/01-add.pl:8):  my $z = $x + $y;
 
-	if ($line =~ m{^([\w:]*) 			# module
+	if ( $line =~ m{^([\w:]*) 			# module
                   \( ([^\)]*):(\d+) \) 	# (file:row)
                   :\t? 					# :
                   (.*) 					# content
@@ -950,20 +1027,40 @@ sub _process_line {
 	{
 		( $module, $file, $row, $content ) = ( $1, $2, $3, $4 );
 	}
+	if ( $module eq BLANK || $file eq BLANK || $row eq BLANK ) {
 
+# 		# unless ( defined $module || defined $file || defined $row ) {
+		my $current_file = $self->show_line();
+		# p $current_file;
+
+		$current_file =~ m/^([\w:]*) \( (.*) : (\d+) .* /mx;
+
+		$module  = $1;
+		$file    = $2;
+		$row     = $3;
+		# p $module;
+		# p $file;
+		# p $row;
+	}
+	
 	if ($cont) {
 		$content = $cont;
 	}
 
-	if ($file) {
+	# if ($file) {
 
-		$self->{filename} = $file;
+# # 		$self->{filename} = $file;
 
-		# print "filename: $self->{filename}\n";
-	}
+# # 		# print "filename: $self->{filename}\n";
+	# }	
+	$self->{module}   = $module;
+	$self->{filename} = $file;
 	$self->{row} = $row;
 	return ( $module, $file, $row, $content );
 }
+
+
+
 
 #######
 # Internal Method _prompt
@@ -1013,21 +1110,7 @@ sub _send_get {
 
 	return $self->get;
 }
-#######
-# Internal Method _set_option help
-#######
-# sub _set_option {
-	# my ( $self, $option ) = @_;
-	# unless ( defined $option ) {
-		# return;
-	# }
 
-# # 	$self->_send("o $option");
-	# my $buf = $self->_get;
-	# $self->_prompt( \$buf );
-	# return $buf;
-
-# # }
 #######
 # Internal Method __send_padre
 # hidden undocumented

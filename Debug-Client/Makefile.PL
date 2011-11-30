@@ -18,7 +18,7 @@ all_from 'lib/Debug/Client.pm';
 # required modules from CPAN
 requires 'perl'                 => '5.008005';
 requires 'Carp'                 => '1.20';
-requires 'IO::Socket'           => '1.31';
+requires 'IO::Socket'           => '1.32';
 requires 'IO::Socket::INET'     => '1.31';
 requires 'PadWalker'            => '1.92';
 requires 'Term::ReadLine'       => '1.07';
@@ -27,8 +27,8 @@ requires 'Term::ReadLine::Perl' => '1.0303';
 test_requires 'Test::More'    => '0.98';
 test_requires 'Test::Deep'    => '0.108';
 test_requires 'File::HomeDir' => '0.98';
-test_requires 'File::Temp'    => '0.20';
-test_requires 'File::Spec'    => '3.2701';
+test_requires 'File::Temp'    => '0.22';
+test_requires 'File::Spec'    => '3.33';
 
 # additinal
 no_index 'directory' => qw{ t xt eg share inc privinc };
