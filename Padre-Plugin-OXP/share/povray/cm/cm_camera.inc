@@ -74,6 +74,7 @@ light_source { <-CubeSide * 2,0,0> color rgb .75 }
     #case (4)
         rotate y*180
     #break
+    #break
     #case (5)
       //rotate 180*y
     #break
@@ -259,6 +260,22 @@ camera {
     look_at  <0.5,1003 , 0>
     up <0,6,0>
     right <0,0,1>
+}
+
+#end
+
+
+
+
+
+#macro PreviewCamera()
+camera {
+    perspective
+    location <0.25,0.25,-4>
+    look_at <0,0,0>
+    angle 33
+    up y
+    right x
 }
 
 #end

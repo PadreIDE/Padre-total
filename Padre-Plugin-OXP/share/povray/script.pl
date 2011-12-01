@@ -18,12 +18,12 @@ my $POV_template = <<POV;
 #version unofficial megapov 1.21;
 #include "cm_camera.inc"
 #include "pp_textures.inc"
+#include "pp_continental.inc"
 #debug  "%s" 
 #declare Radius = 1;
 
 sphere { <0,0,0> Radius
         hollow no_shadow inverse double_illuminate
-        material {
                 %s(
                         %d,  // colour
                         %d,  // pattern
@@ -32,11 +32,16 @@ sphere { <0,0,0> Radius
                         %f // float modifier 1
                         %f // float modifier 2
                 )
-        }
 }
+
+/*
 CubeMapBoxes(Radius)
 //CubeLight(4,Radius)
 CubeMapCamera()
+*/
+
+PreviewCamera()
+
 
 POV
 
@@ -64,7 +69,10 @@ while ( my $row = $csv->getline($fh) ) {
         # Barren/rocky , Gas Giant , Continental , Artificial
         my $formation_seed = $seed % 3;
         my %formations = (
-                2 => 'Rocky',
+                2 => 'Continental',
+                #1 => 'Continental',
+                #0 => 'Continental',
+                
                 1 => 'Rocky',
                 0 => 'Gas' ,
                 
@@ -101,7 +109,8 @@ while ( my $row = $csv->getline($fh) ) {
                         '+Lcm',
                         '-D',
                         # '+W256', '+H1536', # medium resolution
-                        '+W128','+H768', # preview resolution
+                        #'+W128','+H768', # low resolution
+                        '+W512' , '+H512' , # Perspective preview
                         '+O'.$output,
                         '+I'.$tf->filename,
                 );

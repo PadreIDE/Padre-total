@@ -43,22 +43,26 @@
 #macro Rocky(has_colour,has_pattern,GalX,GalY,Modifier1,Modifier2)
     texture {
         pigment {
-            RockyPattern[has_pattern]
+            //RockyPattern[has_pattern]
+            dents
+            translate <GalX,GalY,0>
+            
             turbulence 2*((1+Modifier1)/2)
             pigment_map {
                 [ 0      RockyPattern[has_pattern]
                         translate <GalX,GalY,0>
                         scale 10
-                        color_map { RockyColour[has_colour] }
+                        //color_map { RockyColour[has_colour] }
                 ]
                 [ 1
                         RockyPattern[has_pattern]
                         translate <GalX,GalY,0>*-1
-                        color_map { RockyColour[has_colour] } 
+                        //color_map { RockyColour[has_colour] } 
                         frequency 0.5
                         phase 0.5 
                 ]
-            }            
+            }
+            color_map { RockyColour[has_colour] } 
             scale 70 
             warp { turbulence 0.3 + Modifier2/3 }
             scale 1/70
@@ -109,6 +113,8 @@
                 turbulence 0.01
             }
             scale 10
+
+            
             
             warp {
                 displace {
@@ -136,10 +142,9 @@
           
             warp {
                 displace {
-                    spherical  scale S_storm_eye*2 translate <0,1,0>
+                    spherical scale 2  translate <0,0,1>
                     cubic_wave
-                    pigment_map { 
-                        
+                    pigment_map {
                         [0 color rgb 0.5]
                         [1 spiral1 4  phase 0.33
                             cubic_wave
@@ -150,21 +155,20 @@
                             }
                         ]
                     }
-                    rotate x*90
-                    translate V_storm_eye_perturbed-V_storm_eye
                     type 1
-                    
                 }
             }
             
+            // Oblate with respect to the rotational axis
             scale y*2
             warp {
                 black_hole V_storm_eye_perturbed  vlength( S_storm_eye )*2
                 inverse
                 strength 1.5
                 falloff 1
-                
-            } 
+                inverse
+            }
+            
             scale y*1/2  
           
             translate <GalX,GalY,0>
@@ -186,11 +190,22 @@
 
 
 #macro Continents(has_colour,has_pattern)
-    
-    
+    // Ocean
     texture {
-        
-        
+        pigment { color rgb <0.1,0.24,0.4> }
+        finish { ambient 0.15 }
+        normal { waves 0.24 translate -0.5 scale 3 }
+    }
+    
+    // Clouds
+    texture {
+        pigment { wrinkles  scallop_wave
+            color_map {
+                [0 rgbf 1]
+                [0.7 rgbf 1]
+                [0.95 rgbf <1,1,1,0.6>]
+            }
+        }
     }
         
         
