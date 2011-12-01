@@ -1,7 +1,5 @@
 package Padre::Plugin::Mojolicious;
 
-# ABSTRACT: Simple Mojolicious helper interface for Padre
-
 use 5.008;
 use strict;
 use warnings;
@@ -170,6 +168,10 @@ sub on_show_about {
 __END__
 
 =pod
+
+=head1 NAME
+
+Padre::Plugin::Mojolicious - Simple Mojolicious helper interface for Padre
 
 =head1 SYNOPSIS
 
