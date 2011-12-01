@@ -56,7 +56,7 @@ sub menu_plugins_simple {
 
 		Wx::gettext('Mojolicious Online References') => [
 			Wx::gettext('Mojolicious Manual') => sub {
-				Padre::Wx::launch_browser('http://search.cpan.org/perldoc?Mojo::Manual::Mojolicious');
+				Padre::Wx::launch_browser('http://mojolicio.us/perldoc');
 			},
 			Wx::gettext('Mojolicious Website') => sub {
 				Padre::Wx::launch_browser('http://www.mojolicious.org/');
