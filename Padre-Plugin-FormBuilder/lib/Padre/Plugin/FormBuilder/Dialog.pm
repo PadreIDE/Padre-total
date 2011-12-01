@@ -321,8 +321,14 @@ sub complete_clicked {
 	my $self = shift;
 	my $fbp  = $self->{xml} or return;
 
+	# This could change lots of files, so lets wrap some
+	# relatively course locking to prevent background task
+	# storms and unneeded database operations.
+	# Also ensure all notebook titles are updated when we are done.
+	my $lock = $self->main->lock('DB', 'REFRESH', 'refresh_notebook');
+
 	# Prepare the common generation options
-	my $files  = 0;
+	my @files  = ();
 	my %common = (
 		fbp       => $fbp,
 		padre     => $self->padre_code,
@@ -332,27 +338,24 @@ sub complete_clicked {
 		shim      => $self->complete_shim->IsChecked ? 1 : 0,
 	);
 
+	# Generate the launch script for the app
+	if ( $self->complete_script->IsChecked ) {
+		my $code = $self->generate_script(%common) or return;
+
+		# Make a guess at a sensible default name for the script
+		my $file = lc $self->generator(%common)->app_package;
+		$file =~ s/:://g;
+
+		push @files, $self->show(
+			code => $code,
+			file => File::Spec->catfile( 'script', $file ),
+		);
+	}
+
 	# Generate the Wx::App root class
 	if ( $self->complete_app->IsChecked ) {
 		my $code = $self->generate_app(%common) or return;
-		$self->show($code);
-	}
-
-	# Generate all of the FBP dialogs
-	if ( $self->complete_fbp->IsChecked ) {
-		foreach my $form ( $fbp->project->forms ) {
-			my $name = $form->name or next;
-
-			# Generate the class
-			my $code = $self->generate_form(
-				form => $form,
-				name => $name,
-				%common,
-			) or next;
-
-			# Open the generated code as a new file
-			$self->show($code);
-		}
+		push @files, $self->show($code);
 	}
 
 	# Generate all of the shim dialogs
@@ -368,17 +371,35 @@ sub complete_clicked {
 			) or next;
 
 			# Open the generated code as a new file
-			$self->show($code);
+			push @files, $self->show($code);
 		}
 	}
 
-	# Generate the launch script for the app
-	if ( $self->complete_script->IsChecked ) {
-		my $code = $self->generate_script(%common) or return;
-		$self->show(
-			code => $code,
-		);
+	# Generate all of the FBP dialogs
+	if ( $self->complete_fbp->IsChecked ) {
+		foreach my $form ( $fbp->project->forms ) {
+			my $name = $form->name or next;
+
+			# Generate the class
+			my $code = $self->generate_form(
+				form => $form,
+				name => $name,
+				%common,
+			) or next;
+
+			# Open the generated code as a new file
+			push @files, $self->show($code);
+		}
 	}
+
+	# Focus on the first document we touched
+	@files = grep { !! $_ } @files;
+	if ( @files ) {
+		my $editor   = $files[0]->editor or return;
+		my $notebook = $editor->notebook or return;
+		my $id       = $notebook->GetPageIndex($editor);
+		$notebook->SetSelection($id);
+	}	
 
 	return;
 }
@@ -547,7 +568,11 @@ sub show {
 		unless ( defined $id ) {
 			# Open the file if it exists on disk
 			if ( -f $path and -r $path ) {
-				$id = $main->setup_editor($path);
+				# Always use the plural "setup_editors" as
+				# it clears the unused current document and
+				# does update and refresh locking.
+				$main->setup_editors($path);
+				$id = $main->editor_of_file($path);
 				unless ( defined $id ) {
 					warn "Failed to open '$path'";
 					return;
@@ -559,7 +584,7 @@ sub show {
 			my $editor   = $main->notebook->GetPage($id);
 			my $document = $editor->{Document} or return;
 			$document->text_replace($code);
-			return 1;
+			return $document;
 		}
 	}
 
@@ -595,6 +620,7 @@ sub generator {
 			i18n        => $param{i18n},
 			i18n_trim   => $param{i18n_trim},
 			shim        => $param{shim},
+			shim_deep   => $param{shim},
 		);
 	}
 
@@ -602,10 +628,12 @@ sub generator {
 	require FBP::Perl;
 	return FBP::Perl->new(
 		project   => $param{fbp}->project,
+		version   => $param{version},
 		nocritic  => 1,
 		i18n      => $param{i18n},
 		i18n_trim => $param{i18n_trim},
 		shim      => $param{shim},
+		shim_deep => $param{shim},
 	);
 }
 
