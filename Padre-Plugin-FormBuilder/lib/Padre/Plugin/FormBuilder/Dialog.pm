@@ -594,6 +594,7 @@ sub generator {
 			nocritic    => 1,
 			i18n        => $param{i18n},
 			i18n_trim   => $param{i18n_trim},
+			shim        => $param{shim},
 		);
 	}
 
@@ -604,6 +605,7 @@ sub generator {
 		nocritic  => 1,
 		i18n      => $param{i18n},
 		i18n_trim => $param{i18n_trim},
+		shim      => $param{shim},
 	);
 }
 
