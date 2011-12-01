@@ -143,7 +143,7 @@ sub on_stop_server {
 	}
 	delete $main->{command};
 	$main->menu->run->enable;
-	$main->output->AppendText( Wx::gettext("\nWeb server stopped successfully.\n") );
+	$main->output->AppendText( "\n" . Wx::gettext('Web server stopped successfully.') . "\n" );
 	return;
 }
 
@@ -151,10 +151,9 @@ sub on_show_about {
 	require Mojolicious;
 	require Padre::Unload;
 	my $about = Wx::AboutDialogInfo->new;
-	$about->SetName("Padre::Plugin::Mojolicious");
-	$about->SetDescription( "Initial Mojolicious support for Padre\n\n"
-			. "This system is running Mojolicious version "
-			. $Mojolicious::VERSION
+	$about->SetName('Padre::Plugin::Mojolicious');
+	$about->SetDescription( Wx::gettext('Mojolicious support for Padre') . "\n\n"
+			. sprintf( Wx::gettext('This system is running Mojolicious version %s'), $Mojolicious::VERSION )
 			. "\n" );
 	$about->SetVersion($Padre::Plugin::Mojolicious::VERSION);
 	Padre::Unload->unload('Mojolicious');
@@ -171,11 +170,11 @@ __END__
 
 =head1 NAME
 
-Padre::Plugin::Mojolicious - Simple Mojolicious helper interface for Padre
+Padre::Plugin::Mojolicious - Mojolicious support for Padre
 
 =head1 SYNOPSIS
 
-	cpan install Padre::Plugin::Mojolicious;
+	cpan Padre::Plugin::Mojolicious;
 
 Then use it via L<Padre>, The Perl IDE.
 
@@ -187,21 +186,21 @@ Once you enable this Plugin under Padre, you'll get a brand new menu with the fo
 
 This options lets you create a new Mojolicious application.
 
-=head2 'Start Web Server'
+=head2 Start Web Server
 
 This option will automatically spawn your application's development web server. Once it's started, it will ask to open your default web browser to view your application running.
 
 Note that this works like Padre's "run" menu option, so any other execution it will be disabled while your server is running.
 
-=head2 'Stop Web Server'
+=head2 Stop Web Server
 
 This option will stop the development web server for you.
 
-=head2 'Mojolicious Online References'
+=head2 Mojolicious Online References
 
 This menu option contains a series of external reference links on Mojolicious. Clicking on each of them will point your default web browser to their websites.
 
-=head2 'About'
+=head2 About
 
 Shows a nice about box with this module's name and version.
 
@@ -241,7 +240,31 @@ L<http://search.cpan.org/dist/Padre-Plugin-Mojolicious/>
 
 =back
 
-
 =head1 SEE ALSO
 
 L<Mojolicious>, L<Padre>
+
+=head1 AUTHORS
+
+=over 4
+
+=item *
+
+Breno G. de Oliveira <garu@cpan.org>
+
+=item *
+
+Ahmad M. Zawawi <ahmad.zawawi@gmail.com>
+
+=back
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Breno G. de Oliveira.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut
+
+__END__
