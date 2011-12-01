@@ -38,7 +38,7 @@ sub menu_plugins_simple {
 	return $self->plugin_name => [
 		Wx::gettext('New Mojolicious Application') => sub {
 			require Padre::Plugin::Mojolicious::NewApp;
-			Padre::Plugin::Mojolicious::NewApp::on_newapp($self);
+			Padre::Plugin::Mojolicious::NewApp::new->show;
 			return;
 		},
 

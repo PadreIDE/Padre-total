@@ -8,79 +8,40 @@ use warnings;
 use Cwd               ();
 use File::Spec        ();
 use Padre::Wx         ();
-use Padre::Wx::Dialog ();
+use Padre::Plugin::Mojolicious::FBP::NewApp ();
 use Padre::DB         ();
 
 our $VERSION = '0.06';
 
-sub on_newapp {
-	my $plugin = shift;
-	my $main   = $plugin->main;
-	my $dialog = dialog($main);
-	$dialog->Show(1);
+sub show {
+	my $self = shift;
+	my $config = $self->current->config;
+
+	$self->{dir_picker}->SetPath( $config->module_start_directory );
+	$self->{ok_button}->SetDefault;
+	$self->{app_name}->SetFocus;
+}
+
+sub on_cancel_clicked {
+	my $self = shift;
+	$self->Destroy;
+	
 	return;
 }
 
-sub get_layout {
+sub on_ok_clicked {
+	my ($self, $event) = @_;
+	$self->Destroy;
 
-	my @layout = (
-		[   [ 'Wx::StaticText', undef,        Wx::gettext('Application Name:') ],
-			[ 'Wx::TextCtrl',   '_app_name_', '' ],
-		],
-		[   [ 'Wx::StaticText', undef, Wx::gettext('Parent Directory:') ],
-			[ 'Wx::DirPickerCtrl', '_directory_', '', Wx::gettext('Pick parent directory') ],
-		],
-		[   [ 'Wx::Button', '_ok_',     Wx::wxID_OK ],
-			[ 'Wx::Button', '_cancel_', Wx::wxID_CANCEL ],
-		],
-	);
-	return \@layout;
-}
-
-sub dialog {
-	my $parent = shift;
-	my $config = $parent->current->config;
-	my $layout = get_layout();
-	my $dialog = Padre::Wx::Dialog->new(
-		parent => $parent,
-		title  => Wx::gettext('New Mojolicious Application'),
-		layout => $layout,
-		width  => [ 100, 200 ],
-		bottom => 20,
-	);
-
-	$dialog->{_widgets_}->{_directory_}->SetPath( $config->module_start_directory );
-
-	$dialog->{_widgets_}->{_ok_}->SetDefault;
-	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}->{_ok_}, \&ok_clicked );
-
-	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}->{_cancel_}, \&cancel_clicked );
-
-	$dialog->{_widgets_}->{_app_name_}->SetFocus;
-
-	return $dialog;
-}
-
-
-sub cancel_clicked {
-	my $dialog = shift;
-	$dialog->Destroy;
-	return;
-}
-
-sub ok_clicked {
-	my $dialog = shift;
-	my $event  = shift;
-	my $data   = $dialog->get_data;
-	$dialog->Destroy;
-
-	my $main = $dialog->GetParent->current->main;
+	my $main = $self->main;
+	my $app_name = $self->{app_name}->GetValue;
+	my $directory = $self->{dir_picker}->GetValue;
 
 	# TODO improve input validation !
-	if ( $data->{'_app_name_'} =~ m{^\s*$|[^\w\:]}o ) {
+	if ( $app_name =~ m{^\s*$|[^\w\:]}o ) {
 		Wx::MessageBox( Wx::gettext('Invalid Application name'), Wx::gettext('missing field'), Wx::wxOK, $main );
 		return;
-	} elsif ( not $data->{'_directory_'} ) {
+	} elsif ( not $directory ) {
 		Wx::MessageBox(
 			Wx::gettext('You need to select a base directory'), Wx::gettext('missing field'), Wx::wxOK,
 			$main
@@ -104,12 +65,12 @@ sub ok_clicked {
 		'mojo',
 		'generate',
 		'app',
-		$data->{'_app_name_'},
+		$app_name,
 	);
 
 	# go to the selected directory
 	my $pwd = Cwd::cwd();
-	chdir $data->{'_directory_'};
+	chdir $directory;
 
 	# run command, then immediately restore directory
 	my $output_text = qx(@command);
@@ -118,7 +79,7 @@ sub ok_clicked {
 	$main->output->AppendText($output_text);
 
 	my $ret = Wx::MessageBox(
-		sprintf( Wx::gettext("%s apparently created. Do you want to open it now?"), $data->{_app_name_} ),
+		sprintf( Wx::gettext("%s apparently created. Do you want to open it now?"), $self->{_app_name_} ),
 		Wx::gettext('Done'),
 		Wx::wxYES_NO | Wx::wxCENTRE,
 		$main,
@@ -126,7 +87,7 @@ sub ok_clicked {
 	if ( $ret == Wx::wxYES ) {
 		require Padre::Plugin::Mojolicious::Util;
 		my $file = Padre::Plugin::Mojolicious::Util::find_file_from_output(
-			$data->{'_app_name_'},
+			$app_name,
 			$output_text
 		);
 		$file = Cwd::realpath($file); # avoid relative paths
