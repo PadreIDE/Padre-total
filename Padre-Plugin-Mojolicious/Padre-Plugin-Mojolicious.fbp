@@ -241,7 +241,7 @@
                                         <property name="label">Parent Directory:</property>
                                         <property name="maximum_size"></property>
                                         <property name="minimum_size"></property>
-                                        <property name="name">dir_picker_label</property>
+                                        <property name="name">directory_label</property>
                                         <property name="permission">protected</property>
                                         <property name="pos"></property>
                                         <property name="size"></property>
@@ -297,7 +297,7 @@
                                         <property name="maximum_size"></property>
                                         <property name="message">Select a folder</property>
                                         <property name="minimum_size"></property>
-                                        <property name="name">dir_picker</property>
+                                        <property name="name">directory</property>
                                         <property name="permission">protected</property>
                                         <property name="pos"></property>
                                         <property name="size"></property>
@@ -376,7 +376,7 @@
                                         <property name="label">OK</property>
                                         <property name="maximum_size"></property>
                                         <property name="minimum_size"></property>
-                                        <property name="name">on_button</property>
+                                        <property name="name">ok_button</property>
                                         <property name="permission">public</property>
                                         <property name="pos"></property>
                                         <property name="size"></property>

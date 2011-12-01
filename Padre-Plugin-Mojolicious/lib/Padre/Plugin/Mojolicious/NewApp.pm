@@ -5,37 +5,39 @@ package Padre::Plugin::Mojolicious::NewApp;
 use 5.008;
 use strict;
 use warnings;
-use Cwd               ();
-use File::Spec        ();
-use Padre::Wx         ();
+use Cwd                                     ();
+use File::Spec                              ();
+use Padre::Wx                               ();
 use Padre::Plugin::Mojolicious::FBP::NewApp ();
-use Padre::DB         ();
+use Padre::DB                               ();
 
 our $VERSION = '0.06';
 
-sub show {
-	my $self = shift;
-	my $config = $self->current->config;
+our @ISA = qw{
+	Padre::Plugin::Mojolicious::FBP::NewApp
+};
 
-	$self->{dir_picker}->SetPath( $config->module_start_directory );
+sub run {
+	my $self = shift;
+
 	$self->{ok_button}->SetDefault;
 	$self->{app_name}->SetFocus;
+	$self->Show(1);
 }
 
 sub on_cancel_clicked {
 	my $self = shift;
 	$self->Destroy;
-	
 	return;
 }
 
 sub on_ok_clicked {
-	my ($self, $event) = @_;
+	my ( $self, $event ) = @_;
 	$self->Destroy;
 
-	my $main = $self->main;
-	my $app_name = $self->{app_name}->GetValue;
-	my $directory = $self->{dir_picker}->GetValue;
+	my $main      = $self->main;
+	my $app_name  = $self->{app_name}->GetValue;
+	my $directory = $self->{directory}->GetPath;
 
 	# TODO improve input validation !
 	if ( $app_name =~ m{^\s*$|[^\w\:]}o ) {
@@ -48,14 +50,6 @@ sub on_ok_clicked {
 		);
 		return;
 	}
-
-	# We should probably call Mojolicious::Helper directly
-	# (new() and mk_app()) here, as long as we can redirect
-	# print statements to $main->output->AppendText().
-	#
-	# Perhaps if run_command() were to block before continuing,
-	# we could use something like:
-	#$main->run_command('mojolicious generate app' . $data->{'_app_name_'});
 
 	# Prepare the output window for the output
 	$main->show_output(1);

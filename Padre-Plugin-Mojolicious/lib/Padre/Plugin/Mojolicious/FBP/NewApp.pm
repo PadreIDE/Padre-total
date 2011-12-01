@@ -10,7 +10,7 @@ use 5.008005;
 use utf8;
 use strict;
 use warnings;
-use Padre::Wx ();
+use Padre::Wx             ();
 use Padre::Wx::Role::Main ();
 
 our $VERSION = '0.06';
@@ -46,13 +46,13 @@ sub new {
 		Wx::DefaultSize,
 	);
 
-	$self->{dir_picker_label} = Wx::StaticText->new(
+	$self->{directory_label} = Wx::StaticText->new(
 		$self,
 		-1,
 		Wx::gettext("Parent Directory:"),
 	);
 
-	$self->{dir_picker} = Wx::DirPickerCtrl->new(
+	$self->{directory} = Wx::DirPickerCtrl->new(
 		$self,
 		-1,
 		"",
@@ -62,7 +62,7 @@ sub new {
 		Wx::DIRP_DEFAULT_STYLE,
 	);
 
-	$self->{on_button} = Wx::Button->new(
+	$self->{ok_button} = Wx::Button->new(
 		$self,
 		-1,
 		Wx::gettext("OK"),
@@ -72,7 +72,7 @@ sub new {
 
 	Wx::Event::EVT_BUTTON(
 		$self,
-		$self->{on_button},
+		$self->{ok_button},
 		sub {
 			shift->on_ok_clicked(@_);
 		},
@@ -97,14 +97,14 @@ sub new {
 	my $content_sizer = Wx::FlexGridSizer->new( 2, 2, 0, 0 );
 	$content_sizer->SetFlexibleDirection(Wx::BOTH);
 	$content_sizer->SetNonFlexibleGrowMode(Wx::FLEX_GROWMODE_SPECIFIED);
-	$content_sizer->Add( $app_name_label, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::LEFT | Wx::RIGHT | Wx::TOP, 5 );
-	$content_sizer->Add( $self->{app_name}, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALL, 5 );
-	$content_sizer->Add( $self->{dir_picker_label}, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALL, 5 );
-	$content_sizer->Add( $self->{dir_picker}, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALL | Wx::EXPAND, 5 );
+	$content_sizer->Add( $app_name_label,          0, Wx::ALIGN_CENTER_VERTICAL | Wx::LEFT | Wx::RIGHT | Wx::TOP, 5 );
+	$content_sizer->Add( $self->{app_name},        0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALL,                        5 );
+	$content_sizer->Add( $self->{directory_label}, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALL,                        5 );
+	$content_sizer->Add( $self->{directory},       0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALL | Wx::EXPAND,           5 );
 
 	my $buttons_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
 	$buttons_sizer->Add( 20, 0, 1, Wx::EXPAND, 5 );
-	$buttons_sizer->Add( $self->{on_button}, 0, Wx::ALL, 2 );
+	$buttons_sizer->Add( $self->{ok_button},     0, Wx::ALL, 2 );
 	$buttons_sizer->Add( $self->{cancel_button}, 0, Wx::ALL, 2 );
 
 	my $vsizer = Wx::BoxSizer->new(Wx::VERTICAL);
@@ -120,12 +120,12 @@ sub new {
 	return $self;
 }
 
-sub on_button {
-	$_[0]->{on_button};
+sub ok_button {
+	$_[0]->{ok_button};
 }
 
 sub on_ok_clicked {
-	$_[0]->main->error('Handler method on_ok_clicked for event on_button.OnButtonClick not implemented');
+	$_[0]->main->error('Handler method on_ok_clicked for event ok_button.OnButtonClick not implemented');
 }
 
 sub on_cancel_clicked {
