@@ -1,14 +1,14 @@
 Revision history for Padre-Plugin-Mojolicious
 
-0.06
+0.06  2011.12.1
     - Switch to Module::Install (SZABGAB)
     - Update Mojolicious to Padre 0.92 (AZAWAWI)
     - Update Mojolicious online references (AZAWAWI)
 
-0.05   2010.12.06
+0.05   2010.12.6
     - Restored missing POT/PO translation sources (Damyan Ivanov, AZAWAWI)
 
-0.04   2010.11.02
+0.04   2010.11.2
     - Switched to Dist::Zilla (AZAWAWI)
     - Removed unused dependencies (AZAWAWI)
     - Code cleanup (AZAWAWI)
@@ -29,6 +29,6 @@ Revision history for Padre-Plugin-Mojolicious
     - Spanish translation (BRUNOV)
     - Brazilian Portuguese (GARU)
 
-0.01    2009-04-27
+0.01    2009-4-27
     - First version, released on an unsuspecting world.
 
