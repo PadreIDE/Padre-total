@@ -26,10 +26,10 @@ sub plugin_name {
 }
 
 sub plugin_disable {
-	require Class::Unload;
-	Class::Unload->unload('Padre::Plugin::Mojolicious::NewApp');
-	Class::Unload->unload('Padre::Plugin::Mojolicious::Util');
-	Class::Unload->unload('Mojolicious');
+	require Padre::Unload;
+	Padre::Unload->unload('Padre::Plugin::Mojolicious::NewApp');
+	Padre::Unload->unload('Padre::Plugin::Mojolicious::Util');
+	Padre::Unload->unload('Mojolicious');
 }
 
 # The command structure to show in the Plugins menu
@@ -149,7 +149,7 @@ sub on_stop_server {
 
 sub on_show_about {
 	require Mojolicious;
-	require Class::Unload;
+	require Padre::Unload;
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName("Padre::Plugin::Mojolicious");
 	$about->SetDescription( "Initial Mojolicious support for Padre\n\n"
@@ -157,7 +157,7 @@ sub on_show_about {
 			. $Mojolicious::VERSION
 			. "\n" );
 	$about->SetVersion($Padre::Plugin::Mojolicious::VERSION);
-	Class::Unload->unload('Mojolicious');
+	Padre::Unload->unload('Mojolicious');
 	Wx::AboutBox($about);
 	return;
 }

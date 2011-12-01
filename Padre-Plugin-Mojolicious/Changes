@@ -1,8 +1,8 @@
 Revision history for Padre-Plugin-Mojolicious
 
-{{$NEXT}}
-
+0.06
     - Switch to Module::Install (SZABGAB)
+    - Update Mojolicious to Padre 0.92 (AZAWAWI)
 
 0.05   2010.12.06
     - Restored missing POT/PO translation sources (Damyan Ivanov, AZAWAWI)
