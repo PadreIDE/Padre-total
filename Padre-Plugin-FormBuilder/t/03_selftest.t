@@ -6,12 +6,13 @@ BEGIN {
 	$^W = 1;
 }
 
-use Test::More tests => 15;
+use Test::More tests => 14;
 use Test::NoWarnings;
 use File::Spec::Functions ':ALL';
 use t::lib::Test;
 use FBP;
 use Padre::Plugin::FormBuilder::Perl;
+use Padre::Unload;
 
 # Find the sample files
 my $input  = 'Padre-Plugin-FormBuilder.fbp';
@@ -59,9 +60,17 @@ sub compile_all {
 	my $code = Padre::Plugin::FormBuilder::Perl->new(%args);
 	isa_ok( $code, 'Padre::Plugin::FormBuilder::Perl' );
 
+	# Load the classes
 	foreach my $form ( $args{project}->forms ) {
 		my $name = $form->name;
 		my $code = $code->form_class($form);
 		compiles( $code, 'Project class compiled' );
-	}	
+	}
+
+	# Clear out the loaded classes
+	foreach my $form ( $args{project}->forms ) {
+		Padre::Unload::unload(
+			 $code->form_package($form)
+		);
+	}
 }

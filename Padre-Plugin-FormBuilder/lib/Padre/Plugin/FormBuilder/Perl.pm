@@ -23,9 +23,9 @@ It overloads various methods to make things work in a more Padre-specific way.
 use 5.008005;
 use strict;
 use warnings;
-use Scalar::Util      ();
+use Scalar::Util 1.19 ();
 use Params::Util 0.33 ();
-use FBP::Perl    0.66 ();
+use FBP::Perl    0.68 ();
 
 our $VERSION = '0.04';
 our @ISA     = 'FBP::Perl';
@@ -132,36 +132,13 @@ sub project_dist {
 	return $name;
 }
 
-sub form_isa {
+sub form_super {
 	my $self = shift;
-	my $form = shift;
-	if ( $form->isa('FBP::Dialog') ) {
-		return $self->nested(
-			"our \@ISA     = qw{",
-			"Padre::Wx::Role::Main",
-			"Wx::Dialog",
-			"};",
-		);
-
-	} elsif ( $form->isa('FBP::Frame') ) {
-		return $self->nested(
-			"our \@ISA     = qw{",
-			"Padre::Wx::Role::Main",
-			"Wx::Frame",
-			"};",
-		);
-
-	} elsif ( $form->isa('FBP::Panel') ) {
-		return $self->nested(
-			"our \@ISA     = qw{",
-			"Padre::Wx::Role::Main",
-			"Wx::Panel",
-			"};",
-		);
-
-	} else {
-		die "Unsupported form " . ref($form);
+	my @super = $self->SUPER::form_super(@_);
+	if ( @super ) {
+		unshift @super, 'Padre::Wx::Role::Main';
 	}
+	return @super;
 }
 
 sub form_wx {

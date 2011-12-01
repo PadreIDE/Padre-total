@@ -329,13 +329,8 @@ sub complete_clicked {
 		version   => $self->version->GetValue || '0.01',
 		i18n      => $self->i18n,
 		i18n_trim => $self->i18n_trim,
+		shim      => $self->complete_shim->IsChecked ? 1 : 0,
 	);
-
-	# Generate the launch script for the app
-	if ( $self->complete_script->IsChecked ) {
-		my $code = $self->generate_script(%common) or return;
-		$self->show($code);
-	}
 
 	# Generate the Wx::App root class
 	if ( $self->complete_app->IsChecked ) {
@@ -353,7 +348,7 @@ sub complete_clicked {
 				form => $form,
 				name => $name,
 				%common,
-			) or return;
+			) or next;
 
 			# Open the generated code as a new file
 			$self->show($code);
@@ -362,7 +357,27 @@ sub complete_clicked {
 
 	# Generate all of the shim dialogs
 	if ( $self->complete_shim->IsChecked ) {
+		foreach my $form ( $fbp->project->forms ) {
+			my $name = $form->name or next;
 
+			# Generate the class
+			my $code = $self->generate_shim(
+				form => $form,
+				name => $name,
+				%common,
+			) or next;
+
+			# Open the generated code as a new file
+			$self->show($code);
+		}
+	}
+
+	# Generate the launch script for the app
+	if ( $self->complete_script->IsChecked ) {
+		my $code = $self->generate_script(%common) or return;
+		$self->show(
+			code => $code,
+		);
 	}
 
 	return;
@@ -441,6 +456,27 @@ sub generate_form {
 	return $string;
 }
 
+# Generate the shim code
+sub generate_shim {
+	my $self  = shift;
+	my $perl  = $self->generator(@_);
+	my %param = @_;
+
+	# Generate the class code
+	local $@;
+	my $string = eval {
+		$perl->flatten(
+			$perl->shim_class($param{form})
+		);
+	};
+	if ( $@ ) {
+		$self->error("Code Generator Error: $@");
+		return;
+	}
+
+	return $string;
+}
+
 # NOTE: Not in use yet, intended for arbitrary class entry later
 sub dialog_class {
 	my $self = shift;
@@ -481,19 +517,30 @@ sub dialog_class {
 # Display a generated document
 sub show {
 	my $self    = shift;
-	my $code    = shift;
+	my %param   = (@_ == 1) ? ( code => shift ) : @_;
+	my $code    = $param{code};
+	my $file    = $param{file};
 	my $main    = $self->main;
 	my $project = $self->project;
 
-	# Is this a module?
-	if ( $code =~ /^package\s+([\w:]+)/ ) {
-		# Where should the module be on the filesystem
-		my $module = $1;
-		my $path   = File::Spec->catfile(
-			$project->root,
-			'lib',
-			split( /::/, $module )
-		) . '.pm';
+	# Auto-detect the file name if we can
+	unless ( defined Params::Util::_STRING($file) ) {
+		# Is this a module?
+		if ( $code =~ /^package\s+([\w:]+)/ ) {
+			# Where should the module be on the filesystem
+			my $module = $1;
+			$file = File::Spec->catfile(
+				'lib',
+				split( /::/, $1 )
+			) . '.pm';
+		}
+	}
+
+	# If we have a file name and it exists, overwrite the
+	# content in an existing editor rather than making a new
+	# document.
+	if ( defined Params::Util::_STRING($file) ) {
+		my $path = File::Spec->catfile( $project->root, $file );
 
 		# Do we have the module open
 		my $id = $main->editor_of_file($path);
@@ -511,15 +558,25 @@ sub show {
 			# Apply to the existing file by delta
 			my $editor   = $main->notebook->GetPage($id);
 			my $document = $editor->{Document} or return;
-			$document->text_set($code);
+			$document->text_replace($code);
 			return 1;
 		}
 	}
 
 	# Not open, does not exist, or no special handling
-	$self->main->new_document_from_string(
+	my $lock     = $main->lock('REFRESH');
+	my $document = $main->new_document_from_string(
 		$code => 'application/x-perl',
 	);
+
+	# If we have a file name for the new file, set it early.
+	if ( defined Params::Util::_STRING($file) ) {
+		$document->set_filename(
+			File::Spec->catfile( $project->root, $file )
+		);
+	}
+
+	return $document;
 }
 
 sub generator {

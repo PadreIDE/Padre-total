@@ -45,6 +45,7 @@ my $COUNT = 0;
 sub padre_interfaces {
 	'Padre::Plugin'         => 0.93,
 	'Padre::Util'           => 0.93,
+	'Padre::Unload'         => 0.93,
 	'Padre::Task'           => 0.93,
 	'Padre::Document'       => 0.93,
 	'Padre::Project'        => 0.93,
