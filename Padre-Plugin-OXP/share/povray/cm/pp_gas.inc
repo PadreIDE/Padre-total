@@ -26,13 +26,21 @@
     sine_wave
 }
 
+#declare P_GasBanded2 = pigment {
+    wood
+    rotate x*90
+    scale 3
+    turbulence 0.05
+    sine_wave
+}
+
 #declare GasPattern = array[8] {
     P_GasBanded
     P_GasStrata
-    P_GasBanded
+    P_GasBanded2
     P_GasStrata
     P_GasBanded
-    P_GasBanded
+    P_GasBanded2
     P_GasBanded
     P_GasStrata
 }
@@ -114,6 +122,9 @@ warp {
                 }
             }
             
+            scale y*2
+            Warp_Bloom(1,1,V_storm_eye_perturbed * <1,2,1> )
+            scale y*1/2
           
             warp {
                 displace {
@@ -149,9 +160,7 @@ warp {
             } 
             scale y*1/2  
           */
-            scale y*2
-            Warp_Bloom(1,1,V_storm_eye_perturbed * <1,2,1> )
-            scale y*1/2
+
             
            /* warp {
                 displace {

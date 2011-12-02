@@ -247,15 +247,26 @@
     // IceCaps
     texture {
         pigment {
-            gradient y scale 1.8+(f_mod2/2) triangle_wave
+            gradient y scale 2 triangle_wave
+            rotate x * 3 * f_mod1
+            
+            #local Percent_Polar = 0.4 * (f_mod2+f_mod1) / 2;
             colour_map {
-                [0.8 rgbf 1]
-                [0.8 rgbf <0.925,0.975,1,0.15> ]
+                [1 - Percent_Polar rgbf 1]
+                [1 - Percent_Polar rgbf <0.925,0.975,1,0.15> ]
                 [1 rgbf <0.975,1,1,0.025> ]
             }
+            
+            scale 1/5
+            rotate <0,180*f_mod2,0>
+            warp {
+                turbulence <0.5,0,0.3>
+            }
+            scale 5
+            
             warp {
                 displace {
-                    MyPattern lambda 4 turbulence 2+f_mod1
+                    MyPattern lambda 3 turbulence 1+f_mod1
                     rotate MySpin translate MyGalOffset 
                     colour_map { [0 rgb 0.25 ][1 rgb 0.75]}
                     type 1
