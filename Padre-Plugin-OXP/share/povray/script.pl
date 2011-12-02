@@ -19,7 +19,10 @@ my $POV_template = <<POV;
 #include "cm_camera.inc"
 #include "pp_textures.inc"
 #include "pp_continental.inc"
+#include "pp_gas.inc"
+
 #debug  "%s" 
+
 #declare Radius = 1;
 
 sphere { <0,0,0> Radius
@@ -34,13 +37,12 @@ sphere { <0,0,0> Radius
                 )
 }
 
-/*
+
 CubeMapBoxes(Radius)
 //CubeLight(4,Radius)
 CubeMapCamera()
-*/
 
-PreviewCamera()
+
 
 
 POV
@@ -67,15 +69,23 @@ while ( my $row = $csv->getline($fh) ) {
         my $planet_specifier = $seed % int(sqrt($n_planets+1));
 
         # Barren/rocky , Gas Giant , Continental , Artificial
-        my $formation_seed = $seed % 3;
+        my $formation_seed = $seed % 11;
         my %formations = (
-                2 => 'Continental',
-                #1 => 'Continental',
-                #0 => 'Continental',
-                
+                0 => 'Gas' ,               
                 1 => 'Rocky',
-                0 => 'Gas' ,
-                
+                2 => 'Continental',
+
+                3 => 'Gas' , 
+                4 => 'Rocky',
+                5 => 'Continental',
+
+                6 => 'Gas' ,                
+                7 => 'Rocky',
+                8 => 'Continental',
+
+                9 => 'Gas' ,                
+                10=> 'Rocky',
+                11=> 'Continental',
                # 2 => 'Continental',
                # 3 => 'Artificial'
         );
@@ -96,9 +106,13 @@ while ( my $row = $csv->getline($fh) ) {
                 $galaxy_X, $galaxy_Y,
                 $norm_seed, $norm_seed2;
         
-        my $tf = File::Temp->new;
-        $tf->print( $pov_sdl );
-        $tf->close;
+        #my $tf = File::Temp->new;
+        #$tf->print( $pov_sdl );
+        #$tf->close;
+        my $sdl_file = 'SDL/' . $info{Name} . '.pov';
+        open( my $sdl_fh , '>' , $sdl_file ) or die $!;
+        $sdl_fh->print( $pov_sdl );
+        $sdl_fh->close;
         
         
         if ( defined $render ) {
@@ -109,10 +123,10 @@ while ( my $row = $csv->getline($fh) ) {
                         '+Lcm',
                         '-D',
                         # '+W256', '+H1536', # medium resolution
-                        #'+W128','+H768', # low resolution
-                        '+W512' , '+H512' , # Perspective preview
+                        '+W128','+H768', # low resolution
+                        #'+W512' , '+H512' , # Perspective preview
                         '+O'.$output,
-                        '+I'.$tf->filename,
+                        '+I'.$sdl_file,
                 );
                 die $! unless $rc==0;
                 die $pov_sdl unless -f $output;
