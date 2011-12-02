@@ -19,12 +19,12 @@
 
 #declare Land_Colours = array[8] {
     CM_Desert1
-    CM_Desert2
+    CM_Desert1
     CM_Desert3
     CM_Mountain1
 
     CM_Desert1
-    CM_Desert2
+    CM_Desert3
     CM_Desert3
     CM_Mountain1
 
@@ -247,7 +247,7 @@
     // IceCaps
     texture {
         pigment {
-            gradient y scale 2 triangle_wave
+            gradient y scale 1.8+(f_mod2/2) triangle_wave
             colour_map {
                 [0.8 rgbf 1]
                 [0.8 rgbf <0.925,0.975,1,0.15> ]
@@ -255,9 +255,9 @@
             }
             warp {
                 displace {
-                    MyPattern lambda 3
+                    MyPattern lambda 4 turbulence 2+f_mod1
                     rotate MySpin translate MyGalOffset 
-                    colour_map { [0 rgb 0.5 ][1 rgb 0.75]}
+                    colour_map { [0 rgb 0.25 ][1 rgb 0.75]}
                     type 1
                 }
             }

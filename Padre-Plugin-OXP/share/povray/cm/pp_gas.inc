@@ -122,7 +122,7 @@ warp {
                     pigment_map { 
                         
                         [0 color rgb 0.5]
-                        [1 spiral1 4  phase 0.33
+                        [1 spiral1 2  phase 0.33
                             cubic_wave
                             color_map{
                                 [0 color rgb 0.5 ]
@@ -150,7 +150,7 @@ warp {
             scale y*1/2  
           */
             scale y*2
-            Warp_Bloom(1,1,V_storm_eye_perturbed)
+            Warp_Bloom(1,1,V_storm_eye_perturbed * <1,2,1> )
             scale y*1/2
             
            /* warp {

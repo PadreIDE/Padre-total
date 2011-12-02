@@ -20,6 +20,30 @@
     
 };
 
+#declare F_Craters =  function {
+    pigment { average
+          pigment_map { 
+          #local NumCraters = 50;
+          #local CraterN = 1;
+          #local SeedCraters = seed(1000000);
+          #while (CraterN < NumCraters)   
+            [ spherical cubic_wave
+            // scale 0.5 * rand(SeedCraters)
+            scale 0.06 * ( 0.5 + rand(SeedCraters) )
+            translate <0,0,1> 
+            rotate <rand(SeedCraters)*360,0,0>
+            rotate <0,0,rand(SeedCraters)*360>
+            rotate <0,rand(SeedCraters)*360,0>
+            turbulence 0.05
+            colour_map {[0 rgb 0 ] [ 1 rgb 50 -1 ]}
+            ]
+          #local CraterN=CraterN+1;
+          #end
+            }
+  }
+}
+
+
 #declare RockyNormal = array[4] {
     normal { granite scale 2 scallop_wave }
     normal { agate scale 4 agate_turb 2 }
@@ -44,42 +68,54 @@
     texture {
         pigment {
             //RockyPattern[has_pattern]
-            dents
-            translate <GalX,GalY,0>
+            average
             
-            turbulence 2*((1+Modifier1)/2)
+            turbulence 0.25*((1+Modifier1)/2)
+            lambda 3
             pigment_map {
-                [ 0      RockyPattern[has_pattern]
+                [ 1      RockyPattern[has_pattern]
                         translate <GalX,GalY,0>
-                        scale 10
-                        //color_map { RockyColour[has_colour] }
+                        scale 5
+                        color_map { RockyColour[has_colour] }
+                        scale 30
+                        warp { turbulence 0.3 + Modifier2/3 }
+                        scale 1/30
                 ]
                 [ 1
                         RockyPattern[has_pattern]
                         translate <GalX,GalY,0>*-1
-                        //color_map { RockyColour[has_colour] } 
+                        color_map { RockyColour[has_colour] } 
                         frequency 0.5
                         phase 0.5 
+                        scale 70
+                        warp { turbulence 0.3 + Modifier1/3 }
+                        scale 1/70
                 ]
             }
-            color_map { RockyColour[has_colour] } 
-            scale 70 
-            warp { turbulence 0.3 + Modifier2/3 }
-            scale 1/70
         }
         finish { ambient 1 }
-        /*
-        normal {
-            RockyNormal[has_pattern]
-            translate <GalX,GalY,0>
-            
-            normal_map {
-                [0 bumps .3 scale 0.1 turbulence 0.1 ]
-                [1 wrinkles .3 scale 0.05 turbulence 0.03 ]
-            }
-        }
-        */
     }
+
+/* VerySlow
+    texture {
+      pigment {
+        function { F_Craters(x,y,z).green }
+          colour_map {
+                [0 rgb 0 transmit 1]
+                [0.1 rgb 1 transmit 1]
+                [0.2 rgb 1 transmit 0.6]
+                
+                [0.3 rgb 0 transmit 0.9]
+                [1 rgb 0 transmit 0.75 ]
+          }
+        scale 100
+        warp {
+            turbulence 1
+        }
+        scale 1/100
+      }
+    }
+*/
 
 #end
 

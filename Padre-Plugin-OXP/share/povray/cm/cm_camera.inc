@@ -271,7 +271,7 @@ camera {
 #macro PreviewCamera()
 camera {
     perspective
-    location <0.25,0.25,-4>
+    location <0.25,0.25,4>
     look_at <0,0,0>
     angle 33
     up y
