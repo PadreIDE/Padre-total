@@ -4,7 +4,7 @@ use 5.008005;
 use strict;
 use warnings;
 
-our $VERSION = '0.16';
+our $VERSION = '0.17_01';
 
 use utf8;
 use IO::Socket;
@@ -17,6 +17,10 @@ use constant {
 =head1 NAME
 
 Debug::Client - client side code for perl debugger
+
+development version 0.17_01 for testing only!
+
+thanks cpan testers :)
 
 =head1 SYNOPIS
 
@@ -1175,8 +1179,6 @@ and just performing c on it's own
 =head3 _send
 
 =head3 _send_get
-
-=head3 _set_option
 
 =head1 AUTHORS
 

@@ -1,3 +1,11 @@
+0.17_01 2011.12.06
+    - adjust required version for 'E' requires 5.8.6
+      (Note that threading support was built into the debugger as of 
+      Perl version 5.8.6 and debugger version 1.2.8.)
+    - Opps requires 'IO::Socket' reset to '1.31'
+    - try some other testing modules Test::Class
+    - Tidy POD (BOWTIE)
+
 0.16 2011.11.30
     - Add Methods list_subroutine_names, set_option, get_options, module
     - tweak to return line & row from dot if all else fails

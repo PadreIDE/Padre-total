@@ -1,6 +1,6 @@
-use 5.008005;
+use 5.008006;
 use strict;
-use inc::Module::Install 1.00;
+use inc::Module::Install 1.04;
 
 # Define metadata
 name 'Debug-Client';
@@ -10,15 +10,15 @@ author 'Breno G. de Oliveira <garu at cpan.org>';
 author 'Kevin Dawson <bowtie@cpan.org>';
 author 'Ahmad M. Zawawi <ahmad.zawawi@gmail.com>';
 
-perl_version '5.008005';
+perl_version '5.008006';
 
 # All from our core
 all_from 'lib/Debug/Client.pm';
 
 # required modules from CPAN
-requires 'perl'                 => '5.008005';
-requires 'Carp'                 => '1.20';
-requires 'IO::Socket'           => '1.32';
+requires 'perl'                 => '5.008006';
+requires 'Carp'                 => '1.23';
+requires 'IO::Socket'           => '1.31';
 requires 'IO::Socket::INET'     => '1.31';
 requires 'PadWalker'            => '1.92';
 requires 'Term::ReadLine'       => '1.07';
@@ -26,6 +26,7 @@ requires 'Term::ReadLine::Perl' => '1.0303';
 
 test_requires 'Test::More'    => '0.98';
 test_requires 'Test::Deep'    => '0.108';
+test_requires 'Test::Class'   => '0.36';
 test_requires 'File::HomeDir' => '0.98';
 test_requires 'File::Temp'    => '0.22';
 test_requires 'File::Spec'    => '3.33';
