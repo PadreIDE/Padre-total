@@ -1,0 +1,45 @@
+package t::lib::Options;
+
+use base qw(Test::Class);
+use Test::More;
+use Test::Deep;
+
+use t::lib::Debugger;
+
+# setup methods are run before every test method.
+sub load_debugger : Test(setup) {
+	my $self = shift;
+	start_script('t/eg/14-y_zero.pl');
+	$self->{debugger} = start_debugger();
+	$self->{debugger}->get;
+}
+
+sub options : Test(4) {
+	my $self = shift;
+	my $out;
+	$out = $self->{debugger}->get_options();
+	like( $out, qr/CommandSet.=.'580'/s, 'get options' );
+
+	$self->{debugger}->set_breakpoint( 't/eg/14-y_zero.pl', '14' );
+
+	$out = $self->{debugger}->set_option('frame=2');
+	like( $out, qr/frame.=.'2'/s, 'set options' );
+
+	# my @out =$self->{debugger}->run;
+	# diag ( @out );
+	# cmp_deeply( \@out, ['main::', 't/eg/14-y_zero.pl', '14', 'print "$_ : $line \n";', ], 'line 14' );
+
+	$out = $self->{debugger}->set_option('frame=0');
+	like( $out, qr/frame.=.'0'/s, 'reset options' );
+}
+
+# teardown methods are run after every test method.
+sub teardown : Test(teardown) {
+	my $self = shift;
+	$self->{debugger}->quit;
+	done_testing();
+}
+
+1;
+
+__END__

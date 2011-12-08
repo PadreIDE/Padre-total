@@ -1,3 +1,6 @@
+0.17_02 2011.12.08
+    - vast changes to test files (BOWTIE)
+
 0.17_01 2011.12.06
     - adjust required version for 'E' requires 5.8.6
       (Note that threading support was built into the debugger as of 

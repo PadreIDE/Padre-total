@@ -1,10 +1,10 @@
 package Debug::Client;
 
-use 5.008005;
+use 5.008006;
 use strict;
 use warnings;
 
-our $VERSION = '0.17_01';
+our $VERSION = '0.17_02';
 
 use utf8;
 use IO::Socket;
@@ -18,7 +18,7 @@ use constant {
 
 Debug::Client - client side code for perl debugger
 
-development version 0.17_01 for testing only!
+development version 0.17_02 for testing only!
 
 thanks cpan testers :)
 
@@ -734,7 +734,7 @@ sub get_v_vars {
 
 X [vars] Same as V currentpackage [vars]
 
- $debugger->get_v_vars(regex);
+ $debugger->get_x_vars(regex);
 
 =cut
 
@@ -1037,7 +1037,7 @@ sub _process_line {
 		my $current_file = $self->show_line();
 		# p $current_file;
 
-		$current_file =~ m/^([\w:]*) \( (.*) : (\d+) .* /mx;
+		$current_file =~ m/([\w:]*) \( (.*) : (\d+) .* /mgx;
 
 		$module  = $1;
 		$file    = $2;

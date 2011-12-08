@@ -14,14 +14,12 @@ if ( $^O =~ /Win32/i ) {
 	$path = Win32::GetLongPathName($dir);
 }
 
-require Test::More;
-import Test::More;
-require Test::Deep;
-import Test::Deep;
+use Test::More;
+use Test::Deep;
 
 plan( tests => 24 );
 
-diag("Dir '$dir' Path '$path'");
+# diag("Dir '$dir' Path '$path'");
 
 my $debugger = start_debugger();
 
