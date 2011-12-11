@@ -1,5 +1,8 @@
 Revision history for Wx-Scintilla
 
+0.35_05 2011.12.11
+    - Upgraded to Scintilla 3.0.2 (AZAWAWI)
+
 0.35_04 2011.11.14
     - Fix SurfaceImpl::Polygon drawing bug that caused some markers to not be
       drawn at all. This was introduced in 0.35_01 (AZAWAWI)
