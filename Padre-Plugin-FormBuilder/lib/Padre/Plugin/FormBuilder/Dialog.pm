@@ -126,6 +126,7 @@ sub browse_changed {
 
 		# Extract the dialog list
 		my $list = [
+			sort
 			grep { defined $_ and length $_ }
 			map  { $_->name }
 			$self->{xml}->project->forms
