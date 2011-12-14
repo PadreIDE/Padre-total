@@ -55,7 +55,7 @@ sub new {
 		-1,
 		"",
 		Wx::gettext("Select a file"),
-		"*.*",
+		"*.fbp",
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
 		Wx::FLP_DEFAULT_STYLE,
