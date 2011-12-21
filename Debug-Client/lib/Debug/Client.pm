@@ -4,7 +4,7 @@ use 5.008006;
 use strict;
 use warnings;
 
-our $VERSION = '0.17_02';
+our $VERSION = '0.17_03';
 
 use utf8;
 use IO::Socket;
@@ -18,7 +18,7 @@ use constant {
 
 Debug::Client - client side code for perl debugger
 
-development version 0.17_02 for testing only!
+development version 0.17_03 for testing only!
 
 thanks cpan testers :)
 
@@ -593,22 +593,22 @@ sub list_break_watch_action {
 	return ( $prompt, \@breakpoints );
 }
 
-=head2 execute_code
+# =head2 execute_code
 
-  $debugger->execute_code($some_code_to_execute);
+# #   $debugger->execute_code($some_code_to_execute);
 
-=cut
+# # =cut
 
-sub execute_code {
-	my ( $self, $code ) = @_;
+# sub execute_code {
+	# my ( $self, $code ) = @_;
 
-	return if not defined $code;
+# # 	return if not defined $code;
 
-	$self->_send($code);
-	my $buf = $self->_get;
-	$self->_prompt( \$buf );
-	return $buf;
-}
+# # 	$self->_send($code);
+	# my $buf = $self->_get;
+	# $self->_prompt( \$buf );
+	# return $buf;
+# }
 
 =head2 get_value
 

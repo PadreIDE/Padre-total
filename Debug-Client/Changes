@@ -1,3 +1,7 @@
+0.17_03 2011.12.11
+    - vast changes to test files (BOWTIE)
+    - Patch for 09-io.t ticket #831 (MJGARDNER)
+    
 0.17_02 2011.12.08
     - vast changes to test files (BOWTIE)
 

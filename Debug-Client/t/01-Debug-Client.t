@@ -1,6 +1,6 @@
 use 5.008006;
 use Test::More;
-plan( tests => 42 );
+plan( tests => 41 );
 
 use_ok( 'Carp'                 ,'1.23');
 use_ok( 'IO::Socket'           ,'1.31');
@@ -20,7 +20,7 @@ use_ok( 'File::Spec'    ,'3.33');
 # let's check our subs/methods.
 ######
 
-my @subs = qw( buffer execute_code filename get get_h_var get_options get_p_exp
+my @subs = qw( buffer filename get get_h_var get_options get_p_exp
 	get_stack_trace get_v_vars get_value get_x_vars get_y_zero list_break_watch_action
 	list_subroutine_names listener module new quit remove_breakpoint row run
 	set_breakpoint set_option show_breakpoints show_line show_view step_in step_over
