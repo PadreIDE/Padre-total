@@ -2,7 +2,6 @@ package t::lib::Breakpoints;
 
 use base qw(Test::Class);
 use Test::More;
-use Test::Deep;
 
 use t::lib::Debugger;
 
@@ -14,7 +13,7 @@ sub load_debugger : Test(setup) {
 	$self->{debugger}->get;
 }
 
-sub options : Test(3) {
+sub bps : Test(3) {
 	my $self = shift;
 
 	$self->{debugger}->step_in;
@@ -23,8 +22,10 @@ sub options : Test(3) {
 
 	ok( $self->{debugger}->show_breakpoints() =~ m{t/eg/03-return.pl:}, 'show_breakpoints' );
 
-	my @out = $self->{debugger}->run;
-	cmp_deeply( \@out, [ 'main::g', 't/eg/03-return.pl', 22, q{   my (@in) = @_;} ], 'run to breakpoint' );
+	$self->{debugger}->run;
+
+	#lets ask debugger where we are then :)
+	like( $self->{debugger}->show_line(), qr/return.pl:22/, 'check breakpoint' );
 
 }
 
