@@ -1,5 +1,9 @@
 Revision history for Wx-Scintilla
 
+0.37_01 2011.12.22
+    - Updated wx-scintilla\src\scintilla\README.txt to
+      fix packaging issues (AZAWAWI)
+
 0.36 2011.12.21
     - Released 0.33_05 as stable 0.36 (AZAWAWI)
 
