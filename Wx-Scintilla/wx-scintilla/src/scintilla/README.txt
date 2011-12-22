@@ -7,7 +7,7 @@ Unneeded *.properties files are also removed.
 
 We also have the experimental LexPerl6.cxx and a modified
 scintilla/src/SciLexer.h to include the Perl 6 syntax highlighter (i.e. lexer).
-Once it is stable, we will push it to the Scintilla source distribution. 
+Once it is stable, we will push it upstream again. 
 
 wxWidgets-specific code to implement Scintilla is located in the parent folder.
 
