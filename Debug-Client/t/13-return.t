@@ -16,9 +16,11 @@ use Test::Deep;
 plan( tests => 12 );
 
 my $debugger = start_debugger();
-
+my $perl5db_ver;
 {
 	my $out = $debugger->get;
+	$out =~ m/(1.\d{2})$/m;
+	$perl5db_ver = $1;
 
 	# Loading DB routines from perl5db.pl version 1.28
 	# Editor support available.
@@ -43,58 +45,84 @@ my $debugger = start_debugger();
 		or diag( $debugger->buffer );
 }
 {
-	my @out = $debugger->step_in;
-	cmp_deeply( \@out, [ 'main::f', 't/eg/03-return.pl', 16, '   my ($in) = @_;' ], 'line 16' )
-		or diag( $debugger->buffer );
+	SKIP: {
+		skip( "perl5db v$perl5db_ver dose not support list call", 1 ) unless $perl5db_ver < 1.35;
+		my @out = $debugger->step_in;
+		cmp_deeply( \@out, [ 'main::f', 't/eg/03-return.pl', 16, '   my ($in) = @_;' ], 'line 16' )
+			or diag( $debugger->buffer );
+	}
 }
 
 {
-	my @out = $debugger->step_out;
-	cmp_deeply( \@out, [ 'main::', 't/eg/03-return.pl', 8, '$x++;', "'foo\nbar'" ], 'line 8' )
-		or diag( $debugger->buffer );
+	SKIP: {
+		skip( "perl5db v$perl5db_ver dose not support list call", 1 ) unless $perl5db_ver < 1.35;
+		my @out = $debugger->step_out;
+		cmp_deeply( \@out, [ 'main::', 't/eg/03-return.pl', 8, '$x++;', "'foo\nbar'" ], 'line 8' )
+			or diag( $debugger->buffer );
+	}
 }
 {
-	my @out = $debugger->step_in;
-	cmp_deeply( \@out, [ 'main::', 't/eg/03-return.pl', 9, q{my @q = g('baz', "foo\nbar", 'moo');} ], 'line 9' )
-		or diag( $debugger->buffer );
+	SKIP: {
+		skip( "perl5db v$perl5db_ver dose not support list call", 1 ) unless $perl5db_ver < 1.35;
+		my @out = $debugger->step_in;
+		cmp_deeply( \@out, [ 'main::', 't/eg/03-return.pl', 9, q{my @q = g('baz', "foo\nbar", 'moo');} ], 'line 9' )
+			or diag( $debugger->buffer );
+	}
 }
 {
-	my @out = $debugger->step_in;
-	cmp_deeply( \@out, [ 'main::g', 't/eg/03-return.pl', 22, '   my (@in) = @_;' ], 'line 22' )
-		or diag( $debugger->buffer );
+	SKIP: {
+		skip( "perl5db v$perl5db_ver dose not support list call", 1 ) unless $perl5db_ver < 1.35;
+		my @out = $debugger->step_in;
+		cmp_deeply( \@out, [ 'main::g', 't/eg/03-return.pl', 22, '   my (@in) = @_;' ], 'line 22' )
+			or diag( $debugger->buffer );
+	}
 }
 
 {
-	my @out      = $debugger->step_out;
-	my $expected = q(0  'baz'
+	SKIP: {
+		skip( "perl5db v$perl5db_ver dose not support list call", 1 ) unless $perl5db_ver < 1.35;
+		my @out      = $debugger->step_out;
+		my $expected = q(0  'baz'
 1  'foo
 bar'
 2  'moo');
 
-	cmp_deeply( \@out, [ 'main::', 't/eg/03-return.pl', 10, '$x++;', $expected ], 'line 10' )
-		or diag( $debugger->buffer );
+		cmp_deeply( \@out, [ 'main::', 't/eg/03-return.pl', 10, '$x++;', $expected ], 'line 10' )
+			or diag( $debugger->buffer );
+	}
 }
 
 {
-	my @out = $debugger->step_in;
-	cmp_deeply( \@out, [ 'main::', 't/eg/03-return.pl', 11, q{my %q = h(bar => "foo\nbar", moo => 42);} ], 'line 11' )
-		or diag( $debugger->buffer );
+	SKIP: {
+		skip( "perl5db v$perl5db_ver dose not support list call", 1 ) unless $perl5db_ver < 1.35;
+		my @out = $debugger->step_in;
+		cmp_deeply(
+			\@out, [ 'main::', 't/eg/03-return.pl', 11, q{my %q = h(bar => "foo\nbar", moo => 42);} ],
+			'line 11'
+		) or diag( $debugger->buffer );
+	}
 }
 
 {
-	my @out = $debugger->step_in;
-	cmp_deeply( \@out, [ 'main::h', 't/eg/03-return.pl', 28, '   my (%in) = @_;' ], 'line 28' )
-		or diag( $debugger->buffer );
+	SKIP: {
+		skip( "perl5db v$perl5db_ver dose not support list call", 1 ) unless $perl5db_ver < 1.35;
+		my @out = $debugger->step_in;
+		cmp_deeply( \@out, [ 'main::h', 't/eg/03-return.pl', 28, '   my (%in) = @_;' ], 'line 28' )
+			or diag( $debugger->buffer );
+	}
 }
 {
-	my @out      = $debugger->step_out;
-	my $received = $out[4];
-	$out[4] = '';
+	SKIP: {
+		skip( "perl5db v$perl5db_ver dose not support list call", 1 ) unless $perl5db_ver < 1.35;
+		my @out      = $debugger->step_out;
+		my $received = $out[4];
+		$out[4] = '';
 
-	# TODO check how to test the return data in this case as it looks like an array
+		# TODO check how to test the return data in this case as it looks like an array
 
-	cmp_deeply( \@out, [ 'main::', 't/eg/03-return.pl', 12, '$x++;', '' ], 'line 12' )
-		or diag( $debugger->buffer );
+		cmp_deeply( \@out, [ 'main::', 't/eg/03-return.pl', 12, '$x++;', '' ], 'line 12' )
+			or diag( $debugger->buffer );
+	}
 }
 
 
@@ -105,15 +133,17 @@ bar'
 	#   h q, h R or h o to get additional info.
 	#   DB<1>
 	my $out = $debugger->step_in;
+
 	# like( $out, qr/Debugged program terminated/ );
 }
 
 {
 	my $out = $debugger->quit;
+
 	# like( $out, qr/1/, 'debugger quit' );
 }
 
-done_testing( );
+done_testing();
 
 1;
 
