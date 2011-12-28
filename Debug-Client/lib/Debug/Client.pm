@@ -22,6 +22,8 @@ development version 0.17_03 for testing only!
 
 thanks cpan testers :)
 
+Warning if you use List request you may get spourios results
+
 =head1 SYNOPIS
 
   use Debug::Client;
@@ -1152,8 +1154,12 @@ __END__
 
 =head1 BUGS AND LIMITATIONS
 
+When using against perl5db.pl v1.35 list mode gives an undef response, also leading single quote now correct. 
+Tests are skiped for list mode against v1.35 now.
+
 Debug::Client 0.12 tests are failing, due to changes in perl debugger, 
 when using perl5db.pl v1.34
+
 Debug::Client 0.13_01 skips added to failing tests.
 
  c [line|sub]
