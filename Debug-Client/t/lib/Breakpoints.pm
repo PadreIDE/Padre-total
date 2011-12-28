@@ -13,7 +13,7 @@ sub load_debugger : Test(setup) {
 	$self->{debugger}->get;
 }
 
-sub bps : Test(3) {
+sub bps : Test(7) {
 	my $self = shift;
 
 	$self->{debugger}->step_in;
@@ -26,6 +26,14 @@ sub bps : Test(3) {
 
 	#lets ask debugger where we are then :)
 	like( $self->{debugger}->show_line(), qr/return.pl:22/, 'check breakpoint' );
+
+	ok( $self->{debugger}->remove_breakpoint( 't/eg/03-return.pl', 'g' ), 'remove breakpoint' );
+
+	ok( $self->{debugger}->show_breakpoints() =~ m{t/eg/03-return.pl:}, 'show_breakpoints' );
+
+	ok( !$self->{debugger}->set_breakpoint( 't/eg/03-return.pl', 'missing' ), 'set_breakpoint against missing sub' );
+
+	ok( !$self->{debugger}->set_breakpoint( 't/eg/03-return.pl', '03' ), 'set_breakpoint line not breakable' );
 
 }
 
