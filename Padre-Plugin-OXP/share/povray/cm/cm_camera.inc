@@ -4,12 +4,12 @@
 #local CubeSide = sqrt( 1/3 ) * (Radius*2);
 union {
     
-light_source { <0,CubeSide * 2,0> color rgb .75  }
-light_source { <0,-CubeSide * 2,0> color rgb .75 }
-light_source { <0,0,CubeSide * 2,> color rgb .75 }
-light_source { <0,0,-CubeSide * 2,> color rgb .75 }
-light_source { <CubeSide * 2,0,0> color rgb .75 }
-light_source { <-CubeSide * 2,0,0> color rgb .75 }
+light_source { <0,CubeSide * 2,0> color rgb .5  }
+light_source { <0,-CubeSide * 2,0> color rgb .5 }
+light_source { <0,0,CubeSide * 2,> color rgb .5 }
+light_source { <0,0,-CubeSide * 2,> color rgb .5 }
+light_source { <CubeSide * 2,0,0> color rgb .5 }
+light_source { <-CubeSide * 2,0,0> color rgb .5 }
 
 
   #switch (Face)
@@ -38,7 +38,7 @@ light_source { <-CubeSide * 2,0,0> color rgb .75 }
 }
 #end
 
-#macro CubeCamera(Face,Radius)
+#macro CubeCamera(Face,Radius,UseBlur)
   #local CubeSide = sqrt( 1/3 ) * (Radius*2);
   
   //spherical 
@@ -46,6 +46,7 @@ light_source { <-CubeSide * 2,0,0> color rgb .75 }
   
   perspective
   angle  90
+
    
   //orthographic
   
@@ -53,6 +54,7 @@ light_source { <-CubeSide * 2,0,0> color rgb .75 }
   up <0,CubeSide,0>
   right <CubeSide,0,0>
   direction <0,0,-CubeSide>
+
   
   //look_at <0,0,200>
   //right <1,0,0> up <0,1,0>
@@ -85,9 +87,11 @@ light_source { <-CubeSide * 2,0,0> color rgb .75 }
 
 #macro PigmentCameraFace(Face,Radius)
     camera_view {
-        CubeCamera(Face,Radius)
+        CubeCamera(Face,Radius,1)
+        output 0
     }
 #end
+
 
 
 #macro CubeCameraOutside(Face,Radius)

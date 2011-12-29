@@ -2,7 +2,7 @@
 #include "cm_planets.inc";
 
 
-#declare GasColour = array[8] {
+#declare GasColour = array[13] {
     CM_dusty_0_255
     CM_Earthy
     CM_Jovian
@@ -11,6 +11,12 @@
     CM_Jupiter2
     CM_Europa
     CM_Venus
+    
+    CM_Rocky1
+    CM_Rocky2
+    CM_Rocky3
+    CM_Rocky4
+    CM_Rocky5
 };
 
 #declare P_GasBanded = pigment {
@@ -30,7 +36,7 @@
     wood
     rotate x*90
     scale 3
-    turbulence 0.05
+    turbulence 0.005
     sine_wave
 }
 
@@ -67,7 +73,7 @@ warp {
 
 #end
 
-#macro Gas(has_colour,has_pattern,GalX,GalY,Modifier1,Modifier2)
+#macro Gas(Radius,has_colour,has_pattern,GalX,GalY,Modifier1,Modifier2)
 
 #local FM1_Rotate = (Modifier1-0.5) * 120;
 #local FM2_Rotate = (Modifier2-0.5) * 120;
@@ -78,6 +84,8 @@ warp {
 );
 #local S_storm_eye = <0.2,0.1,0.1>;
 
+
+sphere { <0,0,0> Radius
     texture {
         pigment {
             average
@@ -184,8 +192,9 @@ warp {
             translate -<GalX,GalY,0> 
             
         }
-        finish { ambient 1 }
+        finish { ambient 0 }
         
     }
+}
 
 #end

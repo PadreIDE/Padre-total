@@ -1,24 +1,53 @@
 #version unofficial megapov 1.21;
 #include "cm_planets.inc";
 
-#declare RockyColour = array[8] {
+#declare RockyColour = array[14] {
     CM_Martian
     CM_Bland_Jovian
     CM_Europa
     CM_Grey
     CM_Venus
     CM_Europa
-    CM_earthy2_120_80
+//    CM_earthy2_120_80
     CM_Grey
+    
+    CM_Rocky1
+    CM_Rocky2
+    CM_Rocky3
+    CM_Rocky4
+    CM_Rocky5
+    CM_Rocky6
+    CM_Rocky7
 };
 
-#declare RockyPattern = array[4] {
-    pigment { granite scale 2 cubic_wave }
+#declare RockyPattern = array[8] {
+    pigment { granite scale 2 cubic_wave turbulence 0.4 lambda 5 }
     pigment { agate scale 4 agate_turb 2 }
-    pigment { wrinkles }
+    pigment { wrinkles scale 0.3 }
     pigment { crackle cubic_wave turbulence 1 scale 3 }
-    
+
+    pigment { granite scale .9 scallop_wave }
+    pigment { agate scale 15 agate_turb 1 scallop_wave turbulence .25 lambda 4 }
+    pigment { wrinkles scale 0.3  cubic_wave }
+    pigment { crackle scallop_wave turbulence 1.6 scale 2 }
+ 
 };
+
+#declare RockyNMap = array[8] {
+    normal { granite .1 scale 2 cubic_wave turbulence 0.4 lambda 5 }
+    normal  { agate  .1 scale 4 agate_turb 2 }
+    normal  { wrinkles .1 scale 0.3 }
+    normal { crackle .1 cubic_wave turbulence 1 scale 3 }
+
+    normal { granite .1 scale .9 scallop_wave }
+    normal  { agate  .1 scale 15 agate_turb 1 scallop_wave turbulence .25 lambda 4 }
+    normal { wrinkles .1 scale 0.3  cubic_wave }
+    normal  { crackle .1 scallop_wave turbulence 1.6 scale 2 }
+ 
+};
+
+
+
 
 #declare F_Craters =  function {
     pigment { average
@@ -44,36 +73,43 @@
 }
 
 
-#declare RockyNormal = array[4] {
-    normal { granite scale 2 scallop_wave }
-    normal { agate scale 4 agate_turb 2 }
-    normal { wrinkles }
-    normal { crackle }
+#declare RockyNormal = array[8] {
+    normal { granite 0.3 scale 0.2 lambda 3 turbulence 0.4 scallop_wave }
+    normal { agate -0.15 scale 0.1 agate_turb 1 scallop_wave }
+    normal { wrinkles 0.4 scale 0.06 scallop_wave turbulence 1}
+    normal { crackle  0.5 form <0.2,0.3,0.4> scale 0.25 }
+    normal { granite 0.6 scale 0.8 turbulence 1 }
+    
+    normal { agate 0.2 scale 0.08 agate_turb 0.86 turbulence 0.5 lambda 2.5 scallop_wave }
+    
+    normal { wrinkles 0.2 scale 0.01 turbulence 0.5  }
+
+    normal { bozo -3 scale 0.03 turbulence 0.5 lambda 5 }
+
+
 };
 
-#declare GasColour = array[8] {
-    CM_dusty_0_255
-    CM_Earthy
-    CM_Jovian
-    CM_neptune2_0_255
-    CM_Saturn
-    CM_Jupiter2
-    CM_Europa
-    CM_Venus
-};
+        //normal { wrinkles 0.7  scale 0.02  translate <GalX,GalY,0>*-1}
+        //normal { granite  0.2 scale 0.25 }
+        //normal { agate 0.5 scale 0.1 agate_turb 1  }
 
-#declare P_GasGiant = pigment { gradient y }
+#macro Rocky(Radius,has_colour,has_pattern,GalX,GalY,Modifier1,Modifier2)
 
-#macro Rocky(has_colour,has_pattern,GalX,GalY,Modifier1,Modifier2)
+#default {
+    finish { ambient 0.3 diffuse 0.7 }
+    
+}
+
+sphere { <0,0,0> Radius hollow inverse
     texture {
         pigment {
-            //RockyPattern[has_pattern]
-            average
+            RockyPattern[ mod(GalY,8) ]
+            translate <GalX,GalY,GalX>
             
             turbulence 0.25*((1+Modifier1)/2)
             lambda 3
             pigment_map {
-                [ 1      RockyPattern[has_pattern]
+                [ 0.5      RockyPattern[has_pattern]
                         translate <GalX,GalY,0>
                         scale 5
                         color_map { RockyColour[has_colour] }
@@ -81,20 +117,32 @@
                         warp { turbulence 0.3 + Modifier2/3 }
                         scale 1/30
                 ]
-                [ 1
+                [ 0.75
                         RockyPattern[has_pattern]
                         translate <GalX,GalY,0>*-1
                         color_map { RockyColour[has_colour] } 
-                        frequency 0.5
-                        phase 0.5 
+                        frequency 0.28
+                        phase sqrt(Modifier2+Modifier1)/2 
                         scale 70
                         warp { turbulence 0.3 + Modifier1/3 }
                         scale 1/70
                 ]
             }
         }
-        finish { ambient 1 }
+        finish { specular 0.1 roughness 0.05 }
+        normal {
+            RockyNMap[mod(GalY,8)]    
+            translate <GalX,GalY,GalX>
+            rotate <1,3,5> * Modifier1        
+            turbulence 0.25*((1+Modifier1)/2)
+            lambda 3.3
+            normal_map {
+                [ 0.5 RockyNormal[ mod(GalX,8) ]  translate <GalX,GalY,0> ]
+                [ 0.75 RockyNormal[ mod(GalY,8) ] translate <GalX,GalY,0> ]
+            }
+        }
     }
+}
 
 /* VerySlow
     texture {
@@ -119,231 +167,3 @@
 
 #end
 
-
-#macro Gas(has_colour,has_pattern,GalX,GalY,Modifier1,Modifier2)
-
-#local FM1_Rotate = (Modifier1-0.5) * 60;
-#local FM2_Rotate = (Modifier2-0.5) * 60;
-#local V_storm_eye = <0,0,1>;
-#local V_storm_eye_perturbed = vrotate(
-    vrotate( V_storm_eye , <FM2_Rotate, 0, 0> ) ,
-    <0,FM1_Rotate,0>
-);
-#local S_storm_eye = <0.2,0.1,0.1>;
-
-    texture {
-        pigment {
-            average
-            turbulence 0.05
-            omega 0.1
-            pigment_map {
-                [ P_GasGiant colour_map { GasColour[has_colour] } 
-                    frequency 1 * Modifier1 * Modifier2
-                    phase 0.25+Modifier1 ]
-                [ P_GasGiant colour_map { GasColour[has_colour] } frequency 0.1 phase 0.5 ]
-                [ P_GasGiant colour_map { GasColour[has_colour] } frequency 0.3 phase 0.85+Modifier2 ]
-            }
-
-            scale 1/10
-            warp {
-                turbulence 0.01
-            }
-            scale 10
-
-            
-            
-            warp {
-                displace {
-                    spherical  scale S_storm_eye*3 translate <0,1,0>
-                    cubic_wave
-                    pigment_map { 
-                        
-                        [0 color rgb 0.5]
-                        [1 spiral1 3  phase 0.75
-                            cubic_wave
-                            color_map{
-                                [0 color rgb 0.5 ]
-                                [0.5 color rgb 0.4]
-                                [1 color rgb 0.5]
-                            }
-                        ]
-                    }
-                    rotate x*90
-                    translate V_storm_eye_perturbed - V_storm_eye
-                    type 1
-                    
-                }
-            }
-            
-          
-            warp {
-                displace {
-                    spherical scale 2  translate <0,0,1>
-                    cubic_wave
-                    pigment_map {
-                        [0 color rgb 0.5]
-                        [1 spiral1 4  phase 0.33
-                            cubic_wave
-                            color_map{
-                                [0 color rgb 0.5 ]
-                                [0.5 color rgb 0.4]
-                                [1 color rgb 0.5]
-                            }
-                        ]
-                    }
-                    type 1
-                }
-            }
-            
-            // Oblate with respect to the rotational axis
-            scale y*2
-            warp {
-                black_hole V_storm_eye_perturbed  vlength( S_storm_eye )*2
-                inverse
-                strength 1.5
-                falloff 1
-                inverse
-            }
-            
-            scale y*1/2  
-          
-            translate <GalX,GalY,0>
-            scale 20
-            warp{
-                turbulence 0.15
-                omega 0.2
-                octaves 8 lambda 2.4
-            }
-            scale 1/20
-            translate -<GalX,GalY,0> 
-            
-        }
-        finish { ambient 1 }
-        
-    }
-
-#end
-
-
-#macro Continents(has_colour,has_pattern)
-    // Ocean
-    texture {
-        pigment { color rgb <0.1,0.24,0.4> }
-        finish { ambient 0.15 }
-        normal { waves 0.24 translate -0.5 scale 3 }
-    }
-    
-    // Clouds
-    texture {
-        pigment { wrinkles  scallop_wave
-            color_map {
-                [0 rgbf 1]
-                [0.7 rgbf 1]
-                [0.95 rgbf <1,1,1,0.6>]
-            }
-        }
-    }
-        
-        
-#end
-
-/* continents
-sphere { <0,0,0> Radius
-    texture {
-        pigment {
-            granite scale 3
-            color_map { CM_Dusty }
-            frequency 0.02
-            phase 0.1
-            warp { 
-                displace {
-                        magnet 2 mandel 200
-                        interior 1,1
-                        scale 0.5
-                        rotate y*30
-                        turbulence 0.35
-                    type 1
-                }
-            }
-        }
-        finish { ambient.5 }
-    }
-    
-    texture {
-        pigment { 
-            magnet 1
-            mandel 600
-            interior 3,1
-            scale .5
-            rotate y * 30
-            turbulence 0.5
-            color_map {
-                [0.01 color rgb <0.1,0.2,0.3> ]
-                [0.02 color rgb <0.5,.9,.9> ]
-                [0.02 color rgbt <0.5,0.9,0.9,1>] 
-            }
-            frequency 1
-        }
-        finish { ambient 0.5 }
-        
-    }
-
-}
-
-
-
-
-/// blue marble with clouds
-sphere { <0,0,0> 1
-    no_shadow
-    inverse
-    double_illuminate
-    texture {
-    pigment  {
-        granite scale 3
-        pigment_map {
-            [ 0.5 
-                average
-                    pigment_map {
-                        [ 
-                                wrinkles
-                                turbulence <5,1,5>
-                                color_map { CM_Earthy }
-                                frequency 0.25
-                        ]
-                        [       ripples
-                                turbulence <5,2,5>
-                                color_map { CM_Greeny }
-                        ]
-                    }
-                    warp { displace { marble scale 21 frequency 2 turbulence 0.3} }
-                    scale 3
-                    warp { turbulence 1 }
-                    scale 20
-                    warp { turbulence 1 }
-                    scale 1/20                
-            ]
-            [ 0.51 P_Ocean ]
-        }
-    }
-}     
-
-texture {
-    pigment { wrinkles scale .05 turbulence 1
-        warp { turbulence 1 }
-        scale 20
-        color_map { [0 rgbf <1,1,1,0.6>]
-                    [0.2 rgbf <.99,.99,1,0.6>]
-                    [0.4 rgbf <.99,.99,1,1>]
-                    [0.6 rgbf 1]
-                }
-        warp { displace { radial rotate x*90 type 1 }  }
- } 
- finish { ambient 1 }
-}
-    
-     
-}
-///
-
-*/
