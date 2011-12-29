@@ -4,7 +4,7 @@ use 5.008006;
 use strict;
 use warnings;
 
-our $VERSION = '0.17_03';
+our $VERSION = '0.17_04';
 
 use utf8;
 use IO::Socket;
@@ -18,7 +18,7 @@ use constant {
 
 Debug::Client - client side code for perl debugger
 
-development version 0.17_03 for testing only!
+development version 0.17_04 for testing only!
 
 thanks cpan testers :)
 

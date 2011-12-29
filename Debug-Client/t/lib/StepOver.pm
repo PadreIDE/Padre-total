@@ -5,7 +5,6 @@ use Test::More;
 use Test::Deep;
 
 use t::lib::Debugger;
-use Data::Printer { caller_info => 1, colored => 1, };
 
 # setup methods are run before every test method.
 sub load_debugger : Test(setup) {

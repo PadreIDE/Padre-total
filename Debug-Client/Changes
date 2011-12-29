@@ -1,5 +1,9 @@
-0.17_03 2011.12.11
-    - vast changes to test files (BOWTIE)
+0.17_03 2011.12.29
+    - remove test code in 0.17_03 that was naffing up cpan testers (BOWTIE)
+
+0.17_03 2011.12.29
+    - vast changes to test files 
+      see #1367/8 (BOWTIE)
     - Patch for 09-io.t ticket #831 (MJGARDNER)
     
 0.17_02 2011.12.08
