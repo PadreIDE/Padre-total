@@ -146,7 +146,7 @@ while ( my $row = $csv->getline($fh) ) {
                         '+O'.$output,
                         '+I'.$sdl_file,
                 );
-                sleep 30; # Quasi thermal control
+                sleep 360; # Quasi thermal control
                 
                 die $! unless $rc==0;
                 die $pov_sdl unless -f $output;
