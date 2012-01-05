@@ -42,6 +42,10 @@ my $COUNT = 0;
 #####################################################################
 # Padre::Plugin Methods
 
+sub plugin_name {
+	'Padre Form Builder';
+}
+
 sub padre_interfaces {
 	'Padre::Plugin'         => 0.93,
 	'Padre::Util'           => 0.93,
@@ -53,10 +57,6 @@ sub padre_interfaces {
 	'Padre::Wx::Role::Main' => 0.93,
 	'Padre::Wx::Main'       => 0.93,
 	'Padre::Wx::Editor'     => 0.93,
-}
-
-sub plugin_name {
-	'Padre Form Builder';
 }
 
 # Clean up our classes

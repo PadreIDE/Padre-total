@@ -10,6 +10,7 @@ Changes for Perl extension Padre-Plugin-FormBuilder
 	- Do not use not-so-"Smart" internationalisation for Padre
 	  as full strings with punctuation are easier to translate
 	- Support for generating several files at once into editors
+	- Generate the year instead of hard-coding it to 2011
 
 0.03 Tue 2 Aug 2011
 	- Rearranged the codegen options to allow more detailed descriptions

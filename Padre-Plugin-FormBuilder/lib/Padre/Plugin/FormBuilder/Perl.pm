@@ -65,11 +65,12 @@ sub form_class {
 	my $self  = shift;
 	my $form  = shift;
 	my $lines = $self->SUPER::form_class($form);
+	my $year  = 1900 + (localtime(time))[5];
 
 	# Append the copywrite statement that Debian/etc need
-	push @$lines, <<'END_PERL';
+	push @$lines, <<"END_PERL";
 
-# Copyright 2008-2011 The Padre development team as listed in Padre.pm.
+# Copyright 2008-$year The Padre development team as listed in Padre.pm.
 # LICENSE
 # This program is free software; you can redistribute it and/or
 # modify it under the same terms as Perl 5 itself.
