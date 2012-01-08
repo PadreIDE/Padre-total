@@ -42,7 +42,7 @@ my $debugger = start_debugger();
 	like( $out, qr{main::\(t/eg/05-io.pl:4\):\s*\$\| = 1;},      'line 4' );
 }
 
-diag("Perl version '$]'");
+diag("Info: Perl version '$]'");
 my $prefix = ( substr( $], 0, 5 ) eq '5.008006' ) ? "Default die handler restored.\n" : '';
 
 # see relevant fail report here:

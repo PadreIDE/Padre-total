@@ -19,7 +19,7 @@ sub options : Test(4) {
 	my $out;
 	$out = $self->{debugger}->get_options();
 	ok( $out =~ m/CommandSet.=.'(\d+)'/s, 'get options' );
-	diag("ComamandSet = '$1'");
+	diag("Info: ComamandSet = '$1'");
 
 	$self->{debugger}->set_breakpoint( 't/eg/14-y_zero.pl', '14' );
 
