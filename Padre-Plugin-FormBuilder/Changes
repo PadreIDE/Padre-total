@@ -2,7 +2,7 @@ Changes for Perl extension Padre-Plugin-FormBuilder
 
 0.04 to be released
 	- Updated to Module::Install::DSL 1.04
-	- Updated to match changes in FBP::Perl 0.69
+	- Updated to match changes in FBP::Perl 0.72
 	- Auto-detect $VERSION from the project the .fbp file is in
 	- Added support for previewing frames without crashing
 	- Removed the use of Mouse as it causes reloading problems

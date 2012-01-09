@@ -25,7 +25,7 @@ use strict;
 use warnings;
 use Scalar::Util 1.19 ();
 use Params::Util 0.33 ();
-use FBP::Perl    0.71 ();
+use FBP::Perl    0.72 ();
 
 our $VERSION = '0.04';
 our @ISA     = 'FBP::Perl';
@@ -325,7 +325,7 @@ L<Padre>
 
 =head1 COPYRIGHT
 
-Copyright 2010 - 2011 Adam Kennedy.
+Copyright 2010 - 2012 Adam Kennedy.
 
 This program is free software; you can redistribute
 it and/or modify it under the same terms as Perl itself.
