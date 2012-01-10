@@ -149,20 +149,17 @@ sub form_wx {
 		"use Padre::Wx ();",
 		"use Padre::Wx::Role::Main ();",
 	];
-	if ( $self->find_plain( $topic => 'FBP::RichTextCtrl' ) ) {
-		push @$lines, "use Wx::STC ();";
-	}
 	if ( $self->find_plain( $topic => 'FBP::HtmlWindow' ) ) {
-		push @$lines, "use Wx::Html ();";
+		push @$lines, "use Padre::Wx 'Html';";
 	}
 	if ( $self->find_plain( $topic => 'FBP::Grid' ) ) {
-		push @$lines, "use Wx::Grid ();";
+		push @$lines, "use Padre::Wx 'Grid';";
 	}
 	if ( $self->find_plain( $topic => 'FBP::Calendar' ) ) {
-		push @$lines, "use Wx::Calendar ();";
-		push @$lines, "use Wx::DateTime ();";
+		push @$lines, "use Padre::Wx 'Calendar';";
+		push @$lines, "use Padre::Wx 'DateTime';";
 	} elsif ( $self->find_plain( $topic => 'FBP::DatePickerCtrl' ) ) {
-		push @$lines, "use Wx::DateTime ();";
+		push @$lines, "use Padre::Wx 'DateTime';";
 	}
 	return $lines;
 }
