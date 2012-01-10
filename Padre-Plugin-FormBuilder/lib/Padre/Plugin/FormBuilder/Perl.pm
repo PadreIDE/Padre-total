@@ -145,22 +145,35 @@ sub form_super {
 sub form_wx {
 	my $self  = shift;
 	my $topic = shift;
-	my $lines = [
-		"use Padre::Wx ();",
-		"use Padre::Wx::Role::Main ();",
-	];
+
+	# Which Wx modules does this form need
+	my @modules = ();
 	if ( $self->find_plain( $topic => 'FBP::HtmlWindow' ) ) {
-		push @$lines, "use Padre::Wx 'Html';";
+		push @modules, 'Html';
 	}
 	if ( $self->find_plain( $topic => 'FBP::Grid' ) ) {
-		push @$lines, "use Padre::Wx 'Grid';";
+		push @modules, 'Grid';
 	}
 	if ( $self->find_plain( $topic => 'FBP::Calendar' ) ) {
-		push @$lines, "use Padre::Wx 'Calendar';";
-		push @$lines, "use Padre::Wx 'DateTime';";
+		push @modules, 'Calendar';
+		push @modules, 'DateTime';
 	} elsif ( $self->find_plain( $topic => 'FBP::DatePickerCtrl' ) ) {
-		push @$lines, "use Padre::Wx 'DateTime';";
+		push @modules, 'DateTime';
 	}
+	if ( $self->find_plain( $topic => 'FBP::RichTextCtrl' ) ) {
+		push @modules, 'RichText';
+	}
+
+	# Generate the use lines
+	my $params = '()';
+	if ( @modules ) {
+		$params = join ', ', map { "'$_'" } @modules;
+	}
+	my $lines = [
+		"use Padre::Wx $params;",
+		"use Padre::Wx::Role::Main ();",
+	];
+
 	return $lines;
 }
 
