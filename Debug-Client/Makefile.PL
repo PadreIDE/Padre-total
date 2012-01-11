@@ -6,9 +6,11 @@ use inc::Module::Install 1.04;
 name 'Debug-Client';
 license 'perl';
 author 'Gabor Szabo <gabor@szabgab.com>';
-author 'Breno G. de Oliveira <garu at cpan.org>';
 author 'Kevin Dawson <bowtie@cpan.org>';
-author 'Ahmad M. Zawawi <ahmad.zawawi@gmail.com>';
+
+# contributor 'Breno G. de Oliveira <garu at cpan.org>';
+# contributor 'Ahmad M. Zawawi <ahmad.zawawi@gmail.com>';
+# contributor 'Mark Gardner <mjgardner@cpan.org>';
 
 perl_version '5.008006';
 

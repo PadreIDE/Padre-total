@@ -4,7 +4,7 @@ use 5.008006;
 use strict;
 use warnings;
 
-our $VERSION = '0.17_04';
+our $VERSION = '0.17_05';
 
 use utf8;
 use IO::Socket;
@@ -18,7 +18,7 @@ use constant {
 
 Debug::Client - client side code for perl debugger
 
-development version 0.17_04 for testing only!
+development version 0.17_05 for testing only!
 
 thanks cpan testers :)
 
@@ -233,7 +233,7 @@ sub quit {
 
 =head2 show_line
 
-.
+. (dot)
 
 Return the internal debugger pointer to the line last executed, and print out that line.
 
@@ -253,6 +253,61 @@ sub show_line {
 
 	$self->_prompt( \$buf );
 	return $buf;
+}
+
+
+=head2 get_lineinfo
+
+Return the internal debugger pointer to the line last executed, 
+and generate filename and row for where are we now. 
+trying to use perl5db lineinfo in naff way,
+
+ $debugger->get_lineinfo();
+
+Then use the following as and when.
+
+ $debugger->filename;
+ $debugger->row;
+ 
+to get filename and row for ide due to changes in perl5db v1.35 see perl5156delta
+
+=cut
+
+#######
+# Method sget_lineinf
+#######
+sub get_lineinfo {
+	my $self = shift;
+
+	# return $self->_send_get('.');
+	$self->_send('.');
+	my $buf = $self->_get;
+
+	# p $self->{buffer};
+
+	# if ( $self->{buffer} =~ /Debugged program terminated/ ) {
+	# $self->{module} = '<TERMINATED>';
+	# return $self->{module};
+	# }
+
+	# where are we know
+	# extract filename and row
+	#"ExSewi::eh(/usr/src/Padre/Padre-Plugin-Debug/scripts/ExSewi.pm:32):
+	#32:		$_[0] = 'not fred';
+	#  DB<40> "
+
+	# if (
+	$self->{buffer} =~ m{^[\w:]* 	# module
+                  \( ([^\)]*):(\d+) \) 	# (file):(row)
+                                    }mx;
+		# )
+	# {
+		$self->{filename} = $1;
+		$self->{row}      = $2;
+	# }
+
+	# p $buf;
+	return;
 }
 
 =head2 show_view
@@ -622,8 +677,7 @@ value of that reference?
 
 =cut
 
-# TODO if the given $x is a reference then something (either this module
-# or its user) should actually call   x $var
+# TODO if the given $x is a reference then something (either this module or its user) should actually call   x $var
 sub get_value {
 	my ( $self, $var ) = @_;
 
@@ -921,8 +975,7 @@ sub module {
 #######
 # Internal Method _get
 #######
-# TODO shall we add a timeout and/or a number to count down the number
-# sysread calls that return 0 before deciding it is really done
+# TODO shall we add a timeout and/or a number to count down the number sysread calls that return 0 before deciding it is really done
 sub _get {
 	my ($self) = @_;
 
@@ -979,25 +1032,28 @@ sub _parse_dumper {
 sub _process_line {
 	my ( $self, $buf ) = @_;
 
+	my $line    = BLANK;
+	my $module  = BLANK;
+	my $file    = BLANK;
+	my $row     = BLANK;
+	my $content = BLANK;
+
 	if ( not defined $buf or not ref $buf or ref $buf ne 'SCALAR' ) {
 		carp('_process_line should be called with a reference to a scalar');
 	}
 
 	if ( $$buf =~ /Debugged program terminated/ ) {
-		return '<TERMINATED>';
+		$module = '<TERMINATED>';
+		$self->{module} = $module;
+		return $module;
 	}
 
 	my @parts = split /\n/, $$buf;
-	
-	my $line = BLANK;
-	my $module  = BLANK;
-	my $file    = BLANK;
-	my $row     = BLANK;
-	my $content = BLANK;
+
+
 	$line = pop @parts;
 
-	#TODO $line is where all CPAN_Testers errors come from
-	# try to debug some test reports
+	#TODO $line is where all CPAN_Testers errors come from try to debug some test reports
 	# http://www.nntp.perl.org/group/perl.cpan.testers/2009/12/msg6542852.html
 	if ( not defined $line ) {
 		croak("Debug::Client: Line is undef. Buffer is $$buf");
@@ -1009,16 +1065,18 @@ sub _process_line {
 		if ( $line =~ /^\d+:   \s*  (.*)$/x ) {
 			$cont = $1;
 			$line = pop @parts;
+
 			# my $next_line = pop @parts;
-		# if ( defined $next_line ) {
+			# if ( defined $next_line ) {
 			# $line = pop @parts;
-		# }
+			# }
 
 			# _logger("Line2: $line");
 		}
 	}
 
 	$$buf = join "\n", @parts;
+
 	# my ( $module, $file, $row, $content ) = q{ };
 
 	# the last line before
@@ -1061,7 +1119,7 @@ sub _process_line {
 	# }	
 	$self->{module}   = $module;
 	$self->{filename} = $file;
-	$self->{row} = $row;
+	$self->{row}      = $row;
 	return ( $module, $file, $row, $content );
 }
 
@@ -1190,15 +1248,19 @@ and just performing c on it's own
 
 Gabor Szabo E<lt>gabor@szabgab.comE<gt>
 
-Breno G. de Oliveira E<lt>garu at cpan.orgE<gt>
-
 Kevin Dawson E<lt>bowtie@cpan.orgE<gt>
+
+=head1 CONTRIBUTORS
+
+Breno G. de Oliveira E<lt>garu at cpan.orgE<gt>
 
 Ahmad M. Zawawi E<lt>ahmad.zawawi@gmail.comE<gt>
 
+Mark Gardner E<lt>mjgardner@cpan.orgE<gt>
+
 =head1 COPYRIGHT
 
-Copyright 2008-2011 Gabor Szabo. L<http://szabgab.com/>
+Copyright 2008-2012 Gabor Szabo. L<http://szabgab.com/>
 
 =head1 LICENSE
 
@@ -1219,5 +1281,9 @@ Pro Perl Debugging written by Richard Foley.
 =head1 See Also
 
 L<GRID::Machine::remotedebugtut>
+
+L<Devel::ebug>
+
+L<Devel::Trepan>
 
 =cut

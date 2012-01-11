@@ -1,4 +1,11 @@
-0.17_03 2011.12.29
+0.17_05 2012.01.11
+    - Due to issues with perl5db v1.34-5 in perl 5.15.3-5 very messy
+      this means list context is now naff
+      Modify tests to cater for these anomiles
+      add Method get_lineinfo so that we can ask where are we!
+      Tweaks to POD
+    
+0.17_04 2011.12.29
     - remove test code in 0.17_03 that was naffing up cpan testers (BOWTIE)
 
 0.17_03 2011.12.29
