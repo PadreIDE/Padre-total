@@ -1,5 +1,8 @@
 Revision history for Perl extension Padre::Plugin::PerlTidy.
 
+0.21 2012.01.11
+    - Fix packaging issue with 0.20 (AZAWAWI)
+
 0.20 2012.01.11
     - Tweak to enable selected text to work (BOWTIE, DODATHOME)
 

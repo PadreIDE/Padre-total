@@ -11,7 +11,7 @@ use Padre::Wx      ();
 use Padre::Plugin 0.92 ();
 use FindBin qw($Bin);
 
-our $VERSION = '0.20';
+our $VERSION = '0.21';
 our @ISA     = 'Padre::Plugin';
 
 # This constant is used when storing and restoring the cursor position.
