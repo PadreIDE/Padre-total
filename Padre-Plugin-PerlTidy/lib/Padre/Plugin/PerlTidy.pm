@@ -21,8 +21,6 @@ use constant SELECTIONSIZE => 40;
 sub padre_interfaces {
 	return (
 		'Padre::Plugin' => '0.92',
-
-		# 'Padre::Config'   => '0.93',
 		'Padre::Wx::Main' => '0.92',
 	);
 }
@@ -87,7 +85,6 @@ sub tidy_selection {
 	$self->{over_ride} = 0;
 	my $perltidyrc = $self->_which_tidyrc;
 
-	# my $tidy = $self->_tidy( $main, $current, $text, $perltidyrc );
 	my $tidy = $self->_tidy( $text, $perltidyrc );
 	unless ( defined Params::Util::_STRING($tidy) ) {
 		return;
