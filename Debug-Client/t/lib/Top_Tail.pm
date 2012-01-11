@@ -4,7 +4,7 @@ use base qw(Test::Class);
 use Test::More;
 use Test::Deep;
 
-use t::lib::Debugger;
+# use t::lib::Debugger;
 
 # setup methods are run before every test method.
 sub top_tail : Test(7) {
@@ -12,7 +12,7 @@ sub top_tail : Test(7) {
 
 	use_ok( 'PadWalker', '1.92' );
 
-	use_ok(t::lib::Debugger);
+	use_ok('t::lib::Debugger');
 
 	ok( start_script('t/eg/14-y_zero.pl'), 'start script' );
 

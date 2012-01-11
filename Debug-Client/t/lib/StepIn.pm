@@ -26,7 +26,7 @@ sub stepin : Test(4) {
 	my @out = $self->{debugger}->step_in;
 	
 	SKIP: {
-		skip( "perl5db v$self->{perl5db_ver} dose not support list call", 1 ) unless $self->{perl5db_ver} < 1.35;
+		skip( "perl5db v$self->{perl5db_ver} dose not support list context", 1 ) unless $self->{perl5db_ver} < 1.35;
 		cmp_deeply( \@out, [ 'main::', 't/eg/02-sub.pl', 7, 'my $y = 22;' ], 'step to line 7' );
 	}
 	

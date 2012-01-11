@@ -21,16 +21,23 @@ sub stepover : Test(3) {
 	my $out;
 
 	$self->{debugger}->run(8);
-	
-	my @out = $self->{debugger}->step_over;
-	
-	#we don't need to skip v1.35 but might need to in future
-	# SKIP: {
-		# skip( "perl5db v$self->{perl5db_ver} dose not support list call", 1 ) unless $self->{perl5db_ver} < 1.35;
-		cmp_deeply( \@out, [ 'main::', 't/eg/02-sub.pl', 9, 'my $z = $x + $y;' ], 'stepover line 9' );
-	# }
 
-	ok( $self->{debugger}->row == 9, 'row = 9' );
+	my @out = $self->{debugger}->step_over;
+	SKIP: {
+		skip( "perl5db $] dose not support c [line|sub]", 1 ) if $] =~ m/5.01500(3|4|5)/;
+		SKIP: {
+			skip( "perl5db v$self->{perl5db_ver} dose not support list context", 1 ) if $self->{perl5db_ver} == 1.35;
+			# cmp_deeply( \@out, [ 'main::', 't/eg/02-sub.pl', 9, 'my $z = $x + $y;', 242 ], 'step_out to line 9' );
+			cmp_deeply( \@out, [ 'main::', 't/eg/02-sub.pl', 9, 'my $z = $x + $y;' ], 'stepover line 9' );
+		}
+	}
+
+	$self->{debugger}->get_lineinfo;
+	SKIP: {
+		skip( "perl5db $] dose not support c [line|sub]", 1 ) if $] =~ m/5.01500(3|4|5)/;
+		ok( $self->{debugger}->row == 9, 'row = 9' );
+	}
+
 	ok( $self->{debugger}->filename =~ m/02-sub/, 'filename = 02-sub.pl' );
 
 }

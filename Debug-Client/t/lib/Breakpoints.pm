@@ -4,7 +4,7 @@ use base qw(Test::Class);
 use Test::More;
 
 use t::lib::Debugger;
-# use Data::Printer { caller_info => 1, colored => 1, };
+
 # setup methods are run before every test method.
 sub load_debugger : Test(setup) {
 	my $self = shift;
@@ -21,7 +21,7 @@ sub bps : Test(7) {
 	ok( $self->{debugger}->set_breakpoint( 't/eg/03-return.pl', 'g' ), 'set_breakpoint' );
 
 	ok( $self->{debugger}->show_breakpoints() =~ m{t/eg/03-return.pl:}, 'show_breakpoints' );
-	
+
 	$self->{debugger}->run;
 
 	#lets ask debugger where we are then :)

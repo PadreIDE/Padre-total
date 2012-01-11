@@ -20,7 +20,7 @@ sub recursive : Test(5) {
 	my $self = shift;
 	my $out;
 	my @out;
-	
+
 	$self->{debugger}->step_in;
 
 	$out = $self->{debugger}->list_break_watch_action;
@@ -46,21 +46,17 @@ sub recursive : Test(5) {
 	);
 
 	$self->{debugger}->run;
-	
-	@out = $self->{debugger}->get_stack_trace;
-	#pre v1.35 wanit this
-	# my $trace1 = q($ = main::fibx(9) called from file `t/eg/04-fib.pl' line 12
-# $ = main::fib(10) called from file `t/eg/04-fib.pl' line 22);
 
-	#v1.35 and it works
+
+	@out = $self->{debugger}->get_stack_trace;
 	my $trace1 = q($ = main::fibx(9) called from file 't/eg/04-fib.pl' line 12
 $ = main::fib(10) called from file 't/eg/04-fib.pl' line 22);
 
 	SKIP: {
-		skip( "perl5db less than v1.35 dose not support leading single quote' ", 1 ) if $self->{perl5db_ver} < 1.35;
-	cmp_deeply( \@out, [$trace1], 'stack trace' )
-}
-	
+		skip( "perl5db pre v1.35 dose not support leading quote in 'out_text'", 1 ) if $self->{perl5db_ver} < 1.35;
+		cmp_deeply( \@out, [$trace1], 'stack trace' );
+	}
+
 
 }
 
