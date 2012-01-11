@@ -1,17 +1,13 @@
 <!-- footer -->
 <div class="spacer"></div>
+
 [% WRAPPER chrome/styled_panel %]
-<div id="footer">
+<div class="footer">
 <small>
   last updated [% build_date %];
   <a href="/contact.html">Contact us</a> -
   <a href="/code_of_conduct.html">Code of Conduct and Diversity Statement</a> -
   <a href="/irc.html"><acronym>IRC</acronym></a>
 </small>
-<br />
- <g:plusone size="medium" href="http://padre.perlide.org/"> </g:plusone>
- <iframe src="http://www.facebook.com/plugins/like.php?href=http://padre.perlide.org/"
-        scrolling="no" frameborder="0"
-        style="border:none; width:450px; height:80px"></iframe> 
 </div>
 [% END %]

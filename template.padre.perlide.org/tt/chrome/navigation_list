@@ -14,7 +14,11 @@
   <li><a href="[% IF section_nav.defined %]#[% link_to | id_attr %][% ELSE %][% link_to  %][% END %]">[% nav.$title_from %]</a></li>
  [% END %]
  </ul>
- 
+ &nbsp;
+   <!-- Place this tag where you want the badge to render -->
+   <a href="https://plus.google.com/113080817271349015915" style="text-decoration:none;"><img src="https://ssl.gstatic.com/images/icons/gplus-16.png" alt="" style="border:0;width:16px;height:16px;"/></a>
+   
+   <a href="http://www.facebook.com/PerlIDE"  style="text-decoration:none;"><img src="/static/facebook_16x16.png" style="border:0;width:16px;height:16px;"/></a>
  <div class="spacer"></div>
 
 </div>
