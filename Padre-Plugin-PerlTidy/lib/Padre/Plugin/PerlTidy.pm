@@ -5,13 +5,13 @@ use strict;
 use warnings;
 use File::Spec     ();
 use File::Basename ();
-use Params::Util   1.04 ();
+use Params::Util 1.04 ();
 use Padre::Current ();
 use Padre::Wx      ();
-use Padre::Plugin  0.92 ();
+use Padre::Plugin 0.92 ();
 use FindBin qw($Bin);
 
-our $VERSION = 0.19;
+our $VERSION = 0.20;
 our @ISA     = 'Padre::Plugin';
 
 # This constant is used when storing and restoring the cursor position.
@@ -20,8 +20,9 @@ use constant SELECTIONSIZE => 40;
 
 sub padre_interfaces {
 	return (
-		'Padre::Plugin'   => '0.92',
-		'Padre::Config'   => '0.92',
+		'Padre::Plugin' => '0.92',
+
+		# 'Padre::Config'   => '0.93',
 		'Padre::Wx::Main' => '0.92',
 	);
 }
@@ -85,7 +86,9 @@ sub tidy_selection {
 	# Tidy the current selected text
 	$self->{over_ride} = 0;
 	my $perltidyrc = $self->_which_tidyrc;
-	my $tidy = $self->_tidy( $main, $current, $text, $perltidyrc );
+
+	# my $tidy = $self->_tidy( $main, $current, $text, $perltidyrc );
+	my $tidy = $self->_tidy( $text, $perltidyrc );
 	unless ( defined Params::Util::_STRING($tidy) ) {
 		return;
 	}

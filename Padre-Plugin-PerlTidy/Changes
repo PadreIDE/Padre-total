@@ -1,5 +1,8 @@
 Revision history for Perl extension Padre::Plugin::PerlTidy.
 
+0.20 2012.01.11
+    - tweak to enable selected text to work (BOWTIE)
+
 0.19 2011.11.24
     - Restored missing Params::Util dependency (AZAWAWI)
     - Removed is_padre_plugin dependency (AZAWAWI)
