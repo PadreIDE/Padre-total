@@ -4,6 +4,7 @@
 %]
 [% WRAPPER lib/xhtml_doc %]
   [% INCLUDE contact_group %]
+  [% INCLUDE contact_via_social %]
   [% INCLUDE contact_via_irc %]
   [% INCLUDE contact_via_mailing_list %]
 [% END %]
@@ -65,6 +66,27 @@ be connected to the channel while waiting someone to answer your
 questions. To join the mailing list please visit the registration page
 of the <a href="http://mail.perlide.org/mailman/listinfo/padre-dev"><code>padre-dev</code></a>
 mailing list.
+</p>
+<div class="spacer" ></div>
+[% END %]
+</div>
+[% END %]
+
+
+[% BLOCK contact_via_social %]
+<div style="float: top;">
+[% WRAPPER chrome/styled_panel %]
+<h2>Facebook</h2>
+<p>
+Padre has a <a href="http://www.facebook.com/PerlIDE">Facebook page</a> you can like or recommend.
+</p>
+<h2>Google+</h2>
+<p>
+Padre has a <a href="https://plus.google.com/113080817271349015915/">Google+ page</a> you can put in your circles.
+</p>
+<h2>LinkedIN</h2>
+<p>
+Padre had a <a href="http://www.linkedin.com/groups?gid=2460957">LinkedIN group</a>. You are welcome to join!
 </p>
 <div class="spacer" ></div>
 [% END %]
