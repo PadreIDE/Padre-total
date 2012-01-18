@@ -21,28 +21,28 @@
 };
 
 #declare RockyPattern = array[8] {
-    pigment { granite scale 2 cubic_wave turbulence 0.4 lambda 5 }
-    pigment { agate scale 4 agate_turb 2 }
-    pigment { wrinkles scale 0.3 }
-    pigment { crackle cubic_wave turbulence 1 scale 3 }
+    function { pigment { granite scale 2 cubic_wave turbulence 0.4 lambda 5 } }
+    function { pigment { agate scale 4 agate_turb 2 } }
+    function { pigment { wrinkles scale 0.3 } }
+    function { pigment { crackle cubic_wave turbulence 1 scale 3 } }
 
-    pigment { granite scale .9 scallop_wave }
-    pigment { agate scale 15 agate_turb 1 scallop_wave turbulence .25 lambda 4 }
-    pigment { wrinkles scale 0.3  cubic_wave }
-    pigment { crackle scallop_wave turbulence 1.6 scale 2 }
+    function { pigment { granite scale .9 scallop_wave } }
+    function { pigment { agate scale 15 agate_turb 1 scallop_wave turbulence .25 lambda 4 } }
+    function { pigment { wrinkles scale 0.3  cubic_wave } }
+    function { pigment { crackle scallop_wave turbulence 1.6 scale 2 } }
  
 };
 
 #declare RockyNMap = array[8] {
-    normal { granite .1 scale 2 cubic_wave turbulence 0.4 lambda 5 }
-    normal  { agate  .1 scale 4 agate_turb 2 }
-    normal  { wrinkles .1 scale 0.3 }
-    normal { crackle .1 cubic_wave turbulence 1 scale 3 }
+    function { pigment { granite  scale 2 cubic_wave turbulence 0.4 lambda 5 } }
+    function { pigment { agate   scale 4 agate_turb 2 } }
+    function { pigment { wrinkles  scale 0.3 } }
+    function { pigment { crackle  cubic_wave turbulence 1 scale 3 } }
 
-    normal { granite .1 scale .9 scallop_wave }
-    normal  { agate  .1 scale 15 agate_turb 1 scallop_wave turbulence .25 lambda 4 }
-    normal { wrinkles .1 scale 0.3  cubic_wave }
-    normal  { crackle .1 scallop_wave turbulence 1.6 scale 2 }
+    function { pigment { granite  scale .9 scallop_wave } }
+    function { pigment  { agate   scale 15 agate_turb 1 scallop_wave turbulence .25 lambda 4 } }
+    function { pigment { wrinkles  scale 0.3  cubic_wave } }
+    function { pigment { crackle scallop_wave turbulence 1.6 scale 2 } }
  
 };
 
@@ -103,13 +103,13 @@
 sphere { <0,0,0> Radius hollow inverse
     texture {
         pigment {
-            RockyPattern[ mod(GalY,8) ]
+            function { RockyPattern[ mod(GalY,8) ](x,y,z).gray }
             translate <GalX,GalY,GalX>
             
             turbulence 0.25*((1+Modifier1)/2)
             lambda 3
             pigment_map {
-                [ 0.5      RockyPattern[has_pattern]
+                [ 0.5     function{  RockyPattern[has_pattern](x,y,z).gray }
                         translate <GalX,GalY,0>
                         scale 5
                         color_map { RockyColour[has_colour] }
@@ -118,7 +118,7 @@ sphere { <0,0,0> Radius hollow inverse
                         scale 1/30
                 ]
                 [ 0.75
-                        RockyPattern[has_pattern]
+                        function { RockyPattern[has_pattern](x,y,z).gray }
                         translate <GalX,GalY,0>*-1
                         color_map { RockyColour[has_colour] } 
                         frequency 0.28
@@ -131,7 +131,7 @@ sphere { <0,0,0> Radius hollow inverse
         }
         finish { specular 0.1 roughness 0.05 }
         normal {
-            RockyNMap[mod(GalY,8)]    
+            function { RockyNMap[mod(GalY,8)](x,y,z).gray }    
             translate <GalX,GalY,GalX>
             rotate <1,3,5> * Modifier1        
             turbulence 0.25*((1+Modifier1)/2)

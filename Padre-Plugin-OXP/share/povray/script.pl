@@ -137,10 +137,10 @@ while ( my $row = $csv->getline($fh) ) {
                 my $rc = system(
                         'megapov',
                         '+Lcm',
-                        '-D',
+                        #'-D',
                         #'+W512' , '+H3072',
-                        '+W682', '+H4092',
-                        #'+W256', '+H1536', # medium resolution
+                       # '+W682', '+H4092',
+                        '+W256', '+H1536', # medium resolution
                         #'+W128','+H768', # low resolution
                         #'+W512' , '+H512' , # Perspective preview
                         '+O'.$output,

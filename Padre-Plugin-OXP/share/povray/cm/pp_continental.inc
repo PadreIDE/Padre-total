@@ -378,15 +378,19 @@ pigment {
 #default {
   finish { ambient 0.3 diffuse 0.7 }
 }
-#local MyPattern = Continents_Pattern[has_pattern];
+
+#local MyGalOffset = <galx,galy,0>;
+#local MySpin =  <360*f_mod1,0,180*f_mod2>;
+
+#local MyPigFunc = function { pigment { Continents_Pattern[has_pattern]  
+            rotate MySpin translate MyGalOffset }
+};
+#local MyPattern = pigment { function { MyPigFunc(x,y,z).gray } };
 #local MyNormal = Continents_Normal[has_pattern];
 
 #local MyOcean   = Ocean_Colours[has_colour];
 #local MyVegetation = Vegetation_Colours[has_colour];
 #local MyTerrain = Land_Colours[has_pattern]; // not the colour modifier ?!?
-
-#local MyGalOffset = <galx,galy,0>;
-#local MySpin =  <360*f_mod1,0,180*f_mod2>;
 
 #local T_MyLand =     // Land mass
     texture {
@@ -468,14 +472,15 @@ sphere { <0,0,0> Radius-0.001 hollow inverse no_shadow
     texture {
         pigment {
             MyPattern
-            rotate MySpin translate MyGalOffset 
+
             lambda 3
             pigment_map {
                 [ 0.5 rgbt 1 ]
                 [ 0.5 
                     gradient y scale 2 triangle_wave  
+                    
                     //turbulence 0.1 lambda 2
-                    // rotate -MySpin translate -MyGalOffset 
+                    //rotate -MySpin translate -MyGalOffset 
                     pigment_map {
                         [0.6 dents scale 0.03 scallop_wave  colour_map { MyVegetation } ]
                         [0.8 wrinkles scale 0.03 colour_map { MyTerrain } ]
@@ -510,10 +515,10 @@ sphere { <0,0,0> Radius-0.001 hollow inverse no_shadow
     // IceCaps
     texture {
         pigment {
-            gradient y scale 2 triangle_wave
+            gradient y scale 2.05 triangle_wave
             rotate x * 2 * f_mod1
             
-            #local Percent_Polar = 0.25 * (f_mod2+f_mod1) / 2;
+            #local Percent_Polar = 0.15 * (f_mod2+f_mod1) / 2;
             colour_map {
                 [1 - Percent_Polar rgbf 1]
                 [1 - Percent_Polar rgbf <0.925,0.975,1,0.15> ]
@@ -523,7 +528,7 @@ sphere { <0,0,0> Radius-0.001 hollow inverse no_shadow
             scale 1/5
             rotate <0,180*f_mod2,0>
             warp {
-                turbulence <0.15,0,0.15>
+                turbulence <0.15,0.05,0.15>
                 lambda 3
             }
             scale 5
