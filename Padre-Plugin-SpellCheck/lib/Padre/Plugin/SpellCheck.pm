@@ -1,10 +1,11 @@
 package Padre::Plugin::SpellCheck;
 
 # ABSTRACT: Check spelling in Padre
-
-use warnings;
+use 5.008005;
 use strict;
+use warnings;
 
+use version; our $VERSION = qv(0.101);
 use File::Spec::Functions qw{ catfile };
 
 use base 'Padre::Plugin';
@@ -32,7 +33,7 @@ sub plugin_icon {
 
 # padre interfaces
 sub padre_interfaces {
-	'Padre::Plugin' => '0.43',;
+	'Padre::Plugin' => '0.92',;
 }
 
 # plugin menu.
