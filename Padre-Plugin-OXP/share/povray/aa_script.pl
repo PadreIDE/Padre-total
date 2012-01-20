@@ -35,23 +35,18 @@ my $POV_template = <<POV;
                 %f // float modifier 2
         )
 
-
-
-CubeMapBoxes(Radius)
-//CubeLight(4,Radius)
-CubeMapCamera()
-
 light_source { -0.15 color rgb 1 
  /* area_light <0.05,0,0> <0,0,0.05> 3,3 
   adaptive 1
   circular
   jitter */
-
 }
 
-//light_source { <6,7,6> color rgb 1 }
-//light_source { <-6,-7,-6> color rgb 1 }
-
+///*
+camera { 
+    CubeCamera( frame_number ,Radius,0)
+}
+//*/
 
 
 POV
@@ -136,21 +131,61 @@ while ( my $row = $csv->getline($fh) ) {
                 my $rc = system(
                         'megapov',
                         '+Lcm',
+                        '-V',
+                        '+A0.05','+AM3',
                         #'-D',
-                        #'+W512' , '+H3072',
-                       # '+W682', '+H4092',
-                        '+W256', '+H1536', # medium resolution
-                        #'+W128','+H768', # low resolution
-                        #'+W512' , '+H512' , # Perspective preview
-                        '+O'.$output,
+                        '+KFI0','+KFF5',
+                        #'+W256', '+H256', # medium resolution
+                        '+W512', '+H512', # high resolution
+                        
+                        '+Ocubestitch..png',
                         '+I'.$sdl_file,
                 );
-                sleep 10; # Quasi thermal control
+               # sleep 10; # Quasi thermal control
                 
                 die $! unless $rc==0;
+                cubestitch( 'cubestitch.%d.png' );
+                rename 'output.png', $output;
                 die $pov_sdl unless -f $output;
         }
         
         else { print $pov_sdl }
         
+}
+
+
+use Imager;
+use Imager::File::PNG;
+
+sub cubestitch {
+
+        my $name = shift;
+        my @files ;
+        for my $i (0..5) {
+                my $fname = sprintf $name , $i;
+                die "Missing frame $i" unless -f $fname;
+                push @files, $fname;
+        }
+
+
+        my $temp = new Imager;
+        $temp->read( file=>$files[0] ) or die $temp->errstr;
+
+warn my $x =$temp->getwidth;
+warn my $y =$temp->getheight;
+
+        die "Image not square ($x,$y)" unless $x==$y;
+
+        my $out = new Imager xsize=>$x, ysize=>$y*6;
+
+        # splat each tile onto a cube map size canvas
+        for my $i (0..5) {
+                my $side = new Imager;
+                $side->read(file => $files[$i]) or die $side->errstr;
+                $side->flip(dir=>'h');
+                $out->compose(src=>$side, tx=>0,ty=>$i*$y   );
+               
+        }
+
+        $out->write( file=>'output.png' ) or die $out->errstr;
 }

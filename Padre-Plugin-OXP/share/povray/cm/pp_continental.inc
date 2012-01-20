@@ -382,6 +382,21 @@ pigment {
 #local MyGalOffset = <galx,galy,0>;
 #local MySpin =  <360*f_mod1,0,180*f_mod2>;
 
+#local MyGradBlend = function {
+    pigment {
+        gradient y scale 2 triangle_wave
+        scale 1/3
+        warp { turbulence 0.35 } 
+        scale 3
+        
+        scale 10
+        warp { turbulence 0.8 lambda 3.5 }
+        scale 1/10
+        
+        translate <galx,0,galy>
+        
+    }
+}
 #local MyPigFunc = function { pigment { Continents_Pattern[has_pattern]  
             rotate MySpin translate MyGalOffset }
 };
@@ -392,12 +407,12 @@ pigment {
 #local MyVegetation = Vegetation_Colours[has_colour];
 #local MyTerrain = Land_Colours[has_pattern]; // not the colour modifier ?!?
 
-#local T_MyLand =     // Land mass
-    texture {
-        gradient y scale 2 triangle_wave
-        texture_map {
+#local P_MyLand =     // Land mass
+    pigment {
+        function { MyGradBlend(x,y,z).gray }
+        pigment_map {
             [ 0.5 
-                pigment {
+                
                     MyPattern
                     lambda 2.8
                     rotate MySpin translate MyGalOffset 
@@ -405,31 +420,31 @@ pigment {
                         [ 0.2 rgbt 1  ]
                         [ 0.2 wrinkles scale 0.02 colour_map { MyVegetation }  ]
                     }
-                }
+                
 
             ]
             [ 0.55 
-                pigment {
+                
                     MyPattern
                     lambda 3.2
                     rotate MySpin translate MyGalOffset 
                     pigment_map {
                        [ 0.2 rgbt 1 ]
                        [ 0.2 wrinkles scale 0.05 colour_map { MyTerrain } ]
-                    }
-                }
+                   }
+                
             ]
             [ 0.65 
-                pigment { MyPattern lambda 5 rotate MySpin translate MyGalOffset
+                 MyPattern lambda 5 rotate MySpin translate MyGalOffset
                     pigment_map {
                         [0.2 rgbt 1]
                         [0.2 wrinkles scale 0.075 colour_map { MyTerrain } ]
                     }
-                }
+                
             ]
             [ 0.9
                 //Mountains
-                pigment {
+                
                     MyPattern
                     lambda 3.5
                     pigment_map {
@@ -438,7 +453,7 @@ pigment {
                         [ 0.675 wrinkles colour_map { CM_Mountain1 } ]
                         [ 0.8 color rgb <1,1,1> ]
                     }
-                }
+                
 
             ]
         }
@@ -477,13 +492,12 @@ sphere { <0,0,0> Radius-0.001 hollow inverse no_shadow
             pigment_map {
                 [ 0.5 rgbt 1 ]
                 [ 0.5 
-                    gradient y scale 2 triangle_wave  
+                   
                     
-                    //turbulence 0.1 lambda 2
-                    //rotate -MySpin translate -MyGalOffset 
+                    function { MyGradBlend(x,y,z).gray }
                     pigment_map {
-                        [0.6 dents scale 0.03 scallop_wave  colour_map { MyVegetation } ]
-                        [0.8 wrinkles scale 0.03 colour_map { MyTerrain } ]
+                        [0.65 granite scale 3 turbulence 1 lambda 3 scallop_wave  colour_map { MyVegetation } ]
+                        [0.875 wrinkles scale 0.3 colour_map { MyTerrain } ]
                      
                     }
                 ]
@@ -525,22 +539,30 @@ sphere { <0,0,0> Radius-0.001 hollow inverse no_shadow
                 [1 rgbf <0.975,1,1,0.025> ]
             }
             
-            scale 1/5
-            rotate <0,180*f_mod2,0>
+
+            scale 1/3
+            warp { turbulence <0.1,0.05,0.1> }
+            scale 3
+
+            scale 15
             warp {
-                turbulence <0.15,0.05,0.15>
+                turbulence <0.5,0.5,0.5>
                 lambda 3
             }
-            scale 5
+            scale 1/15
             
+            
+            //
             warp {
                 displace {
-                    MyPattern lambda 3 turbulence 1+f_mod1 * <1,0.1,1>
+                    MyPattern lambda 1.5 turbulence 1+f_mod1 * <1,0.1,1>
                     rotate MySpin translate MyGalOffset 
-                    colour_map { [0 rgb 0.4 ][1 rgb 0.6]}
+                    colour_map { [0.5 rgb 0.5 ][1 rgb 0.6]}
                     type 1
                 }
             }
+            //
+            rotate <0,180*f_mod2,0>
         }
 
         normal { bumps 0.6 scale 0.014 }
@@ -548,18 +570,18 @@ sphere { <0,0,0> Radius-0.001 hollow inverse no_shadow
     //*/
 }   
    
-//  
+//
 sphere { <0,0,0> Radius*0.96 hollow inverse 
     //
     Clouds( MyGalOffset, has_pattern, f_mod1,f_mod2 )
 
 }     
-//
+
 
 sphere { <0,0,0> Radius*0.98 hollow inverse 
     Clouds( -MyGalOffset, mod(galx,8), f_mod2,f_mod1)
 }
-
+//
   
     
 #end

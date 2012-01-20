@@ -74,17 +74,17 @@
 
 
 #declare RockyNormal = array[8] {
-    normal { granite 0.3 scale 0.2 lambda 3 turbulence 0.4 scallop_wave }
+    normal { granite 0.3 scale 2.8 lambda 3 turbulence 0.4 scallop_wave }
     normal { agate -0.15 scale 0.1 agate_turb 1 scallop_wave }
-    normal { wrinkles 0.4 scale 0.06 scallop_wave turbulence 1}
+    normal { wrinkles 0.4 scale 0.56 scallop_wave turbulence 1}
     normal { crackle  0.5 form <0.2,0.3,0.4> scale 0.25 }
-    normal { granite 0.6 scale 0.8 turbulence 1 }
+    normal { granite 0.6 scale 2.8 turbulence 1 }
     
     normal { agate 0.2 scale 0.08 agate_turb 0.86 turbulence 0.5 lambda 2.5 scallop_wave }
     
     normal { wrinkles 0.2 scale 0.01 turbulence 0.5  }
 
-    normal { bozo -3 scale 0.03 turbulence 0.5 lambda 5 }
+    normal { bozo -3 scale 0.43 turbulence 0.5 lambda 5 }
 
 
 };
@@ -130,6 +130,7 @@ sphere { <0,0,0> Radius hollow inverse
             }
         }
         finish { specular 0.1 roughness 0.05 }
+        //
         normal {
             function { RockyNMap[mod(GalY,8)](x,y,z).gray }    
             translate <GalX,GalY,GalX>
@@ -141,6 +142,7 @@ sphere { <0,0,0> Radius hollow inverse
                 [ 0.75 RockyNormal[ mod(GalY,8) ] translate <GalX,GalY,0> ]
             }
         }
+        //
     }
 }
 
