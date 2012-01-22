@@ -5,16 +5,23 @@ package Padre::Plugin::Autoformat;
 use strict;
 use warnings;
 
+use Padre::Plugin;
+use Padre::Util;
+use Padre::Wx;
+
 use File::Basename qw{ fileparse };
 use File::Spec::Functions qw{ catfile };
 use base qw{ Padre::Plugin };
 
-our $VERSION = '1.23';
+our $VERSION = '1.24';
 
 # -- padre plugin api, refer to Padre::Plugin
-
-# plugin name
-sub plugin_name {'Autoformat'}
+#######
+# Define Plugin Name required
+#######
+sub plugin_name {
+	return Wx::gettext('Autoformat');
+}
 
 # plugin icon
 sub plugin_icon {
@@ -27,9 +34,14 @@ sub plugin_icon {
 	return Wx::Bitmap->new( $icon_file, Wx::wxBITMAP_TYPE_PNG );
 }
 
-# padre interfaces
+#######
+# Define Padre Interfaces required
+#######
 sub padre_interfaces {
-	'Padre::Plugin' => 0.68, 'Padre::Wx::Editor' => 0.89,;
+	return (
+		'Padre::Plugin'     => 0.92,
+		'Padre::Wx::Editor' => 0.92,
+	);
 }
 
 # plugin menu.
@@ -67,7 +79,17 @@ sub autoformat {
 	$editor->ReplaceSelection($tidied);
 }
 
+#######
+# Clean up dialog Main, Padre::Plugin,
+#######
+sub plugin_disable {
+	my $self = shift;
 
+	$self->SUPER::plugin_disable(@_);
+
+	return 1;
+
+}
 
 
 1;
