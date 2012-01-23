@@ -6,6 +6,5 @@ requires_from lib/Padre/Plugin/FormBuilder/Perl.pm
 requires      Padre              0.93
 test_requires Test::More         0.47
 test_requires Test::NoWarnings   0.084
-test_requires Test::NeedsDisplay 1.07
 test_requires Test::LongString   0.10
 install_share
