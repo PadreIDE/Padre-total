@@ -6,6 +6,7 @@ BEGIN {
 	$^W = 1;
 }
 
+use Test::NeedsDisplay;
 use Test::More tests => 5;
 use Test::NoWarnings;
 
