@@ -8,14 +8,13 @@ Padre::Plugin::FormBuilder - Generate Perl for dialogs created in wxFormBuilder
 
 =head1 DESCRIPTION
 
-The FormBuilder user interface design tool helps to produce user interface code
-relatively quickly. However, it does not support the generation of Perl.
+The Form Builder user interface design tool helps to produce user interface
+code relatively quickly. However, it does not natively support the
+generation of Perl code.
 
 B<Padre::Plugin::FormBuilder> provides an interface to the
 L<Wx::Perl::FormBuilder> module to allow the generation of Padre dialog code
 based on wxFormBuilder designs.
-
-=head1 METHODS
 
 =cut
 
