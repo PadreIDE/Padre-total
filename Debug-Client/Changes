@@ -1,9 +1,13 @@
+0.17_06 2012.02.xx
+    - remove is for cmp_ok where values are numeric
+
+
 0.17_05 2012.01.11
-    - Due to issues with perl5db v1.34-5 in perl 5.15.3-5 very messy
+    - Due to issues with perl5db v1.34-5 in Perl 5.15.3-5 very messy
       this means list context is now naff
-      Modify tests to cater for these anomiles
+      Modify tests to cater for these anomaly's
       add Method get_lineinfo so that we can ask where are we!
-      Tweaks to POD
+      Tweaks to POD (BOWTIE)
     
 0.17_04 2011.12.29
     - remove test code in 0.17_03 that was naffing up cpan testers (BOWTIE)
@@ -20,23 +24,23 @@
     - adjust required version for 'E' requires 5.8.6
       (Note that threading support was built into the debugger as of 
       Perl version 5.8.6 and debugger version 1.2.8.)
-    - Opps requires 'IO::Socket' reset to '1.31'
+    - Oops requires 'IO::Socket' reset to '1.31'
     - try some other testing modules Test::Class
     - Tidy POD (BOWTIE)
 
 0.16 2011.11.30
     - Add Methods list_subroutine_names, set_option, get_options, module
     - tweak to return line & row from dot if all else fails
-    - tweak to Makefile dependances
-    - Ammend POD for above
-    - Ammend test to support above (BOWTIE)
+    - tweak to Makefile dependence's
+    - Amend POD for above
+    - Amend test to support above (BOWTIE)
 
 0.15 2011.11.24
     - removed Method listen
     - comment out list_subroutine_names & _set_option
-    - Modify Method get_value to accepect no values
+    - Modify Method get_value to accept no values
     - Modify get_p_exp
-    - Ammend test to support above (BOWTIE)
+    - Amend test to support above (BOWTIE)
 
 0.14 2011.11.24
     - Released 0.13_10 as stable 0.14 (AZAWAWI)
@@ -64,13 +68,13 @@
       spell check POD (BOWTIE)
 
 0.13_05 2011.11.07
-    - default port changed to 24642 as port 12345 regestered to "Italk Chat System" (BOWTIE)
+    - default port changed to 24642 as port 12345 registered to "Italk Chat System" (BOWTIE)
     - _process_line is where all the generated errors from cpantesters come from
-      $count = 0; and some tewaks to $line to suppress errors when buffer is empty (BOWTIE)
+      $count = 0; and some tweaks to $line to suppress errors when buffer is empty (BOWTIE)
 
 0.13_04 2011.11.05
-    - Perl::Critic Error Subroutine "listen" is a homonym for builtin function
-      listen changed to listerner (BOWTIE)
+    - Perl::Critic Error Subroutine "listen" is a homonym for bulletin function
+      listen changed to listener (BOWTIE)
     - using ReuseAddr as Reuse has bean deprecated (BOWTIE)
     - Perl::Critic severity => 5, & severity => 4, pass now (BOWTIE)
     - tweak to test t/02... (BOWTIE)
@@ -122,7 +126,7 @@ v0.07 2009.12.15
     Added more test.
 
 v0.06 2009.12.14
-    Prompt is now the first return paramter
+    Prompt is now the first return parameter
     Added more tests
     Added more documentation
     

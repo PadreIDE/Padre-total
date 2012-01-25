@@ -22,18 +22,16 @@ sub get_value : Test(6) {
 
 	$self->{debugger}->step_in;
 	$self->{debugger}->step_in;
-
+	
 	$out = $self->{debugger}->get_value();
 	is( $out, '', 'nought' );
 
 	$out = $self->{debugger}->get_value('19+23');
-	is( $out, '42', '42 the answer' );
-
+	cmp_ok( $out, '==', '42', '19+23=42 the answer' );
 
 	$self->{debugger}->__send('$abc = 23');
 	$out = $self->{debugger}->get_value('$abc');
-	is( $out, '23', 'we just set a variable' );
-
+	cmp_ok( $out, '==', '23', 'we just set a variable $abc = 23' );
 
 	$self->{debugger}->__send('@qwe = (23, 42)');
 	$out = $self->{debugger}->get_value('@qwe');
