@@ -8,7 +8,7 @@ use warnings;
 use File::Spec   ();
 use Params::Util ();
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 sub current_fbp {
 	my $current = shift;

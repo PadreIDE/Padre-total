@@ -27,7 +27,7 @@ use Scalar::Util 1.19 ();
 use Params::Util 0.33 ();
 use FBP::Perl    0.77 ();
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 our @ISA     = 'FBP::Perl';
 
 

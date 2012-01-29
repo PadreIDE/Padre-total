@@ -28,7 +28,7 @@ use Class::Inspector 1.22 ();
 use Params::Util     1.00 ();
 use Padre::Plugin         ();
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 our @ISA     = 'Padre::Plugin';
 
 # Temporary namespace counter
