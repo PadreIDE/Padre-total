@@ -72,7 +72,7 @@ SCOPE: {
 	# Create the generator object
 	my $code = Padre::Plugin::FormBuilder::Perl->new(
 		project  => $project,
-		version  => '0.04',
+		version  => '0.05',
 		nocritic => 1,
 	);
 	isa_ok( $code, 'FBP::Perl' );
@@ -90,7 +90,7 @@ SCOPE: {
 	# Create the generator object
 	my $code = Padre::Plugin::FormBuilder::Perl->new(
 		project     => $project,
-		version     => '0.04',
+		version     => '0.05',
 		prefix      => 2,
 		encapsulate => 1,
 		nocritic    => 1,
