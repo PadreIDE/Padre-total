@@ -136,6 +136,7 @@ post '/login' , sub {
             );
         };
 
+        debug($user);
         if ( $user ) {
             debug "Success ", $user;
             session user => $user->id;
@@ -188,9 +189,10 @@ put '/config' => sub {
 
     my %payload = params();
     # debug "Got payload " . Dumper \%payload;
-    Madre::DB->create(
-        user_id => $session,
-        data    => JSON::encode_json( \%payload ),
+    Madre::DB->do(
+        'INSERT INTO config ( user_id, data ) VALUES ( ?, ? )', {},
+        $session,
+        JSON::encode_json( \%payload ),
     );
 
     status 204;
