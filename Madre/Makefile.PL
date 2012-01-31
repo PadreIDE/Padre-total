@@ -3,14 +3,14 @@ use warnings;
 use ExtUtils::MakeMaker;
 
 WriteMakefile(
-    NAME                => 'Madre',
-    AUTHOR              => q{YOUR NAME <youremail@example.com>},
-    VERSION_FROM        => 'lib/Madre.pm',
-    ABSTRACT            => 'Sync Server for Padre',
+    NAME         => 'Madre',
+    AUTHOR       => q{YOUR NAME <youremail@example.com>},
+    VERSION_FROM => 'lib/Madre.pm',
+    ABSTRACT     => 'Sync Server for Padre',
     ($ExtUtils::MakeMaker::VERSION >= 6.3002
       ? ('LICENSE'=> 'perl')
       : ()),
-    PL_FILES            => {},
+    PL_FILES  => {},
     PREREQ_PM => {
         'Test::More'                 => '0.47',
         'Try::Tiny'                  => '0.08',
@@ -21,6 +21,11 @@ WriteMakefile(
         'DateTime::Format::Strptime' => 0,
         'Dancer::Session::Storable'  => 0,
     },
-    dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean               => { FILES => 'Madre-*' },
+    dist => {
+        COMPRESS => 'gzip -9f',
+        SUFFIX   => 'gz',
+    },
+    clean => {
+        FILES => 'Madre-* data sessions',
+    },
 );
