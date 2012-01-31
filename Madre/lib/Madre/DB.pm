@@ -1,5 +1,6 @@
 package Madre::DB;
 
+use 5.008;
 use strict;
 use ORLite {
     file    => 'data/madre.db',
