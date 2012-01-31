@@ -28,16 +28,14 @@ template: "template_toolkit"
 #     end_tag:   '%]'
 
 engines:
-    JSON:
-        allow_blessed: 1
-        convert_blessed: 1
-    template_toolkit:
-            WRAPPER: layouts/main.tt
-            
+  JSON:
+    allow_blessed: 1
+    convert_blessed: 1
+  template_toolkit:
+    WRAPPER: layouts/main.tt
+
 session: Storable
 
 plack_middlewares: 
-    -
-        - StackTrace
-
-
+  -
+    - StackTrace
