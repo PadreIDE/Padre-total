@@ -67,7 +67,6 @@ v6: in the work
     HTML::FormatText::WithLinks                 0.14
     HTML::TagCloud                              0.37
     HTML::Lint                                  2.06
-    HTML::Template                              2.9
     HTML::FillInForm                            2.00
     HTTP::Server::Simple::Static                0.07
     HTTP::Exception                             0.03001
@@ -83,9 +82,6 @@ v6: in the work
     Marpa                                       0.204000 (requested by ron_zephyr)
     Marpa::HTML                                 0.102000 (requested by ron_zephyr)
     MIME::Lite                                  3.027    (this asks about a number of module in a strange way even though they were already installed)
-    MooseX::Storage                             0.30
-    MooseX::Storage::Deferred                   0.30
-    MooseX::LogDispatch                         1.2002
     Net::SMTP::SSL                              1.01
     Net::SMTP_auth                              0.08
     Object::ID                                  0.1.1
@@ -105,14 +101,6 @@ v6: in the work
     Template::Plugin::Cycle                     1.06
     Text::CSV                                   1.21
     Text::CSV_PP                                1.29
-    Test::LeakTrace                             0.13
-    Test::SharedFork                            0.16
-    Test::TCP                                   1.13
-    Test::DatabaseRow                           1.04
-    Test::Mock::LWP                             0.05
-    Test::Perl::Critic                          1.02
-    Test::Trap                                  0.2.1
-    Test::HTTP::Server::Simple                  0.11
     Twiggy                                      0.1010
     UNIVERSAL::moniker                          0.08
     UNIVERSAL::require                          0.13
@@ -124,14 +112,11 @@ v6: in the work
 
 
     # Upgardes
-    Any::Moose               0.15
     Attribute::Handlers      0.91
+    Dancer                   1.3071
     ExtUtils::XSpp           0.1602
     File::HomeDir            0.98
     Games::Zumbis            0.05
-    Test::Fatal              0.006
-    Test::Most               0.24
-    Test::WWW::Mechanize     1.34
     Win32API::File           0.1200
     Wx                       0.9901
     Wx::Scintilla            0.19
@@ -148,36 +133,11 @@ v4: 2011.06.20
 
     # New
 
-    Devel::Autoflush                              0.05
-    Tee                                           0.14
-    IO::CaptureOutput                             1.1102
-    Test::Reporter                                1.57
-    CPAN::Reporter                                1.1902   
-
-    Data::UID                                     1.217
-    Data::GUID                                    0.046
-    Metabase::Fact                                0.019
-    Metabase::Client::Simple                      0.008
-    CPAN::Testers::Report                         1.999001
-    Config::Perl::V                               0.12
-    Test::Reporter::Transport::Metabase           1.999008
 
     # It is disabled before we package the new version
     # If you'd like to enable it you need to follow the instructions on
     # http://wiki.cpantesters.org/wiki/QuickStart
    
-    Text::CSV_XS                                  0.82
-    Net::Telnet                                   3.03
-
-    App::cpanoutdated                             0.16
-
-    AppConfig                                     1.66
-    Template                                      2.22
-
-    Test::MockModule                              0.05
-    Win32::SystemInfo                             0.11
-    Win32::Daemon                          20110117
-    Win32::GuiTest                                1.58
     Tie::Simple                                   1.03
     Text::Patch                                   1.8
     Aliend::SDL                                   1.426  (SDL-1.2.14 (extended 20100704))
@@ -193,9 +153,6 @@ v4: 2011.06.20
     Locale::Maketext::Extract                     0.86
     Games::FrozenBubble                           2.212
 
-    Wx::Scintilla                                 0.12
-
-
     # Upgrades
 
     Dancer                                        1.3060
@@ -204,59 +161,12 @@ v4: 2011.06.20
     File::Slurp                                9999.19
     Module::CoreList                              2.49
     ORLite                                        1.50
-    Test::MockObject                              1.20110612
     Win32::Exe                                    0.16
 
-    Padre                                         0.842  (backporting the usage of Wx::Scintalla )
-
 v3: 2011.05.29
-    Strawberry Perl 5.12.3.0
 
-    Padre                                         0.84
-    Padre::Plugin::PerlCritic                     0.12
-    Padre::Plugin::PerlTidy                       0.16
 
-    Dancer                                        1.3050
-    Dancer::Plugin::Auth::RBAC                    1.110720
-    Dancer::Plugin::Auth::Twitter                 0.02
-    Dancer::Plugin::Captcha::SecurityImage        0.10
-    Dancer::Plugin::Database
-    Dancer::Plugin::DBIC                          0.1504
-    Dancer::Plugin::FlashMessage                  0.313
-    Dancer::Plugin::SiteMap                       0.06
-    Dancer::Plugin::SimpleCRUD
-
-    DBIx::Class                                   0.08192
-
-    Log::Dispatch                                 2.29
-
-    Modern::Perl                                  1.03
-    Module::Install                               1.01
-
-    Moose                                         2.0007
-    MooseX::StrictConstructor                     0.16
-    MooseX::Singleton                             0.27
-
-    Task::Kensho                                  0.31
-
-    Test::Most                                    0.23
-    Test::WWW::Mechanize                          1.32
-    Test::Deep                                    0.108
-    Test::Exception                               0.31
-
-    POE                                           1.311
-
-    WWW::Mechanize                                1.68
-
-    Win32::Env                                    0.03
-    Win32::Env::Path                              0.03
-
-    Spreadsheet::ParseExcel                       0.59
-    Spreadsheet::WriteExcel                       2.37
-    Excel::Writer::XLSX                           0.22
-    Spreadsheet::WriteExcelXML                    0.13
-
-    Module::Version                               0.12
+    
     MongoDB                                       0.42
         (In order to take full advantage of the MongoDB client 
         you will need to download the MongoDB server yourself from
@@ -265,58 +175,9 @@ v3: 2011.05.29
     Removed padre.bat
     Added setup_padre.bat to setup desktop icon
 
-v2: 2011.05.22
-    Strawberry Perl 5.12.3.0
-    Padre 0.84
-    Padre::Plugin::PerlCritic 0.12
-    Padre::Plugin::PerlTidy 0.16
-    Moose 2.0007
-    Test::Most 0.23
-    WWW::Mechanize 1.68
-    Test::WWW::Mechanize 1.32
-    Test::Deep 0.108
-    Test::Exception 0.31
-    MooseX::StrictConstructor 0.16
-    Task::Kensho
-    MooseX::Singleton
-    Dancer
-    Dancer::Plugin::SiteMap
-    Dancer::Plugin::SimpleCRUD
-    Dancer::Plugin::Database
-    Dancer::Plugin::Captcha::SecurityImage
-    Dancer::Plugin::Auth::RBAC
-    Dancer::Plugin::Auth::Twitter
-    POE
-    DBIx::Class
-    Module::Install
-
     Added padre.bat to the c:\strawberry directory
 
-v1: 2011.05.20
-    Strawberry Perl 5.12.3.0
-    Padre 0.84
-
 ==========================   
-   
-OTHER:
-    System Variables removed:
-    FTP_PASSIVE = 1
-    PERL_JSON_BACKEND JSON::XS
-    PERL_YAML_BACKEND YAML
-    TERM dumb
-
-Old released notes: (v1 and v2)
-    Unzip the file
-    put it in some place without a path in it. e.g c:\strawberry
-    Run the relocation.pl.bat
-    Run the update_env.pl.bat
-    Open the Control Panel / System / Advanced / Environment Variables / OK / OK
-        This will make the previous changes work *without* a reboot.
-    Run the setup_padre.pl.bat
-        This will put an icon of Padre on your desktop and
-        you can run it by double clicking on the icon
-
-===========================
 
 We have already in v3:
     (Test::Warn 0.23)
@@ -329,10 +190,7 @@ We have already in v3:
     (MIME::Base64 3.13)
     (MIME::QuotedPrint 3.13)
 
-
 TODO
-App::pmuninstall
-App::cpanminus
 
     Prima
     Win32::GUIRobot
@@ -380,30 +238,6 @@ Try these applications:
     PDL
    
     Task::Plack   -> tons of modules and I am sure some would NOT work in Win32
-
-Building "Padre on Strawberry Perl"
-*) Download and install Strawberry perl strawberry-perl-5.12.3.0.msi
-*) Open command prompt
-*) Check in the whole Strawberry directory to a fresh Git repository
-   (Git as that will make it easier to exclude all the files from .git)
-
-TODO: change the way we install modules so they will go in the vendor directory! (Should that be really?)
-
-For development set:
- cpan> o conf prerequisites_policy ask
- 
-First thing install and setup CPAN::Reporter
-
- cpan> o conf test_report 1
-
-
-
-*) Configure the CPAN client again:
-cpan> o conf prerequisites_policy follow
-cpan> o conf test_report 0
-
-After the installation of each module add the files to Git and commit them to the repository.
-
 
 FAILED
     Test::File               1.29
