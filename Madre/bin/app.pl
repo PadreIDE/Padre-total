@@ -5,5 +5,6 @@ use strict;
 use Dancer;
 use Madre;
 use Madre::Dance::Sync;
+use Madre::Dance::Telemetry;
 
 start;
