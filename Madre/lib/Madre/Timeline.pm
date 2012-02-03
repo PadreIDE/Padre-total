@@ -15,9 +15,7 @@ sub upgrade3 {
       instance_id TEXT     NOT NULL PRIMARY KEY,
       created     DATETIME NOT NULL DEFAULT ( datetime('now') ),
       modified    DATETIME NOT NULL DEFAULT ( datetime('now') ),
-      padre       TEXT     NULL
-      perl        TEXT     NULL,
-      osname      TEXT     NULL,
+      padre       TEXT     NULL,
       data        BLOB     NULL
    )
 END_SQL
@@ -39,11 +37,11 @@ sub upgrade2 {
 END_SQL
 
    $self->do(<<'END_SQL');
-   CREATE INDEX index_config_user_id ON config ( user_id );
+   CREATE INDEX index_config_user_id ON config ( user_id )
 END_SQL
 
    $self->do(<<'END_SQL');
-   CREATE INDEX index_config_modified ON config ( modified );
+   CREATE INDEX index_config_modified ON config ( modified )
 END_SQL
 
    return 1;
@@ -57,7 +55,7 @@ sub upgrade1 {
        user_id  INTEGER  NOT NULL PRIMARY KEY,
        email    TEXT     NOT NULL,
        password TEXT     NOT NULL,
-       created  DATETIME NOT NULL DEFAULT ( datetime('now') ),
+       created  DATETIME NOT NULL DEFAULT ( datetime('now') )
    )
 END_SQL
 

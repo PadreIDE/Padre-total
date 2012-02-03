@@ -3,7 +3,6 @@ package Madre::Dance::Sync;
 use 5.008;
 use strict;
 use Digest::MD5                ();
-# use Data::Dumper               ();
 use JSON                       ();
 use DateTime                   ();
 use DateTime::Format::Strptime ();
@@ -20,15 +19,15 @@ my $DATES = DateTime::Format::Strptime->new(
 set serializer => 'mutable';
 
 hook before => sub {
-    my $session = session('user');
-    if ( $session ) {
+    my $user_id = session('user');
+    if ( $user_id ) {
         try {
-            my $user = Madre::DB::User->load($session);
+            my $user = Madre::DB::User->load($user_id);
             debug( 'Loaded session user - ' . $user->username );
             vars->{user} = $user;
 
         } catch {
-            debug( "Invalid session user $session" );
+            debug( "Invalid session user $user_id" );
             session->destroy;
         };
     }
@@ -48,46 +47,37 @@ get '/register' => sub {
 };
 
 post '/register' => sub {
-    my $username  = params->{username};
-    my $password1 = params->{password};
-    my $password2=  params->{password_confirm};
     my $email1    = params->{email};
     my $email2    = params->{email_confirm};
-    # debug( Dumper params() );
+    my $password1 = params->{password};
+    my $password2 = params->{password_confirm};
 
     # Validate the user information
-    unless ( length $password1 ) {
-        return register_error("You must supply a password");
-    }
     unless ( length $email1 ) {
         return register_error("You must supply an email address");
-    }
-    unless ( length $username ) {
-        return register_error("You must provide a username");
-    }
-    unless ( $password1 eq $password2 ) {
-        return register_error("Passwords do not match");
     }
     unless ( $email1 eq $email2 ) {
         return register_error("Email addresses do not match");
     }
+    unless ( length $password1 ) {
+        return register_error("You must supply a password");
+    }
+    unless ( $password1 eq $password2 ) {
+        return register_error("Passwords do not match");
+    }
 
     try {
         my $user = Madre::DB::User->create(
-            username => $username,
-            password => salt_password( $username, $password1 ),
             email    => $email1,
-            created  => $DATES->format_datetime( DateTime->now ),
+            password => salt_password( $email1, $password1 ),
         ) or die "Failed to create user";
 
-        my $location = '/user/name/' . $username;
+        my $location = '/user/' . $user->user_id;
         status 201; # Created
         header 'Location' => $location;
         template 'created.tt', {
-            user     => $user,
-            user_uri => $location,
+            user => $user,
         };
-
     } catch {
         debug( "$_") ;
         status 500; # Internal error
@@ -123,31 +113,31 @@ get '/login' , sub {
 };
 
 post '/login' , sub {
-        my $username = params->{username};
+        my $email    = params->{email};
         my $password = params->{password};
-        my $hash     = salt_password( $username, $password );
+        my $hash     = salt_password( $email, $password );
         debug( "Using hash = $hash" );
 
         my ($user) = try {
             Madre::DB::User->select(
                 'WHERE username = ? AND password = ?',
-                $username,
+                $email,
                 $hash,
             );
         };
 
         debug($user);
-        if ( $user ) {
-            debug "Success ", $user;
-            session user => $user->id;
-            session logged_in => true;
-            redirect '/';
-        } else {
+        unless ( $user ) {
            debug( "Auth failed" );
            error "Authorisation failed";
            status 401;
            return 'authentication failure';
         }
+
+        debug "Success ", $user;
+        session user => $user->user_id;
+        session logged_in => true;
+        redirect '/';
 };
 
 
@@ -158,15 +148,15 @@ post '/login' , sub {
 # Configuration Management
 
 get '/config' => sub {
-    my $session = session('user');
-    unless ( $session ) {
+    my $user_id = session('user');
+    unless ( $user_id ) {
         status 401;
         return template 'login';
     }
 
     my ($config) = Madre::DB::Config->select(
-        'WHERE user_id = ? ORDER BY modified DESC',
-        $session,
+        'WHERE user_id = ? ORDER BY modified DESC LIMIT 1',
+        $user_id,
     );
 
     my $hash = JSON::decode_json( $config->data );
@@ -175,24 +165,16 @@ get '/config' => sub {
 };
 
 put '/config' => sub {
-    my $session = session('user');
-    unless ( $session ) {
+    my $user_id = session('user');
+    unless ( $user_id ) {
             status 401;
             return template 'login';
     }
-    # debug( Dumper params() );
-
-    my ($conf) =  Madre::DB::Config->select(
-        'WHERE user_id = ?',
-        $session,
-    );
 
     my %payload = params();
-    # debug "Got payload " . Dumper \%payload;
-    Madre::DB->do(
-        'INSERT INTO config ( user_id, data ) VALUES ( ?, ? )', {},
-        $session,
-        JSON::encode_json( \%payload ),
+    Madre::DB::Config->create(
+        user_id => $user_id,
+        data    => JSON::encode_json( \%payload ),
     );
 
     status 204;
@@ -206,22 +188,19 @@ put '/config' => sub {
 # General Views
 
 get '/user/*' => sub {
-    my ($name) = splat;
+    my ($user_id) = splat;
 
     # Find the user
-    my ($user) = try {
-        Madre::DB::User->select(
-            'WHERE username = ?',
-            $name,
-        );
+    my $user = try {
+        Madre::DB::User->load($user_id);
     };
     unless ( $user ) {
-        die "Missing or invalid user '$name'";
+        die "Missing or invalid user '$user_id'";
     }
 
     # Find their configuration
     my ($config) = Madre::DB::Config->select(
-        'WHERE user_id = ? ORDER BY modified DESC',
+        'WHERE user_id = ? ORDER BY modified DESC LIMIT 1',
         $user->id,
     );
 
@@ -240,8 +219,8 @@ get '/user/*' => sub {
 # Support Functions
 
 sub salt_password {
-    my ($username, $password) = @_;
-    my $salt = substr( $username , 0, 1 ) . substr($username, -1,1);
+    my ($email, $password) = @_;
+    my $salt = substr( $email , 0, 1 ) . substr($email, -1,1);
     my $hash = Digest::MD5::md5_hex( $salt  .  $password );
     return "$salt:$hash";
 };

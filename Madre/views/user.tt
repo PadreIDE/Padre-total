@@ -1,11 +1,11 @@
 <div id="header">
-  <h1><% user.username %></h1>
-  <h2>registered - <% user.created %></h2>
+  <h1><% user.email %></h1>
+  <h2>Registered - <% user.created %></h2>
 </div>
 <% IF profile %>
   <div>
-    <img class="user_image" src="/user/<% user.username %>/image" />
-    <h1><% user.username %></h1>
+    <img class="user_image" src="/user/<% user.user_id %>/image" />
+    <h1><% user.user_id %></h1>
   </div>
 <% ELSE %>
   <p>This user has not added a profile.</p>

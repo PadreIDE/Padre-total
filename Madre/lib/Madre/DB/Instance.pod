@@ -1,6 +1,6 @@
 =head1 NAME
 
-Madre::DB::Ping - Madre::DB class for the ping table
+Madre::DB::Instance - Madre::DB class for the instance table
 
 =head1 DESCRIPTION
 
@@ -11,7 +11,7 @@ TO BE COMPLETED
 =head2 base
 
   # Returns 'Madre::DB'
-  my $namespace = Madre::DB::Ping->base;
+  my $namespace = Madre::DB::Instance->base;
 
 Normally you will only need to work directly with a table class,
 and only with one ORLite package.
@@ -23,8 +23,8 @@ C<base> method.
 
 =head2 table
 
-  # Returns 'ping'
-  print Madre::DB::Ping->table;
+  # Returns 'instance'
+  print Madre::DB::Instance->table;
 
 While you should not need the name of table for any simple operations,
 from time to time you may need it programatically. If you do need it,
@@ -32,7 +32,7 @@ you can use the C<table> method to get the table name.
 
 =head2 load
 
-  my $object = Madre::DB::Ping->load( $ping_id );
+  my $object = Madre::DB::Instance->load( $instance_id );
 
 If your table has single column primary key, a C<load> method will be
 generated in the class. If there is no primary key, the method is not
@@ -42,38 +42,38 @@ The C<load> method provides a shortcut mechanism for fetching a single
 object based on the value of the primary key. However it should only
 be used for cases where your code trusts the record to already exists.
 
-It returns a C<Madre::DB::Ping> object, or throws an exception if the
+It returns a C<Madre::DB::Instance> object, or throws an exception if the
 object does not exist.
 
 =head2 select
 
   # Get all objects in list context
-  my @list = Madre::DB::Ping->select;
+  my @list = Madre::DB::Instance->select;
   
   # Get a subset of objects in scalar context
-  my $array_ref = Madre::DB::Ping->select(
-      'where ping_id > ? order by ping_id',
+  my $array_ref = Madre::DB::Instance->select(
+      'where instance_id > ? order by instance_id',
       1000,
   );
 
 The C<select> method executes a typical SQL C<SELECT> query on the
-ping table.
+instance table.
 
 It takes an optional argument of a SQL phrase to be added after the
-C<FROM ping> section of the query, followed by variables
+C<FROM instance> section of the query, followed by variables
 to be bound to the placeholders in the SQL phrase. Any SQL that is
 compatible with SQLite can be used in the parameter.
 
-Returns a list of B<Madre::DB::Ping> objects when called in list context, or a
-reference to an C<ARRAY> of B<Madre::DB::Ping> objects when called in scalar
+Returns a list of B<Madre::DB::Instance> objects when called in list context, or a
+reference to an C<ARRAY> of B<Madre::DB::Instance> objects when called in scalar
 context.
 
 Throws an exception on error, typically directly from the L<DBI> layer.
 
 =head2 iterate
 
-  Madre::DB::Ping->iterate( sub {
-      print $_->ping_id . "\n";
+  Madre::DB::Instance->iterate( sub {
+      print $_->instance_id . "\n";
   } );
 
 The C<iterate> method enables the processing of large tables one record at
@@ -90,16 +90,16 @@ variable C<$_>.
 This makes the C<iterate> code fragment above functionally equivalent to the
 following, except with an O(1) memory cost instead of O(n).
 
-  foreach ( Madre::DB::Ping->select ) {
-      print $_->ping_id . "\n";
+  foreach ( Madre::DB::Instance->select ) {
+      print $_->instance_id . "\n";
   }
 
 You can filter the list via SQL in the same way you can with C<select>.
 
-  Madre::DB::Ping->iterate(
-      'order by ?', 'ping_id',
+  Madre::DB::Instance->iterate(
+      'order by ?', 'instance_id',
       sub {
-          print $_->ping_id . "\n";
+          print $_->instance_id . "\n";
       }
   );
 
@@ -109,7 +109,7 @@ including joins. Instead of being objects, rows are provided as C<ARRAY>
 references when used in this form.
 
   Madre::DB->iterate(
-      'select name from ping order by ping_id',
+      'select name from instance order by instance_id',
       sub {
           print $_->[0] . "\n";
       }
@@ -118,19 +118,19 @@ references when used in this form.
 =head2 count
 
   # How many objects are in the table
-  my $rows = Madre::DB::Ping->count;
+  my $rows = Madre::DB::Instance->count;
   
   # How many objects 
-  my $small = Madre::DB::Ping->count(
-      'where ping_id > ?',
+  my $small = Madre::DB::Instance->count(
+      'where instance_id > ?',
       1000,
   );
 
 The C<count> method executes a C<SELECT COUNT(*)> query on the
-ping table.
+instance table.
 
 It takes an optional argument of a SQL phrase to be added after the
-C<FROM ping> section of the query, followed by variables
+C<FROM instance> section of the query, followed by variables
 to be bound to the placeholders in the SQL phrase. Any SQL that is
 compatible with SQLite can be used in the parameter.
 
@@ -145,30 +145,30 @@ Throws an exception on error, typically directly from the L<DBI> layer.
 The C<new> constructor is used to create a new abstract object that
 is not (yet) written to the database.
 
-Returns a new L<Madre::DB::Ping> object.
+Returns a new L<Madre::DB::Instance> object.
 
 =head2 create
 
-  my $object = Madre::DB::Ping->create(
-
-      ping_id => 'value',
-
-      data => 'value',
-
+  my $object = Madre::DB::Instance->create(
+      instance_id => 'value',
       created => 'value',
-
+      modified => 'value',
+      padre => 'value',
+      perl => 'value',
+      osname => 'value',
+      data => 'value',
   );
 
 The C<create> constructor is a one-step combination of C<new> and
 C<insert> that takes the column parameters, creates a new
-L<Madre::DB::Ping> object, inserts the appropriate row into the
-L<ping> table, and then returns the object.
+L<Madre::DB::Instance> object, inserts the appropriate row into the
+L<instance> table, and then returns the object.
 
-If the primary key column C<ping_id> is not provided to the
+If the primary key column C<instance_id> is not provided to the
 constructor (or it is false) the object returned will have
-C<ping_id> set to the new unique identifier.
+C<instance_id> set to the new unique identifier.
  
-Returns a new L<ping> object, or throws an exception on
+Returns a new L<instance> object, or throws an exception on
 error, typically from the L<DBI> layer.
 
 =head2 insert
@@ -178,9 +178,9 @@ error, typically from the L<DBI> layer.
 The C<insert> method commits a new object (created with the C<new> method)
 into the database.
 
-If a the primary key column C<ping_id> is not provided to the
+If a the primary key column C<instance_id> is not provided to the
 constructor (or it is false) the object returned will have
-C<ping_id> set to the new unique identifier.
+C<instance_id> set to the new unique identifier.
 
 Returns the object itself as a convenience, or throws an exception
 on error, typically from the L<DBI> layer.
@@ -190,17 +190,17 @@ on error, typically from the L<DBI> layer.
   # Delete a single instantiated object
   $object->delete;
   
-  # Delete multiple rows from the ping table
-  Madre::DB::Ping->delete('where ping_id > ?', 1000);
+  # Delete multiple rows from the instance table
+  Madre::DB::Instance->delete('where instance_id > ?', 1000);
 
 The C<delete> method can be used in a class form and an instance form.
 
-When used on an existing B<Madre::DB::Ping> instance, the C<delete> method
-removes that specific instance from the C<ping>, leaving
+When used on an existing B<Madre::DB::Instance> instance, the C<delete> method
+removes that specific instance from the C<instance>, leaving
 the object intact for you to deal with post-delete actions as you wish.
 
 When used as a class method, it takes a compulsory argument of a SQL
-phrase to be added after the C<DELETE FROM ping> section
+phrase to be added after the C<DELETE FROM instance> section
 of the query, followed by variables to be bound to the placeholders
 in the SQL phrase. Any SQL that is compatible with SQLite can be used
 in the parameter.
@@ -210,8 +210,8 @@ attempt to call delete without a SQL condition phrase.
 
 =head2 truncate
 
-  # Delete all records in the ping table
-  Madre::DB::Ping->truncate;
+  # Delete all records in the instance table
+  Madre::DB::Instance->truncate;
 
 To prevent the common and extremely dangerous error case where
 deletion is called accidentally without providing a condition,
@@ -225,9 +225,9 @@ Returns true, or throws an exception on error.
 
 =head1 ACCESSORS
 
-=head2 ping_id
+=head2 instance_id
 
-  if ( $object->ping_id ) {
+  if ( $object->instance_id ) {
       print "Object has been inserted\n";
   } else {
       print "Object has not been inserted\n";
@@ -239,18 +239,22 @@ REMAINING ACCESSORS TO BE COMPLETED
 
 =head1 SQL
 
-The ping table was originally created with the
+The instance table was originally created with the
 following SQL command.
 
-  CREATE TABLE ping (
-      ping_id INTEGER NOT NULL PRIMARY KEY,
-      data BLOB,
-      created DATETIME NOT NULL DEFAULT (datetime('now'))
+  CREATE TABLE instance (
+      instance_id TEXT NOT NULL PRIMARY KEY,
+      created DATETIME NOT NULL DEFAULT (datetime('now')),
+      modified DATETIME NOT NULL DEFAULT (datetime('now')),
+      padre TEXT NULL,
+      perl TEXT NULL,
+      osname TEXT NULL,
+      data BLOB NULL
   )
 
 =head1 SUPPORT
 
-Madre::DB::Ping is part of the L<Madre::DB> API.
+Madre::DB::Instance is part of the L<Madre::DB> API.
 
 See the documentation for L<Madre::DB> for more information.
 
@@ -260,7 +264,7 @@ Adam Kennedy E<lt>adamk@cpan.orgE<gt>
 
 =head1 COPYRIGHT
 
-Copyright 2011 - 2012 Adam Kennedy.
+Copyright 2009 - 2012 Adam Kennedy.
 
 This program is free software; you can redistribute
 it and/or modify it under the same terms as Perl itself.

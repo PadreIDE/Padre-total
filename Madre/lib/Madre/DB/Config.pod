@@ -30,6 +30,21 @@ While you should not need the name of table for any simple operations,
 from time to time you may need it programatically. If you do need it,
 you can use the C<table> method to get the table name.
 
+=head2 load
+
+  my $object = Madre::DB::Config->load( $config_id );
+
+If your table has single column primary key, a C<load> method will be
+generated in the class. If there is no primary key, the method is not
+created.
+
+The C<load> method provides a shortcut mechanism for fetching a single
+object based on the value of the primary key. However it should only
+be used for cases where your code trusts the record to already exists.
+
+It returns a C<Madre::DB::Config> object, or throws an exception if the
+object does not exist.
+
 =head2 select
 
   # Get all objects in list context
@@ -37,7 +52,7 @@ you can use the C<table> method to get the table name.
   
   # Get a subset of objects in scalar context
   my $array_ref = Madre::DB::Config->select(
-      'where  > ? order by ',
+      'where config_id > ? order by config_id',
       1000,
   );
 
@@ -58,7 +73,7 @@ Throws an exception on error, typically directly from the L<DBI> layer.
 =head2 iterate
 
   Madre::DB::Config->iterate( sub {
-      print $_-> . "\n";
+      print $_->config_id . "\n";
   } );
 
 The C<iterate> method enables the processing of large tables one record at
@@ -76,15 +91,15 @@ This makes the C<iterate> code fragment above functionally equivalent to the
 following, except with an O(1) memory cost instead of O(n).
 
   foreach ( Madre::DB::Config->select ) {
-      print $_-> . "\n";
+      print $_->config_id . "\n";
   }
 
 You can filter the list via SQL in the same way you can with C<select>.
 
   Madre::DB::Config->iterate(
-      'order by ?', '',
+      'order by ?', 'config_id',
       sub {
-          print $_-> . "\n";
+          print $_->config_id . "\n";
       }
   );
 
@@ -94,7 +109,7 @@ including joins. Instead of being objects, rows are provided as C<ARRAY>
 references when used in this form.
 
   Madre::DB->iterate(
-      'select name from config order by ',
+      'select name from config order by config_id',
       sub {
           print $_->[0] . "\n";
       }
@@ -107,7 +122,7 @@ references when used in this form.
   
   # How many objects 
   my $small = Madre::DB::Config->count(
-      'where  > ?',
+      'where config_id > ?',
       1000,
   );
 
@@ -123,7 +138,99 @@ Returns the number of objects that match the condition.
 
 Throws an exception on error, typically directly from the L<DBI> layer.
 
+=head2 new
+
+  TO BE COMPLETED
+
+The C<new> constructor is used to create a new abstract object that
+is not (yet) written to the database.
+
+Returns a new L<Madre::DB::Config> object.
+
+=head2 create
+
+  my $object = Madre::DB::Config->create(
+      config_id => 'value',
+      user_id => 'value',
+      data => 'value',
+      modified => 'value',
+  );
+
+The C<create> constructor is a one-step combination of C<new> and
+C<insert> that takes the column parameters, creates a new
+L<Madre::DB::Config> object, inserts the appropriate row into the
+L<config> table, and then returns the object.
+
+If the primary key column C<config_id> is not provided to the
+constructor (or it is false) the object returned will have
+C<config_id> set to the new unique identifier.
+ 
+Returns a new L<config> object, or throws an exception on
+error, typically from the L<DBI> layer.
+
+=head2 insert
+
+  $object->insert;
+
+The C<insert> method commits a new object (created with the C<new> method)
+into the database.
+
+If a the primary key column C<config_id> is not provided to the
+constructor (or it is false) the object returned will have
+C<config_id> set to the new unique identifier.
+
+Returns the object itself as a convenience, or throws an exception
+on error, typically from the L<DBI> layer.
+
+=head2 delete
+
+  # Delete a single instantiated object
+  $object->delete;
+  
+  # Delete multiple rows from the config table
+  Madre::DB::Config->delete('where config_id > ?', 1000);
+
+The C<delete> method can be used in a class form and an instance form.
+
+When used on an existing B<Madre::DB::Config> instance, the C<delete> method
+removes that specific instance from the C<config>, leaving
+the object intact for you to deal with post-delete actions as you wish.
+
+When used as a class method, it takes a compulsory argument of a SQL
+phrase to be added after the C<DELETE FROM config> section
+of the query, followed by variables to be bound to the placeholders
+in the SQL phrase. Any SQL that is compatible with SQLite can be used
+in the parameter.
+
+Returns true on success or throws an exception on error, or if you
+attempt to call delete without a SQL condition phrase.
+
+=head2 truncate
+
+  # Delete all records in the config table
+  Madre::DB::Config->truncate;
+
+To prevent the common and extremely dangerous error case where
+deletion is called accidentally without providing a condition,
+the use of the C<delete> method without a specific condition
+is forbidden.
+
+Instead, the distinct method C<truncate> is provided to delete
+all records in a table with specific intent.
+
+Returns true, or throws an exception on error.
+
 =head1 ACCESSORS
+
+=head2 config_id
+
+  if ( $object->config_id ) {
+      print "Object has been inserted\n";
+  } else {
+      print "Object has not been inserted\n";
+  }
+
+Returns true, or throws an exception on error.
 
 REMAINING ACCESSORS TO BE COMPLETED
 
@@ -133,10 +240,11 @@ The config table was originally created with the
 following SQL command.
 
   CREATE TABLE config (
+      config_id INTEGER NOT NULL PRIMARY KEY,
       user_id INTEGER NOT NULL,
-      data BLOB,
+      data BLOB NOT NULL,
       modified DATETIME NOT NULL DEFAULT (datetime('now')),
-      FOREIGN KEY(user_id) REFERENCES user(userid)
+      FOREIGN KEY(user_id) REFERENCES user (user_id) ON DELETE CASCADE
   )
 
 =head1 SUPPORT
@@ -151,7 +259,7 @@ Adam Kennedy E<lt>adamk@cpan.orgE<gt>
 
 =head1 COPYRIGHT
 
-Copyright 2011 - 2012 Adam Kennedy.
+Copyright 2009 - 2012 Adam Kennedy.
 
 This program is free software; you can redistribute
 it and/or modify it under the same terms as Perl itself.

@@ -18,8 +18,27 @@ our $VERSION = '0.1';
 ######################################################################
 # Receive Uploads
 
-post '/ping' => sub {
-   
+put '/ping/*' => sub {
+    my ($padre, $instance_id) = splat;
+    unless ( defined $padre and defined $instance_id ) {
+        status 500; # Internal error
+        return {
+            error => "Missing or invalid Padre version or instance",
+            title => 'Popularity Contest',
+        };
+    }
+
+    # Insert or replace existing instance
+    Padre::DB::Instance->delete(
+        'WHERE instance_id = ?', $instance_id,
+    );
+    Padre::DB::Instance->create(
+        instance_id => $instance_id,
+        padre       => $padre,
+        data        => param->{data},
+    );
+
+    status 204;
 };
 
 1;

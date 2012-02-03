@@ -187,7 +187,7 @@ for a database. See the L<SQLite> documentation for more details.
 
 B<Madre::DB> is based on L<ORLite>.
 
-Documentation created by L<ORLite::Pod> 0.10.
+Documentation created by L<ORLite::Pod> 0.11.
 
 For general support please see the support section of the main
 project documentation.
@@ -195,10 +195,9 @@ project documentation.
 =head1 AUTHOR
 
 Adam Kennedy E<lt>adamk@cpan.orgE<gt>
-
 =head1 COPYRIGHT
 
-Copyright 2011 - 2012 Adam Kennedy.
+Copyright 2009 - 2012 Adam Kennedy.
 
 This program is free software; you can redistribute
 it and/or modify it under the same terms as Perl itself.

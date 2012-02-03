@@ -1,6 +1,6 @@
 <div id="header">
-  <h1>Register a new user</h1>
-  <h2>Keep Padre configuration in sync between hosts</h2>
+  <h1>Register</h1>
+  <h2>Get access to Padre Online Services</h2>
 </div>
 <div style="width: 400px; margin: auto;">
   <form method="POST" id="form_register" action="<% request.base_uri %>">
@@ -14,12 +14,11 @@
       }
     </style>
     <div class="error"><% error %></div>
-    <label for="nickname">Nickname:<input type="text" name="username"/> </label> 
-    <label for="password">Password:<input type="password" name="password"/></label> 
-    <label for="password_confirm">Confirm Password:<input type="password" name="password_confirm"/></label>
-    <label for="email">Email:<input type="text" name="email"/></label>
-    <label for="email_confirm">Email Confirm:<input type="text" name="email_confirm" /></label>
+    <label for="email">Email: <input type="text" name="email"/></label>
+    <label for="email_confirm">Email Confirm: <input type="text" name="email_confirm" /></label>
+    <label for="password">Password: <input type="password" name="password"/></label> 
+    <label for="password_confirm">Confirm Password: <input type="password" name="password_confirm"/></label>
     <hr/>
-    <label>Register your account <input type="submit" value="Register" /></label>
+    <label><input type="submit" value="Register Account" /></label>
   </form>
 </div>
