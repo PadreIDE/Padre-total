@@ -1,41 +1,29 @@
-        <div id="header">
-          <h1>Madre </h1>
-          <h2>Sync for <a href="http://padre.perlide.org/" >Padre - The Perl IDE</a></h2>
-        </div>
-
-        <div id="getting-started">
-          <h1>Getting started</h1>
-          <h2>Synchronise Padre settings - anywhere.</h2>
-
-          <ol>
-            <li>
-              <h2><a href="/register">Register</a></h2>
-              </li>
-
-            <li>
-              <% IF vars.user %>
-              <h2 style="color: gray">Login</h2>
-              <p>You are logged in as <a href="/user/<% vars.user.username %>" title="Profile"><strong><% vars.user.username %></strong></a>.</p>
-              <% ELSE %>
-              <h2><a href="/login">Login</a></h2>
-                
-              <p>
-                Already registered? Login to access your profile.
-              </p>
-              <% END %>
-            </li>
-
-            <li>
-                <h2>Sync your Editor</h2>
-
-                <p>
-                Liberate your favorite settings from the desktop. 
-                </p>
-            </li>
-
-          </ol>
-        </div>
-        
-        
-
-      </div>
+<div id="header">
+  <h1>Madre </h1>
+  <h2>Sync for <a href="http://padre.perlide.org/" >Padre - The Perl IDE</a></h2>
+</div>
+<div id="getting-started">
+  <h1>Getting started</h1>
+  <h2>Synchronise Padre settings - anywhere.</h2>
+  <ol>
+    <li>
+      <h2><a href="/register">Register</a></h2>
+    </li>
+    <li>
+      <% IF vars.user %>
+        <h2 style="color: gray">Login</h2>
+        <p>
+          You are logged in as <a href="/user/<% vars.user.username %>" title="Profile">
+          <strong><% vars.user.username %></strong></a>.
+        </p>
+      <% ELSE %>
+        <h2><a href="/login">Login</a></h2>               
+        <p>Already registered? Login to access your profile.</p>
+      <% END %>
+    </li>
+    <li>
+      <h2>Sync your Editor</h2>
+      <p>Liberate your favorite settings from the desktop.</p>
+    </li>
+  </ol>
+</div>

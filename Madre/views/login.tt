@@ -1,15 +1,12 @@
-        <div id="header">
-          <h1>Login</h1>
-          <h2><a href="/lostpassword">Forgot your password ?</a></h2>
-        </div>
-
-        <div style="width: 300px; margin: auto;">
-         <form action="/login" method="POST" >
-           <label>Username: <input type="text" name="username" /></label>
-           <label>Password: <input type="password" name="password" /></label>
-           <hr/>
-           <label><input type="submit" value="Login" /></label>
-         </form>
-        </div>
-        
-
+<div id="header">
+  <h1>Login</h1>
+  <h2><a href="/lostpassword">Forgot your password ?</a></h2>
+</div>
+<div style="width: 300px; margin: auto;">
+  <form action="/login" method="POST" >
+    <label>Username: <input type="text" name="username" /></label>
+    <label>Password: <input type="password" name="password" /></label>
+    <hr/>
+    <label><input type="submit" value="Login" /></label>
+  </form>
+</div>

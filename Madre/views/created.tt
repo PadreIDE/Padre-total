@@ -1,5 +1,4 @@
-    <div id="header">
-      <h1>Congratulations</h1>
-      <h2>Welcome <% user.username %></h2>
-    </div>
-    
+<div id="header">
+  <h1>Congratulations</h1>
+  <h2>Welcome <% user.username %></h2>
+</div>
