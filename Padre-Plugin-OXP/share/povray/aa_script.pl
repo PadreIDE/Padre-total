@@ -15,7 +15,7 @@ my $render = shift @ARGV;
 my $clobber = shift @ARGV;
 
 my $POV_template = <<POV;
-#version unofficial megapov 1.21;
+//#version unofficial megapov 1.21;
 #include "cm_camera.inc"
 #include "pp_textures.inc"
 #include "pp_gas.inc"
@@ -129,10 +129,11 @@ while ( my $row = $csv->getline($fh) ) {
                         next;
                 }
                 my $rc = system(
-                        'megapov',
-                        '+Lcm',
-                        '-V',
-                        '+A0.05','+AM3',
+                        #'megapov',
+                        'povray37patched',
+                        '+Lcm', 
+                        #'-V',
+                        '+A0.1','+AM1',
                         #'-D',
                         '+KFI0','+KFF5',
                         #'+W256', '+H256', # medium resolution
@@ -141,12 +142,15 @@ while ( my $row = $csv->getline($fh) ) {
                         '+Ocubestitch..png',
                         '+I'.$sdl_file,
                 );
-               # sleep 10; # Quasi thermal control
+                
                 
                 die $! unless $rc==0;
                 cubestitch( 'cubestitch.%d.png' );
+               
                 rename 'output.png', $output;
                 die $pov_sdl unless -f $output;
+                sleep 120; # Quasi thermal control
+                
         }
         
         else { print $pov_sdl }

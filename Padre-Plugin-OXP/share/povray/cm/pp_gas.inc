@@ -1,9 +1,8 @@
-#version unofficial megapov 1.21;
 #include "cm_planets.inc";
-
+//#include "gas_warps.inc"
 
 #declare GasColour = array[13] {
-    CM_dusty_0_255
+    CM_Europa
     CM_Jupiter3
     CM_Jovian
     CM_neptune2_0_255
@@ -18,6 +17,25 @@
     CM_Saturn
     CM_Jovian
 };
+
+
+#declare Turb_Img_Small = array[5] {
+    "../maps/turb/small-1.png",
+    "../maps/turb/small-2.png",
+    "../maps/turb/small-3.png",
+    "../maps/turb/small-4.png",
+    "../maps/turb/small-5.png",
+};
+
+#declare Turb_Img_Large = array[5] {
+    "../maps/turb/large-1.png",
+    "../maps/turb/large-2.png",
+    "../maps/turb/large-3.png",
+    "../maps/turb/large-4.png",
+    "../maps/turb/large-5.png",
+};
+
+
 
 #declare P_GasBanded = pigment {
     gradient y 
@@ -50,12 +68,6 @@
     P_GasBanded
     P_GasStrata
 }
-
-
-#macro Warp_Storm(mod1,mod2,pos)
-
-#end
-
 
 
 #declare WF_Radial = function {
@@ -288,28 +300,60 @@ warp {
             translate -<GalX,GalY,0> 
             
         }
+
+
+#declare mSeed = seed(GalX*GalY);
+
+#declare Mod1 = int( rand(mSeed) * 5 );
+#declare Mod2 = int( rand(mSeed) * 5 );
+#declare FMod1 = rand(mSeed);
+
+#declare BlendWarp = pigment {
+   average 
+   pigment_map {
+        [ image_map { png Turb_Img_Small[Mod1]  interpolate 2 map_type 0 }
+	  //scale 1.2 translate -0.1
+ 	//warp { repeat y*1  flip <0,1,0> offset -x/3 } 
+ ]
+
+
+        [ image_map { png Turb_Img_Large[Mod2] interpolate 2 map_type 0 }
+          //scale 1.1 translate -0.05
+          // warp { repeat y*1 flip <0,1,0> offset x/3 }
+		//scale y*2
+          // translate y*0.2*rand(mSeed)
+	
+	]
+   }
+
+//warp { repeat y*1  flip <0,1,1>} 
+
+translate -y*0.5
+scale y*2
+//scale <1/3,1,1/3>
+}
+
+#declare F_Blend = function { pigment { BlendWarp } }
  
+
 #declare NewPig =
 pigment {  
-      /*
-      function { BL_Sphere(x,y,z).gray }
-      pigment_map {
-         [0 spherical color_map { CM_Europa } phase 0.33  ]
-         [0.05 spherical color_map { CM_Europa } phase 0.33 turbulence 1 ]
-         [.1 onion sine_wave color_map { CM_Neptune } turbulence 2 octaves 10 ]  
-      }
-      */
-      
-       ///*  banded giant - jovian
-      function {Blended(x,y,z).gray }
-      pigment_map {
-        [0 TurbBand translate <GalX,GalY,0> color_map { GasColour[has_colour] }  frequency 0.82
-            ]
-        [1 LightBand translate <GalX,GalY,0> color_map { GasColour[has_colour] } frequency 0.82
-            ]
-      } 
-      //*/
-      
+
+    function { F_Blend(x,y,z).gray }   
+    color_map { GasColour[has_colour] }   
+	//triangle_wave 
+	//translate y*rand(mSeed)
+	phase 0.5*FMod1
+	frequency 0.5
+    warp { 
+	cylindrical
+	//spherical
+	 }
+	scale 4
+	warp { turbulence <0.3,0,0.3> }
+	scale 1/4
+        scale 1.015
+
       // randomseed, nwarps, distance from origin, scale factor
       M_StormWarp(seed(GalX*GalY),15,0.95,0.10)
   
@@ -318,10 +362,10 @@ pigment {
 
 
 
-sphere { <0,0,0> Radius
+sphere { <0,0,0> Radius hollow
     texture {
        pigment { NewPig }
-       finish { ambient 0 }
+       finish { ambient 0.5 }
         
     }
 }

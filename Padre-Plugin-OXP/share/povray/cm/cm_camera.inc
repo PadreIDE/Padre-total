@@ -1,5 +1,4 @@
-#version unofficial megapov 1.21;
-
+/*
 #macro CubeLight(Face,Radius)
 #local CubeSide = sqrt( 1/3 ) * (Radius*2);
 union {
@@ -37,6 +36,8 @@ light_source { <-CubeSide * 2,0,0> color rgb .5 }
 
 }
 #end
+
+*/
 
 #macro CubeCamera(Face,Radius,UseBlur)
   #local CubeSide = sqrt( 1/3 ) * (Radius*2);
@@ -84,6 +85,7 @@ light_source { <-CubeSide * 2,0,0> color rgb .5 }
 
 #end
 
+/*
 
 #macro PigmentCameraFace(Face,Radius)
     camera_view {
@@ -253,7 +255,7 @@ box { <0,0,0> <1,1,1>
 }
 #end
 
-
+*/
 
 #macro CubeMapCamera()
 // Box/Cube camera

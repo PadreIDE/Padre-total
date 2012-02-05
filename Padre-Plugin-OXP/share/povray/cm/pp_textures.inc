@@ -1,4 +1,3 @@
-#version unofficial megapov 1.21;
 #include "cm_planets.inc";
 
 #declare RockyColour = array[14] {
