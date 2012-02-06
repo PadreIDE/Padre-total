@@ -19,6 +19,14 @@ navigation:
 about:
   - title: y2011
     events:
+      - date: 2012 February 6
+        url: http://ahmadzawawi.blogspot.com/2012/02/dwimperl-for-windows-is-here.html
+        title: Dwimperl for Windows is here!
+        comment: by Ahmad M. Zawawi
+      - date: 2012 February 6
+        url: http://szabgab.com/dwimperl-for-windows-v6.html
+        title: Announcing Dwimperl for Windows
+        comment: by Gabor Szabo
       - date: 2011 November 3
         url: http://perlnews.org/2011/11/metacpan-org-one-year-old/
         title: metacpan.org one year old
