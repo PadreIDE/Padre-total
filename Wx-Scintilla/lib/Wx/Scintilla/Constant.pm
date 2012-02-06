@@ -373,6 +373,8 @@ our @EXPORT  = qw(
 	SCLEX_A68K
 	SCLEX_MODULA
 	SCLEX_COFFEESCRIPT
+	SCLEX_TCMD
+	SCLEX_AVS
 	SCLEX_AUTOMATIC
 	SCE_P_DEFAULT
 	SCE_P_COMMENTLINE
@@ -737,6 +739,17 @@ our @EXPORT  = qw(
 	SCE_BAT_COMMAND
 	SCE_BAT_IDENTIFIER
 	SCE_BAT_OPERATOR
+	SCE_TCMD_DEFAULT
+	SCE_TCMD_COMMENT
+	SCE_TCMD_WORD
+	SCE_TCMD_LABEL
+	SCE_TCMD_HIDE
+	SCE_TCMD_COMMAND
+	SCE_TCMD_IDENTIFIER
+	SCE_TCMD_OPERATOR
+	SCE_TCMD_ENVIRONMENT
+	SCE_TCMD_EXPANSION
+	SCE_TCMD_CLABEL
 	SCE_MAKE_DEFAULT
 	SCE_MAKE_COMMENT
 	SCE_MAKE_PREPROCESSOR
@@ -923,6 +936,7 @@ our @EXPORT  = qw(
 	SCE_CSS_EXTENDED_PSEUDOCLASS
 	SCE_CSS_EXTENDED_PSEUDOELEMENT
 	SCE_CSS_MEDIA
+	SCE_CSS_VARIABLE
 	SCE_POV_DEFAULT
 	SCE_POV_COMMENT
 	SCE_POV_COMMENTLINE
@@ -1762,6 +1776,21 @@ our @EXPORT  = qw(
 	SCE_COFFEESCRIPT_COMMENTBLOCK
 	SCE_COFFEESCRIPT_VERBOSE_REGEX
 	SCE_COFFEESCRIPT_VERBOSE_REGEX_COMMENT
+	SCE_AVS_DEFAULT
+	SCE_AVS_COMMENTBLOCK
+	SCE_AVS_COMMENTBLOCKN
+	SCE_AVS_COMMENTLINE
+	SCE_AVS_NUMBER
+	SCE_AVS_OPERATOR
+	SCE_AVS_IDENTIFIER
+	SCE_AVS_STRING
+	SCE_AVS_TRIPLESTRING
+	SCE_AVS_KEYWORD
+	SCE_AVS_FILTER
+	SCE_AVS_PLUGIN
+	SCE_AVS_FUNCTION
+	SCE_AVS_CLIPPROP
+	SCE_AVS_USERDFN
 	SC_CP_DBCS
 );
 
@@ -2305,6 +2334,8 @@ use constant {
 	SCLEX_A68K         => 100,
 	SCLEX_MODULA       => 101,
 	SCLEX_COFFEESCRIPT => 102,
+	SCLEX_TCMD         => 103,
+	SCLEX_AVS          => 104,
 
 	# When a lexer specifies its language as SCLEX_AUTOMATIC it receives a
 	# value assigned in sequence from SCLEX_AUTOMATIC+1.
@@ -2723,6 +2754,19 @@ use constant {
 	SCE_BAT_IDENTIFIER => 6,
 	SCE_BAT_OPERATOR   => 7,
 
+	# Lexical states for SCLEX_TCMD
+	SCE_TCMD_DEFAULT     => 0,
+	SCE_TCMD_COMMENT     => 1,
+	SCE_TCMD_WORD        => 2,
+	SCE_TCMD_LABEL       => 3,
+	SCE_TCMD_HIDE        => 4,
+	SCE_TCMD_COMMAND     => 5,
+	SCE_TCMD_IDENTIFIER  => 6,
+	SCE_TCMD_OPERATOR    => 7,
+	SCE_TCMD_ENVIRONMENT => 8,
+	SCE_TCMD_EXPANSION   => 9,
+	SCE_TCMD_CLABEL      => 10,
+
 	# Lexical states for SCLEX_MAKEFILE
 	SCE_MAKE_DEFAULT      => 0,
 	SCE_MAKE_COMMENT      => 1,
@@ -2940,6 +2984,7 @@ use constant {
 	SCE_CSS_EXTENDED_PSEUDOCLASS   => 20,
 	SCE_CSS_EXTENDED_PSEUDOELEMENT => 21,
 	SCE_CSS_MEDIA                  => 22,
+	SCE_CSS_VARIABLE               => 23,
 
 	# Lexical states for SCLEX_POV
 	SCE_POV_DEFAULT      => 0,
@@ -3885,6 +3930,23 @@ use constant {
 	SCE_COFFEESCRIPT_VERBOSE_REGEX          => 23,
 	SCE_COFFEESCRIPT_VERBOSE_REGEX_COMMENT  => 24,
 
+	# Lexical states for SCLEX_AVS
+	SCE_AVS_DEFAULT       => 0,
+	SCE_AVS_COMMENTBLOCK  => 1,
+	SCE_AVS_COMMENTBLOCKN => 2,
+	SCE_AVS_COMMENTLINE   => 3,
+	SCE_AVS_NUMBER        => 4,
+	SCE_AVS_OPERATOR      => 5,
+	SCE_AVS_IDENTIFIER    => 6,
+	SCE_AVS_STRING        => 7,
+	SCE_AVS_TRIPLESTRING  => 8,
+	SCE_AVS_KEYWORD       => 9,
+	SCE_AVS_FILTER        => 10,
+	SCE_AVS_PLUGIN        => 11,
+	SCE_AVS_FUNCTION      => 12,
+	SCE_AVS_CLIPPROP      => 13,
+	SCE_AVS_USERDFN       => 14,
+
 
 	# Deprecated in 2.21
 	# The SC_CP_DBCS value can be used to indicate a DBCS mode for GTK+.
@@ -4425,6 +4487,8 @@ For compatibility, these go through the COMMAND notification rather than NOTIFYa
 	SCLEX_A68K                     (100)
 	SCLEX_MODULA                   (101)
 	SCLEX_COFFEESCRIPT             (102)
+	SCLEX_TCMD                     (103)
+	SCLEX_AVS                      (104)
 
 When a lexer specifies its language as SCLEX_AUTOMATIC it receives avalue assigned in sequence from SCLEX_AUTOMATIC+1.
 
@@ -4868,6 +4932,20 @@ PHP
 	SCE_BAT_IDENTIFIER             (6)
 	SCE_BAT_OPERATOR               (7)
 
+=head2 Lexical states for SCLEX_TCMD
+
+	SCE_TCMD_DEFAULT               (0)
+	SCE_TCMD_COMMENT               (1)
+	SCE_TCMD_WORD                  (2)
+	SCE_TCMD_LABEL                 (3)
+	SCE_TCMD_HIDE                  (4)
+	SCE_TCMD_COMMAND               (5)
+	SCE_TCMD_IDENTIFIER            (6)
+	SCE_TCMD_OPERATOR              (7)
+	SCE_TCMD_ENVIRONMENT           (8)
+	SCE_TCMD_EXPANSION             (9)
+	SCE_TCMD_CLABEL                (10)
+
 =head2 Lexical states for SCLEX_MAKEFILE
 
 	SCE_MAKE_DEFAULT               (0)
@@ -5101,6 +5179,7 @@ single quoted string
 	SCE_CSS_EXTENDED_PSEUDOCLASS   (20)
 	SCE_CSS_EXTENDED_PSEUDOELEMENT (21)
 	SCE_CSS_MEDIA                  (22)
+	SCE_CSS_VARIABLE               (23)
 
 =head2 Lexical states for SCLEX_POV
 
@@ -6096,6 +6175,24 @@ Lexical states of SCLEX_TADS3
 	SCE_COFFEESCRIPT_COMMENTBLOCK  (22)
 	SCE_COFFEESCRIPT_VERBOSE_REGEX (23)
 	SCE_COFFEESCRIPT_VERBOSE_REGEX_COMMENT (24)
+
+=head2 Lexical states for SCLEX_AVS
+
+	SCE_AVS_DEFAULT                (0)
+	SCE_AVS_COMMENTBLOCK           (1)
+	SCE_AVS_COMMENTBLOCKN          (2)
+	SCE_AVS_COMMENTLINE            (3)
+	SCE_AVS_NUMBER                 (4)
+	SCE_AVS_OPERATOR               (5)
+	SCE_AVS_IDENTIFIER             (6)
+	SCE_AVS_STRING                 (7)
+	SCE_AVS_TRIPLESTRING           (8)
+	SCE_AVS_KEYWORD                (9)
+	SCE_AVS_FILTER                 (10)
+	SCE_AVS_PLUGIN                 (11)
+	SCE_AVS_FUNCTION               (12)
+	SCE_AVS_CLIPPROP               (13)
+	SCE_AVS_USERDFN                (14)
 
 Deprecated in 2.21The SC_CP_DBCS value can be used to indicate a DBCS mode for GTK+.
 
