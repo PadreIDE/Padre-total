@@ -26,12 +26,12 @@ Module::Build::Scintilla::stc_builderclass()->new(
 	needs_compiler => 0, # We will be doing our own XS compilation
 	add_to_cleanup => [
 		'Wx-Scintilla-*',
-		"wx-scintilla/src/*.o.d",
-		"wx-scintilla/src/*.o",
-		"wx-scintilla/src/*.obj",
-		"wx-scintilla/src/scintilla/src/*.o.d",
-		"wx-scintilla/src/scintilla/src/*.o",
-		"wx-scintilla/src/scintilla/src/*.obj",
+		'wx-scintilla/src/*.o.d',
+		'wx-scintilla/src/*.o',
+		'wx-scintilla/src/*.obj',
+		'wx-scintilla/src/scintilla/src/*.o.d',
+		'wx-scintilla/src/scintilla/src/*.o',
+		'wx-scintilla/src/scintilla/src/*.obj',
 		'Scintilla.c',
 		'Scintilla.o',
 		'Scintilla.obj',

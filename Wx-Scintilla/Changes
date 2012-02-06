@@ -1,5 +1,12 @@
 Revision history for Wx-Scintilla
 
+0.37_02 2012.2.6
+	- Updated to Scintilla 3.0.3:
+		- Scintilla 3.0.3 is a minor bug fix release.
+		- Fractional character positioning was extended to more areas.
+		- Lexers were added for the AviSynth and Take Comamnd languages and
+		  the CSS lexer was extended to support SCSS.
+
 0.37_01 2011.12.22
     - Updated wx-scintilla\src\scintilla\README.txt to
       fix packaging issues (AZAWAWI)
