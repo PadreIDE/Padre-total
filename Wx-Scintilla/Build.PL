@@ -55,6 +55,6 @@ Module::Build::Scintilla::stc_builderclass()->new(
 			directory => [qw<tools wx-scintilla cpp>],
 		},
 	},
-	dist_abstract      => 'Scintilla source code editing component for wxWidgets',
+	dist_abstract      => 'Scintilla source code editing for wxWidgets',
 	extra_linker_flags => '-lwxmsw28u_scintilla',
 )->create_build_script();
