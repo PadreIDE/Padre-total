@@ -16,7 +16,7 @@ sub load_debugger : Test(setup) {
 	$self->{perl5db_ver} = $1;
 }
 
-sub stepout : Test(3) {
+sub stepout : Test(4) {
 	my $self = shift;
 	my $out;
 
@@ -36,6 +36,9 @@ sub stepout : Test(3) {
 		ok( $self->{debugger}->row == 9, 'row = 9' );
 	}
 	ok( $self->{debugger}->filename =~ m/02-sub/, 'filename = 02-sub.pl' );
+	
+	$out = $self->{debugger}->step_out;
+	like( $out, qr/^Warning:.*list/s, 'Warning: failed to make list call' );
 
 }
 

@@ -1,5 +1,6 @@
 0.17_06 2012.02.xx
     - remove is for cmp_ok where values are numeric
+    - fix Free to wrong pool in tests against win32
 
 
 0.17_05 2012.01.11

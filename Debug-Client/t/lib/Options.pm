@@ -14,7 +14,7 @@ sub load_debugger : Test(setup) {
 	$self->{debugger}->get;
 }
 
-sub options : Test(4) {
+sub options : Test(5) {
 	my $self = shift;
 	my $out;
 	$out = $self->{debugger}->get_options();
@@ -43,6 +43,9 @@ sub options : Test(4) {
 
 	$out = $self->{debugger}->set_option('frame=0');
 	like( $out, qr/frame.=.'0'/s, 'reset options' );
+	
+	$out = $self->{debugger}->set_option();
+	like( $out, qr/missing/s, 'missing option' );
 }
 
 # teardown methods are run after every test method.
