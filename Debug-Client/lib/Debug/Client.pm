@@ -1068,8 +1068,6 @@ sub _process_line {
 sub _prompt {
 	my ( $self, $buf ) = @_;
 
-	_logger("-prompt buf: $$buf");
-
 	if ( not defined $buf or not ref $buf or ref $buf ne 'SCALAR' ) {
 		croak('_prompt should be called with a reference to a scalar');
 	}
