@@ -135,20 +135,42 @@ TODO: Is there any reason to separate the two?
 
 =cut
 
+# sub old_new {
+	# my ( $class, %args ) = @_;
+	# my $self = bless {}, $class;
+
+	# %args = (
+		# host => 'localhost', port => 24642,
+		# %args
+	# );
+
+	# $self->{host} = $args{host};
+	# $self->{port} = $args{port};
+
+	# return $self;
+# }
+
 sub new {
-	my ( $class, %args ) = @_;
-	my $self = bless {}, $class;
-
-	%args = (
-		host => 'localhost', port => 24642,
-		%args
-	);
-
-	$self->{host} = $args{host};
-	$self->{port} = $args{port};
-
+	my $class = shift;   # What class are we constructing?
+	my $self  = {};      # Allocate new memory
+	bless $self, $class; # Mark it of the right type
+	$self->_init(@_);    # Call _init with remaining args
 	return $self;
 }
+
+sub _init {
+	my ( $self, %args ) = @_;
+	$self->{local_host} = $args{host}   ? $args{host}   : 'localhost';
+	$self->{local_port} = $args{port}   ? $args{port}   : 24642;
+
+	#ToDo for IO::Socket::IP
+	# $self->{porto}      = $args{porto}  ? $args{porto}  : 'tcp';
+	# $self->{listen}     = $args{listen} ? $args{listen} : SOMAXCONN;
+	# $self->{reuse_addr} = $args{reuse}	? $args{reuse}  : 1;
+
+    return;
+}
+
 
 =head1 Warning sub listen has bean deprecated
 
@@ -180,22 +202,23 @@ See C<new>
 # Method listener
 #######
 sub listener {
-	my ($self) = @_;
+	my $self = shift;
 
 	# Open the socket the debugger will connect to.
 	my $sock = IO::Socket::INET->new(
-		LocalHost => $self->{host},
-		LocalPort => $self->{port},
+		LocalHost => $self->{local_host},
+		LocalPort => $self->{local_port},
 		Proto     => 'tcp',
 		Listen    => SOMAXCONN,
-
-		# Reuse     => 1,	#(deprecated, prefer ReuseAddr)
 		ReuseAddr => 1,
+		# Proto     => $self->{porto},
+		# Listen    => $self->{listen},
+		# ReuseAddr => $self->{reuse_addr},
 	);
-	$sock or carp "Could not connect to '$self->{host}' '$self->{port}' no socket :$!";
-	_logger("listening on '$self->{host}:$self->{port}'");
+	$sock or carp "Could not connect to '$self->{local_host}' '$self->{local_port}' no socket :$!";
+	_logger("listening on '$self->{local_host}:$self->{local_port}'");
+	
 	$self->{sock} = $sock;
-
 	$self->{new_sock} = $self->{sock}->accept();
 
 	return;
@@ -392,7 +415,7 @@ or when some of the elements of the returned array are themselves references
 sub step_out {
 	my ($self) = @_;
 
-	carp('Must call step_out in list context') if not wantarray;
+	return ('Warning: Must call step_out in list context') if not wantarray;
 
 	$self->_send('r');
 	my $buf = $self->_get;
@@ -422,8 +445,9 @@ sub step_out {
 
 	#if ($context and $context eq 'list') {
 	# TODO can we parse this inteligently in the general case?
-	#}
-	return ( @line, $ret );
+
+		#}
+		return ( @line, $ret );
 }
 
 
@@ -657,14 +681,14 @@ sub list_break_watch_action {
 # # =cut
 
 # sub execute_code {
-	# my ( $self, $code ) = @_;
+# my ( $self, $code ) = @_;
 
 # # 	return if not defined $code;
 
 # # 	$self->_send($code);
-	# my $buf = $self->_get;
-	# $self->_prompt( \$buf );
-	# return $buf;
+# my $buf = $self->_get;
+# $self->_prompt( \$buf );
+# return $buf;
 # }
 
 =head2 get_value
@@ -863,7 +887,7 @@ sub set_option {
 	my ( $self, $option ) = @_;
 
 	unless ( defined $option ) {
-		return;
+		return 'missing option';
 	}
 
 	$self->_send("o $option");
@@ -1082,7 +1106,7 @@ sub _process_line {
 	# the last line before
 	# main::(t/eg/01-add.pl:8):  my $z = $x + $y;
 
-	if ( $line =~ m{^([\w:]*) 			# module
+	if ($line =~ m{^([\w:]*) 			# module
                   \( ([^\)]*):(\d+) \) 	# (file:row)
                   :\t? 					# :
                   (.*) 					# content
@@ -1093,30 +1117,32 @@ sub _process_line {
 	}
 	if ( $module eq BLANK || $file eq BLANK || $row eq BLANK ) {
 
-# 		# unless ( defined $module || defined $file || defined $row ) {
+		# 		# unless ( defined $module || defined $file || defined $row ) {
 		my $current_file = $self->show_line();
+
 		# p $current_file;
 
 		$current_file =~ m/([\w:]*) \( (.*) : (\d+) .* /mgx;
 
-		$module  = $1;
-		$file    = $2;
-		$row     = $3;
+		$module = $1;
+		$file   = $2;
+		$row    = $3;
+
 		# p $module;
 		# p $file;
 		# p $row;
 	}
-	
+
 	if ($cont) {
 		$content = $cont;
 	}
 
 	# if ($file) {
 
-# # 		$self->{filename} = $file;
+	# # 		$self->{filename} = $file;
 
-# # 		# print "filename: $self->{filename}\n";
-	# }	
+	# # 		# print "filename: $self->{filename}\n";
+	# }
 	$self->{module}   = $module;
 	$self->{filename} = $file;
 	$self->{row}      = $row;
