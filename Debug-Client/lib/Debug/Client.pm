@@ -18,7 +18,7 @@ use constant {
 
 Debug::Client - debugger client side code for Padre the Perl IDE
 
-development version 0.17_0 for testing only!
+development version 0.17_06 for testing only!
 
 thanks cpan testers :)
 
@@ -135,40 +135,30 @@ TODO: Is there any reason to separate the two?
 
 =cut
 
-# sub old_new {
-	# my ( $class, %args ) = @_;
-	# my $self = bless {}, $class;
-
-	# %args = (
-		# host => 'localhost', port => 24642,
-		# %args
-	# );
-
-	# $self->{host} = $args{host};
-	# $self->{port} = $args{port};
-
-	# return $self;
-# }
-
+#######
+# new
+#######
 sub new {
-	my $class = shift;   # What class are we constructing?
-	my $self  = {};      # Allocate new memory
+	my $class = shift; # What class are we constructing?
+	my $self  = {};    # Allocate new memory
 	bless $self, $class; # Mark it of the right type
 	$self->_init(@_);    # Call _init with remaining args
 	return $self;
 }
-
+#######
+# _init
+#######
 sub _init {
 	my ( $self, %args ) = @_;
-	$self->{local_host} = $args{host}   ? $args{host}   : 'localhost';
-	$self->{local_port} = $args{port}   ? $args{port}   : 24642;
+	$self->{local_host} = $args{host} ? $args{host} : 'localhost';
+	$self->{local_port} = $args{port} ? $args{port} : 24642;
 
 	#ToDo for IO::Socket::IP
 	# $self->{porto}      = $args{porto}  ? $args{porto}  : 'tcp';
 	# $self->{listen}     = $args{listen} ? $args{listen} : SOMAXCONN;
 	# $self->{reuse_addr} = $args{reuse}	? $args{reuse}  : 1;
 
-    return;
+	return;
 }
 
 
@@ -211,14 +201,15 @@ sub listener {
 		Proto     => 'tcp',
 		Listen    => SOMAXCONN,
 		ReuseAddr => 1,
+
 		# Proto     => $self->{porto},
 		# Listen    => $self->{listen},
 		# ReuseAddr => $self->{reuse_addr},
 	);
 	$sock or carp "Could not connect to '$self->{local_host}' '$self->{local_port}' no socket :$!";
 	_logger("listening on '$self->{local_host}:$self->{local_port}'");
-	
-	$self->{sock} = $sock;
+
+	$self->{sock}     = $sock;
 	$self->{new_sock} = $self->{sock}->accept();
 
 	return;
@@ -302,34 +293,16 @@ to get filename and row for ide due to changes in perl5db v1.35 see perl5156delt
 sub get_lineinfo {
 	my $self = shift;
 
-	# return $self->_send_get('.');
 	$self->_send('.');
 	my $buf = $self->_get;
 
-	# p $self->{buffer};
-
-	# if ( $self->{buffer} =~ /Debugged program terminated/ ) {
-	# $self->{module} = '<TERMINATED>';
-	# return $self->{module};
-	# }
-
-	# where are we know
-	# extract filename and row
-	#"ExSewi::eh(/usr/src/Padre/Padre-Plugin-Debug/scripts/ExSewi.pm:32):
-	#32:		$_[0] = 'not fred';
-	#  DB<40> "
-
-	# if (
 	$self->{buffer} =~ m{^[\w:]* 	# module
                   \( ([^\)]*):(\d+) \) 	# (file):(row)
                                     }mx;
-		# )
-	# {
-		$self->{filename} = $1;
-		$self->{row}      = $2;
-	# }
 
-	# p $buf;
+	$self->{filename} = $1;
+	$self->{row}      = $2;
+
 	return;
 }
 
@@ -420,20 +393,6 @@ sub step_out {
 	$self->_send('r');
 	my $buf = $self->_get;
 
-	# void context return from main::f
-	# scalar context return from main::f: 242
-	# list  context return from main::f:
-	# 0 22
-	# 1 34
-	# main::(t/eg/02-sub.pl:9):	my $z = $x + $y;
-
-	# list context return from main::g:
-	# 0  'baz'
-	# 1  'foo
-	# bar'
-	# 2  'moo'
-	# main::(t/eg/03-return.pl:10):	$x++;
-
 	$self->_prompt( \$buf );
 	my @line = $self->_process_line( \$buf );
 	my $ret;
@@ -443,11 +402,7 @@ sub step_out {
 		$ret     = $3;
 	}
 
-	#if ($context and $context eq 'list') {
-	# TODO can we parse this inteligently in the general case?
-
-		#}
-		return ( @line, $ret );
+	return ( @line, $ret );
 }
 
 
@@ -549,12 +504,7 @@ sub set_breakpoint {
 
 	$self->_send("f $file");
 
-	# $self->_send("b $file");
 	my $b = $self->_get;
-
-	# print $b . "\n";
-
-	# Already in t/eg/02-sub.pl.
 
 	$self->_send("b $line");
 
@@ -562,7 +512,6 @@ sub set_breakpoint {
 	# if it failed we saw two possible replies
 	my $buf = $self->_get;
 
-	# print $buf . "\n";
 	my $prompt = $self->_prompt( \$buf );
 	if ( $buf =~ /^Subroutine [\w:]+ not found\./ ) {
 
@@ -642,12 +591,6 @@ sub list_break_watch_action {
 		return $ret;
 	}
 
-	# short cut for direct output
-	# return $ret;
-
-	# t/eg/04-fib.pl:
-	#  17:      my $n = shift;
-	#    break if (1)
 	my $buf    = $self->buffer;
 	my $prompt = $self->_prompt( \$buf );
 
@@ -674,22 +617,6 @@ sub list_break_watch_action {
 	return ( $prompt, \@breakpoints );
 }
 
-# =head2 execute_code
-
-# #   $debugger->execute_code($some_code_to_execute);
-
-# # =cut
-
-# sub execute_code {
-# my ( $self, $code ) = @_;
-
-# # 	return if not defined $code;
-
-# # 	$self->_send($code);
-# my $buf = $self->_get;
-# $self->_prompt( \$buf );
-# return $buf;
-# }
 
 =head2 get_value
 
@@ -1090,21 +1017,10 @@ sub _process_line {
 			$cont = $1;
 			$line = pop @parts;
 
-			# my $next_line = pop @parts;
-			# if ( defined $next_line ) {
-			# $line = pop @parts;
-			# }
-
-			# _logger("Line2: $line");
 		}
 	}
 
 	$$buf = join "\n", @parts;
-
-	# my ( $module, $file, $row, $content ) = q{ };
-
-	# the last line before
-	# main::(t/eg/01-add.pl:8):  my $z = $x + $y;
 
 	if ($line =~ m{^([\w:]*) 			# module
                   \( ([^\)]*):(\d+) \) 	# (file:row)
@@ -1120,29 +1036,18 @@ sub _process_line {
 		# 		# unless ( defined $module || defined $file || defined $row ) {
 		my $current_file = $self->show_line();
 
-		# p $current_file;
-
 		$current_file =~ m/([\w:]*) \( (.*) : (\d+) .* /mgx;
 
 		$module = $1;
 		$file   = $2;
 		$row    = $3;
 
-		# p $module;
-		# p $file;
-		# p $row;
 	}
 
 	if ($cont) {
 		$content = $cont;
 	}
 
-	# if ($file) {
-
-	# # 		$self->{filename} = $file;
-
-	# # 		# print "filename: $self->{filename}\n";
-	# }
 	$self->{module}   = $module;
 	$self->{filename} = $file;
 	$self->{row}      = $row;
@@ -1163,7 +1068,7 @@ sub _process_line {
 sub _prompt {
 	my ( $self, $buf ) = @_;
 
-	# _logger("-prompt buf: $$buf");
+	_logger("-prompt buf: $$buf");
 
 	if ( not defined $buf or not ref $buf or ref $buf ne 'SCALAR' ) {
 		croak('_prompt should be called with a reference to a scalar');
@@ -1185,7 +1090,6 @@ sub _prompt {
 sub _send {
 	my ( $self, $input ) = @_;
 
-	#print "Sending '$input'\n";
 	print { $self->{new_sock} } "$input\n";
 
 	return 1;
@@ -1223,11 +1127,7 @@ sub __send_np {
 	my ( $self, $input ) = @_;
 	$self->_send($input);
 
-	# print "input: $input\n";
-
 	my $buf = $self->_get;
-
-	# print "buffer: $buf\n";
 
 	return $buf;
 }
@@ -1272,9 +1172,9 @@ and just performing c on it's own
 
 =head1 AUTHORS
 
-Gabor Szabo E<lt>gabor@szabgab.comE<gt>
-
 Kevin Dawson E<lt>bowtie@cpan.orgE<gt>
+
+Gabor Szabo E<lt>gabor@szabgab.comE<gt>
 
 =head1 CONTRIBUTORS
 
@@ -1286,7 +1186,7 @@ Mark Gardner E<lt>mjgardner@cpan.orgE<gt>
 
 =head1 COPYRIGHT
 
-Copyright 2008-2012 Gabor Szabo. L<http://szabgab.com/>
+Copyright 2008-2012 Gabor Szabo/Kevin Dawson
 
 =head1 LICENSE
 

@@ -1,7 +1,9 @@
 0.17_06 2012.02.xx
     - remove is for cmp_ok where values are numeric
-    - fix Free to wrong pool in tests against win32
+    - fix 'Free to wrong pool' in tests against win32
     - looking to IO::Socket::IP and ipv6
+    - update Makefile to use M-I-DSL
+    - Tweaks to POD, remove unwanted comments (BOWTIE)
 
 
 0.17_05 2012.01.11
