@@ -1,4 +1,4 @@
-0.17_06 2012.02.xx
+0.17_06 2012.02.09
     - remove is for cmp_ok where values are numeric
     - fix 'Free to wrong pool' in tests against win32
     - looking to IO::Socket::IP and ipv6
