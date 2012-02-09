@@ -1,22 +1,19 @@
 use inc::Module::Install::DSL 1.04;
 
-name             Padre-Plugin-SpellCheck
-author           Fayland Lam <fayland at gmail.com>
-author           Jerome Quelin <jquelin@gmail.com>
-author           Ahmad M. Zawawi <ahmad.zawawi@gmail.com>
-
-license          Perl_5
-# version          1.21
-# copyright_holder Fayland Lam, Jerome Quelin
-
-
 all_from      lib/Padre/Plugin/SpellCheck.pm
 requires_from lib/Padre/Plugin/SpellCheck.pm
+requires_from lib/Padre/Plugin/SpellCheck/Dialog.pm
+requires_from lib/Padre/Plugin/SpellCheck/Engine.pm
+requires_from lib/Padre/Plugin/SpellCheck/Preferences.pm
 
-requires      Padre        0.93
-requires Module::Util      0
-requires Text::Aspell      0
-requires Class::XSAccessor 0
+requires Padre				0.93
+requires Module::Util		1.07
+requires Text::Aspell		0.09
+requires Class::XSAccessor	1.13
 
-homepage         http://padre.perlide.org
-repository       http://svn.perlide.org/padre/trunk/Padre-Plugin-SpellCheck/
+no_index directory	qw{ t xt eg share inc privinc }
+homepage		http://padre.perlide.org
+bugtracker		http://padre.perlide.org/trac
+repository		http://svn.perlide.org/padre/trunk/Padre-Plugin-SpellCheck/
+install_share
+

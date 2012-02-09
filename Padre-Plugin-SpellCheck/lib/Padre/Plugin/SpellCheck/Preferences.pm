@@ -163,7 +163,7 @@ spell check preferences.
 
 =over 4
 
-=item my $dialog = PPS::Preferences->new( %params );
+=item my $dialog = P-P-S::Preferences->new( %params );
 
 Create and return a new dialog window.
 

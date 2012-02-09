@@ -4,6 +4,7 @@ package Padre::Plugin::SpellCheck::Engine;
 
 use warnings;
 use strict;
+use Padre::Logger;
 
 use Class::XSAccessor accessors => {
 	_ignore    => '_ignore',    # list of words to ignore
@@ -42,7 +43,6 @@ sub new {
 	$speller->set_option( 'lang',     $config->{dictionary} );
 
 	#$speller->print_config;  # to STDOUT
-
 	if ( exists $MIMETYPE_MODE{$mimetype} ) {
 		if ( not defined $speller->set_option( 'mode', $MIMETYPE_MODE{$mimetype} ) ) {
 			my $err = $speller->errstr;
@@ -50,7 +50,9 @@ sub new {
 		}
 	}
 
-	$speller->print_config;
+	# $speller->print_config;
+	
+	TRACE( $speller->print_config )    if DEBUG;
 
 	$self->_speller($speller);
 
