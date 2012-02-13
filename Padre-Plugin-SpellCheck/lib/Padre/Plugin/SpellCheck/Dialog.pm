@@ -17,7 +17,7 @@ use Class::XSAccessor accessors => {
 	_text        => '_text',        # text being spellchecked
 };
 
-use Padre::Current;
+use Padre::Current ();
 use Padre::Wx   ();
 use Padre::Util ('_T');
 use Encode;
@@ -317,6 +317,8 @@ sub _next {
 #
 sub _replace {
 	my ( $self, $new ) = @_;
+	# my $main = $self->main;
+	# my $editor = $main->current->editor;
 	my $editor = Padre::Current->editor;
 
 	# replace word in editor

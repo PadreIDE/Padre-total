@@ -5,6 +5,7 @@ package Padre::Plugin::SpellCheck::Engine;
 use warnings;
 use strict;
 use Padre::Logger;
+# use Padre::Current;
 
 use Class::XSAccessor accessors => {
 	_ignore    => '_ignore',    # list of words to ignore

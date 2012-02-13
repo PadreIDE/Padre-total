@@ -1,148 +1,197 @@
 package Padre::Plugin::SpellCheck::Preferences;
 
 # ABSTRACT: Preferences dialog for padre spell check
-
+use 5.014;
 use warnings;
 use strict;
+use diagnostics;
+use utf8;
+use autodie;
+use Data::Printer { caller_info => 1, colored => 1, };
 
-use Class::XSAccessor accessors => {
-	_dict_combo => '_dict_combo', # combo box holding dictionary
-	_plugin     => '_plugin',     # plugin to be configured
-	_sizer      => '_sizer',      # window sizer
+# use Padre::Config ();
+use Padre::Plugin::SpellCheck::FBP::Preferences;
+
+our $VERSION = '1.22';
+our @ISA     = qw{
+	Padre::Plugin::SpellCheck::FBP::Preferences
 };
 
-use Padre::Current;
-use Padre::Wx   ();
-use Padre::Util ('_T');
 
-use base 'Wx::Dialog';
-
-
-# -- constructor
-
+#######
+# Method new
+#######
 sub new {
-	my ( $class, $plugin ) = @_;
+	my $class   = shift;
+	my $main    = shift; # Padre $main window integration
+	my $_plugin = shift; # parent $self
 
-	# create object
-	my $self = $class->SUPER::new(
-		Padre::Current->main,
-		-1,
-		_T('Spelling preferences'),
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
-		Wx::wxDEFAULT_FRAME_STYLE | Wx::wxTAB_TRAVERSAL,
-	);
-	$self->SetIcon( Wx::GetWxPerlIcon() );
-	$self->_plugin($plugin);
+	# Create the dialog
+	my $self = $class->SUPER::new($main);
+	
+	#TODO there must be a better way
+	$self->{_plugin} = $_plugin;
 
-	# create dialog
-	$self->_create;
+	# define where to display main dialog
+	$self->CenterOnParent;
+
+	$self->set_up;
 
 	return $self;
 }
 
+#######
+# Method set_up
+#######
+sub set_up {
+	my $self = shift;
 
-# -- event handler
+	# get local_dictionary info
+	$self->_local_dictionaries;
 
-#
-# $self->_on_butok_clicked;
-#
-# handler called when the ok button has been clicked.
-#
-sub _on_butok_clicked {
-	my ($self) = @_;
-	my $plugin = $self->_plugin;
+	# update dialog with locally install dictionaries;
+	$self->display_dictionaries;
 
-	# read plugin preferences
-	my $prefs = $plugin->config;
+	return;
+}
 
-	# overwrite dictionary preference
-	my $dic = $self->_dict_combo->GetValue;
-	$prefs->{dictionary} = $dic;
+#######
+# Method display_dics
+#######
+sub display_dictionaries {
+	my $self = shift;
+	my $main = $self->main;
+	
+	#TODO should use Padre::Config
+	# my $config = Padre::Config->read;
+	my $prefered_dictionary = $self->{_plugin}->config->{dictionary};
 
+	# my $prefered_dictionary = $config->dictionary;
+	p $prefered_dictionary;
+
+	# set local_dictionaries_index to zero incase prefered_dictionary not found
+	my $local_dictionaries_index = 0;
+
+	for ( 0 .. $#{ $self->{local_dictionaries_names} } ) {
+		if ( $self->{local_dictionaries_names}->[$_] =~ m/\(\s$prefered_dictionary\s\)/ ) {
+			$local_dictionaries_index = $_;
+		}
+	}
+	p $local_dictionaries_index;
+
+
+	$self->language->Clear;
+
+	# $self->language->Append( \@local_dictionaries );
+	$self->language->Append( $self->{local_dictionaries_names} );
+
+	# highlight prefered_dictionary
+	$self->language->SetSelection($local_dictionaries_index);
+
+	return;
+}
+
+#######
+# event handler _on_button_ok_clicked
+#######
+sub _on_button_ok_clicked {
+	my $self = shift;
+	
+	#TODO should use Padre::Config
+	# my $config = Padre::Config->read;
+	
+	my $select_dictionary_name = $self->{local_dictionaries_names}->[ $self->language->GetSelection() ];
+	p $select_dictionary_name;
+
+	my $select_dictionary_iso;
+	for my $iso ( keys %{ $self->{dictionary_names} } ) {
+
+		if ( $self->{dictionary_names}->{$iso} eq $select_dictionary_name ) {
+			$select_dictionary_iso = $iso;
+		}
+	}
+	p $select_dictionary_iso;
+	#TODO sortout
+	# my $config = Padre::Config->read;
+	# $config->set( identity_nickname => $new_nick );
+	# $config->write;
+	
 	# store plugin preferences
-	$plugin->config_write($prefs);
-	$self->Destroy;
+	$self->{_plugin}->config_write( { dictionary => $select_dictionary_iso, } );
+
+	# remove dialog nicely
+	$self->{_plugin}->clean_dialog;
+
+	return;
 }
 
+#######
+# Method _local_dictionaries
+#######
+sub _local_dictionaries {
+	my $self = shift;
+	
+	#TODO this should be done via engine
 
-# -- private methods
+	require Text::Aspell;
+	my $speller = Text::Aspell->new;
 
-#
-# $self->_create;
-#
-# create the dialog itself.
-#
-# no params, no return values.
-#
-sub _create {
-	my ($self) = @_;
+	my @local_dictionaries = grep { $_ =~ /^\w+$/ } map { $_->{name} } $speller->dictionary_info;
+	$self->{local_dictionaries} = \@local_dictionaries;
+	p $self->{local_dictionaries};
 
-	# create sizer that will host all controls
-	my $sizer = Wx::BoxSizer->new(Wx::wxVERTICAL);
-	$self->_sizer($sizer);
+	$self->{dictionary_names} = {
+		ar    => 'ARABIC',
+		cs    => 'CZECH',
+		de    => 'GERMAN',
+		de_DE => 'GERMANY',
+		en    => 'ENGLISH',
+		en_AU => 'AUSTRALIA_ENGLISH',
+		en_CA => 'CANADA_ENGLISH',
+		en_GB => 'BRITISH_ENGLISH',    # en_GB => 'UK'
+		en_US => 'AMERICAN_ENGLISH',   # en_US => 'US'
+		es    => 'SPANISH',
+		fr    => 'FRENCH',
+		fr_FR => 'FRANCE',
+		fr_CA => 'CANADA_FRENCH',
+		he    => 'HEBREW',
+		hu    => 'HUNGARIAN',
+		it    => 'ITALIAN',
+		it_IT => 'ITALY',
+		ja    => 'JAPANESE',
+		ja_JP => 'JAPAN',
+		ko    => 'KOREAN',
+		ko_KR => 'KOREA',
+		nb    => 'NORWEGIAN BOKMAL',
+		nl    => 'DUTCH',
+		pl    => 'POLISH',
+		pt    => 'PORTUGUESE',
+		pt_BR => 'BRAZILIAN',
+		ru    => 'RUSSIAN',
+		tr    => 'TURKISH',
+		zh    => 'CHINESE',
+		zh_CN => 'SIMPLIFIED_CHINESE', # zh_CN => 'CHINA',
 
-	# create the controls
-	$self->_create_dictionaries;
-	$self->_create_buttons;
+	};
+	p $self->{dictionary_names};
 
-	# setting focus on dictionary first
-	$self->_dict_combo->SetFocus;
+	my @local_dictionaries_names;
 
-	# wrap everything in a vbox to add some padding
-	$self->SetSizerAndFit($sizer);
-	$sizer->SetSizeHints($self);
-}
+	for (@local_dictionaries) {
+		push( @local_dictionaries_names, $self->{dictionary_names}{$_} );
 
-#
-# $dialog->_create_buttons;
-#
-# create the buttons pane.
-#
-# no params. no return values.
-#
-sub _create_buttons {
-	my ($self) = @_;
-	my $sizer = $self->_sizer;
+		# push( @local_dictionaries_names, $self->{dictionary_names}{$_} . " ( $_ )" );
+	}
 
-	my $butsizer = $self->CreateStdDialogButtonSizer( Wx::wxOK | Wx::wxCANCEL );
-	$sizer->Add( $butsizer, 0, Wx::wxALL | Wx::wxEXPAND | Wx::wxALIGN_CENTER, 5 );
-	Wx::Event::EVT_BUTTON( $self, Wx::wxID_OK, \&_on_butok_clicked );
-}
+	# p @local_dictionaries_names;
 
-#
-# $dialog->_create_dictionaries;
-#
-# create the pane to choose the spelling dictionary.
-#
-# no params. no return values.
-#
-sub _create_dictionaries {
-	my ($self) = @_;
+	@local_dictionaries_names = sort @local_dictionaries_names;
 
-	my $engine  = Padre::Plugin::SpellCheck::Engine->new( $self->_plugin );
-	my @choices = $engine->dictionaries;
-	my %choices = map { $_ => 1 } @choices;
-	my $deflang = $self->_plugin->config->{dictionary};
-	my $default = exists $choices{$deflang} ? $deflang : $choices[0];
+	$self->{local_dictionaries_names} = \@local_dictionaries_names;
 
-	# create the controls
-	my $label = Wx::StaticText->new( $self, -1, _T('Dictionary:') );
-	my $combo = Wx::ComboBox->new(
-		$self, -1,
-		$default,
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
-		\@choices,
-		Wx::wxCB_READONLY | Wx::wxCB_SORT,
-	);
-	$self->_dict_combo($combo);
+	p $self->{local_dictionaries_names};
 
-	# pack the controls in a box
-	my $box = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
-	$box->Add( $label, 0, Wx::wxALL | Wx::wxEXPAND | Wx::wxALIGN_CENTER, 5 );
-	$box->Add( $combo, 1, Wx::wxALL | Wx::wxEXPAND | Wx::wxALIGN_CENTER, 5 );
-	$self->_sizer->Add( $box, 0, Wx::wxALL | Wx::wxEXPAND | Wx::wxALIGN_CENTER, 5 );
+	return;
 }
 
 
