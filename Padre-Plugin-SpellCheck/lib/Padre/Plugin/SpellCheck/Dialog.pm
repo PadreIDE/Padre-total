@@ -17,7 +17,7 @@ use Class::XSAccessor accessors => {
 	_text        => '_text',        # text being spellchecked
 };
 
-use Padre::Current ();
+use Padre::Current;
 use Padre::Wx   ();
 use Padre::Util ('_T');
 use Encode;

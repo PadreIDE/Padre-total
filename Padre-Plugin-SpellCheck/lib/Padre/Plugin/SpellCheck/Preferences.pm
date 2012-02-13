@@ -1,15 +1,14 @@
 package Padre::Plugin::SpellCheck::Preferences;
 
 # ABSTRACT: Preferences dialog for padre spell check
-use 5.014;
+
 use warnings;
 use strict;
-use diagnostics;
-use utf8;
-use autodie;
-use Data::Printer { caller_info => 1, colored => 1, };
 
-# use Padre::Config ();
+use Data::Dumper;
+use Padre::Logger;
+use Padre::Wx             ();
+use Padre::Wx::Role::Main ();
 use Padre::Plugin::SpellCheck::FBP::Preferences;
 
 our $VERSION = '1.22';
@@ -23,11 +22,11 @@ our @ISA     = qw{
 #######
 sub new {
 	my $class   = shift;
-	my $main    = shift; # Padre $main window integration
+	# my $main    = shift; # Padre $main window integration
 	my $_plugin = shift; # parent $self
 
 	# Create the dialog
-	my $self = $class->SUPER::new($main);
+	my $self = $class->SUPER::new($_plugin->main);
 	
 	#TODO there must be a better way
 	$self->{_plugin} = $_plugin;
@@ -64,25 +63,34 @@ sub display_dictionaries {
 	
 	#TODO should use Padre::Config
 	# my $config = Padre::Config->read;
+	# my %config = $self->{_plugin}->config_read;
+	
+	# this don't work
+	# my %config = Padre:Plugin->config_read;
+	# p %config;
+	
+	# my $prefered_dictionary = $self->{config}->{dictionary};
 	my $prefered_dictionary = $self->{_plugin}->config->{dictionary};
 
+	
 	# my $prefered_dictionary = $config->dictionary;
-	p $prefered_dictionary;
+	TRACE("iso prefered_dictionary = $prefered_dictionary ") if DEBUG;
 
 	# set local_dictionaries_index to zero incase prefered_dictionary not found
 	my $local_dictionaries_index = 0;
 
 	for ( 0 .. $#{ $self->{local_dictionaries_names} } ) {
-		if ( $self->{local_dictionaries_names}->[$_] =~ m/\(\s$prefered_dictionary\s\)/ ) {
+		if ( $self->{local_dictionaries_names}->[$_] eq $self->{dictionary_names}->{$prefered_dictionary} ) {
 			$local_dictionaries_index = $_;
 		}
 	}
-	p $local_dictionaries_index;
+
+	TRACE("local_dictionaries_index = $local_dictionaries_index ") if DEBUG;
 
 
 	$self->language->Clear;
 
-	# $self->language->Append( \@local_dictionaries );
+	# load local_dictionaries_names
 	$self->language->Append( $self->{local_dictionaries_names} );
 
 	# highlight prefered_dictionary
@@ -101,7 +109,7 @@ sub _on_button_ok_clicked {
 	# my $config = Padre::Config->read;
 	
 	my $select_dictionary_name = $self->{local_dictionaries_names}->[ $self->language->GetSelection() ];
-	p $select_dictionary_name;
+	TRACE("selected dictionary name = $select_dictionary_name ") if DEBUG;
 
 	my $select_dictionary_iso;
 	for my $iso ( keys %{ $self->{dictionary_names} } ) {
@@ -110,7 +118,7 @@ sub _on_button_ok_clicked {
 			$select_dictionary_iso = $iso;
 		}
 	}
-	p $select_dictionary_iso;
+	TRACE("selected dictionary iso = $select_dictionary_iso ") if DEBUG;
 	#TODO sortout
 	# my $config = Padre::Config->read;
 	# $config->set( identity_nickname => $new_nick );
@@ -119,8 +127,11 @@ sub _on_button_ok_clicked {
 	# store plugin preferences
 	$self->{_plugin}->config_write( { dictionary => $select_dictionary_iso, } );
 
+
 	# remove dialog nicely
-	$self->{_plugin}->clean_dialog;
+	# $self->{_plugin}->clean_dialog;
+	$self->Hide;
+	# $self->Destroy;
 
 	return;
 }
@@ -138,7 +149,7 @@ sub _local_dictionaries {
 
 	my @local_dictionaries = grep { $_ =~ /^\w+$/ } map { $_->{name} } $speller->dictionary_info;
 	$self->{local_dictionaries} = \@local_dictionaries;
-	p $self->{local_dictionaries};
+	TRACE("locally installed dictionaries found = ".Dumper $self->{local_dictionaries} ) if DEBUG;
 
 	$self->{dictionary_names} = {
 		ar    => 'ARABIC',
@@ -173,8 +184,9 @@ sub _local_dictionaries {
 		zh_CN => 'SIMPLIFIED_CHINESE', # zh_CN => 'CHINA',
 
 	};
-	p $self->{dictionary_names};
-
+	# p $self->{dictionary_names};
+	TRACE("iso to dictionary names = " .Dumper $self->{dictionary_names} ) if DEBUG;
+	
 	my @local_dictionaries_names;
 
 	for (@local_dictionaries) {
@@ -189,8 +201,8 @@ sub _local_dictionaries {
 
 	$self->{local_dictionaries_names} = \@local_dictionaries_names;
 
-	p $self->{local_dictionaries_names};
-
+	# p $self->{local_dictionaries_names};
+	TRACE("local dictionaries names = ". Dumper $self->{local_dictionaries_names} ) if DEBUG;
 	return;
 }
 
