@@ -19,6 +19,14 @@ navigation:
 about:
   - title: y2011
     events:
+      - date: 2012 February 13
+        url: http://ahmadzawawi.blogspot.com/2012/02/dwim-perl-v7-released.html
+        title: DWIM Perl v7 released
+        comment: by Ahmad M. Zawawi
+      - date: 2012 February 13
+        url: http://szabgab.com/dwimperl-for-windows-v7.html	
+        title: DWIM Perl 5.14 for Windows (v7) released
+        comment: by Gabor Szabo
       - date: 2012 February 6
         url: http://ahmadzawawi.blogspot.com/2012/02/dwimperl-for-windows-is-here.html
         title: Dwimperl for Windows is here!
