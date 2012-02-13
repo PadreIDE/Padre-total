@@ -17,7 +17,7 @@ navigation:
   - name: About
     href: /about.html
 about:
-  - title: y2011
+  - title: y2012
     events:
       - date: 2012 February 13
         url: http://ahmadzawawi.blogspot.com/2012/02/dwim-perl-v7-released.html
@@ -35,6 +35,8 @@ about:
         url: http://szabgab.com/dwimperl-for-windows-v6.html
         title: Announcing Dwimperl for Windows
         comment: by Gabor Szabo
+  - title: y2011
+    events:
       - date: 2011 November 3
         url: http://perlnews.org/2011/11/metacpan-org-one-year-old/
         title: metacpan.org one year old
