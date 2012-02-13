@@ -5,8 +5,9 @@ use 5.008005;
 use strict;
 use warnings;
 
-use Padre::Plugin ();
+use Padre::Plugin  ();
 use Padre::Current ();
+
 # use Padre::Util;
 # use Padre::Wx;
 use Data::Printer { caller_info => 1, colored => 1, };
@@ -71,31 +72,22 @@ sub plugin_icon {
 #######
 # plugin menu
 #######
-sub menu_plugins_simple {
+sub menu_plugins {
 	my $self = shift;
-	return Wx::gettext('Spell Check') => [
-		Wx::gettext("Check spelling\tF7") => sub { $self->spell_check },
-		Wx::gettext('Preferences')        => sub { $self->plugin_preferences },
-		Wx::gettext('Preferences2')       => sub { $self->plugin_preferences2 },
-	];
+	my $main = $self->main;
+
+	# Create a manual menu item
+	my $item = Wx::MenuItem->new( undef, -1, $self->plugin_name . "...\tF7 ", );
+	Wx::Event::EVT_MENU(
+		$main, $item,
+		sub {
+			local $@;
+			eval { $self->spell_check($main); };
+		},
+	);
+
+	return $item;
 }
-
-# sub menu_plugins {
-# my $self = shift;
-# my $main = $self->main;
-
-# # Create a manual menu item
-# my $item = Wx::MenuItem->new( undef, -1, $self->plugin_name . "...\tF7 ", );
-# Wx::Event::EVT_MENU(
-# $main, $item,
-# sub {
-# local $@;
-# eval { $self->spell_check($main); };
-# },
-# );
-
-# return $item;
-# }
 
 #########
 # We need plugin_enable
@@ -168,6 +160,7 @@ sub config {
 	if ( $self->{config}->{dictionary} ) {
 		print "Loaded existing configuration\n";
 		p $self->{config}->{dictionary};
+
 		# $self->config_write( { dictionary => 'en', } );
 
 	} else {
@@ -177,7 +170,7 @@ sub config {
 	}
 
 	return $self->config_read || $self->{config};
-	
+
 }
 
 sub config1 {
@@ -191,8 +184,8 @@ sub config1 {
 # spell_check
 #######
 sub spell_check {
-	my $self = shift;
-	my $main = $self->main;
+	my $self    = shift;
+	my $main    = $self->main;
 	my $current = $main->current;
 
 	# TODO: maybe grey out the menu option if
@@ -204,16 +197,19 @@ sub spell_check {
 
 	my $mime_type = $current->document->mimetype;
 	my $engine = Padre::Plugin::SpellCheck::Engine->new( $self, $mime_type );
+
 	# my $mime_type = $main->current->document->mimetype;
 	# my $engine = Padre::Plugin::SpellCheck::Engine->new( $self, $mime_type );
-	
+
 	# fetch text to check
 	my $selection = $current->text;
 	my $wholetext = $current->document->text_get;
+
 	# my $selection = Padre::Current->text;
 	# my $wholetext = Padre::Current->document->text_get;
-	my $text      = $selection || $wholetext;
-	my $offset    = $selection ? $current->editor->GetSelectionStart : 0;
+	my $text = $selection || $wholetext;
+	my $offset = $selection ? $current->editor->GetSelectionStart : 0;
+
 	# my $offset    = $selection ? Padre::Current->editor->GetSelectionStart : 0;
 
 	# try to find a mistake
@@ -242,20 +238,6 @@ sub spell_check {
 #######
 # plugin_preferences
 #######
-sub plugin_preferences2 {
-	my $self = shift;
-	my $main = $self->main;
-
-	# Clean up any previous existing dialog
-	$self->clean_dialog;
-	require Padre::Plugin::SpellCheck::Preferences2;
-	$self->{dialog} = Padre::Plugin::SpellCheck::Preferences2->new($self);
-	$self->{dialog}->ShowModal;
-	return;
-}
-#######
-# plugin_preferences
-#######
 sub plugin_preferences {
 	my $self = shift;
 	my $main = $self->main;
@@ -264,7 +246,7 @@ sub plugin_preferences {
 	$self->clean_dialog;
 
 	require Padre::Plugin::SpellCheck::Preferences;
-	$self->{dialog} = Padre::Plugin::SpellCheck::Preferences->new($main, $self);
+	$self->{dialog} = Padre::Plugin::SpellCheck::Preferences->new( $main, $self );
 	$self->{dialog}->ShowModal;
 
 	return;
