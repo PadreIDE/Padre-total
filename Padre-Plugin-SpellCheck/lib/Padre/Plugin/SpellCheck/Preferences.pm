@@ -22,11 +22,11 @@ our @ISA     = qw{
 #######
 sub new {
 	my $class   = shift;
-	# my $main    = shift; # Padre $main window integration
+	my $main    = shift; # Padre $main window integration
 	my $_plugin = shift; # parent $self
 
 	# Create the dialog
-	my $self = $class->SUPER::new($_plugin->main);
+	my $self = $class->SUPER::new($main);
 	
 	#TODO there must be a better way
 	$self->{_plugin} = $_plugin;
@@ -61,15 +61,14 @@ sub display_dictionaries {
 	my $self = shift;
 	my $main = $self->main;
 	
-	#TODO should use Padre::Config
-	# my $config = Padre::Config->read;
-	# my %config = $self->{_plugin}->config_read;
-	
 	# this don't work
-	# my %config = Padre:Plugin->config_read;
-	# p %config;
+	# my $config = $self->get_config->{dictionary};
+	# my $config = $self->config->{dictionary};
+	# p $config;
 	
-	# my $prefered_dictionary = $self->{config}->{dictionary};
+
+	
+	# my $prefered_dictionary = $self->get_config->{dictionary};
 	my $prefered_dictionary = $self->{_plugin}->config->{dictionary};
 
 	
@@ -126,7 +125,10 @@ sub _on_button_ok_clicked {
 	
 	# store plugin preferences
 	$self->{_plugin}->config_write( { dictionary => $select_dictionary_iso, } );
-
+	#
+	
+	# $self->config_write( { dictionary => $select_dictionary_iso, } );
+	# $self->set_config( { dictionary => $select_dictionary_iso, } );
 
 	# remove dialog nicely
 	# $self->{_plugin}->clean_dialog;

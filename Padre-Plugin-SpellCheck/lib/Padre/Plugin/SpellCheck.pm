@@ -10,13 +10,13 @@ use Padre::Current ();
 
 # use Padre::Util;
 # use Padre::Wx;
-use Data::Printer { caller_info => 1, colored => 1, };
+# use Data::Printer { caller_info => 1, colored => 1, };
 our $VERSION = '1.22';
 our @ISA     = 'Padre::Plugin';
 
 use File::Spec::Functions qw{ catfile };
 
-# use Padre::Plugin::SpellCheck::Dialog;
+use Padre::Plugin::SpellCheck::Dialog;
 use Padre::Plugin::SpellCheck::Engine;
 
 
@@ -33,16 +33,18 @@ sub plugin_name {
 sub padre_interfaces {
 	return (
 
-		'Padre::Plugin'         => 0.93,
-		'Padre::Util'           => 0.93,
-		'Padre::Unload'         => 0.93,
-		'Padre::Task'           => 0.93,
-		'Padre::Document'       => 0.93,
-		'Padre::Project'        => 0.93,
+		'Padre::Plugin' => 0.93,
+		'Padre::Util'   => 0.93,
+		'Padre::Unload' => 0.93,
+
+		# 'Padre::Task'           => 0.93,
+		# 'Padre::Document'       => 0.93,
+		# 'Padre::Project'        => 0.93,
 		'Padre::Wx'             => 0.93,
 		'Padre::Wx::Role::Main' => 0.93,
-		'Padre::Wx::Main'       => 0.93,
-		'Padre::Wx::Editor'     => 0.93,
+
+		# 'Padre::Wx::Main'       => 0.93,
+		# 'Padre::Wx::Editor'     => 0.93,
 
 		# 'Padre::Plugin'         => '0.92',
 		'Padre::Current' => '0.93',
@@ -72,6 +74,17 @@ sub plugin_icon {
 #######
 # plugin menu
 #######
+# sub menu_plugins_simple {
+# my $self = shift;
+# return Wx::gettext('Spell Check') => [
+# Wx::gettext("Check spelling\tF7") => sub { $self->spell_check },
+# Wx::gettext('Preferences')        => sub { $self->plugin_preferences },
+
+# # Wx::gettext('Preferences2')       => sub { $self->plugin_preferences2 },
+# ];
+# }
+
+
 sub menu_plugins {
 	my $self = shift;
 	my $main = $self->main;
@@ -158,8 +171,9 @@ sub config {
 	$self->{config} = $self->config_read;
 
 	if ( $self->{config}->{dictionary} ) {
-		print "Loaded existing configuration\n";
-		p $self->{config}->{dictionary};
+
+		# print "Loaded existing configuration\n";
+		# p $self->{config}->{dictionary};
 
 		# $self->config_write( { dictionary => 'en', } );
 
@@ -184,9 +198,11 @@ sub config1 {
 # spell_check
 #######
 sub spell_check {
-	my $self    = shift;
-	my $main    = $self->main;
-	my $current = $main->current;
+	my $self = shift;
+	my $main = Padre::Current->main;
+
+	# my $main    = $self->main;
+	# my $current = $main->current;
 
 	# TODO: maybe grey out the menu option if
 	# no file is opened?
@@ -195,22 +211,23 @@ sub spell_check {
 		return;
 	}
 
-	my $mime_type = $current->document->mimetype;
-	my $engine = Padre::Plugin::SpellCheck::Engine->new( $self, $mime_type );
-
-	# my $mime_type = $main->current->document->mimetype;
+	# my $mime_type = $current->document->mimetype;
 	# my $engine = Padre::Plugin::SpellCheck::Engine->new( $self, $mime_type );
 
+	my $mime_type = $main->current->document->mimetype;
+	my $engine = Padre::Plugin::SpellCheck::Engine->new( $self, $mime_type );
+
 	# fetch text to check
-	my $selection = $current->text;
-	my $wholetext = $current->document->text_get;
+	# my $selection = $current->text;
+	# my $wholetext = $current->document->text_get;
 
-	# my $selection = Padre::Current->text;
-	# my $wholetext = Padre::Current->document->text_get;
-	my $text = $selection || $wholetext;
-	my $offset = $selection ? $current->editor->GetSelectionStart : 0;
+	my $selection = Padre::Current->text;
+	my $wholetext = Padre::Current->document->text_get;
+	my $text      = $selection || $wholetext;
 
-	# my $offset    = $selection ? Padre::Current->editor->GetSelectionStart : 0;
+	# my $offset = $selection ? $current->editor->GetSelectionStart : 0;
+
+	my $offset = $selection ? Padre::Current->editor->GetSelectionStart : 0;
 
 	# try to find a mistake
 	my ( $word, $pos ) = $engine->check($text);
@@ -250,6 +267,27 @@ sub plugin_preferences {
 	$self->{dialog}->ShowModal;
 
 	return;
+}
+
+sub get_config {
+	my $self = shift;
+
+	my $config = {
+		dictionary => 'en',
+	};
+
+	if ( $self->config_read ) {
+
+		return $self->config_read;
+	} else {
+		return $config;
+	}
+}
+
+sub set_config {
+	my $self = shift;
+
+	$self->config_write(@_);
 }
 
 1;
