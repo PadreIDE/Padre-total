@@ -166,30 +166,30 @@ sub clean_dialog {
 # config
 # store's language in DB
 #######
-sub config1 {
-	my $self = shift;
+# sub config1 {
+	# my $self = shift;
 
-	$self->{config} = $self->config_read;
+	# $self->{config} = $self->config_read;
 
-	if ( $self->{config}->{dictionary} ) {
+	# if ( $self->{config}->{dictionary} ) {
 
-		# print "Loaded existing configuration\n";
-		# p $self->{config}->{dictionary};
+		# # print "Loaded existing configuration\n";
+		# # p $self->{config}->{dictionary};
 
-		# $self->config_write( { dictionary => 'en', } );
-		# my $lang_iso = $self->{config}->{dictionary};
-		# $self->lang_iso = $lang_iso;
+		# # $self->config_write( { dictionary => 'en', } );
+		# # my $lang_iso = $self->{config}->{dictionary};
+		# # $self->lang_iso = $lang_iso;
 
-	} else {
-		print "No existing configuration";
-		$self->config_write( { dictionary => 'en_GB', } );
-		$self->{config}->{dictionary} = 'en_GB';
-		# $self->lang_iso = 'en_GB';
-	}
+	# } else {
+		# print "No existing configuration";
+		# $self->config_write( { dictionary => 'en_GB', } );
+		# $self->{config}->{dictionary} = 'en_GB';
+		# # $self->lang_iso = 'en_GB';
+	# }
 
-	return $self->config_read || $self->{config};
+	# return $self->config_read || $self->{config};
 
-}
+# }
 
 sub config {
 	my $self   = shift;

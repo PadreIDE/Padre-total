@@ -41,13 +41,13 @@ our @ISA     = qw{
 sub new {
 	my $class    = shift;
 	my $main     = shift; # Padre $main window integration
-	my $lang_iso = shift;
+	# my $lang_iso = shift;
 
 	# my $_plugin = shift; # parent $self
 
 	# Create the dialog
 	my $self = $class->SUPER::new($main);
-	$self->_iso_name($lang_iso);
+	# $self->_iso_name($lang_iso);
 
 	#TODO there must be a better way
 	# $self->{_plugin} = $_plugin;
@@ -79,7 +79,7 @@ sub set_up {
 
 	my $mime_type = $current->document->mimetype;
 	require Padre::Plugin::SpellCheck::Engine;
-	my $engine = Padre::Plugin::SpellCheck::Engine->new( $mime_type, $self->_iso_name );
+	my $engine = Padre::Plugin::SpellCheck::Engine->new( $mime_type, 'en_GB' );
 
 	# fetch text to check
 	my $selection = $current->text;
