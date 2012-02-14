@@ -5,10 +5,11 @@ package Padre::Plugin::SpellCheck::Engine;
 use warnings;
 use strict;
 use Padre::Logger;
-
+use Padre::Unload                          ();
 # use Padre::Current;
 
-use Class::XSAccessor {
+use Class::XSAccessor {	
+	replace => 1,
 	accessors => {
 		_ignore    => '_ignore',    # list of words to ignore
 		                            # _plugin    => '_plugin',    # ref to spellecheck plugin
@@ -17,7 +18,7 @@ use Class::XSAccessor {
 		                            # newer version of STC:
 		                            # number of UTF8 characters
 		                            # used in calculating current possition
-	}
+	},
 };
 use Text::Aspell;
 

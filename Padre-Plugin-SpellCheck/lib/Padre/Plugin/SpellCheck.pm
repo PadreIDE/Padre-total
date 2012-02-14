@@ -5,18 +5,17 @@ use 5.008005;
 use strict;
 use warnings;
 
-use Padre::Plugin  ();
-use Padre::Current ();
+use Padre::Plugin;
+use Padre::Current;
 
 use Padre::Util;
 use Padre::Wx;
+use Padre::Unload                          ();
 use Data::Printer { caller_info => 1, colored => 1, };
 our $VERSION = '1.22';
 our @ISA     = 'Padre::Plugin';
 
-use File::Spec::Functions qw{ catfile };
-
-# use Padre::Plugin::SpellCheck::Dialog;
+# use File::Spec::Functions qw{ catfile };
 use Padre::Plugin::SpellCheck::Engine;
 
 
@@ -61,15 +60,15 @@ sub padre_interfaces {
 #######
 # Add icon to Plugin
 #######
-sub plugin_icon {
-	my $self = shift;
+# sub plugin_icon {
+	# my $self = shift;
 
-	# find resource path
-	my $iconpath = catfile( $self->plugin_directory_share, 'icons', 'spellcheck.png' );
+	# # find resource path
+	# my $iconpath = catfile( $self->plugin_directory_share, 'icons', 'spellcheck.png' );
 
-	# create and return icon
-	return Wx::Bitmap->new( $iconpath, Wx::wxBITMAP_TYPE_PNG );
-}
+	# # create and return icon
+	# return Wx::Bitmap->new( $iconpath, Wx::wxBITMAP_TYPE_PNG );
+# }
 
 #######
 # plugin menu
@@ -201,52 +200,6 @@ sub config {
 
 #######
 # spell_check
-#######
-# sub spell_check2 {
-	# my $self    = shift;
-	# my $main    = $self->main;
-	# my $current = $main->current;
-
-	# # TODO: maybe grey out the menu option if
-	# # no file is opened?
-	# unless ( $current->document ) {
-		# $main->message( Wx::gettext('No document opened.'), 'Padre' );
-		# return;
-	# }
-
-	# my $mime_type = $current->document->mimetype;
-	# my $engine = Padre::Plugin::SpellCheck::Engine->new( $self, $mime_type );
-
-	# # fetch text to check
-	# my $selection = $current->text;
-	# my $wholetext = $current->document->text_get;
-	# my $text      = $selection || $wholetext;
-	# my $offset    = $selection ? $current->editor->GetSelectionStart : 0;
-
-	# # try to find a mistake
-	# my ( $word, $pos ) = $engine->check($text);
-
-	# # no mistake means we're done
-	# if ( not defined $word ) {
-		# $main->message( Wx::gettext('Spell check finished.'), 'Padre' );
-		# return;
-	# }
-
-	# require Padre::Plugin::SpellCheck::Dialog;
-
-	# my $dialog = Padre::Plugin::SpellCheck::Dialog->new(
-		# text   => $text,
-		# error  => [ $word, $pos ],
-		# engine => $engine,
-		# offset => $offset,
-		# plugin => $self,
-	# );
-
-	# $dialog->ShowModal;
-
-# }
-#######
-# plugin_preferences
 #######
 sub spell_check {
 	my $self = shift;

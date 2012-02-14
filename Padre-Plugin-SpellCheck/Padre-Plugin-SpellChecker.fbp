@@ -290,7 +290,7 @@
                                                 <property name="id">wxID_ANY</property>
                                                 <property name="label">Spell check finished:...</property>
                                                 <property name="maximum_size"></property>
-                                                <property name="minimum_size"></property>
+                                                <property name="minimum_size">140,-1</property>
                                                 <property name="name">labeltext</property>
                                                 <property name="permission">public</property>
                                                 <property name="pos"></property>
@@ -346,7 +346,7 @@
                                                 <property name="id">wxID_ANY</property>
                                                 <property name="label">Click Close</property>
                                                 <property name="maximum_size"></property>
-                                                <property name="minimum_size"></property>
+                                                <property name="minimum_size">70,-1</property>
                                                 <property name="name">label</property>
                                                 <property name="permission">public</property>
                                                 <property name="pos"></property>
@@ -575,8 +575,8 @@
                                 <property name="label">&amp;Replace</property>
                                 <property name="maximum_size"></property>
                                 <property name="minimum_size"></property>
-                                <property name="name">m_button2</property>
-                                <property name="permission">protected</property>
+                                <property name="name">replace</property>
+                                <property name="permission">public</property>
                                 <property name="pos"></property>
                                 <property name="size"></property>
                                 <property name="style"></property>
@@ -632,8 +632,8 @@
                                 <property name="label">R&amp;eplace all</property>
                                 <property name="maximum_size"></property>
                                 <property name="minimum_size"></property>
-                                <property name="name">m_button3</property>
-                                <property name="permission">protected</property>
+                                <property name="name">replaece_all</property>
+                                <property name="permission">public</property>
                                 <property name="pos"></property>
                                 <property name="size"></property>
                                 <property name="style"></property>
@@ -689,8 +689,8 @@
                                 <property name="label">&amp;Ignore</property>
                                 <property name="maximum_size"></property>
                                 <property name="minimum_size"></property>
-                                <property name="name">m_button4</property>
-                                <property name="permission">protected</property>
+                                <property name="name">ignore</property>
+                                <property name="permission">public</property>
                                 <property name="pos"></property>
                                 <property name="size"></property>
                                 <property name="style"></property>
@@ -746,8 +746,8 @@
                                 <property name="label">I&amp;gnore all</property>
                                 <property name="maximum_size"></property>
                                 <property name="minimum_size"></property>
-                                <property name="name">m_button5</property>
-                                <property name="permission">protected</property>
+                                <property name="name">ignore_all</property>
+                                <property name="permission">public</property>
                                 <property name="pos"></property>
                                 <property name="size"></property>
                                 <property name="style"></property>
