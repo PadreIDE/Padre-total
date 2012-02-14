@@ -5,16 +5,19 @@ package Padre::Plugin::SpellCheck::Engine;
 use warnings;
 use strict;
 use Padre::Logger;
+
 # use Padre::Current;
 
-use Class::XSAccessor accessors => {
-	_ignore    => '_ignore',    # list of words to ignore
-	_plugin    => '_plugin',    # ref to spellecheck plugin
-	_speller   => '_speller',   # real text::aspell object
-	_utf_chars => '_utf_chars', # FIXME: as soon as wxWidgets/wxPerl supports
-	                            # newer version of STC:
-	                            # number of UTF8 characters
-	                            # used in calculating current possition
+use Class::XSAccessor {
+	accessors => {
+		_ignore    => '_ignore',    # list of words to ignore
+		                            # _plugin    => '_plugin',    # ref to spellecheck plugin
+		_speller   => '_speller',   # real text::aspell object
+		_utf_chars => '_utf_chars', # FIXME: as soon as wxWidgets/wxPerl supports
+		                            # newer version of STC:
+		                            # number of UTF8 characters
+		                            # used in calculating current possition
+	}
 };
 use Text::Aspell;
 
@@ -27,21 +30,27 @@ my %MIMETYPE_MODE = (
 # -- constructor
 
 sub new {
-	my ( $class, $plugin, $mimetype ) = @_;
+
+	# my ( $class, $plugin, $mimetype ) = @_;
+	my ( $class, $mimetype, $iso ) = @_;
 
 	my $self = bless {
-		_ignore    => {},
-		_plugin    => $plugin,
+		_ignore => {},
+
+		# _plugin    => $plugin,
 		_utf_chars => 0,
 	}, $class;
 
 	# create speller object
 	my $speller = Text::Aspell->new;
-	my $config  = $plugin->config;
+
+	# my $config  = $plugin->config;
 
 	# TODO: configurable later
 	$speller->set_option( 'sug-mode', 'normal' );
-	$speller->set_option( 'lang',     $config->{dictionary} );
+
+	# $speller->set_option( 'lang',     $config->{dictionary} );
+	$speller->set_option( 'lang', $iso );
 
 	#$speller->print_config;  # to STDOUT
 	if ( exists $MIMETYPE_MODE{$mimetype} ) {
@@ -52,8 +61,8 @@ sub new {
 	}
 
 	# $speller->print_config;
-	
-	TRACE( $speller->print_config )    if DEBUG;
+
+	TRACE( $speller->print_config ) if DEBUG;
 
 	$self->_speller($speller);
 

@@ -5,11 +5,11 @@ package Padre::Plugin::SpellCheck::Preferences;
 use warnings;
 use strict;
 
-use Data::Dumper;
 use Padre::Logger;
-use Padre::Wx             ();
-use Padre::Wx::Role::Main ();
-use Padre::Plugin::SpellCheck::FBP::Preferences;
+use Padre::Wx                                   ();
+use Padre::Wx::Role::Main                       ();
+use Padre::Unload                               ();
+use Padre::Plugin::SpellCheck::FBP::Preferences ();
 
 our $VERSION = '1.22';
 our @ISA     = qw{
@@ -27,7 +27,7 @@ sub new {
 
 	# Create the dialog
 	my $self = $class->SUPER::new($main);
-	
+
 	#TODO there must be a better way
 	$self->{_plugin} = $_plugin;
 
@@ -60,18 +60,19 @@ sub set_up {
 sub display_dictionaries {
 	my $self = shift;
 	my $main = $self->main;
-	
+
 	# this don't work
 	# my $config = $self->get_config->{dictionary};
 	# my $config = $self->config->{dictionary};
 	# p $config;
-	
 
-	
+
+
 	# my $prefered_dictionary = $self->get_config->{dictionary};
+	# my $prefered_dictionary = 'en_GB';
 	my $prefered_dictionary = $self->{_plugin}->config->{dictionary};
 
-	
+
 	# my $prefered_dictionary = $config->dictionary;
 	TRACE("iso prefered_dictionary = $prefered_dictionary ") if DEBUG;
 
@@ -103,10 +104,10 @@ sub display_dictionaries {
 #######
 sub _on_button_ok_clicked {
 	my $self = shift;
-	
+
 	#TODO should use Padre::Config
 	# my $config = Padre::Config->read;
-	
+
 	my $select_dictionary_name = $self->{local_dictionaries_names}->[ $self->language->GetSelection() ];
 	TRACE("selected dictionary name = $select_dictionary_name ") if DEBUG;
 
@@ -118,21 +119,24 @@ sub _on_button_ok_clicked {
 		}
 	}
 	TRACE("selected dictionary iso = $select_dictionary_iso ") if DEBUG;
+
 	#TODO sortout
 	# my $config = Padre::Config->read;
 	# $config->set( identity_nickname => $new_nick );
 	# $config->write;
-	
+
 	# store plugin preferences
 	$self->{_plugin}->config_write( { dictionary => $select_dictionary_iso, } );
+
 	#
-	
+
 	# $self->config_write( { dictionary => $select_dictionary_iso, } );
 	# $self->set_config( { dictionary => $select_dictionary_iso, } );
 
 	# remove dialog nicely
 	# $self->{_plugin}->clean_dialog;
 	$self->Hide;
+
 	# $self->Destroy;
 
 	return;
@@ -143,7 +147,7 @@ sub _on_button_ok_clicked {
 #######
 sub _local_dictionaries {
 	my $self = shift;
-	
+
 	#TODO this should be done via engine
 
 	require Text::Aspell;
@@ -151,8 +155,9 @@ sub _local_dictionaries {
 
 	my @local_dictionaries = grep { $_ =~ /^\w+$/ } map { $_->{name} } $speller->dictionary_info;
 	$self->{local_dictionaries} = \@local_dictionaries;
-	TRACE("locally installed dictionaries found = ".Dumper $self->{local_dictionaries} ) if DEBUG;
+	TRACE( "locally installed dictionaries found = " . Dumper $self->{local_dictionaries} ) if DEBUG;
 
+	#TODO should we be using Padre::Locale instead?
 	$self->{dictionary_names} = {
 		ar    => 'ARABIC',
 		cs    => 'CZECH',
@@ -186,9 +191,10 @@ sub _local_dictionaries {
 		zh_CN => 'SIMPLIFIED_CHINESE', # zh_CN => 'CHINA',
 
 	};
+
 	# p $self->{dictionary_names};
-	TRACE("iso to dictionary names = " .Dumper $self->{dictionary_names} ) if DEBUG;
-	
+	TRACE( "iso to dictionary names = " . Dumper $self->{dictionary_names} ) if DEBUG;
+
 	my @local_dictionaries_names;
 
 	for (@local_dictionaries) {
@@ -204,7 +210,7 @@ sub _local_dictionaries {
 	$self->{local_dictionaries_names} = \@local_dictionaries_names;
 
 	# p $self->{local_dictionaries_names};
-	TRACE("local dictionaries names = ". Dumper $self->{local_dictionaries_names} ) if DEBUG;
+	TRACE( "local dictionaries names = " . Dumper $self->{local_dictionaries_names} ) if DEBUG;
 	return;
 }
 

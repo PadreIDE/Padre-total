@@ -8,15 +8,15 @@ use warnings;
 use Padre::Plugin  ();
 use Padre::Current ();
 
-# use Padre::Util;
-# use Padre::Wx;
-# use Data::Printer { caller_info => 1, colored => 1, };
+use Padre::Util;
+use Padre::Wx;
+use Data::Printer { caller_info => 1, colored => 1, };
 our $VERSION = '1.22';
 our @ISA     = 'Padre::Plugin';
 
 use File::Spec::Functions qw{ catfile };
 
-use Padre::Plugin::SpellCheck::Dialog;
+# use Padre::Plugin::SpellCheck::Dialog;
 use Padre::Plugin::SpellCheck::Engine;
 
 
@@ -33,28 +33,28 @@ sub plugin_name {
 sub padre_interfaces {
 	return (
 
-		'Padre::Plugin' => 0.93,
-		'Padre::Util'   => 0.93,
-		'Padre::Unload' => 0.93,
+		'Padre::Plugin' => 0.92,
+		# 'Padre::Util'   => 0.93,
+		# 'Padre::Unload' => 0.93,
 
 		# 'Padre::Task'           => 0.93,
 		# 'Padre::Document'       => 0.93,
 		# 'Padre::Project'        => 0.93,
-		'Padre::Wx'             => 0.93,
-		'Padre::Wx::Role::Main' => 0.93,
+		# 'Padre::Wx'             => 0.93,
+		# 'Padre::Wx::Role::Main' => 0.93,
 
 		# 'Padre::Wx::Main'       => 0.93,
 		# 'Padre::Wx::Editor'     => 0.93,
 
 		# 'Padre::Plugin'         => '0.92',
-		'Padre::Current' => '0.93',
+		# 'Padre::Current' => '0.93',
 
 		# 'Padre::Wx'             => '0.92',
 		# 'Padre::Wx::Main'       => '0.92',
 		# 'Padre::Wx::Role::Main' => '0.92',
 
 		# 'Padre::DB'             => '0.92',
-		'Padre::Logger' => '0.92',
+		# 'Padre::Logger' => '0.92',
 	);
 }
 
@@ -131,6 +131,7 @@ sub plugin_disable {
 		qw{
 			Padre::Plugin::SpellCheck
 			Padre::Plugin::SpellCheck::Dialog
+			Padre::Plugin::SpellCheck::FBP::Dialog
 			Padre::Plugin::SpellCheck::Engine
 			Padre::Plugin::SpellCheck::Preferences
 			Padre::Plugin::SpellCheck::FBP::Preferences
@@ -165,7 +166,7 @@ sub clean_dialog {
 # config
 # store's language in DB
 #######
-sub config {
+sub config1 {
 	my $self = shift;
 
 	$self->{config} = $self->config_read;
@@ -176,82 +177,93 @@ sub config {
 		# p $self->{config}->{dictionary};
 
 		# $self->config_write( { dictionary => 'en', } );
+		# my $lang_iso = $self->{config}->{dictionary};
+		# $self->lang_iso = $lang_iso;
 
 	} else {
 		print "No existing configuration";
-		$self->config_write( { dictionary => 'en', } );
-		$self->{config}->{dictionary} = 'en';
+		$self->config_write( { dictionary => 'en_GB', } );
+		$self->{config}->{dictionary} = 'en_GB';
+		# $self->lang_iso = 'en_GB';
 	}
 
 	return $self->config_read || $self->{config};
 
 }
 
-sub config1 {
+sub config {
 	my $self   = shift;
 	my $config = {
 		dictionary => 'en_GB',
 	};
 	return $self->config_read || $config;
 }
+
 #######
 # spell_check
 #######
-sub spell_check {
-	my $self = shift;
-	my $main = Padre::Current->main;
-
+# sub spell_check2 {
+	# my $self    = shift;
 	# my $main    = $self->main;
 	# my $current = $main->current;
 
-	# TODO: maybe grey out the menu option if
-	# no file is opened?
-	unless ( $main->current->document ) {
-		$main->message( Wx::gettext('No document opened.'), 'Padre' );
-		return;
-	}
+	# # TODO: maybe grey out the menu option if
+	# # no file is opened?
+	# unless ( $current->document ) {
+		# $main->message( Wx::gettext('No document opened.'), 'Padre' );
+		# return;
+	# }
 
 	# my $mime_type = $current->document->mimetype;
 	# my $engine = Padre::Plugin::SpellCheck::Engine->new( $self, $mime_type );
 
-	my $mime_type = $main->current->document->mimetype;
-	my $engine = Padre::Plugin::SpellCheck::Engine->new( $self, $mime_type );
-
-	# fetch text to check
+	# # fetch text to check
 	# my $selection = $current->text;
 	# my $wholetext = $current->document->text_get;
+	# my $text      = $selection || $wholetext;
+	# my $offset    = $selection ? $current->editor->GetSelectionStart : 0;
 
-	my $selection = Padre::Current->text;
-	my $wholetext = Padre::Current->document->text_get;
-	my $text      = $selection || $wholetext;
+	# # try to find a mistake
+	# my ( $word, $pos ) = $engine->check($text);
 
-	# my $offset = $selection ? $current->editor->GetSelectionStart : 0;
+	# # no mistake means we're done
+	# if ( not defined $word ) {
+		# $main->message( Wx::gettext('Spell check finished.'), 'Padre' );
+		# return;
+	# }
 
-	my $offset = $selection ? Padre::Current->editor->GetSelectionStart : 0;
+	# require Padre::Plugin::SpellCheck::Dialog;
 
-	# try to find a mistake
-	my ( $word, $pos ) = $engine->check($text);
+	# my $dialog = Padre::Plugin::SpellCheck::Dialog->new(
+		# text   => $text,
+		# error  => [ $word, $pos ],
+		# engine => $engine,
+		# offset => $offset,
+		# plugin => $self,
+	# );
 
-	# no mistake means we're done
-	if ( not defined $word ) {
-		$main->message( Wx::gettext('Spell check finished.'), 'Padre' );
-		return;
-	}
+	# $dialog->ShowModal;
+
+# }
+#######
+# plugin_preferences
+#######
+sub spell_check {
+	my $self = shift;
+	my $main = $self->main;
+	
+	my $lang_iso = $self->config->{dictionary};
+	# p $lang_iso;
+
+	# Clean up any previous existing dialog
+	$self->clean_dialog;
 
 	require Padre::Plugin::SpellCheck::Dialog;
+	$self->{dialog} = Padre::Plugin::SpellCheck::Dialog->new( $main, $lang_iso);
+	$self->{dialog}->ShowModal;
 
-	my $dialog = Padre::Plugin::SpellCheck::Dialog->new(
-		text   => $text,
-		error  => [ $word, $pos ],
-		engine => $engine,
-		offset => $offset,
-		plugin => $self,
-	);
-
-	$dialog->ShowModal;
-
+	return;
 }
-
 #######
 # plugin_preferences
 #######
@@ -273,7 +285,7 @@ sub get_config {
 	my $self = shift;
 
 	my $config = {
-		dictionary => 'en',
+		dictionary => 'en_GB',
 	};
 
 	if ( $self->config_read ) {
