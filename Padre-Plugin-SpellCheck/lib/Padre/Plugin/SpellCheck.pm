@@ -126,7 +126,8 @@ sub plugin_disable {
 	$self->clean_dialog;
 
 	# Unload all our child classes
-	$self->unload(
+	require Padre::Unload;
+	Padre::Unload->unload(
 		qw{
 			Padre::Plugin::SpellCheck
 			Padre::Plugin::SpellCheck::Dialog
