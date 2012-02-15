@@ -40,8 +40,8 @@ sub menu_plugins {
         $main,
         $menu_item,
         sub {
-            require Padre::Plugin::Moose::FBP::Moose;
-            Padre::Plugin::Moose::FBP::Moose->new($main)->Show;
+            require Padre::Plugin::Moose::Main;
+            Padre::Plugin::Moose::Main->new($main)->Show;
         },
     );
 

@@ -15,11 +15,11 @@ sub on_action_list_selected {
 }
 
 sub on_ok_clicked {
-	print "on_ok_button_clicked\n";
+	print "on_ok_clicked\n";
 }
 
-sub on_cancel_button_clicked {
-	print "on_cancel_button_clicked\n";
+sub on_cancel_clicked {
+	print "on_cancel_clicked\n";
 }
 
 1;
