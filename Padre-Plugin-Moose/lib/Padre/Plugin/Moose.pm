@@ -99,19 +99,9 @@ Then use it via L<Padre>, The Perl IDE.
 
 Once you enable this Plugin under Padre, you'll get a brand new menu with the following options:
 
-=head2 'New Moose Application'
+=head2 'New Moose Class'
 
 This options lets you create a new Moose application.
-
-=head2 Start Web Server
-
-This option will automatically spawn your application's development web server. Once it's started, it will ask to open your default web browser to view your application running.
-
-Note that this works like Padre's "run" menu option, so any other execution it will be disabled while your server is running.
-
-=head2 Stop Web Server
-
-This option will stop the development web server for you.
 
 =head2 Moose Online References
 
@@ -164,10 +154,6 @@ L<Moose>, L<Padre>
 =head1 AUTHORS
 
 =over 4
-
-=item *
-
-Breno G. de Oliveira <garu@cpan.org>
 
 =item *
 
