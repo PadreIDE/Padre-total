@@ -42,7 +42,10 @@ sub menu_plugins_simple {
 
         Wx::gettext('Moose Online References') => [
             Wx::gettext('Moose Manual') => sub {
-                Padre::Wx::launch_browser('http://search.cpan.org/~doy/Moose-2.0402/lib/Moose/Manual.pod');
+                Padre::Wx::launch_browser('https://metacpan.org/module/Moose::Manual');
+            },
+            Wx::gettext('Moose Cookbook - How to cook a Moose?') => sub {
+                Padre::Wx::launch_browser('https://metacpan.org/module/Moose::Cookbook');
             },
             Wx::gettext('Moose Website') => sub {
                 Padre::Wx::launch_browser('http://moose.iinteractive.com/');

@@ -1,5 +1,8 @@
 Changes for Padre-Plugin-Moose
 
+0.02  TBA
+	- Added "Moose Cookbook - How to cook a Moose?" to online references and updated link to use metacpan.org instead of search.cpan.org
+
 0.01  2012.2.15
 
 	- Initial release to CPAN.
