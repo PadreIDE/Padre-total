@@ -3,7 +3,10 @@ Revision history for Padre-Plugin-SpellCheck
 1.22    TBA
 	- remove dead code in plugin_icon method (ZENOG)
 	- Upgraded to use wxFormBuilder-based forms (BOWTIE)
-	- Added missing Data::Printer dependency (AZAWAWI)
+	- revert-> Added missing Data::Printer dependency (AZAWAWI)<-(BOWTIE)
+	- Access to Preferances is now via Plugin Manager (BOWTIE)
+	- Preferances now displays language name rather than iso code (BOWTIE)
+
 
 1.21   2010.12.06
         - Restored missing POT/PO translation sources (Damyan Ivanov, AZAWAWI)
