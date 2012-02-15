@@ -28,46 +28,279 @@ sub new {
 		-1,
 		Wx::gettext("Moose!"),
 		Wx::DefaultPosition,
-		[ 560, 566 ],
+		[ 641, 293 ],
 		Wx::DEFAULT_DIALOG_STYLE,
 	);
 
-	$self->{action_list} = Wx::ListBox->new(
+	$self->{treebook} = Wx::Notebook->new(
 		$self,
 		-1,
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
-		[
-			"Class",
-			"Role",
-			"Attribute",
-			"Subtype",
-		],
 	);
 
-	Wx::Event::EVT_LISTBOX(
-		$self,
-		$self->{action_list},
-		sub {
-			shift->on_action_list_selected(@_);
-		},
-	);
-
-	$self->{help_text} = Wx::TextCtrl->new(
-		$self,
-		-1,
-		"",
-		Wx::DefaultPosition,
-		Wx::DefaultSize,
-		Wx::TE_MULTILINE,
-	);
-
-	$self->{panel} = Wx::Panel->new(
-		$self,
+	$self->{class_panel} = Wx::Panel->new(
+		$self->{treebook},
 		-1,
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
 		Wx::TAB_TRAVERSAL,
+	);
+
+	my $class_label = Wx::StaticText->new(
+		$self->{class_panel},
+		-1,
+		Wx::gettext("Class:"),
+	);
+
+	$self->{class_text} = Wx::TextCtrl->new(
+		$self->{class_panel},
+		-1,
+		"",
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+	);
+
+	my $superclass_label = Wx::StaticText->new(
+		$self->{class_panel},
+		-1,
+		Wx::gettext("Superclass:"),
+	);
+
+	$self->{superclass_text} = Wx::TextCtrl->new(
+		$self->{class_panel},
+		-1,
+		"",
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+	);
+
+	my $roles_label = Wx::StaticText->new(
+		$self->{class_panel},
+		-1,
+		Wx::gettext("Roles:"),
+	);
+
+	$self->{roles_list} = Wx::ListBox->new(
+		$self->{class_panel},
+		-1,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+		[],
+	);
+
+	$self->{namespace_autoclean_label} = Wx::StaticText->new(
+		$self->{class_panel},
+		-1,
+		Wx::gettext("Auto-clean namespace?"),
+	);
+
+	$self->{namespace_autoclean_checkbox} = Wx::CheckBox->new(
+		$self->{class_panel},
+		-1,
+		'',
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+	);
+
+	$self->{role_panel} = Wx::Panel->new(
+		$self->{treebook},
+		-1,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+		Wx::TAB_TRAVERSAL,
+	);
+
+	my $role_label = Wx::StaticText->new(
+		$self->{role_panel},
+		-1,
+		Wx::gettext("Role:"),
+	);
+
+	$self->{role_text} = Wx::TextCtrl->new(
+		$self->{role_panel},
+		-1,
+		"",
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+	);
+
+	my $superclass_label1 = Wx::StaticText->new(
+		$self->{role_panel},
+		-1,
+		Wx::gettext("Superclass"),
+	);
+
+	$self->{superclass_text1} = Wx::TextCtrl->new(
+		$self->{role_panel},
+		-1,
+		"",
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+	);
+
+	my $requires_label = Wx::StaticText->new(
+		$self->{role_panel},
+		-1,
+		Wx::gettext("Requires"),
+	);
+
+	$self->{requires_list} = Wx::ListBox->new(
+		$self->{role_panel},
+		-1,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+		[],
+	);
+
+	$self->{attribute_panel} = Wx::Panel->new(
+		$self->{treebook},
+		-1,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+		Wx::TAB_TRAVERSAL,
+	);
+
+	my $attribute_label = Wx::StaticText->new(
+		$self->{attribute_panel},
+		-1,
+		Wx::gettext("Attribute:"),
+	);
+
+	$self->{attribute_text} = Wx::TextCtrl->new(
+		$self->{attribute_panel},
+		-1,
+		"",
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+	);
+
+	my $type_label = Wx::StaticText->new(
+		$self->{attribute_panel},
+		-1,
+		Wx::gettext("Type:"),
+	);
+
+	$self->{type_choice} = Wx::Choice->new(
+		$self->{attribute_panel},
+		-1,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+		[
+			"Any",
+			"Item",
+			"Bool",
+			"Maybe",
+			"Undef",
+			"Defined",
+			"Value",
+			"Str",
+			"Num",
+			"Int",
+			"ClassName",
+			"RoleName",
+			"Ref",
+			"ScalarRef",
+			"ArrayRef",
+			"HashRef",
+			"CodeRef",
+			"RegexpRef",
+			"GlobRef",
+			"FileHandle",
+			"Object",
+		],
+	);
+	$self->{type_choice}->SetSelection(0);
+
+	my $property_label = Wx::StaticText->new(
+		$self->{attribute_panel},
+		-1,
+		Wx::gettext("Property:"),
+	);
+
+	$self->{property_choice} = Wx::Choice->new(
+		$self->{attribute_panel},
+		-1,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+		[
+			"Read-Write",
+			"Read-Only",
+			"Bare",
+		],
+	);
+	$self->{property_choice}->SetSelection(0);
+
+	my $trigger_label = Wx::StaticText->new(
+		$self->{attribute_panel},
+		-1,
+		Wx::gettext("Trigger:"),
+	);
+
+	$self->{trigger_text} = Wx::TextCtrl->new(
+		$self->{attribute_panel},
+		-1,
+		"",
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+	);
+
+	$self->{required_checbox} = Wx::CheckBox->new(
+		$self->{attribute_panel},
+		-1,
+		Wx::gettext("Required?"),
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+	);
+
+	$self->{subtype_panel} = Wx::Panel->new(
+		$self->{treebook},
+		-1,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+		Wx::TAB_TRAVERSAL,
+	);
+
+	my $subtype_label = Wx::StaticText->new(
+		$self->{subtype_panel},
+		-1,
+		Wx::gettext("Subtype:"),
+	);
+
+	$self->{role_text1} = Wx::TextCtrl->new(
+		$self->{subtype_panel},
+		-1,
+		"",
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+	);
+
+	my $constraint_label = Wx::StaticText->new(
+		$self->{subtype_panel},
+		-1,
+		Wx::gettext("Constraint:"),
+	);
+
+	$self->{constraint_text} = Wx::TextCtrl->new(
+		$self->{subtype_panel},
+		-1,
+		"",
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+	);
+
+	my $error_message_label = Wx::StaticText->new(
+		$self->{subtype_panel},
+		-1,
+		Wx::gettext("Error Message:"),
+	);
+
+	$self->{error_message_text} = Wx::TextCtrl->new(
+		$self->{subtype_panel},
+		-1,
+		"",
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
 	);
 
 	$self->{preview_panel} = Wx::Panel->new(
@@ -96,7 +329,7 @@ sub new {
 
 	$self->{cancel_button} = Wx::Button->new(
 		$self,
-		Wx::ID_CANCEL,
+		-1,
 		Wx::gettext("Cancel"),
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
@@ -110,14 +343,74 @@ sub new {
 		},
 	);
 
+	my $content_sizer = Wx::FlexGridSizer->new( 2, 2, 0, 0 );
+	$content_sizer->SetFlexibleDirection(Wx::BOTH);
+	$content_sizer->SetNonFlexibleGrowMode(Wx::FLEX_GROWMODE_SPECIFIED);
+	$content_sizer->Add( $class_label, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::LEFT | Wx::RIGHT | Wx::TOP, 5 );
+	$content_sizer->Add( $self->{class_text}, 0, Wx::ALL, 5 );
+	$content_sizer->Add( $superclass_label, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::LEFT | Wx::RIGHT | Wx::TOP, 5 );
+	$content_sizer->Add( $self->{superclass_text}, 0, Wx::ALL, 5 );
+	$content_sizer->Add( $roles_label, 0, Wx::ALL, 5 );
+	$content_sizer->Add( $self->{roles_list}, 0, Wx::ALL, 5 );
+	$content_sizer->Add( $self->{namespace_autoclean_label}, 0, Wx::ALL, 5 );
+	$content_sizer->Add( $self->{namespace_autoclean_checkbox}, 0, Wx::ALL, 5 );
+
+	$self->{class_panel}->SetSizerAndFit($content_sizer);
+	$self->{class_panel}->Layout;
+
+	my $content_sizer1 = Wx::FlexGridSizer->new( 2, 2, 0, 0 );
+	$content_sizer1->SetFlexibleDirection(Wx::BOTH);
+	$content_sizer1->SetNonFlexibleGrowMode(Wx::FLEX_GROWMODE_SPECIFIED);
+	$content_sizer1->Add( $role_label, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::LEFT | Wx::RIGHT | Wx::TOP, 5 );
+	$content_sizer1->Add( $self->{role_text}, 0, Wx::ALL, 5 );
+	$content_sizer1->Add( $superclass_label1, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::LEFT | Wx::RIGHT | Wx::TOP, 5 );
+	$content_sizer1->Add( $self->{superclass_text1}, 0, Wx::ALL, 5 );
+	$content_sizer1->Add( $requires_label, 0, Wx::ALL, 5 );
+	$content_sizer1->Add( $self->{requires_list}, 0, Wx::ALL, 5 );
+
+	$self->{role_panel}->SetSizerAndFit($content_sizer1);
+	$self->{role_panel}->Layout;
+
+	my $content_sizer2 = Wx::FlexGridSizer->new( 2, 2, 0, 0 );
+	$content_sizer2->SetFlexibleDirection(Wx::BOTH);
+	$content_sizer2->SetNonFlexibleGrowMode(Wx::FLEX_GROWMODE_SPECIFIED);
+	$content_sizer2->Add( $attribute_label, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::LEFT | Wx::RIGHT | Wx::TOP, 5 );
+	$content_sizer2->Add( $self->{attribute_text}, 0, Wx::ALL, 5 );
+	$content_sizer2->Add( $type_label, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::LEFT | Wx::RIGHT | Wx::TOP, 5 );
+	$content_sizer2->Add( $self->{type_choice}, 0, Wx::ALL, 5 );
+	$content_sizer2->Add( $property_label, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::LEFT | Wx::RIGHT | Wx::TOP, 5 );
+	$content_sizer2->Add( $self->{property_choice}, 0, Wx::ALL, 5 );
+	$content_sizer2->Add( $trigger_label, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::LEFT | Wx::RIGHT | Wx::TOP, 5 );
+	$content_sizer2->Add( $self->{trigger_text}, 0, Wx::ALL, 5 );
+	$content_sizer2->Add( $self->{required_checbox}, 0, Wx::ALL, 5 );
+
+	$self->{attribute_panel}->SetSizerAndFit($content_sizer2);
+	$self->{attribute_panel}->Layout;
+
+	my $content_sizer3 = Wx::FlexGridSizer->new( 2, 2, 0, 0 );
+	$content_sizer3->SetFlexibleDirection(Wx::BOTH);
+	$content_sizer3->SetNonFlexibleGrowMode(Wx::FLEX_GROWMODE_SPECIFIED);
+	$content_sizer3->Add( $subtype_label, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::LEFT | Wx::RIGHT | Wx::TOP, 5 );
+	$content_sizer3->Add( $self->{role_text1}, 0, Wx::ALL, 5 );
+	$content_sizer3->Add( $constraint_label, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::LEFT | Wx::RIGHT | Wx::TOP, 5 );
+	$content_sizer3->Add( $self->{constraint_text}, 0, Wx::ALL, 5 );
+	$content_sizer3->Add( $error_message_label, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::LEFT | Wx::RIGHT | Wx::TOP, 5 );
+	$content_sizer3->Add( $self->{error_message_text}, 0, Wx::ALL, 5 );
+
+	$self->{subtype_panel}->SetSizerAndFit($content_sizer3);
+	$self->{subtype_panel}->Layout;
+
+	$self->{treebook}->AddPage( $self->{class_panel}, Wx::gettext("Class"), 1 );
+	$self->{treebook}->AddPage( $self->{role_panel}, Wx::gettext("Role"), 0 );
+	$self->{treebook}->AddPage( $self->{attribute_panel}, Wx::gettext("Attribute"), 0 );
+	$self->{treebook}->AddPage( $self->{subtype_panel}, Wx::gettext("a page"), 0 );
+
 	my $left_sizer = Wx::BoxSizer->new(Wx::VERTICAL);
-	$left_sizer->Add( $self->{action_list}, 1, Wx::ALL | Wx::EXPAND, 5 );
-	$left_sizer->Add( $self->{help_text}, 2, Wx::ALL | Wx::EXPAND, 5 );
-	$left_sizer->Add( $self->{panel}, 3, Wx::EXPAND | Wx::ALL, 5 );
+	$left_sizer->Add( $self->{treebook}, 1, Wx::EXPAND | Wx::ALL, 5 );
 
 	my $top_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
 	$top_sizer->Add( $left_sizer, 1, Wx::EXPAND, 5 );
-	$top_sizer->Add( $self->{preview_panel}, 2, Wx::EXPAND | Wx::ALL, 5 );
+	$top_sizer->Add( $self->{preview_panel}, 1, Wx::EXPAND | Wx::ALL, 5 );
 
 	my $buttons_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
 	$buttons_sizer->Add( 20, 0, 1, Wx::EXPAND, 5 );
@@ -139,10 +432,6 @@ sub new {
 
 sub ok_button {
 	$_[0]->{ok_button};
-}
-
-sub on_action_list_selected {
-	$_[0]->main->error('Handler method on_action_list_selected for event action_list.OnListBox not implemented');
 }
 
 sub on_ok_clicked {

@@ -27,6 +27,7 @@ sub plugin_name {
 sub plugin_disable {
     require Padre::Unload;
     Padre::Unload->unload('Padre::Plugin::Moose');
+    Padre::Unload->unload('Padre::Plugin::Moose::Main');
     Padre::Unload->unload('Moose');
 }
 
@@ -40,8 +41,11 @@ sub menu_plugins {
         $main,
         $menu_item,
         sub {
-            require Padre::Plugin::Moose::Main;
-            Padre::Plugin::Moose::Main->new($main)->Show;
+            eval {
+                require Padre::Plugin::Moose::Main;
+                Padre::Plugin::Moose::Main->new($main)->Show;
+            };
+            print "Error: $@" if $@;
         },
     );
 
