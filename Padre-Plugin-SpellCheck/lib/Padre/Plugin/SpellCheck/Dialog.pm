@@ -4,7 +4,7 @@ package Padre::Plugin::SpellCheck::Dialog;
 
 use warnings;
 use strict;
-use Data::Printer { caller_info => 1, colored => 1, };
+# use Data::Printer { caller_info => 1, colored => 1, };
 use Class::XSAccessor {
 	replace   => 1,
 	accessors => {
@@ -87,7 +87,7 @@ sub set_up {
 	my $selection = $current->text;
 	my $wholetext = $current->document->text_get;
 	my $text      = $selection || $wholetext;
-	p $text;
+	# p $text;
 	my $offset = $selection ? $current->editor->GetSelectionStart : 0;
 
 	# try to find a mistake

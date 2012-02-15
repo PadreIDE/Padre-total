@@ -10,7 +10,6 @@ requires Padre				0.93
 requires Module::Util		1.07
 requires Text::Aspell		0.09
 requires Class::XSAccessor	1.13
-requires Data::Printer          0.3
 
 no_index directory	qw{ t xt eg share inc privinc }
 homepage		http://padre.perlide.org

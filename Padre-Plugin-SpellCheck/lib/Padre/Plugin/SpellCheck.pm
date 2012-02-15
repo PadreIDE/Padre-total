@@ -11,7 +11,7 @@ use Padre::Plugin;
 use Padre::Util;
 use Padre::Wx;
 use Padre::Unload                          ();
-use Data::Printer { caller_info => 1, colored => 1, };
+# use Data::Printer { caller_info => 1, colored => 1, };
 our $VERSION = '1.22';
 our @ISA     = 'Padre::Plugin';
 
@@ -34,7 +34,7 @@ sub padre_interfaces {
 
 		'Padre::Plugin' => 0.92,
 		# 'Padre::Util'   => 0.93,
-		# 'Padre::Unload' => 0.93,
+		'Padre::Unload' => 0.93,
 
 		# 'Padre::Task'           => 0.93,
 		# 'Padre::Document'       => 0.93,
@@ -46,14 +46,14 @@ sub padre_interfaces {
 		# 'Padre::Wx::Editor'     => 0.93,
 
 		# 'Padre::Plugin'         => '0.92',
-		# 'Padre::Current' => '0.93',
+		'Padre::Current' => '0.93',
 
-		# 'Padre::Wx'             => '0.92',
-		# 'Padre::Wx::Main'       => '0.92',
-		# 'Padre::Wx::Role::Main' => '0.92',
+		'Padre::Wx'             => '0.92',
+		'Padre::Wx::Main'       => '0.92',
+		'Padre::Wx::Role::Main' => '0.92',
 
-		# 'Padre::DB'             => '0.92',
-		# 'Padre::Logger' => '0.92',
+		'Padre::DB'             => '0.92',
+		'Padre::Logger' => '0.92',
 	);
 }
 
