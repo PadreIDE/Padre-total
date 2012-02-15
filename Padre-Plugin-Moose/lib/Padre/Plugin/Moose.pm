@@ -4,7 +4,7 @@ use 5.008;
 use strict;
 use warnings;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 use Padre::Plugin ();
 
@@ -33,8 +33,26 @@ sub plugin_disable {
 # The command structure to show in the Plugins menu
 sub menu_plugins_simple {
     my $self = shift;
+    my $main = $self->main;
     return $self->plugin_name => [
-        Wx::gettext('New Moose Class') => sub {
+        Wx::gettext('New Class') => sub {
+            require Padre::Plugin::Moose::FBP::NewClass;
+            Padre::Plugin::Moose::FBP::NewClass->new($main)->ShowModal;
+            return;
+        },
+        Wx::gettext('New Role') => sub {
+            require Padre::Plugin::Moose::FBP::NewRole;
+            Padre::Plugin::Moose::FBP::NewRole->new($main)->ShowModal;
+            return;
+        },
+        Wx::gettext('New Subtype') => sub {
+            require Padre::Plugin::Moose::FBP::NewSubType;
+            Padre::Plugin::Moose::FBP::NewSubType->new($main)->ShowModal;
+            return;
+        },
+        Wx::gettext('New Attribute') => sub {
+            require Padre::Plugin::Moose::FBP::NewAttribute;
+            Padre::Plugin::Moose::FBP::NewAttribute->new($main)->ShowModal;
             return;
         },
 
