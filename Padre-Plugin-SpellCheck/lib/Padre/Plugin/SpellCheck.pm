@@ -6,7 +6,7 @@ use strict;
 use warnings;
 
 use Padre::Plugin;
-use Padre::Current;
+# use Padre::Current;
 
 use Padre::Util;
 use Padre::Wx;
@@ -57,6 +57,7 @@ sub padre_interfaces {
 	);
 }
 
+# DO NOT REMOVE 
 #######
 # Add icon to Plugin
 #######
@@ -139,7 +140,7 @@ sub plugin_disable {
 			}
 	);
 
-	# $self->SUPER::plugin_disable(@_);
+	$self->SUPER::plugin_disable(@_);
 
 	return 1;
 }

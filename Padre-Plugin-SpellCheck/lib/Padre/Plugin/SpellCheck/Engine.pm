@@ -6,7 +6,6 @@ use warnings;
 use strict;
 use Padre::Logger;
 use Padre::Unload                          ();
-# use Padre::Current;
 
 use Class::XSAccessor {	
 	replace => 1,
@@ -34,14 +33,17 @@ sub new {
 
 	# my ( $class, $plugin, $mimetype ) = @_;
 	my ( $class, $mimetype, $iso ) = @_;
+	my $self  = {};    # Allocate new memory
+	bless $self, $class; # Mark it of the right type
+	# my $self = bless {
+		# _ignore => {},
 
-	my $self = bless {
-		_ignore => {},
-
-		# _plugin    => $plugin,
-		_utf_chars => 0,
-	}, $class;
-
+		# # _plugin    => $plugin,
+		# _utf_chars => 0,
+	# }, $class;
+	
+	$self->_ignore( {} );
+	$self->_utf_chars(0);
 	# create speller object
 	my $speller = Text::Aspell->new;
 
@@ -60,8 +62,6 @@ sub new {
 			warn "Could not set aspell mode '$MIMETYPE_MODE{$mimetype}': $err\n";
 		}
 	}
-
-	# $speller->print_config;
 
 	TRACE( $speller->print_config ) if DEBUG;
 

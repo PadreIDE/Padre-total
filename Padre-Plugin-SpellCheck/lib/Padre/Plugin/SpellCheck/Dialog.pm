@@ -21,7 +21,7 @@ use Class::XSAccessor {
 	},
 };
 
-use Padre::Current;
+# use Padre::Current;
 use Padre::Wx   ();
 use Padre::Util ('_T');
 use Encode;

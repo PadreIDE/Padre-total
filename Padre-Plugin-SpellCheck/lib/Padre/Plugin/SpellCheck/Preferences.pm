@@ -134,8 +134,8 @@ sub _on_button_ok_clicked {
 	# $self->set_config( { dictionary => $select_dictionary_iso, } );
 
 	# remove dialog nicely
-	# $self->{_plugin}->clean_dialog;
-	$self->Hide;
+	$self->{_plugin}->clean_dialog;
+	# $self->Hide;
 
 	# $self->Destroy;
 
