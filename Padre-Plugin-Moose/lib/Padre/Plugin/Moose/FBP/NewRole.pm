@@ -32,20 +32,6 @@ sub new {
 		Wx::DEFAULT_DIALOG_STYLE,
 	);
 
-	my $package_label = Wx::StaticText->new(
-		$self,
-		-1,
-		Wx::gettext("Package:"),
-	);
-
-	$self->{package_text} = Wx::TextCtrl->new(
-		$self,
-		-1,
-		"",
-		Wx::DefaultPosition,
-		Wx::DefaultSize,
-	);
-
 	my $role_label = Wx::StaticText->new(
 		$self,
 		-1,
@@ -123,8 +109,6 @@ sub new {
 	my $content_sizer = Wx::FlexGridSizer->new( 2, 2, 0, 0 );
 	$content_sizer->SetFlexibleDirection(Wx::BOTH);
 	$content_sizer->SetNonFlexibleGrowMode(Wx::FLEX_GROWMODE_SPECIFIED);
-	$content_sizer->Add( $package_label, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::LEFT | Wx::RIGHT | Wx::TOP, 5 );
-	$content_sizer->Add( $self->{package_text}, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALL | Wx::EXPAND, 5 );
 	$content_sizer->Add( $role_label, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::LEFT | Wx::RIGHT | Wx::TOP, 5 );
 	$content_sizer->Add( $self->{role_text}, 0, Wx::ALL, 5 );
 	$content_sizer->Add( $superclass_label, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::LEFT | Wx::RIGHT | Wx::TOP, 5 );
