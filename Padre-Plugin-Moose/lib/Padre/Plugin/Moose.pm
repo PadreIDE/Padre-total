@@ -35,40 +35,40 @@ sub menu_plugins_simple {
     my $self = shift;
     my $main = $self->main;
     return $self->plugin_name => [
-        Wx::gettext('New Class') => sub {
+        Wx::gettext('New Class...') => sub {
             require Padre::Plugin::Moose::FBP::NewClass;
-            Padre::Plugin::Moose::FBP::NewClass->new($main)->ShowModal;
+            Padre::Plugin::Moose::FBP::NewClass->new($main)->Show;
             return;
         },
-        Wx::gettext('New Role') => sub {
+        Wx::gettext('New Role...') => sub {
             require Padre::Plugin::Moose::FBP::NewRole;
-            Padre::Plugin::Moose::FBP::NewRole->new($main)->ShowModal;
+            Padre::Plugin::Moose::FBP::NewRole->new($main)->Show;
             return;
         },
-        Wx::gettext('New Subtype') => sub {
+        Wx::gettext('New Subtype...') => sub {
             require Padre::Plugin::Moose::FBP::NewSubType;
-            Padre::Plugin::Moose::FBP::NewSubType->new($main)->ShowModal;
+            Padre::Plugin::Moose::FBP::NewSubType->new($main)->Show;
             return;
         },
-        Wx::gettext('New Attribute') => sub {
+        Wx::gettext('New Attribute...') => sub {
             require Padre::Plugin::Moose::FBP::NewAttribute;
-            Padre::Plugin::Moose::FBP::NewAttribute->new($main)->ShowModal;
+            Padre::Plugin::Moose::FBP::NewAttribute->new($main)->Show;
             return;
         },
 
         '---' => undef,
 
-        Wx::gettext('Moose Online References') => [
-            Wx::gettext('Moose Manual') => sub {
+        Wx::gettext('Online References') => [
+            Wx::gettext('Manual') => sub {
                 Padre::Wx::launch_browser('https://metacpan.org/module/Moose::Manual');
             },
-            Wx::gettext('Moose Cookbook - How to cook a Moose?') => sub {
+            Wx::gettext('How to cook a Moose?') => sub {
                 Padre::Wx::launch_browser('https://metacpan.org/module/Moose::Cookbook');
             },
-            Wx::gettext('Moose Website') => sub {
+            Wx::gettext('Website') => sub {
                 Padre::Wx::launch_browser('http://moose.iinteractive.com/');
             },
-            Wx::gettext('Moose Community Live Support') => sub {
+            Wx::gettext('Community Live Support') => sub {
                 Padre::Wx::launch_irc( 'irc.perl.org' => 'moose' );
             },
         ],
