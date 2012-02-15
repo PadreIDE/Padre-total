@@ -16,7 +16,7 @@ use Padre::Wx::Role::Main ();
 our $VERSION = '0.02';
 our @ISA     = qw{
 	Padre::Wx::Role::Main
-	Wx::Dialog
+	Wx::Panel
 };
 
 sub new {
@@ -26,10 +26,9 @@ sub new {
 	my $self = $class->SUPER::new(
 		$parent,
 		-1,
-		Wx::gettext("New Role"),
 		Wx::DefaultPosition,
-		[ 391, 258 ],
-		Wx::DEFAULT_DIALOG_STYLE,
+		[ 500, 300 ],
+		Wx::TAB_TRAVERSAL,
 	);
 
 	my $role_label = Wx::StaticText->new(
@@ -74,38 +73,6 @@ sub new {
 		[],
 	);
 
-	$self->{ok_button} = Wx::Button->new(
-		$self,
-		-1,
-		Wx::gettext("OK"),
-		Wx::DefaultPosition,
-		Wx::DefaultSize,
-	);
-
-	Wx::Event::EVT_BUTTON(
-		$self,
-		$self->{ok_button},
-		sub {
-			shift->on_ok_clicked(@_);
-		},
-	);
-
-	$self->{cancel_button} = Wx::Button->new(
-		$self,
-		-1,
-		Wx::gettext("Cancel"),
-		Wx::DefaultPosition,
-		Wx::DefaultSize,
-	);
-
-	Wx::Event::EVT_BUTTON(
-		$self,
-		$self->{cancel_button},
-		sub {
-			shift->on_cancel_clicked(@_);
-		},
-	);
-
 	my $content_sizer = Wx::FlexGridSizer->new( 2, 2, 0, 0 );
 	$content_sizer->SetFlexibleDirection(Wx::BOTH);
 	$content_sizer->SetNonFlexibleGrowMode(Wx::FLEX_GROWMODE_SPECIFIED);
@@ -116,34 +83,10 @@ sub new {
 	$content_sizer->Add( $requires_label, 0, Wx::ALL, 5 );
 	$content_sizer->Add( $self->{requires_list}, 0, Wx::ALL, 5 );
 
-	my $buttons_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
-	$buttons_sizer->Add( 20, 0, 1, Wx::EXPAND, 5 );
-	$buttons_sizer->Add( $self->{ok_button}, 0, Wx::ALL, 2 );
-	$buttons_sizer->Add( $self->{cancel_button}, 0, Wx::ALL, 2 );
-
-	my $vsizer = Wx::BoxSizer->new(Wx::VERTICAL);
-	$vsizer->Add( $content_sizer, 1, Wx::EXPAND, 5 );
-	$vsizer->Add( $buttons_sizer, 0, Wx::EXPAND, 5 );
-
-	my $hsizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
-	$hsizer->Add( $vsizer, 1, Wx::ALL | Wx::EXPAND, 5 );
-
-	$self->SetSizer($hsizer);
+	$self->SetSizer($content_sizer);
 	$self->Layout;
 
 	return $self;
-}
-
-sub ok_button {
-	$_[0]->{ok_button};
-}
-
-sub on_ok_clicked {
-	$_[0]->main->error('Handler method on_ok_clicked for event ok_button.OnButtonClick not implemented');
-}
-
-sub on_cancel_clicked {
-	$_[0]->main->error('Handler method on_cancel_clicked for event cancel_button.OnButtonClick not implemented');
 }
 
 1;

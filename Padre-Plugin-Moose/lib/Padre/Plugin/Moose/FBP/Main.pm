@@ -1,4 +1,4 @@
-package Padre::Plugin::Moose::FBP::Moose;
+package Padre::Plugin::Moose::FBP::Main;
 
 ## no critic
 
@@ -45,6 +45,14 @@ sub new {
 		],
 	);
 
+	Wx::Event::EVT_LISTBOX(
+		$self,
+		$self->{action_list},
+		sub {
+			shift->on_action_list_selected(@_);
+		},
+	);
+
 	$self->{help_text} = Wx::TextCtrl->new(
 		$self,
 		-1,
@@ -88,7 +96,7 @@ sub new {
 
 	$self->{cancel_button} = Wx::Button->new(
 		$self,
-		-1,
+		Wx::ID_CANCEL,
 		Wx::gettext("Cancel"),
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
@@ -131,6 +139,10 @@ sub new {
 
 sub ok_button {
 	$_[0]->{ok_button};
+}
+
+sub on_action_list_selected {
+	$_[0]->main->error('Handler method on_action_list_selected for event action_list.OnListBox not implemented');
 }
 
 sub on_ok_clicked {
