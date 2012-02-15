@@ -6,6 +6,7 @@ var channels = {
    dancer:       {title:"Dancer",                        host:"irc.perl.org",     channel:"dancer"},
    dbix_class:   {title:"DBIx::Class",                   host:"irc.perl.org",     channel:"dbix-class"},
    mojo:         {title:"Mojolicious",                   host:"irc.perl.org",     channel:"mojo"},
+   moose:        {title:"Moose",                         host:"irc.perl.org",     channel:"moose"},
    email:        {title:"Perl Email Project",            host:"irc.perl.org",     channel:"email"},
    parrot:       {title:"Parrot",                        host:"irc.perl.org",     channel:"parrot"},
    perl_qa:      {title:"Perl Quality Assurance",        host:"irc.perl.org",     channel:"perl-qa"},
