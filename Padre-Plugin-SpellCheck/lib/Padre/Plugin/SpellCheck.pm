@@ -129,8 +129,8 @@ sub plugin_disable {
 	Padre::Unload->unload(
 		qw{
 			Padre::Plugin::SpellCheck
-			Padre::Plugin::SpellCheck::Dialog
-			Padre::Plugin::SpellCheck::FBP::Dialog
+			Padre::Plugin::SpellCheck::Checker
+			Padre::Plugin::SpellCheck::FBP::Checker
 			Padre::Plugin::SpellCheck::Engine
 			Padre::Plugin::SpellCheck::Preferences
 			Padre::Plugin::SpellCheck::FBP::Preferences
@@ -212,8 +212,8 @@ sub spell_check {
 	# Clean up any previous existing dialog
 	$self->clean_dialog;
 
-	require Padre::Plugin::SpellCheck::Dialog;
-	$self->{dialog} = Padre::Plugin::SpellCheck::Dialog->new( $main, $lang_iso );
+	require Padre::Plugin::SpellCheck::Checker;
+	$self->{dialog} = Padre::Plugin::SpellCheck::Checker->new( $main, $lang_iso );
 	$self->{dialog}->Show;
 
 	return;
