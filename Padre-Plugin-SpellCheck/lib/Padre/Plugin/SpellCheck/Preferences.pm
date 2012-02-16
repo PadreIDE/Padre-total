@@ -4,6 +4,7 @@ package Padre::Plugin::SpellCheck::Preferences;
 
 use warnings;
 use strict;
+#TODO check logger against Plug-in Manager!
 use Padre::Logger;
 use Padre::Locale                               ();
 use Padre::Unload                               ();
@@ -22,13 +23,13 @@ our @ISA     = qw{
 sub new {
 	my $class   = shift;
 	my $main    = shift; # Padre $main window integration
-	my $_plugin = shift; # parent $self
+	my $_parent = shift; # parent $self
 
 	# Create the dialog
 	my $self = $class->SUPER::new($main);
 
-	#TODO there must be a better way
-	$self->{_plugin} = $_plugin;
+	#TODO there must be a better way, and all just to be able to, config_write
+	$self->{_parent} = $_parent;
 
 	# define where to display main dialog
 	$self->CenterOnParent;
@@ -89,14 +90,14 @@ sub _local_dictionaries {
 }
 
 #######
-# Method display_dics
+# Method display_dictionaries
 #######
 sub display_dictionaries {
 	my $self = shift;
 	my $main = $self->main;
 
 	#TODO sort out 'get config read'
-	my $prefered_dictionary = $self->{_plugin}->get_config->{dictionary};
+	my $prefered_dictionary = $self->{_parent}->get_config->{dictionary};
 
 	# p $prefered_dictionary;
 
@@ -147,13 +148,10 @@ sub _on_button_ok_clicked {
 	# p $select_dictionary_iso;
 
 	#TODO 'set config write' store plugin preferences
-	$self->{_plugin}->config_write( { dictionary => $select_dictionary_iso, } );
+	$self->{_parent}->config_write( { dictionary => $select_dictionary_iso, } );
 
-	# remove dialog nicely
-	$self->{_plugin}->clean_dialog;
-
-	# $self->Hide;
-	# $self->Destroy;
+	# remove dialog nicely via parent class
+	$self->{_parent}->clean_dialog;
 
 	return;
 }
