@@ -35,16 +35,16 @@ sub new {
 	$self->{labeltext} = Wx::StaticText->new(
 		$self,
 		-1,
-		Wx::gettext("Spell check finished:..."),
+		Wx::gettext("Spell check finished:"),
 	);
-	$self->{labeltext}->SetMinSize( [ 140, -1 ] );
+	$self->{labeltext}->SetMinSize( [ 124, -1 ] );
 
 	$self->{label} = Wx::StaticText->new(
 		$self,
 		-1,
 		Wx::gettext("Click Close"),
 	);
-	$self->{label}->SetMinSize( [ 70, -1 ] );
+	$self->{label}->SetMinSize( [ 96, -1 ] );
 
 	$self->{list} = Wx::ListCtrl->new(
 		$self,

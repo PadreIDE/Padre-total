@@ -288,9 +288,9 @@
                                                 <property name="font"></property>
                                                 <property name="hidden">0</property>
                                                 <property name="id">wxID_ANY</property>
-                                                <property name="label">Spell check finished:...</property>
+                                                <property name="label">Spell check finished:</property>
                                                 <property name="maximum_size"></property>
-                                                <property name="minimum_size">140,-1</property>
+                                                <property name="minimum_size">124,-1</property>
                                                 <property name="name">labeltext</property>
                                                 <property name="permission">public</property>
                                                 <property name="pos"></property>
@@ -346,7 +346,7 @@
                                                 <property name="id">wxID_ANY</property>
                                                 <property name="label">Click Close</property>
                                                 <property name="maximum_size"></property>
-                                                <property name="minimum_size">70,-1</property>
+                                                <property name="minimum_size">96,-1</property>
                                                 <property name="name">label</property>
                                                 <property name="permission">public</property>
                                                 <property name="pos"></property>
