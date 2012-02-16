@@ -6,11 +6,13 @@ use strict;
 use warnings;
 
 use Padre::Plugin;
+
 # use Padre::Current;
 
-use Padre::Util;
-use Padre::Wx;
-use Padre::Unload                          ();
+# use Padre::Util;
+# use Padre::Wx;
+use Padre::Locale ();
+use Padre::Unload ();
 # use Data::Printer { caller_info => 1, colored => 1, };
 our $VERSION = '1.22';
 our @ISA     = 'Padre::Plugin';
@@ -31,44 +33,40 @@ sub plugin_name {
 #######
 sub padre_interfaces {
 	return (
+		'Padre::Plugin' => '0.92',
+		'Padre::Unload' => '0.92',
+		'Padre::Locale' => '0.92',
 
-		'Padre::Plugin' => 0.92,
-		# 'Padre::Util'   => 0.93,
-		'Padre::Unload' => 0.93,
-
-		# 'Padre::Task'           => 0.93,
-		# 'Padre::Document'       => 0.93,
-		# 'Padre::Project'        => 0.93,
-		# 'Padre::Wx'             => 0.93,
-		# 'Padre::Wx::Role::Main' => 0.93,
-
-		# 'Padre::Wx::Main'       => 0.93,
-		# 'Padre::Wx::Editor'     => 0.93,
-
-		# 'Padre::Plugin'         => '0.92',
-		'Padre::Current' => '0.93',
-
+		# used by my sub packages
+		'Padre::Logger'         => '0.92',
 		'Padre::Wx'             => '0.92',
-		'Padre::Wx::Main'       => '0.92',
 		'Padre::Wx::Role::Main' => '0.92',
 
-		'Padre::DB'             => '0.92',
-		'Padre::Logger' => '0.92',
+		# 'Padre::Util'       => 0.93,
+		# 'Padre::Task'       => 0.93,
+		# 'Padre::Document'   => 0.93,
+		# 'Padre::Project'    => 0.93,
+		# 'Padre::Wx::Main'   => 0.93,
+		# 'Padre::Wx::Editor' => 0.93,
+		# 'Padre::Current'    => '0.93',
+		# 'Padre::Wx::Main'   => '0.92',
+		# 'Padre::DB'         => '0.92',
+		# 'Padre::Logger'     => '0.92',
 	);
 }
 
-# DO NOT REMOVE 
+# DO NOT REMOVE
 #######
 # Add icon to Plugin
 #######
 # sub plugin_icon {
-	# my $self = shift;
+# my $self = shift;
 
-	# # find resource path
-	# my $iconpath = catfile( $self->plugin_directory_share, 'icons', 'spellcheck.png' );
+# # find resource path
+# my $iconpath = catfile( $self->plugin_directory_share, 'icons', 'spellcheck.png' );
 
-	# # create and return icon
-	# return Wx::Bitmap->new( $iconpath, Wx::wxBITMAP_TYPE_PNG );
+# # create and return icon
+# return Wx::Bitmap->new( $iconpath, Wx::wxBITMAP_TYPE_PNG );
 # }
 
 #######
@@ -168,27 +166,27 @@ sub clean_dialog {
 # store's language in DB
 #######
 # sub config1 {
-	# my $self = shift;
+# my $self = shift;
 
-	# $self->{config} = $self->config_read;
+# $self->{config} = $self->config_read;
 
-	# if ( $self->{config}->{dictionary} ) {
+# if ( $self->{config}->{dictionary} ) {
 
-		# # print "Loaded existing configuration\n";
-		# # p $self->{config}->{dictionary};
+# # print "Loaded existing configuration\n";
+# # p $self->{config}->{dictionary};
 
-		# # $self->config_write( { dictionary => 'en', } );
-		# # my $lang_iso = $self->{config}->{dictionary};
-		# # $self->lang_iso = $lang_iso;
+# # $self->config_write( { dictionary => 'en', } );
+# # my $lang_iso = $self->{config}->{dictionary};
+# # $self->lang_iso = $lang_iso;
 
-	# } else {
-		# print "No existing configuration";
-		# $self->config_write( { dictionary => 'en_GB', } );
-		# $self->{config}->{dictionary} = 'en_GB';
-		# # $self->lang_iso = 'en_GB';
-	# }
+# } else {
+# print "No existing configuration";
+# $self->config_write( { dictionary => 'en_GB', } );
+# $self->{config}->{dictionary} = 'en_GB';
+# # $self->lang_iso = 'en_GB';
+# }
 
-	# return $self->config_read || $self->{config};
+# return $self->config_read || $self->{config};
 
 # }
 
@@ -206,16 +204,17 @@ sub config {
 sub spell_check {
 	my $self = shift;
 	my $main = $self->main;
-	
+
 	my $lang_iso = $self->config->{dictionary};
+
 	# p $lang_iso;
 
 	# Clean up any previous existing dialog
 	$self->clean_dialog;
 
 	require Padre::Plugin::SpellCheck::Dialog;
-	$self->{dialog} = Padre::Plugin::SpellCheck::Dialog->new( $main, $lang_iso);
-	$self->{dialog}->ShowModal;
+	$self->{dialog} = Padre::Plugin::SpellCheck::Dialog->new( $main, $lang_iso );
+	$self->{dialog}->Show;
 
 	return;
 }
@@ -225,6 +224,7 @@ sub spell_check {
 sub plugin_preferences {
 	my $self = shift;
 	my $main = $self->main;
+	$self->get_config;
 
 	# Clean up any previous existing dialog
 	$self->clean_dialog;
@@ -236,6 +236,9 @@ sub plugin_preferences {
 	return;
 }
 
+#######
+# accessor get_config
+#######
 sub get_config {
 	my $self = shift;
 
@@ -243,17 +246,43 @@ sub get_config {
 		dictionary => 'en_GB',
 	};
 
-	if ( $self->config_read ) {
+	my $config_read = $self->config_read;
 
+	if (defined $config_read->{dictionary}) {
+		# p $config_read->{dictionary};
+		# if ( $config_read->{dictionary} ){
+		require Padre::Locale;
+		my $thing = Padre::Locale->rfc4646_exists( $config_read->{dictionary} );
+		# p $thing;
+		
+		#for me this allways returns 'en_gb'
+		# my $code    = Padre::Locale::rfc4646();
+		my $code    = Padre::Locale::rfc4646($config_read->{dictionary});
+		# p $code;
+		
+		my %language = Padre::Locale::menu_view_languages();
+		# p %language;
+		my $iso = $config_read->{dictionary};
+		my $lc_iso = lc $iso;
+		$lc_iso =~ s/_/-/;
+		# p $lc_iso;
+		my $label = Padre::Locale::label( $lc_iso );
+		# p $label;
+		
+		# print "rfc4646_exists\n";
+		# }
 		return $self->config_read;
 	} else {
 		return $config;
 	}
 }
-
+#######
+# accessor set_config
+#######
 sub set_config {
 	my $self = shift;
 
+	#TODO this should check before commiting
 	$self->config_write(@_);
 }
 

@@ -22,10 +22,10 @@ use Class::XSAccessor {
 };
 
 # use Padre::Current;
-use Padre::Wx   ();
-use Padre::Util ('_T');
+# use Padre::Wx   ();
+# use Padre::Util ('_T');
 use Encode;
-
+use Padre::Logger;
 use Padre::Unload                          ();
 use Padre::Plugin::SpellCheck::FBP::Dialog ();
 
@@ -228,7 +228,7 @@ sub _on_butreplace_clicked {
 	# p $index;
 	return if $index == -1;
 	my $selected_word = $self->list->GetItem($index)->GetText;
-	p $selected_word;
+	# p $selected_word;
 
 	# actually replace word in editor
 	$self->_replace($selected_word);
@@ -404,7 +404,7 @@ sub _update {
 		my $item = Wx::ListItem->new;
 		$item->SetText($w);
 		my $idx = $self->list->InsertItem($item);
-		last if ++$i == 30; #TODO Fixme: should be a preference
+		last if ++$i == 32; #TODO Fixme: should be a preference
 	}
 
 	# select first item
