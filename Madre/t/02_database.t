@@ -7,6 +7,7 @@ BEGIN {
 }
 
 use Test::More tests => 11;
+use t::lib::Test;
 use Madre::DB;
 
 # Drop the example user if it exists

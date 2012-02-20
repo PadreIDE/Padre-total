@@ -2,13 +2,19 @@ package Madre::DB;
 
 use 5.008;
 use strict;
+use File::Spec                 ();
 use DateTime                   ();
 use DateTime::Format::Strptime ();
 
 our $VERSION = '0.01';
 
+our $FILE;
+BEGIN {
+    $FILE ||= 'data/madre.db';
+}
+
 use ORLite::Migrate 1.10 {
-    file         => 'data/madre.db',
+    file         => $FILE,
     timeline     => 'Madre::Timeline',
     user_version => 3,
     shim         => 1,

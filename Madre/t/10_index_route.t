@@ -7,6 +7,7 @@ BEGIN {
 }
 
 use Test::More tests => 2;
+use t::lib::Test;
 
 # The order is important
 use Madre;

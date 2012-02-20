@@ -7,6 +7,7 @@ BEGIN {
 }
 
 use Test::More tests => 4;
+use t::lib::Test;
 
 use_ok('Madre');
 use_ok('Madre::DB');

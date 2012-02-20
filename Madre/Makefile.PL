@@ -12,7 +12,8 @@ WriteMakefile(
       : ()),
     PL_FILES  => {},
     PREREQ_PM => {
-        'Test::More'                 => '0.47',
+        'File::Remove'               => '1.40', # Test
+        'Test::More'                 => '0.47', # Test
         'Try::Tiny'                  => '0.08',
         'YAML'                       => 0,
         'Dancer'                     => '1.3070',
