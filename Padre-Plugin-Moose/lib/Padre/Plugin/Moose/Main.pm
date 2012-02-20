@@ -5,69 +5,65 @@ use strict;
 use warnings;
 use Padre::Plugin::Moose::FBP::Main ();
 
-use Wx::Scintilla ();
+use Wx::Scintilla           ();
 use Wx::Scintilla::Constant ();
 
 our $VERSION = '0.02';
 our @ISA     = qw{
-  Padre::Plugin::Moose::FBP::Main
+	Padre::Plugin::Moose::FBP::Main
 };
 
 sub new {
-    my $class = shift;
-    my $main = shift;
+	my $class = shift;
+	my $main  = shift;
 
-    my $self  = $class->SUPER::new($main);
-    $self->CenterOnParent;
+	my $self = $class->SUPER::new($main);
+	$self->CenterOnParent;
 
-    # Setup preview editor
-    my $preview = $self->{preview};
-    $preview->{Document} = Padre::Document->new( mimetype => 'application/x-perl', );
-    $preview->{Document}->set_editor( $preview );
-    $preview->Show(1);
+	# Setup preview editor
+	my $preview = $self->{preview};
+	$preview->{Document} = Padre::Document->new( mimetype => 'application/x-perl', );
+	$preview->{Document}->set_editor($preview);
+	$preview->Show(1);
 
-    my $code = <<'CODE';
+	my $code = <<'CODE';
     # roles
     # class defintion
     # attributes
     # subtypes
 CODE
-    $preview->SetText($code);
-    #my $font = Wx::Font->new( 10, Wx::TELETYPE, Wx::NORMAL, Wx::NORMAL );
-    #$preview->SetFont($font);
-    #$preview->StyleSetFont( Wx::Scintilla::Constant::STYLE_DEFAULT, $font );
-    #$preview->SetLexer(Wx::Scintilla::SCLEX_PERL);
+	$preview->SetText($code);
 
-    # Apply the current theme
-    my $style = $main->config->editor_style;
-    my $theme = Padre::Wx::Theme->find($style)->clone;
-    $theme->apply($preview);
+	# Apply the current theme
+	my $style = $main->config->editor_style;
+	my $theme = Padre::Wx::Theme->find($style)->clone;
+	$theme->apply($preview);
 
-    $preview->SetReadOnly(1);
-    return $self;
+	$preview->SetReadOnly(1);
+	return $self;
 }
 
 sub on_cancel_button_clicked {
-    $_[0]->Destroy;
+	$_[0]->Destroy;
 }
 
 sub on_about_button_clicked {
-    require Moose;
-    require Padre::Unload;
-    my $about = Wx::AboutDialogInfo->new;
-    $about->SetName('Padre::Plugin::Moose');
-    $about->SetDescription(
-        Wx::gettext('Moose support for Padre') . "\n\n"
-          . sprintf(
-            Wx::gettext('This system is running Moose version %s'),
-            $Moose::VERSION
-          )
-    );
-    $about->SetVersion($Padre::Plugin::Moose::VERSION);
-    Padre::Unload->unload('Moose');
-    Wx::AboutBox($about);
+	require Moose;
+	require Padre::Unload;
+	my $about = Wx::AboutDialogInfo->new;
+	$about->SetName('Padre::Plugin::Moose');
+	$about->SetDescription(
+		Wx::gettext('Moose support for Padre') . "\n\n"
+			. sprintf(
+			Wx::gettext('This system is running Moose version %s'),
+			$Moose::VERSION
+			)
+	);
+	$about->SetVersion($Padre::Plugin::Moose::VERSION);
+	Padre::Unload->unload('Moose');
+	Wx::AboutBox($about);
 
-    return;
+	return;
 }
 
 1;

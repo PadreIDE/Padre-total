@@ -14,45 +14,45 @@ our @ISA = 'Padre::Plugin';
 # Padre Integration
 
 sub padre_interfaces {
-    'Padre::Plugin' => 0.94;
+	'Padre::Plugin' => 0.94;
 }
 
 ######################################################################
 # Padre::Plugin Methods
 
 sub plugin_name {
-    Wx::gettext('Moose');
+	Wx::gettext('Moose');
 }
 
 sub plugin_disable {
-    # TODO uncomment once Padre 0.96 is released
-    #$_[0]->unload(
-    #    ( 'Padre::Plugin::Moose', 'Padre::Plugin::Moose::Main', 'Moose' ) );
-    for my $package (( 'Padre::Plugin::Moose', 'Padre::Plugin::Moose::Main', 'Moose' )) {
-        require Padre::Unload;
-        Padre::Unload->unload($package);
-    }
+
+	# TODO uncomment once Padre 0.96 is released
+	#$_[0]->unload(
+	#    ( 'Padre::Plugin::Moose', 'Padre::Plugin::Moose::Main', 'Moose' ) );
+	for my $package ( ( 'Padre::Plugin::Moose', 'Padre::Plugin::Moose::Main', 'Moose' ) ) {
+		require Padre::Unload;
+		Padre::Unload->unload($package);
+	}
 }
 
 # The command structure to show in the Plugins menu
 sub menu_plugins {
-    my $self = shift;
-    my $main = $self->main;
-    my $menu_item =
-      Wx::MenuItem->new( undef, -1, $self->plugin_name . "...\tF8", );
-    Wx::Event::EVT_MENU(
-        $main,
-        $menu_item,
-        sub {
-            eval {
-                require Padre::Plugin::Moose::Main;
-                Padre::Plugin::Moose::Main->new($main)->Show;
-            };
-            print "Error: $@" if $@;
-        },
-    );
+	my $self      = shift;
+	my $main      = $self->main;
+	my $menu_item = Wx::MenuItem->new( undef, -1, $self->plugin_name . "...\tF8", );
+	Wx::Event::EVT_MENU(
+		$main,
+		$menu_item,
+		sub {
+			eval {
+				require Padre::Plugin::Moose::Main;
+				Padre::Plugin::Moose::Main->new($main)->Show;
+			};
+			print "Error: $@" if $@;
+		},
+	);
 
-    return $menu_item;
+	return $menu_item;
 }
 
 1;
