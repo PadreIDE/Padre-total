@@ -71,15 +71,17 @@ post '/register' => sub {
             password => salt_password( $email1, $password1 ),
         ) or die "Failed to create user";
 
-        my $location = '/user/' . $user->user_id;
-        status 201; # Created
-        header 'Location' => $location;
+        # Created
+        status 201;
+        header 'Location' => '/user/' . $user->user_id;
         template 'created.tt', {
             user => $user,
         };
+
     } catch {
+        # Internal error
         debug( "$_") ;
-        status 500; # Internal error
+        status 500;
         return {
             error => $_,
             title =>'Registration',
@@ -165,8 +167,8 @@ get '/config' => sub {
 put '/config' => sub {
     my $user_id = session('user');
     unless ( $user_id ) {
-            status 401;
-            return template 'login';
+        status 401;
+        return template 'login';
     }
 
     my %payload = params();
