@@ -1,5 +1,6 @@
 
 0.30 to be released
+        Cleaned up and modernised a bit (ADAMK)
         Added Dutch translation (ddn123456 - Dirk De Nijs)
         Added Brazilian Portuguese translation (GARU)
         Switched from Dist::Zilla to Module::Install (SZABGAB)
