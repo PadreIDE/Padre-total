@@ -153,7 +153,7 @@ Ahmad M. Zawawi <ahmad.zawawi@gmail.com>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2010 by Breno G. de Oliveira.
+This software is copyright (c) 2012 by Ahmad M. Zawawi
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
