@@ -4,7 +4,7 @@ use 5.008;
 use strict;
 use Madre::DB ();
 
-our $VERSION = '0.01';
+our $VERSION = '0.1';
 
 sub new {
     my $class = shift;

@@ -6,7 +6,7 @@ use File::Spec                 ();
 use DateTime                   ();
 use DateTime::Format::Strptime ();
 
-our $VERSION = '0.01';
+our $VERSION = '0.1';
 
 our $FILE;
 BEGIN {

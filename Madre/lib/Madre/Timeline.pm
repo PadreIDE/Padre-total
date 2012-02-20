@@ -4,7 +4,7 @@ use 5.008;
 use strict;
 use ORLite::Migrate::Timeline ();
 
-our $VERSION = '0.01';
+our $VERSION = '0.1';
 our @ISA     = 'ORLite::Migrate::Timeline';
 
 sub upgrade3 {
