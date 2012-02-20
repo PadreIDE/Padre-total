@@ -82,12 +82,12 @@ sub new {
 		Wx::gettext("Roles:"),
 	);
 
-	$self->{roles_list} = Wx::ListBox->new(
+	$self->{roles_text} = Wx::TextCtrl->new(
 		$self->{class_panel},
 		-1,
+		"",
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
-		[],
 	);
 
 	$self->{namespace_autoclean_label} = Wx::StaticText->new(
@@ -97,6 +97,20 @@ sub new {
 	);
 
 	$self->{namespace_autoclean_checkbox} = Wx::CheckBox->new(
+		$self->{class_panel},
+		-1,
+		'',
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+	);
+
+	$self->{make_immutable_label} = Wx::StaticText->new(
+		$self->{class_panel},
+		-1,
+		Wx::gettext("Make Immutable?"),
+	);
+
+	$self->{make_immutable_checkbox} = Wx::CheckBox->new(
 		$self->{class_panel},
 		-1,
 		'',
@@ -451,9 +465,11 @@ sub new {
 	$class_content_sizer->Add( $superclass_label, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::LEFT | Wx::RIGHT | Wx::TOP, 5 );
 	$class_content_sizer->Add( $self->{superclass_text}, 0, Wx::ALL, 5 );
 	$class_content_sizer->Add( $roles_label, 0, Wx::ALL, 5 );
-	$class_content_sizer->Add( $self->{roles_list}, 0, Wx::ALL, 5 );
+	$class_content_sizer->Add( $self->{roles_text}, 1, Wx::ALL, 5 );
 	$class_content_sizer->Add( $self->{namespace_autoclean_label}, 0, Wx::ALL, 5 );
 	$class_content_sizer->Add( $self->{namespace_autoclean_checkbox}, 0, Wx::ALL, 5 );
+	$class_content_sizer->Add( $self->{make_immutable_label}, 0, Wx::ALL, 5 );
+	$class_content_sizer->Add( $self->{make_immutable_checkbox}, 0, Wx::ALL, 5 );
 
 	my $class_button_sizer = Wx::BoxSizer->new(Wx::VERTICAL);
 	$class_button_sizer->Add( $self->{add_class_button}, 0, Wx::ALIGN_RIGHT | Wx::ALL, 5 );
@@ -528,8 +544,8 @@ sub new {
 	$self->{subtype_panel}->SetSizerAndFit($subtype_sizer);
 	$self->{subtype_panel}->Layout;
 
-	$self->{treebook}->AddPage( $self->{class_panel}, Wx::gettext("Class"), 0 );
-	$self->{treebook}->AddPage( $self->{role_panel}, Wx::gettext("Role"), 1 );
+	$self->{treebook}->AddPage( $self->{class_panel}, Wx::gettext("Class"), 1 );
+	$self->{treebook}->AddPage( $self->{role_panel}, Wx::gettext("Role"), 0 );
 	$self->{treebook}->AddPage( $self->{attribute_panel}, Wx::gettext("Attribute"), 0 );
 	$self->{treebook}->AddPage( $self->{subtype_panel}, Wx::gettext("Subtype"), 0 );
 

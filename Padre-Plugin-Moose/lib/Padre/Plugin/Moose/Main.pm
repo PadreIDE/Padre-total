@@ -20,19 +20,18 @@ sub new {
 	my $self = $class->SUPER::new($main);
 	$self->CenterOnParent;
 
+	# Defaults
+	$self->{namespace_autoclean_checkbox}->SetValue(1);
+	$self->{make_immutable_checkbox}->SetValue(1);
+
 	# Setup preview editor
 	my $preview = $self->{preview};
 	$preview->{Document} = Padre::Document->new( mimetype => 'application/x-perl', );
 	$preview->{Document}->set_editor($preview);
 	$preview->Show(1);
 
-	my $code = <<'CODE';
-    # roles
-    # class defintion
-    # attributes
-    # subtypes
-CODE
-	$preview->SetText($code);
+	$preview->SetLexer('application/x-perl');
+	$preview->SetText("\n# Generated Perl code is shown here");
 
 	# Apply the current theme
 	my $style = $main->config->editor_style;
@@ -40,6 +39,7 @@ CODE
 	$theme->apply($preview);
 
 	$preview->SetReadOnly(1);
+
 	return $self;
 }
 
@@ -69,7 +69,38 @@ sub on_about_button_clicked {
 sub on_add_class_button {
 	my $self = shift;
 	
-	print "on_add_class_button\n";
+	my $class = $self->{class_text}->GetValue;
+	my $superclass = $self->{superclass_text}->GetValue;
+	my $roles = $self->{roles_text}->GetValue;
+	my $namespace_autoclean = $self->{namespace_autoclean_checkbox}->IsChecked;
+	my $make_immutable = $self->{make_immutable_checkbox}->IsChecked;
+
+	$class =~ s/^\s+|\s+$//g;
+	$roles =~ s/^\s+|\s+$//g;
+	my @roles = split /,/, $roles;
+
+	if($class eq '') {
+		$self->main->error(Wx::gettext('Class cannot be empty'));
+		return;
+	}
+
+	my $code = "package $class;\n";
+	$code .= "\nuse namespace::clean; # Keep imports out of your namespace\n" if $namespace_autoclean;
+	$code .= "\nuse Moose; # automatically turns on strict and warnings\n";
+	$code .= "\nextends '$superclass';\n" if $superclass ne '';
+
+	$code .= "\n" if scalar @roles;
+	for my $role (@roles) {
+		$code .= "with '$role';\n";
+	}
+
+	$code .= "\n__PACKAGE__->meta->make_immutable # Makes it faster\n" if $make_immutable;
+	$code .= "1;\n";
+
+	my $preview = $self->{preview};
+	$preview->SetReadOnly(0);
+	$preview->SetText($code);
+	$preview->SetReadOnly(1);
 }
 
 sub on_add_role_button {
