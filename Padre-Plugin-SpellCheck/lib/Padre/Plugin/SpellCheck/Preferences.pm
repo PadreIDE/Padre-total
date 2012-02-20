@@ -4,13 +4,15 @@ package Padre::Plugin::SpellCheck::Preferences;
 
 use warnings;
 use strict;
+
 #TODO check logger against Plug-in Manager!
 use Padre::Logger;
+use Padre::Util                                 ();
 use Padre::Locale                               ();
 use Padre::Unload                               ();
 use Padre::Plugin::SpellCheck::FBP::Preferences ();
 
-# use Data::Printer { caller_info => 1, colored => 1, };
+use Data::Printer { caller_info => 1, colored => 1, };
 our $VERSION = '1.22';
 our @ISA     = qw{
 	Padre::Plugin::SpellCheck::FBP::Preferences
@@ -22,13 +24,11 @@ our @ISA     = qw{
 #######
 sub new {
 	my $class   = shift;
-	my $main    = shift; # Padre $main window integration
 	my $_parent = shift; # parent $self
 
 	# Create the dialog
-	my $self = $class->SUPER::new($main);
+	my $self = $class->SUPER::new( $_parent->main );
 
-	#TODO there must be a better way, and all just to be able to, config_write
 	$self->{_parent} = $_parent;
 
 	# define where to display main dialog
@@ -46,7 +46,9 @@ sub set_up {
 	my $self = shift;
 
 	# get local_dictionary info
-	$self->_local_dictionaries;
+	$self->_local_aspell_dictionaries;
+
+	# $self->_local_hunspell_dictionaries;
 
 	# update dialog with locally install dictionaries;
 	$self->display_dictionaries;
@@ -55,38 +57,109 @@ sub set_up {
 }
 
 #######
-# Method _local_dictionaries
+# Method _local_aspell_dictionaries
 #######
-sub _local_dictionaries {
+sub _local_aspell_dictionaries {
 	my $self = shift;
 
 	#TODO should this be done via engine?
+	my @local_dictionaries_names = ();
 
-	require Text::Aspell;
-	my $speller = Text::Aspell->new;
+	eval { require Text::Aspell; };
+	if ($@) {
+		$self->{local_dictionaries_names} = \@local_dictionaries_names;
+		return;
+	} else {
+		my $speller = Text::Aspell->new;
 
-	my @local_dictionaries = grep { $_ =~ /^\w+$/ } map { $_->{name} } $speller->dictionary_info;
-	$self->{local_dictionaries} = \@local_dictionaries;
-	TRACE( "locally installed dictionaries found = " . Dumper $self->{local_dictionaries} ) if DEBUG;
-	TRACE( "iso to dictionary names = " . Dumper $self->{dictionary_names} )                if DEBUG;
+		my @local_dictionaries = grep { $_ =~ /^\w+$/ } map { $_->{name} } $speller->dictionary_info;
+		$self->{local_dictionaries} = \@local_dictionaries;
+		TRACE( "locally installed dictionaries found = " . Dumper $self->{local_dictionaries} ) if DEBUG;
+		TRACE( "iso to dictionary names = " . Dumper $self->{dictionary_names} )                if DEBUG;
 
-	my @local_dictionaries_names;
 
-	for (@local_dictionaries) {
-		push( @local_dictionaries_names, $self->padre_locale_label($_) );
-		$self->{dictionary_names}{$_} = $self->padre_locale_label($_);
+		# p @local_dictionaries;
+
+		for (@local_dictionaries) {
+			push( @local_dictionaries_names, $self->padre_locale_label($_) );
+			$self->{dictionary_names}{$_} = $self->padre_locale_label($_);
+		}
+
+		# p $self->{dictionary_names};
+		# p @local_dictionaries_names;
+
+		@local_dictionaries_names = sort @local_dictionaries_names;
+
+		$self->{local_dictionaries_names} = \@local_dictionaries_names;
+
+		# p $self->{local_dictionaries_names};
+		TRACE( "local dictionaries names = " . Dumper $self->{local_dictionaries_names} ) if DEBUG;
+		return;
 	}
+}
 
-	# p $self->{dictionary_names};
-	# p @local_dictionaries_names;
+#######
+# Method _local_aspell_dictionaries
+#######
+sub _local_hunspell_dictionaries {
+	my $self = shift;
 
-	@local_dictionaries_names = sort @local_dictionaries_names;
+	#TODO should this be done via engine?
+	my @local_dictionaries_names;
+	my @local_dictionaries;
+	eval { require Text::Hunspell; };
+	if ($@) {
+		$self->{local_dictionaries_names} = \@local_dictionaries_names;
+		print "Text::Hunspell is not installed\n";
 
-	$self->{local_dictionaries_names} = \@local_dictionaries_names;
+		return;
+	} else {
 
-	# p $self->{local_dictionaries_names};
-	TRACE( "local dictionaries names = " . Dumper $self->{local_dictionaries_names} ) if DEBUG;
-	return;
+		require Padre::Util;
+		my $speller = Padre::Util::run_in_directory_two('hunspell -D </dev/null');
+		chomp $speller;
+		p $speller;
+
+		my @speller_raw = grep { $_ =~ /\w{2}_\w{2}$/m } split /\n/, $$speller;
+		p @speller_raw;
+		my %temp_speller;
+		foreach (@speller_raw) {
+			if ( $_ !~ m/hyph/ ) {
+				m/(\w{2}_\w{2})$/;
+				my $tmp = $1;
+				p $tmp;
+				$temp_speller{$tmp}++;
+			}
+		}
+		p %temp_speller;
+		my @speller;
+		while ( my ( $key, $value ) = each %temp_speller ) {
+			push @local_dictionaries, $key;
+		}
+
+		# my @local_dictionaries = grep { $_ =~ /^\w+$/ } map { $_->{name} } $speller;
+		$self->{local_dictionaries} = \@local_dictionaries;
+		TRACE( "locally installed dictionaries found = " . Dumper $self->{local_dictionaries} ) if DEBUG;
+		TRACE( "iso to dictionary names = " . Dumper $self->{dictionary_names} )                if DEBUG;
+
+		p @local_dictionaries;
+
+		for (@local_dictionaries) {
+			push( @local_dictionaries_names, $self->padre_locale_label($_) );
+			$self->{dictionary_names}{$_} = $self->padre_locale_label($_);
+		}
+
+		# # p $self->{dictionary_names};
+		# # p @local_dictionaries_names;
+
+		@local_dictionaries_names = sort @local_dictionaries_names;
+
+		$self->{local_dictionaries_names} = \@local_dictionaries_names;
+
+		# p $self->{local_dictionaries_names};
+		TRACE( "local dictionaries names = " . Dumper $self->{local_dictionaries_names} ) if DEBUG;
+		return;
+	}
 }
 
 #######
