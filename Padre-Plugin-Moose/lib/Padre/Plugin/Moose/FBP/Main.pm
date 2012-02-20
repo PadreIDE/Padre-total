@@ -112,6 +112,14 @@ sub new {
 		Wx::DefaultSize,
 	);
 
+	Wx::Event::EVT_BUTTON(
+		$self,
+		$self->{add_class_button},
+		sub {
+			shift->on_add_class_button(@_);
+		},
+	);
+
 	$self->{role_panel} = Wx::Panel->new(
 		$self->{treebook},
 		-1,
@@ -168,6 +176,14 @@ sub new {
 		Wx::gettext("Add"),
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
+	);
+
+	Wx::Event::EVT_BUTTON(
+		$self,
+		$self->{add_role_button},
+		sub {
+			shift->on_add_role_button(@_);
+		},
 	);
 
 	$self->{attribute_panel} = Wx::Panel->new(
@@ -278,6 +294,14 @@ sub new {
 		Wx::DefaultSize,
 	);
 
+	Wx::Event::EVT_BUTTON(
+		$self,
+		$self->{add_attribute_button},
+		sub {
+			shift->on_add_attribute_button(@_);
+		},
+	);
+
 	$self->{subtype_panel} = Wx::Panel->new(
 		$self->{treebook},
 		-1,
@@ -334,6 +358,14 @@ sub new {
 		Wx::gettext("Add"),
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
+	);
+
+	Wx::Event::EVT_BUTTON(
+		$self,
+		$self->{add_subtype_button},
+		sub {
+			shift->on_add_subtype_button(@_);
+		},
 	);
 
 	$self->{tree} = Wx::TreeCtrl->new(
@@ -496,8 +528,8 @@ sub new {
 	$self->{subtype_panel}->SetSizerAndFit($subtype_sizer);
 	$self->{subtype_panel}->Layout;
 
-	$self->{treebook}->AddPage( $self->{class_panel}, Wx::gettext("Class"), 1 );
-	$self->{treebook}->AddPage( $self->{role_panel}, Wx::gettext("Role"), 0 );
+	$self->{treebook}->AddPage( $self->{class_panel}, Wx::gettext("Class"), 0 );
+	$self->{treebook}->AddPage( $self->{role_panel}, Wx::gettext("Role"), 1 );
 	$self->{treebook}->AddPage( $self->{attribute_panel}, Wx::gettext("Attribute"), 0 );
 	$self->{treebook}->AddPage( $self->{subtype_panel}, Wx::gettext("Subtype"), 0 );
 
@@ -532,6 +564,22 @@ sub new {
 	$self->Layout;
 
 	return $self;
+}
+
+sub on_add_class_button {
+	$_[0]->main->error('Handler method on_add_class_button for event add_class_button.OnButtonClick not implemented');
+}
+
+sub on_add_role_button {
+	$_[0]->main->error('Handler method on_add_role_button for event add_role_button.OnButtonClick not implemented');
+}
+
+sub on_add_attribute_button {
+	$_[0]->main->error('Handler method on_add_attribute_button for event add_attribute_button.OnButtonClick not implemented');
+}
+
+sub on_add_subtype_button {
+	$_[0]->main->error('Handler method on_add_subtype_button for event add_subtype_button.OnButtonClick not implemented');
 }
 
 sub on_about_button_clicked {

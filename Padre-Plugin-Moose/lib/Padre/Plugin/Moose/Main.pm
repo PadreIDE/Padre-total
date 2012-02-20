@@ -66,6 +66,30 @@ sub on_about_button_clicked {
 	return;
 }
 
+sub on_add_class_button {
+	my $self = shift;
+	
+	print "on_add_class_button\n";
+}
+
+sub on_add_role_button {
+	my $self = shift;
+	
+	print "on_add_role_button\n";
+}
+
+sub on_add_attribute_button {
+	my $self = shift;
+	
+	print "on_add_attribute_button\n";
+}
+
+sub on_add_subtype_button {
+	my $self = shift;
+	
+	print "on_add_subtype_button\n";
+}
+
 1;
 
 # Copyright 2008-2012 The Padre development team as listed in Padre.pm.
