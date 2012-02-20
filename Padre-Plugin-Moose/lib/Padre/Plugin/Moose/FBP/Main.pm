@@ -368,6 +368,22 @@ sub new {
 		},
 	);
 
+	$self->{add_comments_checkbox} = Wx::CheckBox->new(
+		$self,
+		-1,
+		Wx::gettext("Add comments?"),
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+	);
+
+	$self->{add_main_checkbox} = Wx::CheckBox->new(
+		$self,
+		-1,
+		Wx::gettext("Add main?"),
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+	);
+
 	$self->{tree} = Wx::TreeCtrl->new(
 		$self,
 		-1,
@@ -535,6 +551,8 @@ sub new {
 
 	my $left_sizer = Wx::BoxSizer->new(Wx::VERTICAL);
 	$left_sizer->Add( $self->{treebook}, 1, Wx::EXPAND | Wx::ALL, 5 );
+	$left_sizer->Add( $self->{add_comments_checkbox}, 0, Wx::ALL, 5 );
+	$left_sizer->Add( $self->{add_main_checkbox}, 0, Wx::ALL, 5 );
 
 	my $top_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
 	$top_sizer->Add( $left_sizer, 1, Wx::EXPAND, 5 );

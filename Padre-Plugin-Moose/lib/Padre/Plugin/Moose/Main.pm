@@ -5,9 +5,6 @@ use strict;
 use warnings;
 use Padre::Plugin::Moose::FBP::Main ();
 
-use Wx::Scintilla           ();
-use Wx::Scintilla::Constant ();
-
 our $VERSION = '0.02';
 our @ISA     = qw{
 	Padre::Plugin::Moose::FBP::Main
@@ -23,6 +20,8 @@ sub new {
 	# Defaults
 	$self->{namespace_autoclean_checkbox}->SetValue(1);
 	$self->{make_immutable_checkbox}->SetValue(1);
+	$self->{add_comments_checkbox}->SetValue(1);
+	$self->{add_main_checkbox}->SetValue(1);
 
 	# Setup preview editor
 	my $preview = $self->{preview};
@@ -74,6 +73,8 @@ sub on_add_class_button {
 	my $roles = $self->{roles_text}->GetValue;
 	my $namespace_autoclean = $self->{namespace_autoclean_checkbox}->IsChecked;
 	my $make_immutable = $self->{make_immutable_checkbox}->IsChecked;
+	my $add_comments = $self->{add_comments_checkbox}->IsChecked;
+	my $add_main = $self->{add_main_checkbox}->IsChecked;
 
 	$class =~ s/^\s+|\s+$//g;
 	$superclass =~ s/^\s+|\s+$//g;
@@ -82,12 +83,23 @@ sub on_add_class_button {
 
 	if($class eq '') {
 		$self->main->error(Wx::gettext('Class name cannot be empty'));
+		$self->{class_text}->SetFocus();
 		return;
 	}
 
 	my $code = "package $class;\n";
-	$code .= "\nuse namespace::clean; # Keep imports out of your namespace\n" if $namespace_autoclean;
-	$code .= "\nuse Moose; # automatically turns on strict and warnings\n";
+
+	if($namespace_autoclean) {
+		$code .= "\nuse namespace::clean;";
+		$code .= $add_comments
+			? " # Keep imports out of your namespace\n"
+			: "\n";
+	}
+
+	$code .= "\nuse Moose;";
+	$code .= $add_comments
+		? " # automatically turns on strict and warnings\n"
+		: "\n";
 	$code .= "\nextends '$superclass';\n" if $superclass ne '';
 
 	$code .= "\n" if scalar @roles;
@@ -95,8 +107,19 @@ sub on_add_class_button {
 		$code .= "with '$role';\n";
 	}
 
-	$code .= "\n__PACKAGE__->meta->make_immutable # Makes it faster\n" if $make_immutable;
+	if($make_immutable) {
+		$code .= "\n__PACKAGE__->meta->make_immutable;";
+		$code .= $add_comments
+			? " # Makes it faster\n"
+			: "\n";
+	}
 	$code .= "\n1;\n";
+
+	if($add_main) {
+		$code .= "\n\npackage main;\n";
+		$code .= "\nuse $class;\n";
+		$code .= "\nmy \$o = $class->new;\n";
+	}
 
 	my $preview = $self->{preview};
 	$preview->SetReadOnly(0);
@@ -116,11 +139,13 @@ sub on_add_role_button {
 
 	if($role eq '') {
 		$self->main->error(Wx::gettext('Role name cannot be empty'));
+		$self->{role_text}->SetFocus();
 		return;
 	}
 	
 	if(scalar @requires == 0) {
 		$self->main->error(Wx::gettext('Requires list cannot be empty'));
+		$self->{requires_text}->SetFocus();
 		return;
 	}
 
