@@ -25,7 +25,6 @@ hook before => sub {
             my $user = Madre::DB::User->load($user_id);
             debug( 'Loaded session user - ' . $user->username );
             vars->{user} = $user;
-
         } catch {
             debug( "Invalid session user $user_id" );
             session->destroy;
@@ -129,7 +128,6 @@ post '/login' , sub {
         debug($user);
         unless ( $user ) {
            debug( "Auth failed" );
-           error "Authorisation failed";
            status 401;
            return 'authentication failure';
         }
