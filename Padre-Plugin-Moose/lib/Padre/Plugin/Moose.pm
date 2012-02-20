@@ -39,7 +39,7 @@ sub plugin_disable {
 sub menu_plugins {
 	my $self      = shift;
 	my $main      = $self->main;
-	my $menu_item = Wx::MenuItem->new( undef, -1, $self->plugin_name . "...\tF8", );
+	my $menu_item = Wx::MenuItem->new( undef, -1, $self->plugin_name . "\tF8", );
 	Wx::Event::EVT_MENU(
 		$main,
 		$menu_item,
@@ -75,9 +75,11 @@ Then use it via L<Padre>, The Perl IDE.
 
 Once you enable this Plugin under Padre, you'll get a brand new menu with the following options:
 
-=head2 About
+=head2 Moose
 
-Shows a nice about box with this module's name and version.
+Opens up a user-friendly dialog where you can add classes, roles, attributes and subtypes. 
+The dialog contains a tree of stuff that are created while it is open and a preview of
+generated Perl code. It also contains links to Moose manual, cookbook and website.
 
 =head1 BUGS
 
