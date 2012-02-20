@@ -156,32 +156,18 @@ sub new {
 		Wx::DefaultSize,
 	);
 
-	my $superclass_label1 = Wx::StaticText->new(
+	my $requires_label = Wx::StaticText->new(
 		$self->{role_panel},
 		-1,
-		Wx::gettext("Superclass"),
+		Wx::gettext("Requires:"),
 	);
 
-	$self->{superclass_text1} = Wx::TextCtrl->new(
+	$self->{requires_text} = Wx::TextCtrl->new(
 		$self->{role_panel},
 		-1,
 		"",
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
-	);
-
-	my $requires_label = Wx::StaticText->new(
-		$self->{role_panel},
-		-1,
-		Wx::gettext("Requires"),
-	);
-
-	$self->{requires_list} = Wx::ListBox->new(
-		$self->{role_panel},
-		-1,
-		Wx::DefaultPosition,
-		Wx::DefaultSize,
-		[],
 	);
 
 	$self->{add_role_button} = Wx::Button->new(
@@ -486,10 +472,8 @@ sub new {
 	$role_content_sizer->SetNonFlexibleGrowMode(Wx::FLEX_GROWMODE_SPECIFIED);
 	$role_content_sizer->Add( $role_label, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::LEFT | Wx::RIGHT | Wx::TOP, 5 );
 	$role_content_sizer->Add( $self->{role_text}, 0, Wx::ALL, 5 );
-	$role_content_sizer->Add( $superclass_label1, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::LEFT | Wx::RIGHT | Wx::TOP, 5 );
-	$role_content_sizer->Add( $self->{superclass_text1}, 0, Wx::ALL, 5 );
-	$role_content_sizer->Add( $requires_label, 0, Wx::ALL, 5 );
-	$role_content_sizer->Add( $self->{requires_list}, 0, Wx::ALL, 5 );
+	$role_content_sizer->Add( $requires_label, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::LEFT | Wx::RIGHT | Wx::TOP, 5 );
+	$role_content_sizer->Add( $self->{requires_text}, 0, Wx::ALL, 5 );
 
 	my $role_button_sizer = Wx::BoxSizer->new(Wx::VERTICAL);
 	$role_button_sizer->Add( $self->{add_role_button}, 0, Wx::ALIGN_RIGHT | Wx::ALL, 5 );

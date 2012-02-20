@@ -76,11 +76,12 @@ sub on_add_class_button {
 	my $make_immutable = $self->{make_immutable_checkbox}->IsChecked;
 
 	$class =~ s/^\s+|\s+$//g;
+	$superclass =~ s/^\s+|\s+$//g;
 	$roles =~ s/^\s+|\s+$//g;
 	my @roles = split /,/, $roles;
 
 	if($class eq '') {
-		$self->main->error(Wx::gettext('Class cannot be empty'));
+		$self->main->error(Wx::gettext('Class name cannot be empty'));
 		return;
 	}
 
@@ -95,7 +96,7 @@ sub on_add_class_button {
 	}
 
 	$code .= "\n__PACKAGE__->meta->make_immutable # Makes it faster\n" if $make_immutable;
-	$code .= "1;\n";
+	$code .= "\n1;\n";
 
 	my $preview = $self->{preview};
 	$preview->SetReadOnly(0);
@@ -106,7 +107,36 @@ sub on_add_class_button {
 sub on_add_role_button {
 	my $self = shift;
 	
-	print "on_add_role_button\n";
+	my $role = $self->{role_text}->GetValue;
+	my $requires = $self->{requires_text}->GetValue;
+
+	$role =~ s/^\s+|\s+$//g;
+	$requires =~ s/^\s+|\s+$//g;
+	my @requires = split /,/, $requires;
+
+	if($role eq '') {
+		$self->main->error(Wx::gettext('Role name cannot be empty'));
+		return;
+	}
+	
+	if(scalar @requires == 0) {
+		$self->main->error(Wx::gettext('Requires list cannot be empty'));
+		return;
+	}
+
+	my $code = "package $role;\n";
+	$code .= "\nuse Moose::Role;\n";
+
+	$code .= "\n" if scalar @requires;
+	for my $require (@requires) {
+		$code .= "with '$require';\n";
+	}
+	$code .= "\n1;\n";
+
+	my $preview = $self->{preview};
+	$preview->SetReadOnly(0);
+	$preview->SetText($code);
+	$preview->SetReadOnly(1);
 }
 
 sub on_add_attribute_button {
