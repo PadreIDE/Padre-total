@@ -50,31 +50,6 @@ sub menu_plugins {
     );
 
     return $menu_item;
-
-
-    # Wx::gettext('About') => sub {
-    # $self->on_show_about;
-    # },
-    # ];
-}
-
-sub on_show_about {
-    require Moose;
-    require Padre::Unload;
-    my $about = Wx::AboutDialogInfo->new;
-    $about->SetName('Padre::Plugin::Moose');
-    $about->SetDescription(
-        Wx::gettext('Moose support for Padre') . "\n\n"
-          . sprintf(
-            Wx::gettext('This system is running Moose version %s'),
-            $Moose::VERSION
-          )
-          . "\n"
-    );
-    $about->SetVersion($Padre::Plugin::Moose::VERSION);
-    Padre::Unload->unload('Moose');
-    Wx::AboutBox($about);
-    return;
 }
 
 1;

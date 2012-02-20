@@ -17,12 +17,27 @@ sub new {
     return $self;
 }
 
-sub on_ok_clicked {
-    print "on_ok_clicked\n";
+sub on_cancel_button_clicked {
+    $_[0]->Destroy;
 }
 
-sub on_cancel_clicked {
-    $_[0]->Destroy;
+sub on_about_button_clicked {
+    require Moose;
+    require Padre::Unload;
+    my $about = Wx::AboutDialogInfo->new;
+    $about->SetName('Padre::Plugin::Moose');
+    $about->SetDescription(
+        Wx::gettext('Moose support for Padre') . "\n\n"
+          . sprintf(
+            Wx::gettext('This system is running Moose version %s'),
+            $Moose::VERSION
+          )
+    );
+    $about->SetVersion($Padre::Plugin::Moose::VERSION);
+    Padre::Unload->unload('Moose');
+    Wx::AboutBox($about);
+
+    return;
 }
 
 1;

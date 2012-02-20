@@ -373,6 +373,22 @@ sub new {
 		Wx::HL_DEFAULT_STYLE,
 	);
 
+	$self->{about_button} = Wx::Button->new(
+		$self,
+		-1,
+		Wx::gettext("About"),
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+	);
+
+	Wx::Event::EVT_BUTTON(
+		$self,
+		$self->{about_button},
+		sub {
+			shift->on_about_button_clicked(@_);
+		},
+	);
+
 	$self->{close_button} = Wx::Button->new(
 		$self,
 		-1,
@@ -385,7 +401,7 @@ sub new {
 		$self,
 		$self->{close_button},
 		sub {
-			shift->on_cancel_clicked(@_);
+			shift->on_cancel_button_clicked(@_);
 		},
 	);
 
@@ -494,6 +510,8 @@ sub new {
 	my $buttons_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
 	$buttons_sizer->Add( $hyperlink_sizer, 0, Wx::EXPAND, 5 );
 	$buttons_sizer->Add( 20, 0, 1, Wx::EXPAND, 5 );
+	$buttons_sizer->Add( $self->{about_button}, 0, Wx::ALL, 2 );
+	$buttons_sizer->Add( 5, 0, 0, Wx::EXPAND, 5 );
 	$buttons_sizer->Add( $self->{close_button}, 0, Wx::ALL, 2 );
 
 	my $vsizer = Wx::BoxSizer->new(Wx::VERTICAL);
@@ -509,8 +527,12 @@ sub new {
 	return $self;
 }
 
-sub on_cancel_clicked {
-	$_[0]->main->error('Handler method on_cancel_clicked for event close_button.OnButtonClick not implemented');
+sub on_about_button_clicked {
+	$_[0]->main->error('Handler method on_about_button_clicked for event about_button.OnButtonClick not implemented');
+}
+
+sub on_cancel_button_clicked {
+	$_[0]->main->error('Handler method on_cancel_button_clicked for event close_button.OnButtonClick not implemented');
 }
 
 1;
