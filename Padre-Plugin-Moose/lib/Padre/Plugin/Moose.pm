@@ -25,10 +25,13 @@ sub plugin_name {
 }
 
 sub plugin_disable {
-    require Padre::Unload;
-    Padre::Unload->unload('Padre::Plugin::Moose');
-    Padre::Unload->unload('Padre::Plugin::Moose::Main');
-    Padre::Unload->unload('Moose');
+    # TODO uncomment once Padre 0.96 is released
+    #$_[0]->unload(
+    #    ( 'Padre::Plugin::Moose', 'Padre::Plugin::Moose::Main', 'Moose' ) );
+    for my $package (( 'Padre::Plugin::Moose', 'Padre::Plugin::Moose::Main', 'Moose' )) {
+        require Padre::Unload;
+        Padre::Unload->unload($package);
+    }
 }
 
 # The command structure to show in the Plugins menu
