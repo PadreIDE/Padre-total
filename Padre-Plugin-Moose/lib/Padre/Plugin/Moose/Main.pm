@@ -44,7 +44,7 @@ CODE
 }
 
 sub on_cancel_button_clicked {
-	$_[0]->Destroy;
+	$_[0]->EndModal(Wx::ID_CANCEL);
 }
 
 sub on_about_button_clicked {
