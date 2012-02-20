@@ -51,46 +51,6 @@ sub menu_plugins {
 
     return $menu_item;
 
-    # [
-    # Wx::gettext('New Class...') => sub {
-    # require Padre::Plugin::Moose::FBP::NewClass;
-    # Padre::Plugin::Moose::FBP::NewClass->new($main)->Show;
-    # return;
-    # },
-    # Wx::gettext('New Role...') => sub {
-    # require Padre::Plugin::Moose::FBP::NewRole;
-    # Padre::Plugin::Moose::FBP::NewRole->new($main)->Show;
-    # return;
-    # },
-    # Wx::gettext('New Subtype...') => sub {
-    # require Padre::Plugin::Moose::FBP::NewSubType;
-    # Padre::Plugin::Moose::FBP::NewSubType->new($main)->Show;
-    # return;
-    # },
-    # Wx::gettext('New Attribute...') => sub {
-    # require Padre::Plugin::Moose::FBP::NewAttribute;
-    # Padre::Plugin::Moose::FBP::NewAttribute->new($main)->Show;
-    # return;
-    # },
-
-    # '---' => undef,
-
-    # Wx::gettext('Online References') => [
-    # Wx::gettext('Manual') => sub {
-    # Padre::Wx::launch_browser('https://metacpan.org/module/Moose::Manual');
-    # },
-    # Wx::gettext('How to cook a Moose?') => sub {
-    # Padre::Wx::launch_browser('https://metacpan.org/module/Moose::Cookbook');
-    # },
-    # Wx::gettext('Website') => sub {
-    # Padre::Wx::launch_browser('http://moose.iinteractive.com/');
-    # },
-    # Wx::gettext('Community Live Support') => sub {
-    # Padre::Wx::launch_irc( 'irc.perl.org' => 'moose' );
-    # },
-    # ],
-
-    # '---' => undef,
 
     # Wx::gettext('About') => sub {
     # $self->on_show_about;
@@ -136,14 +96,6 @@ Then use it via L<Padre>, The Perl IDE.
 =head1 DESCRIPTION
 
 Once you enable this Plugin under Padre, you'll get a brand new menu with the following options:
-
-=head2 'New Moose Class'
-
-This options lets you create a new Moose application.
-
-=head2 Moose Online References
-
-This menu option contains a series of external reference links on Moose. Clicking on each of them will point your default web browser to their websites.
 
 =head2 About
 
