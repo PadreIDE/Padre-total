@@ -13,6 +13,7 @@ use Padre::Plugin;
 # use Padre::Wx;
 use Padre::Locale ();
 use Padre::Unload ();
+
 # use Data::Printer { caller_info => 1, colored => 1, };
 our $VERSION = '1.22';
 our @ISA     = 'Padre::Plugin';
@@ -125,6 +126,24 @@ sub plugin_disable {
 	$self->clean_dialog;
 
 	# Unload all our child classes
+
+	# for my $package (
+	# qq{
+	# Padre::Plugin::SpellCheck
+	# Padre::Plugin::SpellCheck::Checker
+	# Padre::Plugin::SpellCheck::FBP::Checker
+	# Padre::Plugin::SpellCheck::Engine
+	# Padre::Plugin::SpellCheck::Preferences
+	# Padre::Plugin::SpellCheck::FBP::Preferences
+	# Text::Aspell
+	# }
+	# )
+	# {
+	# require Padre::Unload;
+	# Padre::Unload->unload($package);
+	# }
+
+
 	require Padre::Unload;
 	Padre::Unload->unload(
 		qw{
@@ -223,14 +242,15 @@ sub spell_check {
 #######
 sub plugin_preferences {
 	my $self = shift;
-	my $main = $self->main;
-	$self->get_config;
+
+	# my $main = $self->main;
+	# $self->get_config;
 
 	# Clean up any previous existing dialog
 	$self->clean_dialog;
 
 	require Padre::Plugin::SpellCheck::Preferences;
-	$self->{dialog} = Padre::Plugin::SpellCheck::Preferences->new( $main, $self );
+	$self->{dialog} = Padre::Plugin::SpellCheck::Preferences->new($self);
 	$self->{dialog}->ShowModal;
 
 	return;
@@ -248,27 +268,33 @@ sub get_config {
 
 	my $config_read = $self->config_read;
 
-	if (defined $config_read->{dictionary}) {
+	if ( defined $config_read->{dictionary} ) {
+
 		# p $config_read->{dictionary};
 		# if ( $config_read->{dictionary} ){
 		require Padre::Locale;
 		my $thing = Padre::Locale->rfc4646_exists( $config_read->{dictionary} );
+
 		# p $thing;
-		
+
 		#for me this allways returns 'en_gb'
 		# my $code    = Padre::Locale::rfc4646();
-		my $code    = Padre::Locale::rfc4646($config_read->{dictionary});
+		my $code = Padre::Locale::rfc4646( $config_read->{dictionary} );
+
 		# p $code;
-		
+
 		my %language = Padre::Locale::menu_view_languages();
+
 		# p %language;
-		my $iso = $config_read->{dictionary};
+		my $iso    = $config_read->{dictionary};
 		my $lc_iso = lc $iso;
 		$lc_iso =~ s/_/-/;
+
 		# p $lc_iso;
-		my $label = Padre::Locale::label( $lc_iso );
+		my $label = Padre::Locale::label($lc_iso);
+
 		# p $label;
-		
+
 		# print "rfc4646_exists\n";
 		# }
 		return $self->config_read;

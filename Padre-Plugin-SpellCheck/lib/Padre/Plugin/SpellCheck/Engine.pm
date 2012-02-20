@@ -6,6 +6,7 @@ use warnings;
 use strict;
 use Padre::Logger;
 use Padre::Unload                          ();
+use Text::Aspell ();
 
 use Class::XSAccessor {	
 	replace => 1,
@@ -19,7 +20,7 @@ use Class::XSAccessor {
 		                            # used in calculating current possition
 	},
 };
-use Text::Aspell;
+
 
 my %MIMETYPE_MODE = (
 	'application/x-latex' => 'tex',
@@ -55,7 +56,9 @@ sub new {
 	# $speller->set_option( 'lang',     $config->{dictionary} );
 	$speller->set_option( 'lang', $iso );
 
-	#$speller->print_config;  # to STDOUT
+	#$speller->print_config;  # to STDOUT	
+	# TRACE( "print config info = " . $speller->print_config ) if DEBUG;
+	
 	if ( exists $MIMETYPE_MODE{$mimetype} ) {
 		if ( not defined $speller->set_option( 'mode', $MIMETYPE_MODE{$mimetype} ) ) {
 			my $err = $speller->errstr;
