@@ -427,6 +427,22 @@ sub new {
 		Wx::HL_DEFAULT_STYLE,
 	);
 
+	$self->{insert_code_button} = Wx::Button->new(
+		$self,
+		-1,
+		Wx::gettext("Insert code"),
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+	);
+
+	Wx::Event::EVT_BUTTON(
+		$self,
+		$self->{insert_code_button},
+		sub {
+			shift->on_insert_button_clicked(@_);
+		},
+	);
+
 	$self->{about_button} = Wx::Button->new(
 		$self,
 		-1,
@@ -566,8 +582,9 @@ sub new {
 	my $buttons_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
 	$buttons_sizer->Add( $hyperlink_sizer, 0, Wx::EXPAND, 5 );
 	$buttons_sizer->Add( 10, 0, 1, Wx::EXPAND, 5 );
+	$buttons_sizer->Add( $self->{insert_code_button}, 0, Wx::ALL, 2 );
+	$buttons_sizer->Add( 30, 0, 0, Wx::EXPAND, 5 );
 	$buttons_sizer->Add( $self->{about_button}, 0, Wx::ALL, 2 );
-	$buttons_sizer->Add( 5, 0, 0, Wx::EXPAND, 5 );
 	$buttons_sizer->Add( $self->{close_button}, 0, Wx::ALL, 2 );
 
 	my $vsizer = Wx::BoxSizer->new(Wx::VERTICAL);
@@ -598,6 +615,10 @@ sub on_add_attribute_button {
 
 sub on_add_subtype_button {
 	$_[0]->main->error('Handler method on_add_subtype_button for event add_subtype_button.OnButtonClick not implemented');
+}
+
+sub on_insert_button_clicked {
+	$_[0]->main->error('Handler method on_insert_button_clicked for event insert_code_button.OnButtonClick not implemented');
 }
 
 sub on_about_button_clicked {

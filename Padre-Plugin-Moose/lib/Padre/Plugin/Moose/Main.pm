@@ -176,6 +176,14 @@ sub on_add_subtype_button {
 	print "on_add_subtype_button\n";
 }
 
+sub on_insert_button_clicked {
+	my $self = shift;
+
+	$self->main->on_new;
+	my $editor = $self->current->editor or return;
+	$editor->insert_text($self->{preview}->GetText);
+}
+
 1;
 
 # Copyright 2008-2012 The Padre development team as listed in Padre.pm.
