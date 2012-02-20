@@ -1,7 +1,8 @@
-use Test::More tests => 12;
+use Test::More tests => 14;
 
 use_ok( 'Padre::Unload', '0.94' );
 use_ok( 'Padre::Locale', '0.94' );
+use_ok( 'Padre::Util',   '0.94' );
 use_ok( 'Padre::Logger', '0.94' );
 use_ok( 'Text::Aspell',  '0.09' );
 
@@ -10,7 +11,8 @@ use_ok( 'Text::Aspell',  '0.09' );
 # let's check our subs/methods.
 ######
 
-my @subs = qw( _local_dictionaries _on_button_ok_clicked display_dictionaries
+my @subs = qw( _local_aspell_dictionaries _local_hunspell_dictionaries
+	_on_button_ok_clicked display_dictionaries
 	new padre_locale_label set_up
 );
 
