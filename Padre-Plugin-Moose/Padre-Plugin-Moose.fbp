@@ -169,7 +169,7 @@
                                                 <object class="notebookpage" expanded="0">
                                                     <property name="bitmap"></property>
                                                     <property name="label">Class</property>
-                                                    <property name="select">1</property>
+                                                    <property name="select">0</property>
                                                     <object class="wxPanel" expanded="0">
                                                         <property name="bg"></property>
                                                         <property name="context_help"></property>
@@ -1923,7 +1923,7 @@
                                                 <object class="notebookpage" expanded="0">
                                                     <property name="bitmap"></property>
                                                     <property name="label">Subtype</property>
-                                                    <property name="select">0</property>
+                                                    <property name="select">1</property>
                                                     <object class="wxPanel" expanded="0">
                                                         <property name="bg"></property>
                                                         <property name="context_help"></property>
@@ -2064,7 +2064,7 @@
                                                                             <property name="maximum_size"></property>
                                                                             <property name="maxlength">0</property>
                                                                             <property name="minimum_size"></property>
-                                                                            <property name="name">role_text1</property>
+                                                                            <property name="name">subtype_text</property>
                                                                             <property name="permission">protected</property>
                                                                             <property name="pos"></property>
                                                                             <property name="size"></property>

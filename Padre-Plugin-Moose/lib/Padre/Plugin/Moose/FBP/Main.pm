@@ -316,7 +316,7 @@ sub new {
 		Wx::gettext("Subtype:"),
 	);
 
-	$self->{role_text1} = Wx::TextCtrl->new(
+	$self->{subtype_text} = Wx::TextCtrl->new(
 		$self->{subtype_panel},
 		-1,
 		"",
@@ -544,7 +544,7 @@ sub new {
 	$subtype_content_sizer->SetFlexibleDirection(Wx::BOTH);
 	$subtype_content_sizer->SetNonFlexibleGrowMode(Wx::FLEX_GROWMODE_SPECIFIED);
 	$subtype_content_sizer->Add( $subtype_label, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::LEFT | Wx::RIGHT | Wx::TOP, 5 );
-	$subtype_content_sizer->Add( $self->{role_text1}, 0, Wx::ALL, 5 );
+	$subtype_content_sizer->Add( $self->{subtype_text}, 0, Wx::ALL, 5 );
 	$subtype_content_sizer->Add( $constraint_label, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::LEFT | Wx::RIGHT | Wx::TOP, 5 );
 	$subtype_content_sizer->Add( $self->{constraint_text}, 0, Wx::ALL, 5 );
 	$subtype_content_sizer->Add( $error_message_label, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::LEFT | Wx::RIGHT | Wx::TOP, 5 );
@@ -560,10 +560,10 @@ sub new {
 	$self->{subtype_panel}->SetSizerAndFit($subtype_sizer);
 	$self->{subtype_panel}->Layout;
 
-	$self->{treebook}->AddPage( $self->{class_panel}, Wx::gettext("Class"), 1 );
+	$self->{treebook}->AddPage( $self->{class_panel}, Wx::gettext("Class"), 0 );
 	$self->{treebook}->AddPage( $self->{role_panel}, Wx::gettext("Role"), 0 );
 	$self->{treebook}->AddPage( $self->{attribute_panel}, Wx::gettext("Attribute"), 0 );
-	$self->{treebook}->AddPage( $self->{subtype_panel}, Wx::gettext("Subtype"), 0 );
+	$self->{treebook}->AddPage( $self->{subtype_panel}, Wx::gettext("Subtype"), 1 );
 
 	my $left_sizer = Wx::BoxSizer->new(Wx::VERTICAL);
 	$left_sizer->Add( $self->{treebook}, 1, Wx::EXPAND | Wx::ALL, 5 );

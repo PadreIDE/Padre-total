@@ -121,6 +121,15 @@ sub on_add_class_button {
 		$code .= "\nmy \$o = $class->new;\n";
 	}
 
+	my $tree = $self->{tree};
+	$tree->DeleteAllItems;
+	my $root   = $tree->AddRoot(
+		$class,
+		-1,
+		-1,
+		Wx::TreeItemData->new('')
+	);
+
 	my $preview = $self->{preview};
 	$preview->SetReadOnly(0);
 	$preview->SetText($code);
@@ -158,6 +167,15 @@ sub on_add_role_button {
 	}
 	$code .= "\n1;\n";
 
+	my $tree = $self->{tree};
+	$tree->DeleteAllItems;
+	my $root   = $tree->AddRoot(
+		$role,
+		-1,
+		-1,
+		Wx::TreeItemData->new('')
+	);
+
 	my $preview = $self->{preview};
 	$preview->SetReadOnly(0);
 	$preview->SetText($code);
@@ -165,15 +183,13 @@ sub on_add_role_button {
 }
 
 sub on_add_attribute_button {
-	my $self = shift;
-	
-	print "on_add_attribute_button\n";
+	$_[0]->main->error(Wx::gettext('Not currently implemented'));
+	$_[0]->{attribute_text}->SetFocus;
 }
 
 sub on_add_subtype_button {
-	my $self = shift;
-	
-	print "on_add_subtype_button\n";
+	$_[0]->main->error(Wx::gettext('Not currently implemented'));
+	$_[0]->{subtype_text}->SetFocus;
 }
 
 sub on_insert_button_clicked {
