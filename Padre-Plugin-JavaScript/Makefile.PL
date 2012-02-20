@@ -1,6 +1,4 @@
-use strict;
-use warnings;
-use inc::Module::Install;
+use inc::Module::Install 1.04;
 
 name           'Padre-Plugin-JavaScript';
 license        'perl';
@@ -13,8 +11,8 @@ requires       'Exporter'                 => 0;
 requires       'JavaScript::Beautifier'   => '0.03';
 requires       'JavaScript::Minifier::XS' => 0;
 requires       'JE'                       => 0;
-test_requires  'Test::More'              => '0.47';
-no_index       'directory'               => qw{ t xt eg share inc};
+test_requires  'Test::More'               => '0.47';
+no_index       'directory'                => qw{ t xt eg share inc};
 homepage       'http://padre.perlide.org/';
 bugtracker     'http://padre.perlide.org/';
 repository     'http://svn.perlide.org/padre/trunk/Padre-Plugin-JavaScript';

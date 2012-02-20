@@ -8,9 +8,12 @@ use warnings;
 use Carp            ();
 use Padre::Document ();
 
+our $VERSION = '0.30';
 our @ISA = 'Padre::Document';
 
-our $VERSION = '0.30';
+
+
+
 
 #####################################################################
 # Padre::Document::JavaScript Methods
@@ -26,6 +29,8 @@ sub get_function_regex {
 	return qr/(?:(?<=^)function\s+$_[1]|(?<=[\012\0125])function\s+$_[1])\b/;
 }
 
-sub comment_lines_str { return '//' }
+sub comment_lines_str {
+	return '//';
+}
 
 1;

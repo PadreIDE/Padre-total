@@ -5,49 +5,59 @@ package Padre::Plugin::JavaScript;
 use 5.008;
 use strict;
 use warnings;
-
-use base 'Padre::Plugin';
+use Padre::Plugin ();
 
 our $VERSION = '0.30';
+our @ISA     = 'Padre::Plugin';
+
+
+
+
 
 ######################################################################
 # Padre::Plugin API Methods
 
+sub plugin_name {
+	Wx::gettext('JavaScript');
+}
+
 sub padre_interfaces {
-	'Padre::Plugin' => 0.91, 'Padre::Document' => 0.91,;
+	'Padre::Plugin'   => 0.91,
+	'Padre::Document' => 0.91,
 }
 
 sub registered_documents {
 	'application/javascript' => 'Padre::Plugin::JavaScript::Document',
-		'application/json'   => 'Padre::Plugin::JavaScript::Document',
-		;
-}
-
-sub plugin_name {
-	Wx::gettext('JavaScript');
+	'application/json'       => 'Padre::Plugin::JavaScript::Document',
 }
 
 sub menu_plugins_simple {
 	my $self = shift;
 	return (
 		Wx::gettext('JavaScript') => [
-			Wx::gettext('JavaScript Beautifier'),   sub { $self->js_eautifier },
-			Wx::gettext('JavaScript Minifier'),     sub { $self->js_minifier },
-			Wx::gettext('JavaScript Syntax Check'), sub { $self->js_syntax_check },
+			Wx::gettext('JavaScript Beautifier') => sub {
+				$self->js_beautifier;
+			},
+			Wx::gettext('JavaScript Minifier') => sub {
+				$self->js_minifier;
+			},
+			Wx::gettext('JavaScript Syntax Check') => sub {
+				$self->js_syntax_check;
+			},
 		]
 	);
 }
 
-sub js_eautifier {
-	my ($self) = @_;
-	my ( $main, $src, $doc, $code ) = $self->_get_code; return unless $code;
+sub js_beautifier {
+	my $self = shift;
+	my ( $main, $src, $doc, $code ) = $self->_get_code;
+	return unless $code;
 
 	require JavaScript::Beautifier;
-	JavaScript::Beautifier->import('js_beautify');
-
-	my $pretty_js = js_beautify(
+	my $pretty_js = JavaScript::Beautifier::js_beautify(
 		$code,
-		{   indent_size      => 4,
+		{
+			indent_size      => 4,
 			indent_character => ' ',
 		}
 	);
@@ -61,13 +71,12 @@ sub js_eautifier {
 }
 
 sub js_minifier {
-	my ($self) = @_;
-	my ( $main, $src, $doc, $code ) = $self->_get_code; return unless $code;
+	my $self = shift;
+	my ( $main, $src, $doc, $code ) = $self->_get_code;
+	return unless $code;
 
 	require JavaScript::Minifier::XS;
-	JavaScript::Minifier::XS->import('minify');
-
-	my $mjs = minify($code);
+	my $mjs = JavaScript::Minifier::XS::minify($code);
 
 	if ($src) {
 		my $editor = $main->current->editor;
@@ -78,8 +87,9 @@ sub js_minifier {
 }
 
 sub js_syntax_check {
-	my ($self) = @_;
-	my ( $main, $src, $doc, $code ) = $self->_get_code; return unless $code;
+	my $self = shift;
+	my ( $main, $src, $doc, $code ) = $self->_get_code;
+	return unless $code;
 
 	require JE;
 
@@ -91,18 +101,17 @@ sub js_syntax_check {
 }
 
 sub _get_code {
-	my ($self) = @_;
+	my $self = shift;
 	my $main = $self->main;
-
-	my $src = $main->current->text;
-	my $doc = $main->current->document;
-	return unless $doc;
+	my $src  = $main->current->text;
+	my $doc  = $main->current->document or return;
 	my $code = $src ? $src : $doc->text_get;
 	return unless ( defined $code and length($code) );
 	return ( $main, $src, $doc, $code );
 }
 
 1;
+
 __END__
 
 =head1 JavaScript Beautifier
