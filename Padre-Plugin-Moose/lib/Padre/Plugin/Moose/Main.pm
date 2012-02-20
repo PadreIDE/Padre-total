@@ -5,6 +5,9 @@ use strict;
 use warnings;
 use Padre::Plugin::Moose::FBP::Main ();
 
+use Wx::Scintilla ();
+use Wx::Scintilla::Constant ();
+
 our $VERSION = '0.02';
 our @ISA     = qw{
   Padre::Plugin::Moose::FBP::Main
@@ -12,8 +15,35 @@ our @ISA     = qw{
 
 sub new {
     my $class = shift;
-    my $self  = $class->SUPER::new(@_);
+    my $main = shift;
+
+    my $self  = $class->SUPER::new($main);
     $self->CenterOnParent;
+
+    # Setup preview editor
+    my $preview = $self->{preview};
+    $preview->{Document} = Padre::Document->new( mimetype => 'application/x-perl', );
+    $preview->{Document}->set_editor( $preview );
+    $preview->Show(1);
+
+    my $code = <<'CODE';
+    # roles
+    # class defintion
+    # attributes
+    # subtypes
+CODE
+    $preview->SetText($code);
+    #my $font = Wx::Font->new( 10, Wx::TELETYPE, Wx::NORMAL, Wx::NORMAL );
+    #$preview->SetFont($font);
+    #$preview->StyleSetFont( Wx::Scintilla::Constant::STYLE_DEFAULT, $font );
+    #$preview->SetLexer(Wx::Scintilla::SCLEX_PERL);
+
+    # Apply the current theme
+    my $style = $main->config->editor_style;
+    my $theme = Padre::Wx::Theme->find($style)->clone;
+    $theme->apply($preview);
+
+    $preview->SetReadOnly(1);
     return $self;
 }
 

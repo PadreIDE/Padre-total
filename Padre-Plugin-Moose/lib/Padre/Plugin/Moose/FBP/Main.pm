@@ -12,6 +12,7 @@ use strict;
 use warnings;
 use Padre::Wx ();
 use Padre::Wx::Role::Main ();
+use Padre::Wx::Editor ();
 
 our $VERSION = '0.02';
 our @ISA     = qw{
@@ -343,7 +344,7 @@ sub new {
 		Wx::TR_DEFAULT_STYLE,
 	);
 
-	$self->{preview_editor} = Wx::ScintillaTextCtrl->new(
+	$self->{preview} = Padre::Wx::Editor->new(
 		$self,
 		-1,
 	);
@@ -521,7 +522,7 @@ sub new {
 
 	my $vsizer = Wx::BoxSizer->new(Wx::VERTICAL);
 	$vsizer->Add( $top_sizer, 1, Wx::EXPAND, 5 );
-	$vsizer->Add( $self->{preview_editor}, 1, Wx::ALL | Wx::EXPAND, 5 );
+	$vsizer->Add( $self->{preview}, 1, Wx::ALL | Wx::EXPAND, 5 );
 	$vsizer->Add( $buttons_sizer, 0, Wx::EXPAND, 5 );
 
 	my $hsizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
