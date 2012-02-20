@@ -1,8 +1,12 @@
 Changes for Padre-Plugin-Moose
 
-0.02  TBA
-	- Added "Moose Cookbook - How to cook a Moose?" to online references and updated link to use metacpan.org instead of search.cpan.org
+0.02  2012.2.20
+	The following feature list is here: (AZAWAWI)
+		- Added Moose website/manual/cookbook hyperlinks
+		- Added "Add class/role/attribute/subtype" tabs
+		- Added code generation readonly preview editor
+		- Added comments/main code generation checkboxes
+		- Added insert code
 
 0.01  2012.2.15
-
-	- Initial release to CPAN.
+	- Initial release to CPAN (AZAWAWI)
