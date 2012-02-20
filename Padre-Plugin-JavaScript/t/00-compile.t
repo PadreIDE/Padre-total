@@ -1,10 +1,12 @@
+#!/usr/bin/perl
 
-use v5.8.7;
+use 5.008;
 use strict;
-use warnings;
+BEGIN {
+    $|  = 1;
+    $^W = 1;
+}
 
-use Test::More;
-
-plan tests => 1;
+use Test::More tests => 1;
 
 use_ok('Padre::Plugin::JavaScript');
