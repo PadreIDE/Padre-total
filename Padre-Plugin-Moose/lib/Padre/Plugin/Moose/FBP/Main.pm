@@ -28,7 +28,7 @@ sub new {
 		-1,
 		Wx::gettext("Moose!"),
 		Wx::DefaultPosition,
-		[ 641, 325 ],
+		[ 691, 575 ],
 		Wx::DEFAULT_DIALOG_STYLE,
 	);
 
@@ -103,10 +103,10 @@ sub new {
 		Wx::DefaultSize,
 	);
 
-	$self->{generate_class_button} = Wx::Button->new(
+	$self->{add_class_button} = Wx::Button->new(
 		$self->{class_panel},
 		-1,
-		Wx::gettext("Generate"),
+		Wx::gettext("Add"),
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
 	);
@@ -161,10 +161,10 @@ sub new {
 		[],
 	);
 
-	$self->{generate_role_button} = Wx::Button->new(
+	$self->{add_role_button} = Wx::Button->new(
 		$self->{role_panel},
 		-1,
-		Wx::gettext("Generate"),
+		Wx::gettext("Add"),
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
 	);
@@ -269,10 +269,10 @@ sub new {
 		Wx::DefaultSize,
 	);
 
-	$self->{generate_attribute_button} = Wx::Button->new(
+	$self->{add_attribute_button} = Wx::Button->new(
 		$self->{attribute_panel},
 		-1,
-		Wx::gettext("Generate"),
+		Wx::gettext("Add"),
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
 	);
@@ -327,20 +327,25 @@ sub new {
 		Wx::DefaultSize,
 	);
 
-	$self->{generate_subtype_button} = Wx::Button->new(
+	$self->{add_subtype_button} = Wx::Button->new(
 		$self->{subtype_panel},
 		-1,
-		Wx::gettext("Generate"),
+		Wx::gettext("Add"),
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
 	);
 
-	$self->{preview_panel} = Wx::Panel->new(
+	$self->{tree} = Wx::TreeCtrl->new(
 		$self,
 		-1,
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
-		Wx::TAB_TRAVERSAL,
+		Wx::TR_DEFAULT_STYLE,
+	);
+
+	$self->{preview_editor} = Wx::ScintillaTextCtrl->new(
+		$self,
+		-1,
 	);
 
 	$self->{moose_manual_hyperlink} = Wx::HyperlinkCtrl->new(
@@ -418,7 +423,7 @@ sub new {
 	$class_content_sizer->Add( $self->{namespace_autoclean_checkbox}, 0, Wx::ALL, 5 );
 
 	my $class_button_sizer = Wx::BoxSizer->new(Wx::VERTICAL);
-	$class_button_sizer->Add( $self->{generate_class_button}, 0, Wx::ALIGN_RIGHT | Wx::ALL, 5 );
+	$class_button_sizer->Add( $self->{add_class_button}, 0, Wx::ALIGN_RIGHT | Wx::ALL, 5 );
 
 	my $class_sizer = Wx::BoxSizer->new(Wx::VERTICAL);
 	$class_sizer->Add( $class_content_sizer, 1, Wx::EXPAND, 5 );
@@ -438,7 +443,7 @@ sub new {
 	$role_content_sizer->Add( $self->{requires_list}, 0, Wx::ALL, 5 );
 
 	my $role_button_sizer = Wx::BoxSizer->new(Wx::VERTICAL);
-	$role_button_sizer->Add( $self->{generate_role_button}, 0, Wx::ALIGN_RIGHT | Wx::ALL, 5 );
+	$role_button_sizer->Add( $self->{add_role_button}, 0, Wx::ALIGN_RIGHT | Wx::ALL, 5 );
 
 	my $role_sizer = Wx::BoxSizer->new(Wx::VERTICAL);
 	$role_sizer->Add( $role_content_sizer, 1, Wx::EXPAND, 5 );
@@ -461,7 +466,7 @@ sub new {
 	$attribute_content_sizer->Add( $self->{required_checbox}, 0, Wx::ALL, 5 );
 
 	my $attribute_button_sizer = Wx::BoxSizer->new(Wx::VERTICAL);
-	$attribute_button_sizer->Add( $self->{generate_attribute_button}, 0, Wx::ALIGN_RIGHT | Wx::ALL, 5 );
+	$attribute_button_sizer->Add( $self->{add_attribute_button}, 0, Wx::ALIGN_RIGHT | Wx::ALL, 5 );
 
 	my $attribute_sizer = Wx::BoxSizer->new(Wx::VERTICAL);
 	$attribute_sizer->Add( $attribute_content_sizer, 1, Wx::EXPAND, 5 );
@@ -481,7 +486,7 @@ sub new {
 	$subtype_content_sizer->Add( $self->{error_message_text}, 0, Wx::ALL, 5 );
 
 	my $subtype_button_sizer = Wx::BoxSizer->new(Wx::VERTICAL);
-	$subtype_button_sizer->Add( $self->{generate_subtype_button}, 0, Wx::ALIGN_RIGHT | Wx::ALL, 5 );
+	$subtype_button_sizer->Add( $self->{add_subtype_button}, 0, Wx::ALIGN_RIGHT | Wx::ALL, 5 );
 
 	my $subtype_sizer = Wx::BoxSizer->new(Wx::VERTICAL);
 	$subtype_sizer->Add( $subtype_content_sizer, 1, Wx::EXPAND, 5 );
@@ -490,8 +495,8 @@ sub new {
 	$self->{subtype_panel}->SetSizerAndFit($subtype_sizer);
 	$self->{subtype_panel}->Layout;
 
-	$self->{treebook}->AddPage( $self->{class_panel}, Wx::gettext("Class"), 0 );
-	$self->{treebook}->AddPage( $self->{role_panel}, Wx::gettext("Role"), 1 );
+	$self->{treebook}->AddPage( $self->{class_panel}, Wx::gettext("Class"), 1 );
+	$self->{treebook}->AddPage( $self->{role_panel}, Wx::gettext("Role"), 0 );
 	$self->{treebook}->AddPage( $self->{attribute_panel}, Wx::gettext("Attribute"), 0 );
 	$self->{treebook}->AddPage( $self->{subtype_panel}, Wx::gettext("Subtype"), 0 );
 
@@ -500,7 +505,7 @@ sub new {
 
 	my $top_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
 	$top_sizer->Add( $left_sizer, 1, Wx::EXPAND, 5 );
-	$top_sizer->Add( $self->{preview_panel}, 1, Wx::EXPAND | Wx::ALL, 5 );
+	$top_sizer->Add( $self->{tree}, 1, Wx::ALL | Wx::EXPAND, 5 );
 
 	my $hyperlink_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
 	$hyperlink_sizer->Add( $self->{moose_manual_hyperlink}, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALL, 5 );
@@ -509,13 +514,14 @@ sub new {
 
 	my $buttons_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
 	$buttons_sizer->Add( $hyperlink_sizer, 0, Wx::EXPAND, 5 );
-	$buttons_sizer->Add( 20, 0, 1, Wx::EXPAND, 5 );
+	$buttons_sizer->Add( 10, 0, 1, Wx::EXPAND, 5 );
 	$buttons_sizer->Add( $self->{about_button}, 0, Wx::ALL, 2 );
 	$buttons_sizer->Add( 5, 0, 0, Wx::EXPAND, 5 );
 	$buttons_sizer->Add( $self->{close_button}, 0, Wx::ALL, 2 );
 
 	my $vsizer = Wx::BoxSizer->new(Wx::VERTICAL);
 	$vsizer->Add( $top_sizer, 1, Wx::EXPAND, 5 );
+	$vsizer->Add( $self->{preview_editor}, 1, Wx::ALL | Wx::EXPAND, 5 );
 	$vsizer->Add( $buttons_sizer, 0, Wx::EXPAND, 5 );
 
 	my $hsizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
