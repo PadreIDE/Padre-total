@@ -18,11 +18,19 @@ sub new {
 	$self->CenterOnParent;
 
 	# Defaults
-	$self->{namespace_autoclean_checkbox}->SetValue(1);
-	$self->{make_immutable_checkbox}->SetValue(1);
 	$self->{comments_checkbox}->SetValue(1);
 	$self->{sample_code_checkbox}->SetValue(1);
-	$self->{treebook}->SetSelection(0);
+	
+	# TODO Bug Alias to fix the wxFormBuilder bug regarding this one
+	my $grid = $self->{grid};
+	$grid->SetRowLabelSize(0);
+
+	for my $row (0..$grid->GetNumberRows-1) {
+		$grid->SetReadOnly($row, 0);
+	}
+
+	# Hide it!
+	$grid->Show(0);
 
 	# Setup preview editor
 	my $preview = $self->{preview};
@@ -64,7 +72,27 @@ sub on_about_button_clicked {
 
 sub on_add_class_button {
 	my $self = shift;
-	
+
+	my $grid = $self->{grid};
+	$grid->DeleteRows(0, $grid->GetNumberRows);
+	$grid->InsertRows(0, 5);
+	$grid->SetCellValue(0,0, Wx::gettext('Class:'));
+	$grid->SetCellValue(1,0, Wx::gettext('Superclass:'));
+	$grid->SetCellValue(2,0, Wx::gettext('Roles:'));
+	$grid->SetCellValue(3,0, Wx::gettext('Auto-clean namespace?'));
+	$grid->SetCellValue(4,0, Wx::gettext('Make Immutable?'));
+
+	for (3..4) {
+		$grid->SetCellEditor($_, 1, Wx::GridCellBoolEditor->new);
+		$grid->SetCellValue($_,1, 1) ;
+	}
+	$grid->Show(1);
+	$self->Layout;
+}
+
+sub generate_class_code {
+	my $self = shift;
+
 	my $class = $self->{class_text}->GetValue;
 	my $superclass = $self->{superclass_text}->GetValue;
 	my $roles = $self->{roles_text}->GetValue;
@@ -135,6 +163,19 @@ sub on_add_class_button {
 sub on_add_role_button {
 	my $self = shift;
 	
+	my $grid = $self->{grid};
+	$grid->DeleteRows(0, $grid->GetNumberRows);
+	$grid->InsertRows(0, 2);
+	$grid->Show(1);
+	$self->Layout;
+	$grid->SetCellValue(0,0, Wx::gettext('Name:'));
+	$grid->SetCellValue(1,0, Wx::gettext('Requires:'));
+}
+
+sub generate_role_code {
+	my $self = shift;
+
+	
 	my $role = $self->{role_text}->GetValue;
 	my $requires = $self->{requires_text}->GetValue;
 
@@ -179,13 +220,36 @@ sub on_add_role_button {
 }
 
 sub on_add_attribute_button {
-	$_[0]->main->error(Wx::gettext('Not currently implemented'));
-	$_[0]->{attribute_text}->SetFocus;
+	my $self = shift;
+
+	my $grid = $self->{grid};
+	$grid->DeleteRows(0, $grid->GetNumberRows);
+	$grid->InsertRows(0, 5);
+	$grid->SetCellValue(0,0, Wx::gettext('Name:'));
+	$grid->SetCellValue(1,0, Wx::gettext('Type:'));
+	$grid->SetCellValue(2,0, Wx::gettext('Access:'));
+	$grid->SetCellValue(3,0, Wx::gettext('Trigger:'));
+	$grid->SetCellValue(4,0, Wx::gettext('Requires:'));
+
+	for (3..4) {
+		$grid->SetCellEditor($_, 1, Wx::GridCellBoolEditor->new);
+		$grid->SetCellValue($_,1, 1) ;
+	}
+	$grid->Show(1);
+	$self->Layout;
 }
 
 sub on_add_subtype_button {
-	$_[0]->main->error(Wx::gettext('Not currently implemented'));
-	$_[0]->{subtype_text}->SetFocus;
+	my $self = shift;
+
+	my $grid = $self->{grid};
+	$grid->DeleteRows(0, $grid->GetNumberRows);
+	$grid->InsertRows(0, 3);
+	$grid->SetCellValue(0,0, Wx::gettext('Name:'));
+	$grid->SetCellValue(1,0, Wx::gettext('Constraint:'));
+	$grid->SetCellValue(2,0, Wx::gettext('Error Message:'));
+	$self->Layout;
+	$grid->Show(1);
 }
 
 sub on_insert_button_clicked {
