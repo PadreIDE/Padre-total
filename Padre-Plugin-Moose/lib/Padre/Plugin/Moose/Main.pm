@@ -173,31 +173,30 @@ sub update_tree {
 	my $tree = $self->{tree};
 	$tree->DeleteAllItems;
 
+	my $program = $self->{program};
 	my $program_node  = $tree->AddRoot(
 		Wx::gettext('Program'),
 		-1,
 		-1,
-		Wx::TreeItemData->new('')
+		Wx::TreeItemData->new($program)
 	);
 
 	for my $role (@{$self->{program}->roles}) {
-		print "Adding " . $role->name . "\n";
 		my $node = $tree->AppendItem(
 			$program_node,
 			$role->name,
 			-1, -1,
-			Wx::TreeItemData->new('')
+			Wx::TreeItemData->new($role)
 			);
 		$tree->Expand($node);
 	}
 
 	for my $class (@{$self->{program}->classes}) {
-		print "Adding " . $class->name . "\n";
 		my $node = $tree->AppendItem(
 			$program_node,
 			$class->name,
 			-1, -1,
-			Wx::TreeItemData->new('')
+			Wx::TreeItemData->new($class)
 			);
 		$tree->Expand($node);
 	}

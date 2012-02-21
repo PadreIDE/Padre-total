@@ -20,7 +20,7 @@ sub to_code {
 		$code .= "\npackage main;\n";
 		my $count = 1;
 		for my $class (@{$self->classes}) {
-			$code .= "\nmy \$o$count = " . $class->name . "->new;\n";
+			$code .= "my \$o$count = " . $class->name . "->new;\n";
 			$count++;
 		}
 	}
