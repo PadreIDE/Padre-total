@@ -14,7 +14,6 @@ has 'namespace_autoclean'    => ( is => 'rw', isa => 'Bool'  );
 sub to_code {
 	my $self = shift;
 	my $comments = shift;
-	my $sample_code = shift;
 
 	my $class = $self->name;
 	my $superclass = $self->extends_list;
@@ -59,12 +58,7 @@ sub to_code {
 			? " # Makes it faster at the cost of startup time\n"
 			: "\n";
 	}
-	$code .= "\n1;\n";
-
-	if($sample_code) {
-		$code .= "\npackage main;\n";
-		$code .= "\nmy \$o = $class->new;\n";
-	}
+	$code .= "\n1;\n\n";
 
 	return $code;
 }

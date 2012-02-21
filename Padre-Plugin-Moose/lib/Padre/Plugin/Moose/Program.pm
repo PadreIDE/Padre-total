@@ -13,8 +13,18 @@ sub to_code {
 
 	my $code = '';
 	for my $class (@{$self->classes}) {
-		$code .= $class->to_code($comments, $code);
+		$code .= $class->to_code($comments);
 	}
+
+	if($sample_code) {
+		$code .= "\npackage main;\n";
+		my $count = 1;
+		for my $class (@{$self->classes}) {
+			$code .= "\nmy \$o$count = " . $class->name . "->new;\n";
+			$count++;
+		}
+	}
+s
 	return $code;
 }
 
