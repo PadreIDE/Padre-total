@@ -53,6 +53,16 @@ sub to_code {
 		$code .= "with '$role';\n";
 	}
 
+	# Generate attributes
+	for my $attribute (@{$self->attributes}) {
+		$code .= $attribute->to_code($comments);
+	}
+
+	# Generate subtypes
+	for my $subtype (@{$self->subtypes}) {
+		$code .= $subtype->to_code($comments);
+	}
+
 	if($make_immutable) {
 		$code .= "\n__PACKAGE__->meta->make_immutable;";
 		$code .= $comments
