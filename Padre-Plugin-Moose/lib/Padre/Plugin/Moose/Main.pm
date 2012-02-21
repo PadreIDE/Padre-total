@@ -84,7 +84,7 @@ sub on_add_class_button {
 	$grid->SetCellValue(0,0, Wx::gettext('Name:'));
 	$grid->SetCellValue(1,0, Wx::gettext('Superclass:'));
 	$grid->SetCellValue(2,0, Wx::gettext('Roles:'));
-	$grid->SetCellValue(3,0, Wx::gettext('Auto-clean namespace?'));
+	$grid->SetCellValue(3,0, Wx::gettext('Clean namespace?'));
 	$grid->SetCellValue(4,0, Wx::gettext('Make Immutable?'));
 
 	for (3..4) {
