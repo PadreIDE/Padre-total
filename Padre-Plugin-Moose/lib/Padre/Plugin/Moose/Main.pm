@@ -85,27 +85,15 @@ sub on_about_button_clicked {
 sub on_add_class_button {
 	my $self = shift;
 
-	my $grid = $self->{grid};
-	$grid->DeleteRows(0, $grid->GetNumberRows);
-	$grid->InsertRows(0, 5);
-	$grid->SetCellValue(0,0, Wx::gettext('Name:'));
-	$grid->SetCellValue(1,0, Wx::gettext('Superclass:'));
-	$grid->SetCellValue(2,0, Wx::gettext('Roles:'));
-	$grid->SetCellValue(3,0, Wx::gettext('Clean namespace?'));
-	$grid->SetCellValue(4,0, Wx::gettext('Make Immutable?'));
-
-	for (3..4) {
-		$grid->SetCellEditor($_, 1, Wx::GridCellBoolEditor->new);
-		$grid->SetCellValue($_,1, 1) ;
-	}
-	$grid->SetGridCursor(0,1);
-	$grid->Show(1);
-	$self->Layout;
-	$grid->SetFocus;
-	$grid->SetGridCursor(0,1);
+	my $data = [{name => Wx::gettext('Name:')},
+			{name => Wx::gettext('Superclass:')},
+			{name => Wx::gettext('Roles:')},
+			{name => Wx::gettext('Clean namespace?'), is_bool => 1},
+			{name =>  Wx::gettext('Make Immutable?'), is_bool => 1}];
+	$self->setup_inspector( $data );
 
 	my $class_name = "Class" . $self->{class_count};
-	$grid->SetCellValue(0,1, $class_name);
+	$self->{grid}->SetCellValue(0,1, $class_name);
 	$self->{class_count}++;
 
 	# Add a new class object to program
@@ -144,19 +132,12 @@ sub show_code_in_preview {
 sub on_add_role_button {
 	my $self = shift;
 	
-	my $grid = $self->{grid};
-	$grid->DeleteRows(0, $grid->GetNumberRows);
-	$grid->InsertRows(0, 2);
-	$grid->SetCellValue(0,0, Wx::gettext('Name:'));
-	$grid->SetCellValue(1,0, Wx::gettext('Requires:'));
-	$grid->SetGridCursor(0,1);
-	$grid->Show(1);
-	$self->Layout;
-	$grid->SetFocus;
-	$grid->SetGridCursor(0,1);
+	my $data = [{name => Wx::gettext('Name:')},
+			{name => Wx::gettext('Requires:')}, ];
+	$self->setup_inspector( $data );
 
 	my $role_name = "Role" . $self->{role_count};
-	$grid->SetCellValue(0,1, $role_name);
+	$self->{grid}->SetCellValue(0,1, $role_name);
 	$self->{role_count}++;
 	
 	# Add a new role object to program
@@ -179,6 +160,20 @@ sub update_tree {
 		-1,
 		-1,
 		Wx::TreeItemData->new($program)
+	);
+
+	# Set up the events
+	Wx::Event::EVT_TREE_SEL_CHANGED(
+		$tree, $tree,
+		
+		sub {
+	my $item   = $_[1]->GetItem         or return;
+	my $data   = $tree->GetPlData($item) or return;
+			use Data::Dumper;
+			
+			print Dumper($data);
+			#print "activated: " . $_[1]->GetItem . "\n";
+		}
 	);
 
 	for my $role (@{$self->{program}->roles}) {
@@ -204,46 +199,67 @@ sub update_tree {
 	$tree->ExpandAll;
 }
 
-sub on_add_attribute_button {
+sub setup_inspector {
 	my $self = shift;
-
+	my $rows = shift;
+	
 	my $grid = $self->{grid};
 	$grid->DeleteRows(0, $grid->GetNumberRows);
-	$grid->InsertRows(0, 5);
-	$grid->SetCellValue(0,0, Wx::gettext('Name:'));
-	$grid->SetCellValue(1,0, Wx::gettext('Type:'));
-	$grid->SetCellValue(2,0, Wx::gettext('Access:'));
-	$grid->SetCellValue(3,0, Wx::gettext('Trigger:'));
-	$grid->SetCellValue(4,0, Wx::gettext('Requires:'));
-	for (3..4) {
-		$grid->SetCellEditor($_, 1, Wx::GridCellBoolEditor->new);
-		$grid->SetCellValue($_,1, 1) ;
+	$grid->InsertRows(0, scalar @$rows);
+	my $row_index = 0;
+	for my $row (@$rows) {
+		$grid->SetCellValue($row_index,0, $row->{name});
+		if(defined $row->{is_bool}) {
+			$grid->SetCellEditor($row_index, 1, Wx::GridCellBoolEditor->new);
+			$grid->SetCellValue($row_index,1, 1) ;
+		}
+		$row_index++;
 	}
 	$grid->Show(1);
 	$self->Layout;
 	$grid->SetFocus;
-	$grid->SetGridCursor(0,1);
+	$grid->SetGridCursor(0, 1);
+}
+sub on_add_attribute_button {
+	my $self = shift;
 
-	$grid->SetCellValue(0,1, 'attribute' . $self->{attribute_count});
+	my $data = [{name => Wx::gettext('Name:')},
+			{name => Wx::gettext('Type:')},
+			{name => Wx::gettext('Access:')},
+			{name => Wx::gettext('Trigger:'), is_bool => 1},
+			{name =>  Wx::gettext('Requires:'), is_bool => 1}];
+	$self->setup_inspector( $data );
+
+	my $attribute_name = 'attribute' . $self->{attribute_count};
+	$self->{grid}->SetCellValue(0,1, $attribute_name);
 	$self->{attribute_count}++;
+	
+	# Add a new attribute object to program
+	my $attribute = Padre::Plugin::Moose::Attribute->new;
+	$attribute->name($attribute_name);
+	push @{$self->{program}->roles}, $attribute;
+
+	$self->show_code_in_preview();
 }
 
 sub on_add_subtype_button {
 	my $self = shift;
 
-	my $grid = $self->{grid};
-	$grid->DeleteRows(0, $grid->GetNumberRows);
-	$grid->InsertRows(0, 3);
-	$grid->SetCellValue(0,0, Wx::gettext('Name:'));
-	$grid->SetCellValue(1,0, Wx::gettext('Constraint:'));
-	$grid->SetCellValue(2,0, Wx::gettext('Error Message:'));
-	$grid->Show(1);
-	$self->Layout;
-	$grid->SetFocus;
-	$grid->SetGridCursor(0,1);
+	my $data = [{name => Wx::gettext('Name:')},
+			{name => Wx::gettext('Type:')},
+			{name => Wx::gettext('Error Message:')}, ];
+	$self->setup_inspector( $data );
 
-	$grid->SetCellValue(0,1, 'Subtype' . $self->{subtype_count});
+	my $subtype_name = 'Subtype' . $self->{subtype_count};
+	$self->{grid}->SetCellValue(0,1, $subtype_name);
 	$self->{subtype_count}++;
+
+	# Add a new subtype object to program
+	my $subtype = Padre::Plugin::Moose::Attribute->new;
+	$subtype->name($subtype_name);
+	push @{$self->{program}->roles}, $subtype;
+
+	$self->show_code_in_preview();
 }
 
 sub on_insert_button_clicked {
