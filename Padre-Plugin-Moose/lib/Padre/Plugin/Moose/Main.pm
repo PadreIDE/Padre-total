@@ -255,7 +255,7 @@ sub on_add_subtype_button {
 	$self->{subtype_count}++;
 
 	# Add a new subtype object to program
-	my $subtype = Padre::Plugin::Moose::Attribute->new;
+	my $subtype = Padre::Plugin::Moose::Subtype->new;
 	$subtype->name($subtype_name);
 	push @{$self->{program}->roles}, $subtype;
 

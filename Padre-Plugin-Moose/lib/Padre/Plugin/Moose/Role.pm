@@ -4,7 +4,7 @@ use namespace::clean;
 use Moose;
 
 has 'name'          => ( is => 'rw', isa => 'Str' );
-has 'requires_list' => ( is => 'rw', isa => 'Str' );
+has 'requires_list' => ( is => 'rw', isa => 'Str', default => '' );
 
 sub to_code {
 	my $self = shift;
