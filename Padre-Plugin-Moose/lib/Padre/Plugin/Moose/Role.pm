@@ -10,7 +10,7 @@ sub to_code {
 	my $self = shift;
 
 	my $role = $self->name;
-	my $requires = $self->requies_list;
+	my $requires = $self->requires_list;
 
 	$role =~ s/^\s+|\s+$//g;
 	$requires =~ s/^\s+|\s+$//g;

@@ -12,10 +12,18 @@ sub to_code {
 	my $sample_code = shift;
 
 	my $code = '';
+
+	# Generate roles
+	for my $role (@{$self->roles}) {
+		$code .= $role->to_code($comments);
+	}
+
+	# Generate classes
 	for my $class (@{$self->classes}) {
 		$code .= $class->to_code($comments);
 	}
 
+	# Generate sample usage code
 	if($sample_code) {
 		$code .= "\npackage main;\n";
 		my $count = 1;
