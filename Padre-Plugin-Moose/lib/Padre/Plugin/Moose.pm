@@ -4,7 +4,7 @@ use 5.008;
 use strict;
 use warnings;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 use Padre::Plugin ();
 
@@ -21,7 +21,7 @@ sub padre_interfaces {
 # Padre::Plugin Methods
 
 sub plugin_name {
-	Wx::gettext('Moose');
+	Wx::gettext('Moose...');
 }
 
 sub plugin_disable {
@@ -75,7 +75,7 @@ Then use it via L<Padre>, The Perl IDE.
 
 Once you enable this Plugin under Padre, you'll get a brand new menu with the following options:
 
-=head2 Moose
+=head2 Moose...
 
 Opens up a user-friendly dialog where you can add classes, roles, attributes and subtypes. 
 The dialog contains a tree of stuff that are created while it is open and a preview of

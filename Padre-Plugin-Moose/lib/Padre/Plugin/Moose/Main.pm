@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Padre::Plugin::Moose::FBP::Main ();
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 our @ISA     = qw{
 	Padre::Plugin::Moose::FBP::Main
 };
@@ -20,8 +20,9 @@ sub new {
 	# Defaults
 	$self->{namespace_autoclean_checkbox}->SetValue(1);
 	$self->{make_immutable_checkbox}->SetValue(1);
-	$self->{add_comments_checkbox}->SetValue(1);
-	$self->{add_main_checkbox}->SetValue(1);
+	$self->{comments_checkbox}->SetValue(1);
+	$self->{sample_code_checkbox}->SetValue(1);
+	$self->{treebook}->SetSelection(0);
 
 	# Setup preview editor
 	my $preview = $self->{preview};
@@ -40,10 +41,6 @@ sub new {
 	$preview->SetReadOnly(1);
 
 	return $self;
-}
-
-sub on_cancel_button_clicked {
-	$_[0]->EndModal(Wx::ID_CANCEL);
 }
 
 sub on_about_button_clicked {
@@ -73,8 +70,8 @@ sub on_add_class_button {
 	my $roles = $self->{roles_text}->GetValue;
 	my $namespace_autoclean = $self->{namespace_autoclean_checkbox}->IsChecked;
 	my $make_immutable = $self->{make_immutable_checkbox}->IsChecked;
-	my $add_comments = $self->{add_comments_checkbox}->IsChecked;
-	my $add_main = $self->{add_main_checkbox}->IsChecked;
+	my $comments = $self->{comments_checkbox}->IsChecked;
+	my $sample_code = $self->{sample_code_checkbox}->IsChecked;
 
 	$class =~ s/^\s+|\s+$//g;
 	$superclass =~ s/^\s+|\s+$//g;
@@ -91,13 +88,13 @@ sub on_add_class_button {
 
 	if($namespace_autoclean) {
 		$code .= "\nuse namespace::clean;";
-		$code .= $add_comments
+		$code .= $comments
 			? " # Keep imports out of your namespace\n"
 			: "\n";
 	}
 
 	$code .= "\nuse Moose;";
-	$code .= $add_comments
+	$code .= $comments
 		? " # automatically turns on strict and warnings\n"
 		: "\n";
 	$code .= "\nextends '$superclass';\n" if $superclass ne '';
@@ -109,15 +106,14 @@ sub on_add_class_button {
 
 	if($make_immutable) {
 		$code .= "\n__PACKAGE__->meta->make_immutable;";
-		$code .= $add_comments
-			? " # Makes it faster\n"
+		$code .= $comments
+			? " # Makes it faster at the cost of startup time\n"
 			: "\n";
 	}
 	$code .= "\n1;\n";
 
-	if($add_main) {
-		$code .= "\n\npackage main;\n";
-		$code .= "\nuse $class;\n";
+	if($sample_code) {
+		$code .= "\npackage main;\n";
 		$code .= "\nmy \$o = $class->new;\n";
 	}
 

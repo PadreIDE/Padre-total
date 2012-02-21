@@ -14,7 +14,7 @@ use Padre::Wx ();
 use Padre::Wx::Role::Main ();
 use Padre::Wx::Editor ();
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 our @ISA     = qw{
 	Padre::Wx::Role::Main
 	Wx::Dialog
@@ -368,18 +368,18 @@ sub new {
 		},
 	);
 
-	$self->{add_comments_checkbox} = Wx::CheckBox->new(
+	$self->{comments_checkbox} = Wx::CheckBox->new(
 		$self,
 		-1,
-		Wx::gettext("Add comments?"),
+		Wx::gettext("Comments?"),
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
 	);
 
-	$self->{add_main_checkbox} = Wx::CheckBox->new(
+	$self->{sample_code_checkbox} = Wx::CheckBox->new(
 		$self,
 		-1,
-		Wx::gettext("Add main?"),
+		Wx::gettext("Sample code?"),
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
 	);
@@ -467,14 +467,6 @@ sub new {
 		Wx::DefaultSize,
 	);
 
-	Wx::Event::EVT_BUTTON(
-		$self,
-		$self->{close_button},
-		sub {
-			shift->on_cancel_button_clicked(@_);
-		},
-	);
-
 	my $class_content_sizer = Wx::FlexGridSizer->new( 2, 2, 0, 0 );
 	$class_content_sizer->SetFlexibleDirection(Wx::BOTH);
 	$class_content_sizer->SetNonFlexibleGrowMode(Wx::FLEX_GROWMODE_SPECIFIED);
@@ -560,15 +552,18 @@ sub new {
 	$self->{subtype_panel}->SetSizerAndFit($subtype_sizer);
 	$self->{subtype_panel}->Layout;
 
-	$self->{treebook}->AddPage( $self->{class_panel}, Wx::gettext("Class"), 0 );
+	$self->{treebook}->AddPage( $self->{class_panel}, Wx::gettext("Class"), 1 );
 	$self->{treebook}->AddPage( $self->{role_panel}, Wx::gettext("Role"), 0 );
 	$self->{treebook}->AddPage( $self->{attribute_panel}, Wx::gettext("Attribute"), 0 );
-	$self->{treebook}->AddPage( $self->{subtype_panel}, Wx::gettext("Subtype"), 1 );
+	$self->{treebook}->AddPage( $self->{subtype_panel}, Wx::gettext("Subtype"), 0 );
+
+	my $bottom_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
+	$bottom_sizer->Add( $self->{comments_checkbox}, 0, Wx::ALL, 5 );
+	$bottom_sizer->Add( $self->{sample_code_checkbox}, 0, Wx::ALL, 5 );
 
 	my $left_sizer = Wx::BoxSizer->new(Wx::VERTICAL);
 	$left_sizer->Add( $self->{treebook}, 1, Wx::EXPAND | Wx::ALL, 5 );
-	$left_sizer->Add( $self->{add_comments_checkbox}, 0, Wx::ALL, 5 );
-	$left_sizer->Add( $self->{add_main_checkbox}, 0, Wx::ALL, 5 );
+	$left_sizer->Add( $bottom_sizer, 0, Wx::EXPAND, 5 );
 
 	my $top_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
 	$top_sizer->Add( $left_sizer, 1, Wx::EXPAND, 5 );
@@ -623,10 +618,6 @@ sub on_insert_button_clicked {
 
 sub on_about_button_clicked {
 	$_[0]->main->error('Handler method on_about_button_clicked for event about_button.OnButtonClick not implemented');
-}
-
-sub on_cancel_button_clicked {
-	$_[0]->main->error('Handler method on_cancel_button_clicked for event close_button.OnButtonClick not implemented');
 }
 
 1;
