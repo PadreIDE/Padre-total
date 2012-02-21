@@ -12,7 +12,7 @@ use Padre::Locale                               ();
 use Padre::Unload                               ();
 use Padre::Plugin::SpellCheck::FBP::Preferences ();
 
-use Data::Printer { caller_info => 1, colored => 1, };
+# use Data::Printer { caller_info => 1, colored => 1, };
 our $VERSION = '1.22';
 our @ISA     = qw{
 	Padre::Plugin::SpellCheck::FBP::Preferences
@@ -104,7 +104,6 @@ sub _local_aspell_dictionaries {
 sub _local_hunspell_dictionaries {
 	my $self = shift;
 
-	#TODO should this be done via engine?
 	my @local_dictionaries_names;
 	my @local_dictionaries;
 	eval { require Text::Hunspell; };
@@ -118,45 +117,38 @@ sub _local_hunspell_dictionaries {
 		require Padre::Util;
 		my $speller = Padre::Util::run_in_directory_two('hunspell -D </dev/null');
 		chomp $speller;
-		p $speller;
+		# p $speller;
 
 		my @speller_raw = grep { $_ =~ /\w{2}_\w{2}$/m } split /\n/, $$speller;
-		p @speller_raw;
+		# p @speller_raw;
 		my %temp_speller;
 		foreach (@speller_raw) {
 			if ( $_ !~ m/hyph/ ) {
 				m/(\w{2}_\w{2})$/;
 				my $tmp = $1;
-				p $tmp;
+				# p $tmp;
 				$temp_speller{$tmp}++;
 			}
 		}
-		p %temp_speller;
+		# p %temp_speller;
 		my @speller;
 		while ( my ( $key, $value ) = each %temp_speller ) {
 			push @local_dictionaries, $key;
 		}
 
-		# my @local_dictionaries = grep { $_ =~ /^\w+$/ } map { $_->{name} } $speller;
 		$self->{local_dictionaries} = \@local_dictionaries;
 		TRACE( "locally installed dictionaries found = " . Dumper $self->{local_dictionaries} ) if DEBUG;
 		TRACE( "iso to dictionary names = " . Dumper $self->{dictionary_names} )                if DEBUG;
 
-		p @local_dictionaries;
+		# p @local_dictionaries;
 
 		for (@local_dictionaries) {
 			push( @local_dictionaries_names, $self->padre_locale_label($_) );
 			$self->{dictionary_names}{$_} = $self->padre_locale_label($_);
 		}
 
-		# # p $self->{dictionary_names};
-		# # p @local_dictionaries_names;
-
 		@local_dictionaries_names = sort @local_dictionaries_names;
-
 		$self->{local_dictionaries_names} = \@local_dictionaries_names;
-
-		# p $self->{local_dictionaries_names};
 		TRACE( "local dictionaries names = " . Dumper $self->{local_dictionaries_names} ) if DEBUG;
 		return;
 	}

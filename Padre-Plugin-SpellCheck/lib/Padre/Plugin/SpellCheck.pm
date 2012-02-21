@@ -6,11 +6,6 @@ use strict;
 use warnings;
 
 use Padre::Plugin;
-
-# use Padre::Current;
-
-# use Padre::Util;
-# use Padre::Wx;
 use Padre::Locale ();
 use Padre::Unload ();
 
@@ -18,8 +13,8 @@ use Padre::Unload ();
 our $VERSION = '1.22';
 our @ISA     = 'Padre::Plugin';
 
-# use File::Spec::Functions qw{ catfile };
-use Padre::Plugin::SpellCheck::Engine;
+
+# use Padre::Plugin::SpellCheck::Engine;
 
 
 #######
@@ -34,16 +29,16 @@ sub plugin_name {
 #######
 sub padre_interfaces {
 	return (
-		'Padre::Plugin' => '0.92',
-		'Padre::Unload' => '0.92',
-		'Padre::Locale' => '0.92',
+		'Padre::Plugin' => '0.94',
+		'Padre::Unload' => '0.94',
+		'Padre::Locale' => '0.94',
 
 		# used by my sub packages
-		'Padre::Logger'         => '0.92',
-		'Padre::Wx'             => '0.92',
-		'Padre::Wx::Role::Main' => '0.92',
+		'Padre::Logger'         => '0.94',
+		'Padre::Wx'             => '0.94',
+		'Padre::Wx::Role::Main' => '0.94',
+		'Padre::Util'           => '0.94',
 
-		# 'Padre::Util'       => 0.93,
 		# 'Padre::Task'       => 0.93,
 		# 'Padre::Document'   => 0.93,
 		# 'Padre::Project'    => 0.93,
@@ -73,17 +68,6 @@ sub padre_interfaces {
 #######
 # plugin menu
 #######
-# sub menu_plugins_simple {
-# my $self = shift;
-# return Wx::gettext('Spell Check') => [
-# Wx::gettext("Check spelling\tF7") => sub { $self->spell_check },
-# Wx::gettext('Preferences')        => sub { $self->plugin_preferences },
-
-# # Wx::gettext('Preferences2')       => sub { $self->plugin_preferences2 },
-# ];
-# }
-
-
 sub menu_plugins {
 	my $self = shift;
 	my $main = $self->main;
@@ -126,23 +110,6 @@ sub plugin_disable {
 	$self->clean_dialog;
 
 	# Unload all our child classes
-
-	# for my $package (
-	# qq{
-	# Padre::Plugin::SpellCheck
-	# Padre::Plugin::SpellCheck::Checker
-	# Padre::Plugin::SpellCheck::FBP::Checker
-	# Padre::Plugin::SpellCheck::Engine
-	# Padre::Plugin::SpellCheck::Preferences
-	# Padre::Plugin::SpellCheck::FBP::Preferences
-	# Text::Aspell
-	# }
-	# )
-	# {
-	# require Padre::Unload;
-	# Padre::Unload->unload($package);
-	# }
-
 
 	require Padre::Unload;
 	Padre::Unload->unload(
@@ -237,14 +204,12 @@ sub spell_check {
 
 	return;
 }
+
 #######
 # plugin_preferences
 #######
 sub plugin_preferences {
 	my $self = shift;
-
-	# my $main = $self->main;
-	# $self->get_config;
 
 	# Clean up any previous existing dialog
 	$self->clean_dialog;
