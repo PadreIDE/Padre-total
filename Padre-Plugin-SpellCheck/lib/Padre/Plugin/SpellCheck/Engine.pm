@@ -21,16 +21,24 @@ use Class::XSAccessor {
 	},
 };
 
-
 my %MIMETYPE_MODE = (
 	'application/x-latex' => 'tex',
 	'text/html'           => 'html',
 	'text/xml'            => 'sgml',
 );
 
-# -- constructor
 
+#######
+# new
+#######
 sub new {
+	my $class = shift;   # What class are we constructing?
+	my $self  = {};      # Allocate new memory
+	bless $self, $class; # Mark it of the right type
+	$self->_init(@_);    # Call _init with remaining args
+	return $self;
+}
+sub new_old {
 
 	# my ( $class, $plugin, $mimetype ) = @_;
 	my ( $class, $mimetype, $iso ) = @_;
@@ -42,6 +50,46 @@ sub new {
 		# # _plugin    => $plugin,
 		# _utf_chars => 0,
 	# }, $class;
+	
+	$self->_ignore( {} );
+	$self->_utf_chars(0);
+	
+	
+	# # create speller object
+	my $speller = Text::Aspell->new;
+
+	# # my $config  = $plugin->config;
+
+	# # TODO: configurable later
+	$speller->set_option( 'sug-mode', 'normal' );
+
+	# # $speller->set_option( 'lang',     $config->{dictionary} );
+	$speller->set_option( 'lang', $iso );
+
+	# #$speller->print_config;  # to STDOUT	
+	# # TRACE( "print config info = " . $speller->print_config ) if DEBUG;
+	
+	# my $speller = Text::SpellChecker->new(text => $text, from_frozen => $serialized_data, lang => $lang)
+	
+	if ( exists $MIMETYPE_MODE{$mimetype} ) {
+		if ( not defined $speller->set_option( 'mode', $MIMETYPE_MODE{$mimetype} ) ) {
+			my $err = $speller->errstr;
+			warn "Could not set aspell mode '$MIMETYPE_MODE{$mimetype}': $err\n";
+		}
+	}
+
+	TRACE( $speller->print_config ) if DEBUG;
+
+	$self->_speller($speller);
+
+	return $self;
+}
+#######
+# _init
+#######
+sub _init {
+	# my ( $self, %args ) = @_;
+	my ( $self, $mimetype, $iso ) = @_;
 	
 	$self->_ignore( {} );
 	$self->_utf_chars(0);
@@ -70,11 +118,10 @@ sub new {
 
 	$self->_speller($speller);
 
-	return $self;
+	return;
 }
 
 
-# -- public methods
 
 sub check {
 	my ( $self, $text ) = @_;

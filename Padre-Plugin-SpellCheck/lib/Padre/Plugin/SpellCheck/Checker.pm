@@ -41,14 +41,14 @@ our @ISA     = qw{
 #######
 sub new {
 	my $class = shift;
-	my $main  = shift; # Padre $main window integration
-	my $lang_iso = shift;
+	# my $main  = shift; # Padre $main window integration
+	# my $lang_iso = shift;
 
-	# my $_plugin = shift; # parent $self
+	my $_parent = shift; # parent $self
 
 	# Create the dialog
-	my $self = $class->SUPER::new($main);
-
+	my $self = $class->SUPER::new($_parent->main);
+	my $lang_iso = $_parent->config_read->{Aspell};
 	$self->_iso_name($lang_iso);
 
 	#TODO there must be a better way

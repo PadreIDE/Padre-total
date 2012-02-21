@@ -2,7 +2,7 @@ use inc::Module::Install::DSL 1.04;
 
 all_from      lib/Padre/Plugin/SpellCheck.pm
 requires_from lib/Padre/Plugin/SpellCheck.pm
-requires_from lib/Padre/Plugin/SpellCheck/Dialog.pm
+requires_from lib/Padre/Plugin/SpellCheck/Checker.pm
 requires_from lib/Padre/Plugin/SpellCheck/Engine.pm
 requires_from lib/Padre/Plugin/SpellCheck/Preferences.pm
 

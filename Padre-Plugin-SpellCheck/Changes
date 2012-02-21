@@ -8,6 +8,8 @@ Revision history for Padre-Plugin-SpellCheck
 	- Preferances now displays language name rather than iso code (BOWTIE)
 	- use Padre Locale for dictionary names from iso code (BOWTIE)
 	- Start on adding some tests, as there are none (BOWTIE)
+	- Preferances now shows and saves Aspell and Hunspell local dictionaries (BOWTIE)
+	- 
 
 1.21   2010.12.06
         - Restored missing POT/PO translation sources (Damyan Ivanov, AZAWAWI)

@@ -1,11 +1,11 @@
 package Padre::Plugin::SpellCheck::Preferences;
 
 # ABSTRACT: Preferences dialog for padre spell check
-
+use 5.014;
 use warnings;
 use strict;
 
-#TODO check logger against Plug-in Manager!
+#TODO check logger against Plug-in Manager! for adamk
 use Padre::Logger;
 use Padre::Util                                 ();
 use Padre::Locale                               ();
@@ -45,13 +45,24 @@ sub new {
 sub set_up {
 	my $self = shift;
 
-	# get local_dictionary info
+	$self->{dictionary} = 'Aspell';
+
+	# use Aspell as default, as the aspell engine works
 	$self->_local_aspell_dictionaries;
 
 	# $self->_local_hunspell_dictionaries;
 
 	# update dialog with locally install dictionaries;
 	$self->display_dictionaries;
+
+	# Tidy up config DB if earler version
+	my $config = $self->{_parent}->config_read;
+	if ( defined $config->{Version} < 1.22 ) {
+		$self->{_parent}->config_write( {} );
+		$config = $self->{_parent}->config_read;
+		$config->{Version} = $VERSION;
+		$self->{_parent}->config_write($config);
+	}
 
 	return;
 }
@@ -62,7 +73,6 @@ sub set_up {
 sub _local_aspell_dictionaries {
 	my $self = shift;
 
-	#TODO should this be done via engine?
 	my @local_dictionaries_names = ();
 
 	eval { require Text::Aspell; };
@@ -76,23 +86,16 @@ sub _local_aspell_dictionaries {
 		$self->{local_dictionaries} = \@local_dictionaries;
 		TRACE( "locally installed dictionaries found = " . Dumper $self->{local_dictionaries} ) if DEBUG;
 		TRACE( "iso to dictionary names = " . Dumper $self->{dictionary_names} )                if DEBUG;
-
-
-		# p @local_dictionaries;
-
+		
+		#TODO compose method local iso to padre names
 		for (@local_dictionaries) {
 			push( @local_dictionaries_names, $self->padre_locale_label($_) );
 			$self->{dictionary_names}{$_} = $self->padre_locale_label($_);
 		}
 
-		# p $self->{dictionary_names};
-		# p @local_dictionaries_names;
-
 		@local_dictionaries_names = sort @local_dictionaries_names;
-
 		$self->{local_dictionaries_names} = \@local_dictionaries_names;
 
-		# p $self->{local_dictionaries_names};
 		TRACE( "local dictionaries names = " . Dumper $self->{local_dictionaries_names} ) if DEBUG;
 		return;
 	}
@@ -117,19 +120,24 @@ sub _local_hunspell_dictionaries {
 		require Padre::Util;
 		my $speller = Padre::Util::run_in_directory_two('hunspell -D </dev/null');
 		chomp $speller;
-		# p $speller;
 
+		# p $speller;
+		
+		#TODO this is yuck must do better
 		my @speller_raw = grep { $_ =~ /\w{2}_\w{2}$/m } split /\n/, $$speller;
+
 		# p @speller_raw;
 		my %temp_speller;
 		foreach (@speller_raw) {
 			if ( $_ !~ m/hyph/ ) {
 				m/(\w{2}_\w{2})$/;
 				my $tmp = $1;
+
 				# p $tmp;
 				$temp_speller{$tmp}++;
 			}
 		}
+
 		# p %temp_speller;
 		my @speller;
 		while ( my ( $key, $value ) = each %temp_speller ) {
@@ -139,8 +147,6 @@ sub _local_hunspell_dictionaries {
 		$self->{local_dictionaries} = \@local_dictionaries;
 		TRACE( "locally installed dictionaries found = " . Dumper $self->{local_dictionaries} ) if DEBUG;
 		TRACE( "iso to dictionary names = " . Dumper $self->{dictionary_names} )                if DEBUG;
-
-		# p @local_dictionaries;
 
 		for (@local_dictionaries) {
 			push( @local_dictionaries_names, $self->padre_locale_label($_) );
@@ -161,8 +167,7 @@ sub display_dictionaries {
 	my $self = shift;
 	my $main = $self->main;
 
-	#TODO sort out 'get config read'
-	my $prefered_dictionary = $self->{_parent}->get_config->{dictionary};
+	my $prefered_dictionary = $self->{_parent}->config_read->{ $self->{dictionary} };
 
 	# p $prefered_dictionary;
 
@@ -193,7 +198,7 @@ sub display_dictionaries {
 #######
 # event handler _on_button_ok_clicked
 #######
-sub _on_button_ok_clicked {
+sub _on_button_save_clicked {
 	my $self = shift;
 
 	my $select_dictionary_name = $self->{local_dictionaries_names}->[ $self->language->GetSelection() ];
@@ -212,11 +217,29 @@ sub _on_button_ok_clicked {
 
 	# p $select_dictionary_iso;
 
-	#TODO 'set config write' store plugin preferences
-	$self->{_parent}->config_write( { dictionary => $select_dictionary_iso, } );
+	# save config info
+	my $config = $self->{_parent}->config_read;
+	$config->{ $self->{dictionary} } = $select_dictionary_iso;
+	$self->{_parent}->config_write($config);
 
-	# remove dialog nicely via parent class
-	$self->{_parent}->clean_dialog;
+	return;
+}
+
+#######
+# event handler on_dictionary_chosen
+#######
+sub on_dictionary_chosen {
+	my $self = shift;
+
+	if ( $self->chosen_dictionary->GetSelection() == 0 ) {
+		$self->{dictionary} = 'Aspell';
+		$self->_local_aspell_dictionaries;
+	} else {
+		$self->{dictionary} = 'Hunspell';
+		$self->_local_hunspell_dictionaries;
+	}
+
+	$self->display_dictionaries;
 
 	return;
 }
@@ -228,7 +251,7 @@ sub _on_button_ok_clicked {
 sub padre_locale_label {
 	my $self                = shift;
 	my $local_dictionary    = shift;
-	my $lc_local_dictionary = lc $local_dictionary;
+	my $lc_local_dictionary = lc( $local_dictionary ? $local_dictionary : 'en_GB' );
 	$lc_local_dictionary =~ s/_/-/;
 	require Padre::Locale;
 	my $label = Padre::Locale::label($lc_local_dictionary);

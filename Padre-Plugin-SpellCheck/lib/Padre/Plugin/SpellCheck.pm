@@ -189,9 +189,9 @@ sub config {
 #######
 sub spell_check {
 	my $self = shift;
-	my $main = $self->main;
+	# my $main = $self->main;
 
-	my $lang_iso = $self->config->{dictionary};
+	# my $lang_iso = $self->config->{dictionary};
 
 	# p $lang_iso;
 
@@ -199,7 +199,8 @@ sub spell_check {
 	$self->clean_dialog;
 
 	require Padre::Plugin::SpellCheck::Checker;
-	$self->{dialog} = Padre::Plugin::SpellCheck::Checker->new( $main, $lang_iso );
+	# $self->{dialog} = Padre::Plugin::SpellCheck::Checker->new( $main, $lang_iso );
+	$self->{dialog} = Padre::Plugin::SpellCheck::Checker->new( $self );
 	$self->{dialog}->Show;
 
 	return;
@@ -283,27 +284,26 @@ __END__
 
 =head1 NAME
 
-Padre::Plugin::SpellCheck - Check spelling in Padre
+Padre::Plugin::SpellCheck - Check spelling in Padre The Perl IDE
+
+=head1 DESCRIPTION
+
+This plugins allows one to check there text spelling within Padre using
+C<F7> (standard spelling shortcut across text processors). 
+
+One can change the dictionary language used (based upon install languages) in the preferences window via Plug-in Manager. 
+Preferences are persistent.
+
+This plugin is using C<Text::Aspell> default at present, You can also use C<Text::Hunspell> under-development, so check these module's
+pod for more information.
+
+Of course, you need to have the relevant Dictionary binary, dev and dictionary installed.
 
 
 =head1 SYNOPSIS
 
     $ padre file-with-spell-errors
     F7
-
-
-=head1 DESCRIPTION
-
-This plugins allows one to checking her text spelling within Padre using
-C<F7> (standard spelling shortcut accross text processors). 
-
-One can change the dictionary language used (based upon install languages) in the preferences window via Plug-in Manager. 
-Preferences are persistant.
-
-This plugin is using C<Text::Aspell> underneath, so check this module's
-pod for more information.
-
-Of course, you need to have the aspell binary and dictionary installed.
 
 
 =head1 PUBLIC METHODS
@@ -397,16 +397,14 @@ Everything aspell related: L<http://aspell.net>.
 
 =head1 AUTHORS
 
+Kevin Dawson E<lt>bowtie@cpan.orgE<gt>
+
 Ahmad M. Zawawi E<lt>ahmad.zawawi@gmail.comE<gt>
 
 Fayland Lam E<lt>fayland at gmail.comE<gt>
 
 Jerome Quelin E<lt>jquelin@gmail.comE<gt>
 
-
-=head1 CONTRIBUTORS
-
-Kevin Dawson E<lt>bowtie@cpan.orgE<gt>
 
 =head1 COPYRIGHT
 

@@ -57,7 +57,7 @@ sub new {
 		$self,
 		$self->{list},
 		sub {
-			shift->_on_butreplace_clicked(@_);
+			shift->_on_replace_clicked(@_);
 		},
 	);
 
@@ -232,12 +232,8 @@ sub ignore_all {
 	$_[0]->{ignore_all};
 }
 
-sub _on_butreplace_clicked {
-	$_[0]->main->error('Handler method _on_butreplace_clicked for event list.OnListItemActivated not implemented');
-}
-
 sub _on_replace_clicked {
-	$_[0]->main->error('Handler method _on_replace_clicked for event replace.OnButtonClick not implemented');
+	$_[0]->main->error('Handler method _on_replace_clicked for event list.OnListItemActivated not implemented');
 }
 
 sub _on_replace_all_clicked {
