@@ -76,7 +76,7 @@ sub on_add_class_button {
 	my $grid = $self->{grid};
 	$grid->DeleteRows(0, $grid->GetNumberRows);
 	$grid->InsertRows(0, 5);
-	$grid->SetCellValue(0,0, Wx::gettext('Class:'));
+	$grid->SetCellValue(0,0, Wx::gettext('Name:'));
 	$grid->SetCellValue(1,0, Wx::gettext('Superclass:'));
 	$grid->SetCellValue(2,0, Wx::gettext('Roles:'));
 	$grid->SetCellValue(3,0, Wx::gettext('Auto-clean namespace?'));
@@ -86,8 +86,11 @@ sub on_add_class_button {
 		$grid->SetCellEditor($_, 1, Wx::GridCellBoolEditor->new);
 		$grid->SetCellValue($_,1, 1) ;
 	}
+	$grid->SetGridCursor(0,1);
 	$grid->Show(1);
 	$self->Layout;
+	$grid->SetFocus;
+	$grid->SetGridCursor(0,1);
 }
 
 sub generate_class_code {
@@ -166,10 +169,13 @@ sub on_add_role_button {
 	my $grid = $self->{grid};
 	$grid->DeleteRows(0, $grid->GetNumberRows);
 	$grid->InsertRows(0, 2);
-	$grid->Show(1);
-	$self->Layout;
 	$grid->SetCellValue(0,0, Wx::gettext('Name:'));
 	$grid->SetCellValue(1,0, Wx::gettext('Requires:'));
+	$grid->SetGridCursor(0,1);
+	$grid->Show(1);
+	$self->Layout;
+	$grid->SetFocus;
+	$grid->SetGridCursor(0,1);
 }
 
 sub generate_role_code {
@@ -230,13 +236,14 @@ sub on_add_attribute_button {
 	$grid->SetCellValue(2,0, Wx::gettext('Access:'));
 	$grid->SetCellValue(3,0, Wx::gettext('Trigger:'));
 	$grid->SetCellValue(4,0, Wx::gettext('Requires:'));
-
 	for (3..4) {
 		$grid->SetCellEditor($_, 1, Wx::GridCellBoolEditor->new);
 		$grid->SetCellValue($_,1, 1) ;
 	}
 	$grid->Show(1);
 	$self->Layout;
+	$grid->SetFocus;
+	$grid->SetGridCursor(0,1);
 }
 
 sub on_add_subtype_button {
@@ -248,8 +255,10 @@ sub on_add_subtype_button {
 	$grid->SetCellValue(0,0, Wx::gettext('Name:'));
 	$grid->SetCellValue(1,0, Wx::gettext('Constraint:'));
 	$grid->SetCellValue(2,0, Wx::gettext('Error Message:'));
-	$self->Layout;
 	$grid->Show(1);
+	$self->Layout;
+	$grid->SetFocus;
+	$grid->SetGridCursor(0,1);
 }
 
 sub on_insert_button_clicked {
