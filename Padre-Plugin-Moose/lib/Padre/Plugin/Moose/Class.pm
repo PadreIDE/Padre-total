@@ -34,6 +34,11 @@ sub to_code {
 
 	my $code = "package $class;\n";
 
+	$code .= "\nuse Moose;";
+	$code .= $comments
+		? " # automatically turns on strict and warnings\n"
+		: "\n";
+		
 	if($namespace_autoclean) {
 		$code .= "\nuse namespace::clean;";
 		$code .= $comments
@@ -41,10 +46,6 @@ sub to_code {
 			: "\n";
 	}
 
-	$code .= "\nuse Moose;";
-	$code .= $comments
-		? " # automatically turns on strict and warnings\n"
-		: "\n";
 	$code .= "\nextends '$superclass';\n" if $superclass ne '';
 
 	$code .= "\n" if scalar @roles;
