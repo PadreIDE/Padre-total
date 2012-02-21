@@ -32,6 +32,8 @@ sub new {
 	# Defaults
 	$self->{comments_checkbox}->SetValue(1);
 	$self->{sample_code_checkbox}->SetValue(1);
+	$self->{add_attribute_button}->Enable(0);
+	$self->{add_subtype_button}->Enable(0);
 	
 	# TODO Bug Alias to fix the wxFormBuilder bug regarding this one
 	my $grid = $self->{grid};
@@ -82,30 +84,6 @@ sub on_about_button_clicked {
 	return;
 }
 
-sub on_add_class_button {
-	my $self = shift;
-
-	my $data = [{name => Wx::gettext('Name:')},
-			{name => Wx::gettext('Superclass:')},
-			{name => Wx::gettext('Roles:')},
-			{name => Wx::gettext('Clean namespace?'), is_bool => 1},
-			{name =>  Wx::gettext('Make Immutable?'), is_bool => 1}];
-	$self->setup_inspector( $data );
-
-	my $class_name = "Class" . $self->{class_count};
-	$self->{grid}->SetCellValue(0,1, $class_name);
-	$self->{class_count}++;
-
-	# Add a new class object to program
-	my $class = Padre::Plugin::Moose::Class->new;
-	$class->name($class_name);
-	$class->immutable(1);
-	$class->namespace_autoclean(1);
-	push @{$self->{program}->classes}, $class;
-
-	$self->show_code_in_preview();
-}
-
 sub show_code_in_preview {
 	my $self = shift;
 
@@ -129,25 +107,6 @@ sub show_code_in_preview {
 	}
 }
 
-sub on_add_role_button {
-	my $self = shift;
-	
-	my $data = [{name => Wx::gettext('Name:')},
-			{name => Wx::gettext('Requires:')}, ];
-	$self->setup_inspector( $data );
-
-	my $role_name = "Role" . $self->{role_count};
-	$self->{grid}->SetCellValue(0,1, $role_name);
-	$self->{role_count}++;
-	
-	# Add a new role object to program
-	my $role = Padre::Plugin::Moose::Role->new;
-	$role->name($role_name);
-	push @{$self->{program}->roles}, $role;
-
-	$self->show_code_in_preview();
-}
-
 sub update_tree {
 	my $self = shift;
 
@@ -167,16 +126,16 @@ sub update_tree {
 		$tree, $tree,
 		
 		sub {
-	my $item   = $_[1]->GetItem         or return;
-	my $data   = $tree->GetPlData($item) or return;
-			use Data::Dumper;
-			
-			print Dumper($data);
-			#print "activated: " . $_[1]->GetItem . "\n";
+			my $item   = $_[1]->GetItem         or return;
+			my $data   = $tree->GetPlData($item) or return;
+
+			my $is_class = $data->isa('Padre::Plugin::Moose::Class');
+			$self->{add_attribute_button}->Enable($is_class);
+			$self->{add_subtype_button}->Enable($is_class);
 		}
 	);
 
-	for my $role (@{$self->{program}->roles}) {
+	for my $role (@{$program->roles}) {
 		my $node = $tree->AppendItem(
 			$program_node,
 			$role->name,
@@ -186,13 +145,32 @@ sub update_tree {
 		$tree->Expand($node);
 	}
 
-	for my $class (@{$self->{program}->classes}) {
+	for my $class (@{$program->classes}) {
 		my $node = $tree->AppendItem(
 			$program_node,
 			$class->name,
 			-1, -1,
 			Wx::TreeItemData->new($class)
 			);
+			
+		for my $attribute (@{$class->attributes}) {
+			$tree->AppendItem(
+				$node,
+				$attribute->name,
+				-1, -1,
+				Wx::TreeItemData->new($attribute)
+			);
+		}
+
+		for my $subtype (@{$class->subtypes}) {
+			$tree->AppendItem(
+				$node,
+				$subtype->name,
+				-1, -1,
+				Wx::TreeItemData->new($subtype)
+			);
+		}
+
 		$tree->Expand($node);
 	}
 	
@@ -220,6 +198,50 @@ sub setup_inspector {
 	$grid->SetFocus;
 	$grid->SetGridCursor(0, 1);
 }
+
+sub on_add_class_button {
+	my $self = shift;
+
+	my $data = [{name => Wx::gettext('Name:')},
+			{name => Wx::gettext('Superclass:')},
+			{name => Wx::gettext('Roles:')},
+			{name => Wx::gettext('Clean namespace?'), is_bool => 1},
+			{name =>  Wx::gettext('Make Immutable?'), is_bool => 1}];
+	$self->setup_inspector( $data );
+
+	my $class_name = "Class" . $self->{class_count};
+	$self->{grid}->SetCellValue(0,1, $class_name);
+	$self->{class_count}++;
+
+	# Add a new class object to program
+	my $class = Padre::Plugin::Moose::Class->new;
+	$class->name($class_name);
+	$class->immutable(1);
+	$class->namespace_autoclean(1);
+	push @{$self->{program}->classes}, $class;
+
+	$self->show_code_in_preview();
+}
+
+sub on_add_role_button {
+	my $self = shift;
+	
+	my $data = [{name => Wx::gettext('Name:')},
+			{name => Wx::gettext('Requires:')}, ];
+	$self->setup_inspector( $data );
+
+	my $role_name = "Role" . $self->{role_count};
+	$self->{grid}->SetCellValue(0,1, $role_name);
+	$self->{role_count}++;
+	
+	# Add a new role object to program
+	my $role = Padre::Plugin::Moose::Role->new;
+	$role->name($role_name);
+	push @{$self->{program}->roles}, $role;
+
+	$self->show_code_in_preview();
+}
+
 sub on_add_attribute_button {
 	my $self = shift;
 
