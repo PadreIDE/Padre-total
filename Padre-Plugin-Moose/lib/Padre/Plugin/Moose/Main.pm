@@ -115,16 +115,19 @@ sub on_add_class_button {
 	$class->namespace_autoclean(1);
 	push @{$self->{program}->classes}, $class;
 
-	$self->generate_code();
+	$self->show_code_in_preview();
 }
 
-sub generate_code {
+sub show_code_in_preview {
 	my $self = shift;
 
 	eval {
+		# Generate code
 		my $code = $self->{program}->to_code(
 			$self->{comments_checkbox}->IsChecked, 
 			$self->{sample_code_checkbox}->IsChecked);
+
+		# And show it in preview editor
 		my $preview = $self->{preview};
 		$preview->SetReadOnly(0);
 		$preview->SetText($code);
