@@ -2,6 +2,7 @@ Changes for Padre-Plugin-Moose
 
 0.04  TBA
 	- Added namespace::clean as a dependency (AZAWAWI)
+	- Fixed a role code generation bug (AZAWAWI)
 
 0.03  2012.2.21
 	- Fixed dialog not properly closing on non-win32 platforms (BOWTIE, AZAWAWI) 

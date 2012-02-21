@@ -159,7 +159,7 @@ sub on_add_role_button {
 
 	$code .= "\n" if scalar @requires;
 	for my $require (@requires) {
-		$code .= "with '$require';\n";
+		$code .= "requires '$require';\n";
 	}
 	$code .= "\n1;\n";
 
