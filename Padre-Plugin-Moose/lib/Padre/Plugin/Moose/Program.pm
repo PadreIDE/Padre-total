@@ -24,7 +24,7 @@ sub to_code {
 			$count++;
 		}
 	}
-s
+
 	return $code;
 }
 

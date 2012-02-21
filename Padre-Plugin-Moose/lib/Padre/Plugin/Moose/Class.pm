@@ -26,11 +26,11 @@ sub to_code {
 	$roles =~ s/^\s+|\s+$//g;
 	my @roles = split /,/, $roles;
 
-	if($class eq '') {
-		$self->main->error(Wx::gettext('Class name cannot be empty'));
-		$self->{class_text}->SetFocus();
-		return;
-	}
+	# if($class eq '') {
+		# $self->main->error(Wx::gettext('Class name cannot be empty'));
+		# $self->{class_text}->SetFocus();
+		# return;
+	# }
 
 	my $code = "package $class;\n";
 

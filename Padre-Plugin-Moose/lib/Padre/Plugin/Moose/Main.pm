@@ -132,6 +132,9 @@ sub show_code_in_preview {
 		$preview->SetReadOnly(0);
 		$preview->SetText($code);
 		$preview->SetReadOnly(1);
+
+		# Update tree
+		$self->update_tree;
 	};
 	if($@) {
 		$self->main->error(Wx::gettext("Error: " . $@));
@@ -152,55 +155,54 @@ sub on_add_role_button {
 	$grid->SetFocus;
 	$grid->SetGridCursor(0,1);
 
-	$grid->SetCellValue(0,1, "Role" . $self->{role_count});
+	my $role_name = "Role" . $self->{role_count};
+	$grid->SetCellValue(0,1, $role_name);
 	$self->{role_count}++;
+	
+	# Add a new role object to program
+	my $role = Padre::Plugin::Moose::Role->new;
+	$role->name($role_name);
+	push @{$self->{program}->roles}, $role;
+
+	$self->show_code_in_preview();
 }
 
-sub generate_role_code {
+sub update_tree {
 	my $self = shift;
-
-	
-	my $role = $self->{role_text}->GetValue;
-	my $requires = $self->{requires_text}->GetValue;
-
-	$role =~ s/^\s+|\s+$//g;
-	$requires =~ s/^\s+|\s+$//g;
-	my @requires = split /,/, $requires;
-
-	if($role eq '') {
-		$self->main->error(Wx::gettext('Role name cannot be empty'));
-		$self->{role_text}->SetFocus();
-		return;
-	}
-	
-	if(scalar @requires == 0) {
-		$self->main->error(Wx::gettext('Requires list cannot be empty'));
-		$self->{requires_text}->SetFocus();
-		return;
-	}
-
-	my $code = "package $role;\n";
-	$code .= "\nuse Moose::Role;\n";
-
-	$code .= "\n" if scalar @requires;
-	for my $require (@requires) {
-		$code .= "requires '$require';\n";
-	}
-	$code .= "\n1;\n";
 
 	my $tree = $self->{tree};
 	$tree->DeleteAllItems;
-	my $root   = $tree->AddRoot(
-		$role,
+
+	my $program_node  = $tree->AddRoot(
+		Wx::gettext('Program'),
 		-1,
 		-1,
 		Wx::TreeItemData->new('')
 	);
 
-	my $preview = $self->{preview};
-	$preview->SetReadOnly(0);
-	$preview->SetText($code);
-	$preview->SetReadOnly(1);
+	for my $role (@{$self->{program}->roles}) {
+		print "Adding " . $role->name . "\n";
+		my $node = $tree->AppendItem(
+			$program_node,
+			$role->name,
+			-1, -1,
+			Wx::TreeItemData->new('')
+			);
+		$tree->Expand($node);
+	}
+
+	for my $class (@{$self->{program}->classes}) {
+		print "Adding " . $class->name . "\n";
+		my $node = $tree->AppendItem(
+			$program_node,
+			$class->name,
+			-1, -1,
+			Wx::TreeItemData->new('')
+			);
+		$tree->Expand($node);
+	}
+	
+	$tree->ExpandAll;
 }
 
 sub on_add_attribute_button {
