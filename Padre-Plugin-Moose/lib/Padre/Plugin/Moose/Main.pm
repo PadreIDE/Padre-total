@@ -4,6 +4,11 @@ use 5.008;
 use strict;
 use warnings;
 use Padre::Plugin::Moose::FBP::Main ();
+use Padre::Plugin::Moose::Program ();
+use Padre::Plugin::Moose::Class ();
+use Padre::Plugin::Moose::Role ();
+use Padre::Plugin::Moose::Attribute ();
+use Padre::Plugin::Moose::Subtype ();
 
 our $VERSION = '0.04';
 our @ISA     = qw{
@@ -21,6 +26,8 @@ sub new {
 	$self->{role_count} = 1;
 	$self->{attribute_count} = 1;
 	$self->{subtype_count} = 1;
+	
+	$self->{program} = Padre::Plugin::Moose::Program->new;
 
 	# Defaults
 	$self->{comments_checkbox}->SetValue(1);
@@ -97,78 +104,35 @@ sub on_add_class_button {
 	$grid->SetFocus;
 	$grid->SetGridCursor(0,1);
 
-	$grid->SetCellValue(0,1, "Class" . $self->{class_count});
+	my $class_name = "Class" . $self->{class_count};
+	$grid->SetCellValue(0,1, $class_name);
 	$self->{class_count}++;
+
+	# Add a new class object to program
+	my $class = Padre::Plugin::Moose::Class->new;
+	$class->name($class_name);
+	$class->immutable(1);
+	$class->namespace_autoclean(1);
+	push @{$self->{program}->classes}, $class;
+
+	$self->generate_code();
 }
 
-sub generate_class_code {
+sub generate_code {
 	my $self = shift;
 
-	my $class = $self->{class_text}->GetValue;
-	my $superclass = $self->{superclass_text}->GetValue;
-	my $roles = $self->{roles_text}->GetValue;
-	my $namespace_autoclean = $self->{namespace_autoclean_checkbox}->IsChecked;
-	my $make_immutable = $self->{make_immutable_checkbox}->IsChecked;
-	my $comments = $self->{comments_checkbox}->IsChecked;
-	my $sample_code = $self->{sample_code_checkbox}->IsChecked;
-
-	$class =~ s/^\s+|\s+$//g;
-	$superclass =~ s/^\s+|\s+$//g;
-	$roles =~ s/^\s+|\s+$//g;
-	my @roles = split /,/, $roles;
-
-	if($class eq '') {
-		$self->main->error(Wx::gettext('Class name cannot be empty'));
-		$self->{class_text}->SetFocus();
-		return;
+	eval {
+		my $code = $self->{program}->to_code(
+			$self->{comments_checkbox}->IsChecked, 
+			$self->{sample_code_checkbox}->IsChecked);
+		my $preview = $self->{preview};
+		$preview->SetReadOnly(0);
+		$preview->SetText($code);
+		$preview->SetReadOnly(1);
+	};
+	if($@) {
+		$self->main->error(Wx::gettext("Error: " . $@));
 	}
-
-	my $code = "package $class;\n";
-
-	if($namespace_autoclean) {
-		$code .= "\nuse namespace::clean;";
-		$code .= $comments
-			? " # Keep imports out of your namespace\n"
-			: "\n";
-	}
-
-	$code .= "\nuse Moose;";
-	$code .= $comments
-		? " # automatically turns on strict and warnings\n"
-		: "\n";
-	$code .= "\nextends '$superclass';\n" if $superclass ne '';
-
-	$code .= "\n" if scalar @roles;
-	for my $role (@roles) {
-		$code .= "with '$role';\n";
-	}
-
-	if($make_immutable) {
-		$code .= "\n__PACKAGE__->meta->make_immutable;";
-		$code .= $comments
-			? " # Makes it faster at the cost of startup time\n"
-			: "\n";
-	}
-	$code .= "\n1;\n";
-
-	if($sample_code) {
-		$code .= "\npackage main;\n";
-		$code .= "\nmy \$o = $class->new;\n";
-	}
-
-	my $tree = $self->{tree};
-	$tree->DeleteAllItems;
-	my $root   = $tree->AddRoot(
-		$class,
-		-1,
-		-1,
-		Wx::TreeItemData->new('')
-	);
-
-	my $preview = $self->{preview};
-	$preview->SetReadOnly(0);
-	$preview->SetText($code);
-	$preview->SetReadOnly(1);
 }
 
 sub on_add_role_button {

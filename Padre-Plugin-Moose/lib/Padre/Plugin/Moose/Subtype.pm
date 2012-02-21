@@ -3,9 +3,9 @@ package Padre::Plugin::Moose::Code;
 use namespace::clean;
 use Moose;
 
-has 'name';
-has 'constraint';
-has 'error_message';
+has 'name'          => ( is => 'rw', isa => 'Str' );
+has 'constraint'    => ( is => 'rw', isa => 'Str' );
+has 'error_message' => ( is => 'rw', isa => 'Str' );
 
 __PACKAGE__->meta->make_immutable;
 
