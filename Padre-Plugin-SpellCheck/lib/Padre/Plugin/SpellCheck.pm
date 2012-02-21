@@ -176,13 +176,13 @@ sub clean_dialog {
 
 # }
 
-sub config {
-	my $self   = shift;
-	my $config = {
-		dictionary => 'en_GB',
-	};
-	return $self->config_read || $config;
-}
+# sub config {
+	# my $self   = shift;
+	# my $config = {
+		# dictionary => 'en_GB',
+	# };
+	# return $self->config_read || $config;
+# }
 
 #######
 # spell_check
@@ -225,58 +225,58 @@ sub plugin_preferences {
 #######
 # accessor get_config
 #######
-sub get_config {
-	my $self = shift;
+# sub get_config {
+	# my $self = shift;
 
-	my $config = {
-		dictionary => 'en_GB',
-	};
+	# my $config = {
+		# dictionary => 'en_GB',
+	# };
 
-	my $config_read = $self->config_read;
+	# my $config_read = $self->config_read;
 
-	if ( defined $config_read->{dictionary} ) {
+	# if ( defined $config_read->{dictionary} ) {
 
-		# p $config_read->{dictionary};
-		# if ( $config_read->{dictionary} ){
-		require Padre::Locale;
-		my $thing = Padre::Locale->rfc4646_exists( $config_read->{dictionary} );
+		# # p $config_read->{dictionary};
+		# # if ( $config_read->{dictionary} ){
+		# require Padre::Locale;
+		# my $thing = Padre::Locale->rfc4646_exists( $config_read->{dictionary} );
 
-		# p $thing;
+		# # p $thing;
 
-		#for me this allways returns 'en_gb'
-		# my $code    = Padre::Locale::rfc4646();
-		my $code = Padre::Locale::rfc4646( $config_read->{dictionary} );
+		# #for me this allways returns 'en_gb'
+		# # my $code    = Padre::Locale::rfc4646();
+		# my $code = Padre::Locale::rfc4646( $config_read->{dictionary} );
 
-		# p $code;
+		# # p $code;
 
-		my %language = Padre::Locale::menu_view_languages();
+		# my %language = Padre::Locale::menu_view_languages();
 
-		# p %language;
-		my $iso    = $config_read->{dictionary};
-		my $lc_iso = lc $iso;
-		$lc_iso =~ s/_/-/;
+		# # p %language;
+		# my $iso    = $config_read->{dictionary};
+		# my $lc_iso = lc $iso;
+		# $lc_iso =~ s/_/-/;
 
-		# p $lc_iso;
-		my $label = Padre::Locale::label($lc_iso);
+		# # p $lc_iso;
+		# my $label = Padre::Locale::label($lc_iso);
 
-		# p $label;
+		# # p $label;
 
-		# print "rfc4646_exists\n";
-		# }
-		return $self->config_read;
-	} else {
-		return $config;
-	}
-}
+		# # print "rfc4646_exists\n";
+		# # }
+		# return $self->config_read;
+	# } else {
+		# return $config;
+	# }
+# }
 #######
 # accessor set_config
 #######
-sub set_config {
-	my $self = shift;
+# sub set_config {
+	# my $self = shift;
 
-	#TODO this should check before commiting
-	$self->config_write(@_);
-}
+	# #TODO this should check before commiting
+	# $self->config_write(@_);
+# }
 
 1;
 

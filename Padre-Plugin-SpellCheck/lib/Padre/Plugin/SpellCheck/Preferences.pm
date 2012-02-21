@@ -57,7 +57,7 @@ sub set_up {
 
 	# Tidy up config DB if earler version
 	my $config = $self->{_parent}->config_read;
-	if ( defined $config->{Version} < 1.22 ) {
+	if ( eval { $config->{Version} < 1.22 } ) {
 		$self->{_parent}->config_write( {} );
 		$config = $self->{_parent}->config_read;
 		$config->{Version} = $VERSION;
