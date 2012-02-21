@@ -17,6 +17,11 @@ sub new {
 	my $self = $class->SUPER::new($main);
 	$self->CenterOnParent;
 
+	$self->{class_count} = 1;
+	$self->{role_count} = 1;
+	$self->{attribute_count} = 1;
+	$self->{subtype_count} = 1;
+
 	# Defaults
 	$self->{comments_checkbox}->SetValue(1);
 	$self->{sample_code_checkbox}->SetValue(1);
@@ -91,6 +96,9 @@ sub on_add_class_button {
 	$self->Layout;
 	$grid->SetFocus;
 	$grid->SetGridCursor(0,1);
+
+	$grid->SetCellValue(0,1, "Class" . $self->{class_count});
+	$self->{class_count}++;
 }
 
 sub generate_class_code {
@@ -176,6 +184,9 @@ sub on_add_role_button {
 	$self->Layout;
 	$grid->SetFocus;
 	$grid->SetGridCursor(0,1);
+
+	$grid->SetCellValue(0,1, "Role" . $self->{role_count});
+	$self->{role_count}++;
 }
 
 sub generate_role_code {
@@ -244,6 +255,9 @@ sub on_add_attribute_button {
 	$self->Layout;
 	$grid->SetFocus;
 	$grid->SetGridCursor(0,1);
+
+	$grid->SetCellValue(0,1, 'attribute' . $self->{attribute_count});
+	$self->{attribute_count}++;
 }
 
 sub on_add_subtype_button {
@@ -259,6 +273,9 @@ sub on_add_subtype_button {
 	$self->Layout;
 	$grid->SetFocus;
 	$grid->SetGridCursor(0,1);
+
+	$grid->SetCellValue(0,1, 'Subtype' . $self->{subtype_count});
+	$self->{subtype_count}++;
 }
 
 sub on_insert_button_clicked {
