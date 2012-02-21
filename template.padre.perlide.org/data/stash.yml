@@ -19,6 +19,10 @@ navigation:
 about:
   - title: y2012
     events:
+      - date: 2012 February 21
+        url: http://ahmadzawawi.blogspot.com/2012/02/padre-and-moose.html
+        title: Padre and Moose
+        comment: by Ahmad M. Zawawi
       - date: 2012 February 13
         url: http://ahmadzawawi.blogspot.com/2012/02/dwim-perl-v7-released.html
         title: DWIM Perl v7 released
