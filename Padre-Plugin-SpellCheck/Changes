@@ -5,10 +5,10 @@ Revision history for Padre-Plugin-SpellCheck
 	- Upgraded to use wxFormBuilder-based forms (BOWTIE)
 	- revert-> Added missing Data::Printer dependency (AZAWAWI)<-(BOWTIE)
 	- Access to Preferences is now via Plugin Manager (BOWTIE)
-	- Preferances now displays language name rather than iso code (BOWTIE)
-	- use Padre Locale for dictionary names from iso code (BOWTIE)
+	- Preferences now displays language name rather than ISO code (BOWTIE)
+	- use Padre Locale for dictionary names from ISO code (BOWTIE)
 	- Start on adding some tests, as there are none (BOWTIE)
-	- Preferances now shows and saves Aspell and Hunspell local dictionaries (BOWTIE)
+	- Preferences now shows and saves Aspell and Hunspell local dictionaries (BOWTIE)
 	- 
 
 1.21   2010.12.06
