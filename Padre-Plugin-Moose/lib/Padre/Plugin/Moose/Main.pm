@@ -28,6 +28,7 @@ sub new {
 	$self->{subtype_count} = 1;
 	
 	$self->{program} = Padre::Plugin::Moose::Program->new;
+	$self->{current_element} = undef;
 
 	# Defaults
 	$self->{comments_checkbox}->SetValue(1);
@@ -127,11 +128,13 @@ sub update_tree {
 		
 		sub {
 			my $item   = $_[1]->GetItem         or return;
-			my $data   = $tree->GetPlData($item) or return;
+			my $element   = $tree->GetPlData($item) or return;
 
-			my $is_class = $data->isa('Padre::Plugin::Moose::Class');
+			my $is_class = $element->isa('Padre::Plugin::Moose::Class');
 			$self->{add_attribute_button}->Enable($is_class);
 			$self->{add_subtype_button}->Enable($is_class);
+
+			$self->{current_element} = $element;
 		}
 	);
 
@@ -245,6 +248,9 @@ sub on_add_role_button {
 sub on_add_attribute_button {
 	my $self = shift;
 
+	return unless defined $self->{current_element};
+	return unless $self->{current_element}->isa('Padre::Plugin::Moose::Class');
+
 	my $data = [{name => Wx::gettext('Name:')},
 			{name => Wx::gettext('Type:')},
 			{name => Wx::gettext('Access:')},
@@ -256,16 +262,19 @@ sub on_add_attribute_button {
 	$self->{grid}->SetCellValue(0,1, $attribute_name);
 	$self->{attribute_count}++;
 	
-	# Add a new attribute object to program
+	# Add a new attribute object to class
 	my $attribute = Padre::Plugin::Moose::Attribute->new;
 	$attribute->name($attribute_name);
-	push @{$self->{program}->roles}, $attribute;
+	push @{$self->{current_element}->attributes}, $attribute;
 
 	$self->show_code_in_preview();
 }
 
 sub on_add_subtype_button {
 	my $self = shift;
+
+	return unless defined $self->{current_element};
+	return unless $self->{current_element}->isa('Padre::Plugin::Moose::Class');
 
 	my $data = [{name => Wx::gettext('Name:')},
 			{name => Wx::gettext('Type:')},
@@ -276,10 +285,10 @@ sub on_add_subtype_button {
 	$self->{grid}->SetCellValue(0,1, $subtype_name);
 	$self->{subtype_count}++;
 
-	# Add a new subtype object to program
+	# Add a new subtype object to class
 	my $subtype = Padre::Plugin::Moose::Subtype->new;
 	$subtype->name($subtype_name);
-	push @{$self->{program}->roles}, $subtype;
+	push @{$self->{current_element}->subtypes}, $subtype;
 
 	$self->show_code_in_preview();
 }

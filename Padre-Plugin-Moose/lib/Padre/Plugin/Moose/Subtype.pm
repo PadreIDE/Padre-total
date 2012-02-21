@@ -12,7 +12,7 @@ sub to_code {
     my $comment = shift;
 
     my $code .=
-        "subtype '"
+        "\nsubtype '"
       . $self->name
       . "'\n=> as 'Str'"
       . "\n=> where { "
