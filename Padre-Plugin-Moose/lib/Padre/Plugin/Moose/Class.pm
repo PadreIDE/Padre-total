@@ -71,6 +71,11 @@ sub to_code {
 	return $code;
 }
 
+sub help_string {
+	require Wx;
+	return Wx::gettext(' A class is a blueprint of how to create objects of itself. A class can contain attributes, subtypes and methods which enable objects to have state and behavior.');
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;

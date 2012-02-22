@@ -42,6 +42,11 @@ sub to_code {
 	return $code;
 }
 
+sub help_string {
+	require Wx;
+	return Wx::gettext('A role provides some piece of behavior or state that can be shared between classes.');
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;

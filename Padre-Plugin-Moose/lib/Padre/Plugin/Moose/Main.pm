@@ -149,6 +149,10 @@ sub on_tree_selection_change {
 	} else {
 		$self->show_inspector($element);
 	}
+	
+	# Display help about the current element
+	$self->{help_text}->SetValue($element->help_string);
+
 	$self->{current_element} = $element;
 	$self->Layout;
 }

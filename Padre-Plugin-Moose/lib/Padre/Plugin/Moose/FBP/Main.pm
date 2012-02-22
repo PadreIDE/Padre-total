@@ -201,6 +201,15 @@ sub new {
 		},
 	);
 
+	$self->{help_text} = Wx::TextCtrl->new(
+		$self,
+		-1,
+		"",
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+		Wx::TE_MULTILINE | Wx::TE_READONLY,
+	);
+
 	$self->{preview} = Padre::Wx::Editor->new(
 		$self,
 		-1,
@@ -299,6 +308,7 @@ sub new {
 	$right_sizer->Add( $self->{grid_label}, 0, Wx::ALL, 5 );
 	$right_sizer->Add( $self->{grid}, 0, Wx::ALL, 5 );
 	$right_sizer->Add( $bottom_sizer, 0, Wx::EXPAND, 5 );
+	$right_sizer->Add( $self->{help_text}, 1, Wx::ALL | Wx::EXPAND, 5 );
 
 	my $top_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
 	$top_sizer->Add( $left_sizer, 2, Wx::EXPAND, 5 );

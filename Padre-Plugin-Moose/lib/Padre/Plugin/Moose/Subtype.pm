@@ -27,6 +27,11 @@ sub to_code {
 	return $code;
 }
 
+sub help_string {
+	require Wx;
+	return Wx::gettext('A subtype provides the ability to create custom type constraints to be used in attribute definition.');
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;

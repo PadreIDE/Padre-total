@@ -29,6 +29,11 @@ sub to_code {
 	return $code;
 }
 
+sub help_string {
+	require Wx;
+	return Wx::gettext('An attribute is a property that every member of a class has.');
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;

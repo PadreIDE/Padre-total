@@ -13,6 +13,11 @@ sub to_code {
 	return "sub " . $_[0]->name . " { }\n";
 }
 
+sub help_string {
+	require Wx;
+	return Wx::gettext('A method is a subroutine within a class that defines behavior at runtime');
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;

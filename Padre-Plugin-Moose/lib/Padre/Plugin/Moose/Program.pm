@@ -40,6 +40,11 @@ sub to_code {
 	return $code;
 }
 
+sub help_string {
+	require Wx;
+	return Wx::gettext('A program can contain multiple class, role definitions');
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;
