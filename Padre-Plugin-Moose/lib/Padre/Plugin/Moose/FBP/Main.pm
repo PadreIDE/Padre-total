@@ -111,6 +111,22 @@ sub new {
 		},
 	);
 
+	$self->{add_method_button} = Wx::Button->new(
+		$self,
+		-1,
+		Wx::gettext("Method"),
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+	);
+
+	Wx::Event::EVT_BUTTON(
+		$self,
+		$self->{add_method_button},
+		sub {
+			shift->on_add_method_button(@_);
+		},
+	);
+
 	$self->{grid_label} = Wx::StaticText->new(
 		$self,
 		-1,
@@ -238,6 +254,7 @@ sub new {
 	$action_bar_sizer->Add( $self->{add_role_button}, 0, Wx::ALL, 2 );
 	$action_bar_sizer->Add( $self->{add_attribute_button}, 0, Wx::ALL, 2 );
 	$action_bar_sizer->Add( $self->{add_subtype_button}, 0, Wx::ALL, 2 );
+	$action_bar_sizer->Add( $self->{add_method_button}, 0, Wx::ALL, 2 );
 
 	my $left_sizer = Wx::BoxSizer->new(Wx::VERTICAL);
 	$left_sizer->Add( $tree_sizer, 1, Wx::EXPAND, 5 );
@@ -294,6 +311,10 @@ sub on_add_attribute_button {
 
 sub on_add_subtype_button {
 	$_[0]->main->error('Handler method on_add_subtype_button for event add_subtype_button.OnButtonClick not implemented');
+}
+
+sub on_add_method_button {
+	$_[0]->main->error('Handler method on_add_method_button for event add_method_button.OnButtonClick not implemented');
 }
 
 sub on_insert_button_clicked {

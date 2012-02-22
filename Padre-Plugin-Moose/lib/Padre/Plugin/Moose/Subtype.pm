@@ -11,10 +11,9 @@ has 'error_message' => ( is => 'rw', isa => 'Str', default => '' );
 
 sub to_code {
     my $self    = shift;
-    my $comment = shift;
 
     my $code .=
-        "\nsubtype '"
+        "subtype '"
       . $self->name
       . "'\n=> as 'Str'"
       . "\n=> where { "

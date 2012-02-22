@@ -10,6 +10,7 @@ has 'extends_list' => ( is => 'rw', isa => 'Str', default => '' );
 has 'roles_list'   => ( is => 'rw', isa => 'Str', default => '' );
 has 'attributes'   => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
 has 'subtypes'     => ( is => 'rw', isa => 'ArrayRef', default => sub { [] }  );
+has 'methods'     => ( is => 'rw', isa => 'ArrayRef', default => sub { [] }  );
 has 'immutable'    => ( is => 'rw', isa => 'Bool'  );
 has 'namespace_autoclean'    => ( is => 'rw', isa => 'Bool'  );
 
@@ -27,12 +28,6 @@ sub to_code {
 	$superclass =~ s/^\s+|\s+$//g;
 	$roles =~ s/^\s+|\s+$//g;
 	my @roles = split /,/, $roles;
-
-	# if($class eq '') {
-		# $self->main->error(Wx::gettext('Class name cannot be empty'));
-		# $self->{class_text}->SetFocus();
-		# return;
-	# }
 
 	my $code = "package $class;\n";
 
@@ -68,6 +63,11 @@ sub to_code {
 	# Generate subtypes
 	for my $subtype (@{$self->subtypes}) {
 		$code .= $subtype->to_code($comments);
+	}
+
+	# Generate methods
+	for my $method (@{$self->methods}) {
+		$code .= $method->to_code($comments);
 	}
 
 	if($make_immutable) {

@@ -39,6 +39,10 @@ my %INSPECTOR = (
         { name => Wx::gettext('Type:') },
         { name => Wx::gettext('Error Message:') },
     ],
+
+    'Method' => [
+        { name => Wx::gettext('Name:') },
+    ],
 );
 
 sub new {
@@ -52,6 +56,7 @@ sub new {
 	$self->{role_count} = 1;
 	$self->{attribute_count} = 1;
 	$self->{subtype_count} = 1;
+	$self->{method_count} = 1;
 	
 	require Padre::Plugin::Moose::Program;
 	$self->{program} = Padre::Plugin::Moose::Program->new;
@@ -62,6 +67,7 @@ sub new {
 	$self->{sample_code_checkbox}->SetValue(1);
 	$self->{add_attribute_button}->Enable(0);
 	$self->{add_subtype_button}->Enable(0);
+	$self->{add_method_button}->Enable(0);
 	
 	# TODO Bug Alias to fix the wxFormBuilder bug regarding this one
 	my $grid = $self->{grid};
@@ -159,17 +165,8 @@ sub update_tree {
 			my $is_class = $element->isa('Padre::Plugin::Moose::Class');
 			$self->{add_attribute_button}->Enable($is_class);
 			$self->{add_subtype_button}->Enable($is_class);
-			
-			if($is_class) {
-				$self->show_inspector($element);
-			} elsif($element->isa('Padre::Plugin::Moose::Role')) {
-				$self->show_inspector($element);
-			}elsif($element->isa('Padre::Plugin::Moose::Attribute')) {
-				$self->show_inspector($element);
-			}elsif($element->isa('Padre::Plugin::Moose::Subtype')) {
-				$self->show_inspector($element);
-			}
-
+			$self->{add_method_button}->Enable($is_class);
+			$self->show_inspector($element);
 			$self->{current_element} = $element;
 		}
 	);
@@ -210,6 +207,15 @@ sub update_tree {
 			);
 		}
 
+		for my $method (@{$class->methods}) {
+			$tree->AppendItem(
+				$node,
+				$method->name,
+				-1, -1,
+				Wx::TreeItemData->new($method)
+			);
+		}
+
 		$tree->Expand($node);
 	}
 	
@@ -222,10 +228,10 @@ sub show_inspector {
 
 	require Scalar::Util;
 	my $type = Scalar::Util::blessed($element);
-	if((not defined $type) or ($type !~ /(Class|Role|Attribute|Subtype)$/)) {
-		die "type: $element is not Class, Role, Attribute or Subtype\n";
+	if((not defined $type) or ($type !~ /(Class|Role|Attribute|Subtype|Method)$/)) {
+		die "type: $element is not Class, Role, Attribute, Subtype or Method\n";
 	}
-	$type =~ s/.+?(Class|Role|Attribute|Subtype)$/$1/g;
+	$type =~ s/.+?(Class|Role|Attribute|Subtype|Method)$/$1/g;
 
 	my $rows = $INSPECTOR{$type};
 	my $grid = $self->{grid};
@@ -321,6 +327,25 @@ sub on_add_subtype_button {
 	push @{$self->{current_element}->subtypes}, $subtype;
 
 	$self->show_inspector( $subtype );
+
+	$self->show_code_in_preview();
+}
+
+sub on_add_method_button {
+	my $self = shift;
+
+	return unless defined $self->{current_element};
+	return unless $self->{current_element}->isa('Padre::Plugin::Moose::Class');
+
+	my $method_name = 'method_' . $self->{method_count}++;
+
+	# Add a new method object to class
+	require Padre::Plugin::Moose::Method;
+	my $method = Padre::Plugin::Moose::Method->new;
+	$method->name($method_name);
+	push @{$self->{current_element}->methods}, $method;
+
+	$self->show_inspector( $method );
 
 	$self->show_code_in_preview();
 }
