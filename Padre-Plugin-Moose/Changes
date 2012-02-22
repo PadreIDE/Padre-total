@@ -1,5 +1,14 @@
 Changes for Padre-Plugin-Moose
 
+0.07  2012.2.22
+	- Show the generated code that is related the currently selected element (AZAWAWI)
+	- Added keyboard button accelerators and "Insert code" is now "Generate" (BOWTIE, AZAWAWI)
+	- Added a simple inspector help text field that explains the current element (AZAWAWI)
+	- The code generator is now called at startup  (AZAWAWI)
+	- The buttons are shown/hidden instead of enabled/disabled  (AZAWAWI)
+	- Inside Program elements, you can create class/role  (AZAWAWI)
+	- Inside Class/Role elements, you can create attribute, subtype or method  (AZAWAWI)
+
 0.06  2012.2.22  (HOTFIX to 0.05)
 	- Tree item selection is now done in EVT_IDLE lifecycle to prevent deep recursion
 	  when editing (AZAWAWI)

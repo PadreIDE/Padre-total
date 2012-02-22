@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Padre::Plugin::Moose::FBP::Main ();
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 our @ISA = qw{
 	Padre::Plugin::Moose::FBP::Main
