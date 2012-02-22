@@ -42,10 +42,15 @@ sub to_code {
 		: "\n";
 		
 	if($namespace_autoclean) {
-		$code .= "\nuse namespace::clean;";
+		$code .= "use namespace::clean;";
 		$code .= $comments
 			? " # Keep imports out of your namespace\n"
 			: "\n";
+	}
+
+	if(scalar @{$self->subtypes}) {
+		# If there is at least one subtype, we need to add this import
+		$code .= "use Moose::Util::TypeConstraints;\n";
 	}
 
 	$code .= "\nextends '$superclass';\n" if $superclass ne '';

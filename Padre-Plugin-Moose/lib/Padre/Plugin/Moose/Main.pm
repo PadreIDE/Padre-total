@@ -1,15 +1,14 @@
 package Padre::Plugin::Moose::Main;
 
 use 5.008;
-use strict;
-use warnings;
-use Padre::Plugin::Moose::FBP::Main ();
+use Moose;
+#use MooseX::NonMoose;
+use namespace::clean;
+#use Padre::Plugin::Moose::FBP::Main ();
 
 our $VERSION = '0.04';
-our @ISA     = qw{
-	Padre::Plugin::Moose::FBP::Main
-};
 
+extends 'Padre::Plugin::Moose::FBP::Main';
 
 my %INSPECTOR = (
     
@@ -40,6 +39,14 @@ my %INSPECTOR = (
         { name => Wx::gettext('Error Message:') },
     ],
 );
+
+sub BUILD {
+	print "BUILD called\n";
+}
+
+sub FOREIGNBUILDARGS  {
+	print "FOREIGNBUILDARGS called\n";
+}
 
 sub new {
 	my $class = shift;
@@ -169,7 +176,6 @@ sub update_tree {
 			}elsif($element->isa('Padre::Plugin::Moose::Subtype')) {
 				$self->show_inspector($element);
 			}
-				
 
 			$self->{current_element} = $element;
 		}
