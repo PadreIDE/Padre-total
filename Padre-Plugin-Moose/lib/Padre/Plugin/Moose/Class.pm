@@ -3,6 +3,8 @@ package Padre::Plugin::Moose::Class;
 use Moose;
 use namespace::clean;
 
+our $VERSION = '0.05';
+
 with 'Padre::Plugin::Moose::CodeGen';
 
 has 'name'         => ( is => 'rw', isa => 'Str',      default => '' );

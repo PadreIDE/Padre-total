@@ -3,6 +3,8 @@ package Padre::Plugin::Moose::Program;
 use namespace::clean;
 use Moose;
 
+our $VERSION = '0.05';
+
 with 'Padre::Plugin::Moose::CodeGen';
 
 has 'roles'   => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
