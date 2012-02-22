@@ -77,8 +77,8 @@ sub new {
 		$grid->SetReadOnly($row, 0);
 	}
 
-	# Hide it!
-	$grid->Show(0);
+	# Hide them!
+	$_->Show(0) for ($self->{grid_label}, $grid);
 
 	# Setup preview editor
 	my $preview = $self->{preview};
@@ -166,7 +166,12 @@ sub update_tree {
 			$self->{add_attribute_button}->Enable($is_class);
 			$self->{add_subtype_button}->Enable($is_class);
 			$self->{add_method_button}->Enable($is_class);
-			$self->show_inspector($element);
+			if($element->isa('Padre::Plugin::Moose::Program')) {
+				$_->Show(0) for ($self->{grid_label}, $self->{grid});
+				$self->Layout;
+			} else {
+				$self->show_inspector($element);
+			}
 			$self->{current_element} = $element;
 		}
 	);
@@ -227,7 +232,7 @@ sub show_inspector {
 		$row_index++;
 	}
 		
-	$grid->Show(1);
+	$_->Show(1) for ($self->{grid_label}, $grid);
 	$self->Layout;
 	$grid->SetFocus;
 	$grid->SetGridCursor(0, 1);
