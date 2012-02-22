@@ -1,6 +1,6 @@
 Revision history for Padre-Plugin-SpellCheck
 
-1.22    2012.TBA
+1.22    2012.02.22
 	- remove dead code in plugin_icon method (ZENOG)
 	- Upgraded to use wxFormBuilder-based forms (BOWTIE)
 	- revert-> Added missing Data::Printer dependency (AZAWAWI)<-(BOWTIE)
@@ -9,7 +9,6 @@ Revision history for Padre-Plugin-SpellCheck
 	- use Padre Locale for dictionary names from ISO code (BOWTIE)
 	- Start on adding some tests, as there are none (BOWTIE)
 	- Preferences now shows and saves Aspell and Hunspell local dictionaries (BOWTIE)
-	- 
 
 1.21   2010.12.06
         - Restored missing POT/PO translation sources (Damyan Ivanov, AZAWAWI)

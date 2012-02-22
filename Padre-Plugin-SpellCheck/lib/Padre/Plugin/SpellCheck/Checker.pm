@@ -3,7 +3,6 @@ package Padre::Plugin::SpellCheck::Checker;
 use warnings;
 use strict;
 
-# use Data::Printer { caller_info => 1, colored => 1, };
 use Class::XSAccessor {
 	replace   => 1,
 	accessors => {
