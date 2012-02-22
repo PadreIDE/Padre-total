@@ -379,6 +379,14 @@ sub on_add_method_button {
 	$self->show_code_in_preview();
 }
 
+sub on_sample_code_checkbox {
+	$_[0]->show_code_in_preview();
+}
+
+sub on_comments_checkbox {
+	$_[0]->show_code_in_preview();
+}
+
 sub on_insert_button_clicked {
 	my $self = shift;
 

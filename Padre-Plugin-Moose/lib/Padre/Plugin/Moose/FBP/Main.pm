@@ -162,12 +162,28 @@ sub new {
 		Wx::DefaultSize,
 	);
 
+	Wx::Event::EVT_CHECKBOX(
+		$self,
+		$self->{comments_checkbox},
+		sub {
+			shift->on_comments_checkbox(@_);
+		},
+	);
+
 	$self->{sample_code_checkbox} = Wx::CheckBox->new(
 		$self,
 		-1,
 		Wx::gettext("Sample code?"),
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
+	);
+
+	Wx::Event::EVT_CHECKBOX(
+		$self,
+		$self->{sample_code_checkbox},
+		sub {
+			shift->on_sample_code_checkbox(@_);
+		},
 	);
 
 	$self->{preview} = Padre::Wx::Editor->new(
@@ -315,6 +331,14 @@ sub on_add_subtype_button {
 
 sub on_add_method_button {
 	$_[0]->main->error('Handler method on_add_method_button for event add_method_button.OnButtonClick not implemented');
+}
+
+sub on_comments_checkbox {
+	$_[0]->main->error('Handler method on_comments_checkbox for event comments_checkbox.OnCheckBox not implemented');
+}
+
+sub on_sample_code_checkbox {
+	$_[0]->main->error('Handler method on_sample_code_checkbox for event sample_code_checkbox.OnCheckBox not implemented');
 }
 
 sub on_insert_button_clicked {
