@@ -414,7 +414,7 @@ sub on_comments_checkbox {
 	$_[0]->show_code_in_preview(1);
 }
 
-sub on_insert_button_clicked {
+sub on_generate_code_button_clicked {
 	my $self = shift;
 
 	$self->main->on_new;
