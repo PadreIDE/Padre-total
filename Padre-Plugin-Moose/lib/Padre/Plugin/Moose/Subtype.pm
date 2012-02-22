@@ -6,6 +6,7 @@ use Moose;
 our $VERSION = '0.06';
 
 with 'Padre::Plugin::Moose::CodeGen';
+with 'Padre::Plugin::Moose::CanProvideHelp';
 
 has 'name'          => ( is => 'rw', isa => 'Str' );
 has 'constraint'    => ( is => 'rw', isa => 'Str', default => '' );
@@ -27,7 +28,7 @@ sub to_code {
 	return $code;
 }
 
-sub help_string {
+sub provide_help {
 	require Wx;
 	return Wx::gettext('A subtype provides the ability to create custom type constraints to be used in attribute definition.');
 }

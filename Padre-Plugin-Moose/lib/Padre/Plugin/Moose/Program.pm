@@ -6,6 +6,7 @@ use Moose;
 our $VERSION = '0.06';
 
 with 'Padre::Plugin::Moose::CodeGen';
+with 'Padre::Plugin::Moose::CanProvideHelp';
 
 has 'roles'   => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
 has 'classes' => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
@@ -40,7 +41,7 @@ sub to_code {
 	return $code;
 }
 
-sub help_string {
+sub provide_help {
 	require Wx;
 	return Wx::gettext('A program can contain multiple class, role definitions');
 }

@@ -7,6 +7,7 @@ our $VERSION = '0.06';
 
 with 'Padre::Plugin::Moose::CodeGen';
 with 'Padre::Plugin::Moose::HasClassMembers';
+with 'Padre::Plugin::Moose::CanProvideHelp';
 
 has 'name'         => ( is => 'rw', isa => 'Str',      default => '' );
 has 'superclasses' => ( is => 'rw', isa => 'Str',      default => '' );
@@ -71,7 +72,7 @@ sub to_code {
 	return $code;
 }
 
-sub help_string {
+sub provide_help {
 	require Wx;
 	return Wx::gettext(' A class is a blueprint of how to create objects of itself. A class can contain attributes, subtypes and methods which enable objects to have state and behavior.');
 }

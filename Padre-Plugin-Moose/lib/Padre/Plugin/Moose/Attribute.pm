@@ -6,6 +6,7 @@ use namespace::clean;
 our $VERSION = '0.06';
 
 with 'Padre::Plugin::Moose::CodeGen';
+with 'Padre::Plugin::Moose::CanProvideHelp';
 
 has 'name'     => ( is => 'rw', isa => 'Str' );
 has 'type'     => ( is => 'rw', isa => 'Str', default => 'Str' );
@@ -29,7 +30,7 @@ sub to_code {
 	return $code;
 }
 
-sub help_string {
+sub provide_help {
 	require Wx;
 	return Wx::gettext('An attribute is a property that every member of a class has.');
 }

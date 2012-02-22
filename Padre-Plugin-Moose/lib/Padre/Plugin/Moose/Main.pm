@@ -151,7 +151,7 @@ sub on_tree_selection_change {
 	}
 	
 	# Display help about the current element
-	$self->{help_text}->SetValue($element->help_string);
+	$self->{help_text}->SetValue($element->provide_help);
 
 	$self->{current_element} = $element;
 	$self->Layout;
