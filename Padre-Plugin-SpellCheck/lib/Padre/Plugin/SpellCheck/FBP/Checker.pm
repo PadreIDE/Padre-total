@@ -44,6 +44,7 @@ sub new {
 		-1,
 		Wx::gettext("Click Close"),
 	);
+	$self->{label}->SetMinSize( [ 96, -1 ] );
 
 	$self->{list} = Wx::ListCtrl->new(
 		$self,

@@ -1,9 +1,8 @@
 package Padre::Plugin::SpellCheck::Engine;
 
-# ABSTRACT: Spell check engine for the plugin
-
 use warnings;
 use strict;
+
 use Padre::Logger;
 use Padre::Unload                          ();
 use Text::Aspell ();

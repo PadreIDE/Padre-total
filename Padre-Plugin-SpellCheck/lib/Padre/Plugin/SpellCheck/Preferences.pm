@@ -1,7 +1,5 @@
 package Padre::Plugin::SpellCheck::Preferences;
 
-# ABSTRACT: Preferences dialog for padre spell check
-use 5.014;
 use warnings;
 use strict;
 
@@ -12,7 +10,6 @@ use Padre::Locale                               ();
 use Padre::Unload                               ();
 use Padre::Plugin::SpellCheck::FBP::Preferences ();
 
-# use Data::Printer { caller_info => 1, colored => 1, };
 our $VERSION = '1.22';
 our @ISA     = qw{
 	Padre::Plugin::SpellCheck::FBP::Preferences
@@ -85,9 +82,9 @@ sub _local_aspell_dictionaries {
 
 		my @local_dictionaries = grep { $_ =~ /^\w+$/ } map { $_->{name} } $speller->dictionary_info;
 		$self->{local_dictionaries} = \@local_dictionaries;
-		TRACE( "locally installed dictionaries found = " . Dumper $self->{local_dictionaries} ) if DEBUG;
-		TRACE( "iso to dictionary names = " . Dumper $self->{dictionary_names} )                if DEBUG;
-		
+		TRACE("locally installed dictionaries found = $self->{local_dictionaries}") if DEBUG;
+		TRACE("iso to dictionary names = $self->{dictionary_names}")                if DEBUG;
+
 		#TODO compose method local iso to padre names
 		for (@local_dictionaries) {
 			push( @local_dictionaries_names, $self->padre_locale_label($_) );
@@ -97,7 +94,7 @@ sub _local_aspell_dictionaries {
 		@local_dictionaries_names = sort @local_dictionaries_names;
 		$self->{local_dictionaries_names} = \@local_dictionaries_names;
 
-		TRACE( "local dictionaries names = " . Dumper $self->{local_dictionaries_names} ) if DEBUG;
+		TRACE("local dictionaries names = $self->{local_dictionaries_names}") if DEBUG;
 		return;
 	}
 }
@@ -122,32 +119,27 @@ sub _local_hunspell_dictionaries {
 		my $speller = Padre::Util::run_in_directory_two('hunspell -D </dev/null');
 		chomp $speller;
 
-		# p $speller;
-		
 		#TODO this is yuck must do better
 		my @speller_raw = grep { $_ =~ /\w{2}_\w{2}$/m } split /\n/, $$speller;
 
-		# p @speller_raw;
 		my %temp_speller;
 		foreach (@speller_raw) {
 			if ( $_ !~ m/hyph/ ) {
 				m/(\w{2}_\w{2})$/;
 				my $tmp = $1;
 
-				# p $tmp;
 				$temp_speller{$tmp}++;
 			}
 		}
 
-		# p %temp_speller;
 		my @speller;
 		while ( my ( $key, $value ) = each %temp_speller ) {
 			push @local_dictionaries, $key;
 		}
 
 		$self->{local_dictionaries} = \@local_dictionaries;
-		TRACE( "locally installed dictionaries found = " . Dumper $self->{local_dictionaries} ) if DEBUG;
-		TRACE( "iso to dictionary names = " . Dumper $self->{dictionary_names} )                if DEBUG;
+		TRACE("locally installed dictionaries found = $self->{local_dictionaries}") if DEBUG;
+		TRACE("iso to dictionary names = $self->{dictionary_names}")                if DEBUG;
 
 		for (@local_dictionaries) {
 			push( @local_dictionaries_names, $self->padre_locale_label($_) );
@@ -156,7 +148,7 @@ sub _local_hunspell_dictionaries {
 
 		@local_dictionaries_names = sort @local_dictionaries_names;
 		$self->{local_dictionaries_names} = \@local_dictionaries_names;
-		TRACE( "local dictionaries names = " . Dumper $self->{local_dictionaries_names} ) if DEBUG;
+		TRACE("local dictionaries names = $self->{local_dictionaries_names}") if DEBUG;
 		return;
 	}
 }
@@ -169,8 +161,6 @@ sub display_dictionaries {
 	my $main = $self->main;
 
 	my $prefered_dictionary = $self->{_parent}->config_read->{ $self->{dictionary} };
-
-	# p $prefered_dictionary;
 
 	TRACE("iso prefered_dictionary = $prefered_dictionary ") if DEBUG;
 
@@ -205,7 +195,6 @@ sub _on_button_save_clicked {
 	my $select_dictionary_name = $self->{local_dictionaries_names}->[ $self->language->GetSelection() ];
 	TRACE("selected dictionary name = $select_dictionary_name ") if DEBUG;
 
-	# p $select_dictionary_name;
 	my $select_dictionary_iso = 0;
 
 	# require Padre::Locale;
@@ -215,8 +204,6 @@ sub _on_button_save_clicked {
 		}
 	}
 	TRACE("selected dictionary iso = $select_dictionary_iso ") if DEBUG;
-
-	# p $select_dictionary_iso;
 
 	# save config info
 	my $config = $self->{_parent}->config_read;
@@ -257,7 +244,6 @@ sub padre_locale_label {
 	require Padre::Locale;
 	my $label = Padre::Locale::label($lc_local_dictionary);
 
-	# p $label;
 	return $label;
 }
 

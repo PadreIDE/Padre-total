@@ -1,9 +1,8 @@
 package Padre::Plugin::SpellCheck::Checker;
 
-# ABSTRACT: Spell check dialog for Padre
-
 use warnings;
 use strict;
+
 # use Data::Printer { caller_info => 1, colored => 1, };
 use Class::XSAccessor {
 	replace   => 1,
