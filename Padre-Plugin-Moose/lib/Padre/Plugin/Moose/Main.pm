@@ -4,13 +4,11 @@ use 5.008;
 use strict;
 use warnings;
 use Padre::Plugin::Moose::FBP::Main ();
-use Padre::Wx::Role::Idle           ();
 
 our $VERSION = '0.06';
 
 our @ISA = qw{
 	Padre::Plugin::Moose::FBP::Main
-	Padre::Wx::Role::Idle
 };
 
 
@@ -264,12 +262,15 @@ sub update_tree {
 
 	# Select the tree node outside this event to
 	# prevent deep recurision
-	$self->idle_method( select_tree_item => $selected_item )
-		if ( defined $selected_item ) && $should_select_item;
-}
-
-sub select_tree_item {
-	$_[0]->{tree}->SelectItem( $_[1] );
+	Wx::Event::EVT_IDLE(
+		$self,
+		sub {
+			$tree->SelectItem($selected_item);
+			Wx::Event::EVT_IDLE( $self, undef );
+		}
+		)
+		if $should_select_item
+			&& defined $selected_item;
 }
 
 sub show_inspector {
