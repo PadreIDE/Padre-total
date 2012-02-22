@@ -5,14 +5,14 @@ use Moose;
 
 our $VERSION = '0.06';
 
-with 'Padre::Plugin::Moose::CodeGen';
+with 'Padre::Plugin::Moose::CanGenerateCode';
 with 'Padre::Plugin::Moose::CanProvideHelp';
 
 has 'name'          => ( is => 'rw', isa => 'Str' );
 has 'constraint'    => ( is => 'rw', isa => 'Str', default => '' );
 has 'error_message' => ( is => 'rw', isa => 'Str', default => '' );
 
-sub to_code {
+sub generate_code {
 	my $self = shift;
 
 	my $code

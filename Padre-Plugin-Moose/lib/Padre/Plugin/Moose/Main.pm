@@ -182,7 +182,7 @@ sub show_code_in_preview {
 	eval {
 
 		# Generate code
-		my $code = $self->{program}->to_code(
+		my $code = $self->{program}->generate_code(
 			$self->{comments_checkbox}->IsChecked,
 			$self->{sample_code_checkbox}->IsChecked
 		);

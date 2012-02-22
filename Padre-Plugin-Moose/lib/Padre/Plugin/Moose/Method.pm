@@ -5,12 +5,12 @@ use Moose;
 
 our $VERSION = '0.06';
 
-with 'Padre::Plugin::Moose::CodeGen';
+with 'Padre::Plugin::Moose::CanGenerateCode';
 with 'Padre::Plugin::Moose::CanProvideHelp';
 
 has 'name' => ( is => 'rw', isa => 'Str' );
 
-sub to_code {
+sub generate_code {
 	return "sub " . $_[0]->name . " { }\n";
 }
 

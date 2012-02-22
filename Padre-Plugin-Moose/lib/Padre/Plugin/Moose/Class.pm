@@ -5,7 +5,7 @@ use namespace::clean;
 
 our $VERSION = '0.06';
 
-with 'Padre::Plugin::Moose::CodeGen';
+with 'Padre::Plugin::Moose::CanGenerateCode';
 with 'Padre::Plugin::Moose::HasClassMembers';
 with 'Padre::Plugin::Moose::CanProvideHelp';
 
@@ -15,7 +15,7 @@ has 'roles'        => ( is => 'rw', isa => 'Str',      default => '' );
 has 'immutable'           => ( is => 'rw', isa => 'Bool' );
 has 'namespace_autoclean' => ( is => 'rw', isa => 'Bool' );
 
-sub to_code {
+sub generate_code {
 	my $self     = shift;
 	my $comments = shift;
 

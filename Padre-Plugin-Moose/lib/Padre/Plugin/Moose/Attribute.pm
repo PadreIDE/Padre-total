@@ -5,7 +5,7 @@ use namespace::clean;
 
 our $VERSION = '0.06';
 
-with 'Padre::Plugin::Moose::CodeGen';
+with 'Padre::Plugin::Moose::CanGenerateCode';
 with 'Padre::Plugin::Moose::CanProvideHelp';
 
 has 'name'     => ( is => 'rw', isa => 'Str' );
@@ -14,7 +14,7 @@ has 'access'   => ( is => 'rw', isa => 'Str', default => 'rw' );
 has 'trigger'  => ( is => 'rw', isa => 'Str' );
 has 'required' => ( is => 'rw', isa => 'Bool' );
 
-sub to_code {
+sub generate_code {
 	my $self    = shift;
 	my $comment = shift;
 
