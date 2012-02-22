@@ -47,6 +47,14 @@ sub new {
 		Wx::TR_DEFAULT_STYLE,
 	);
 
+	Wx::Event::EVT_TREE_SEL_CHANGED(
+		$self,
+		$self->{tree},
+		sub {
+			shift->on_tree_selection_change(@_);
+		},
+	);
+
 	$self->{add_class_button} = Wx::Button->new(
 		$self,
 		-1,
@@ -153,6 +161,13 @@ sub new {
 	$self->{grid}->EnableDragRowSize(1);
 	$self->{grid}->SetRowLabelAlignment( Wx::ALIGN_CENTRE, Wx::ALIGN_CENTRE );
 	$self->{grid}->SetDefaultCellAlignment( Wx::ALIGN_LEFT, Wx::ALIGN_TOP );
+
+	Wx::Event::EVT_GRID_CELL_CHANGE(
+		$self->{grid},
+		sub {
+			$self->on_grid_cell_change($_[1]);
+		},
+	);
 
 	$self->{comments_checkbox} = Wx::CheckBox->new(
 		$self,
@@ -313,6 +328,10 @@ sub new {
 	return $self;
 }
 
+sub on_tree_selection_change {
+	$_[0]->main->error('Handler method on_tree_selection_change for event tree.OnTreeSelChanged not implemented');
+}
+
 sub on_add_class_button {
 	$_[0]->main->error('Handler method on_add_class_button for event add_class_button.OnButtonClick not implemented');
 }
@@ -331,6 +350,10 @@ sub on_add_subtype_button {
 
 sub on_add_method_button {
 	$_[0]->main->error('Handler method on_add_method_button for event add_method_button.OnButtonClick not implemented');
+}
+
+sub on_grid_cell_change {
+	$_[0]->main->error('Handler method on_grid_cell_change for event grid.OnGridCellChange not implemented');
 }
 
 sub on_comments_checkbox {

@@ -235,7 +235,7 @@
                                                 <event name="OnTreeItemMiddleClick"></event>
                                                 <event name="OnTreeItemRightClick"></event>
                                                 <event name="OnTreeKeyDown"></event>
-                                                <event name="OnTreeSelChanged"></event>
+                                                <event name="OnTreeSelChanged">on_tree_selection_change</event>
                                                 <event name="OnTreeSelChanging"></event>
                                                 <event name="OnTreeSetInfo"></event>
                                                 <event name="OnTreeStateImageClick"></event>
@@ -669,7 +669,7 @@
                                         <event name="OnChar"></event>
                                         <event name="OnEnterWindow"></event>
                                         <event name="OnEraseBackground"></event>
-                                        <event name="OnGridCellChange"></event>
+                                        <event name="OnGridCellChange">on_grid_cell_change</event>
                                         <event name="OnGridCellLeftClick"></event>
                                         <event name="OnGridCellLeftDClick"></event>
                                         <event name="OnGridCellRightClick"></event>
