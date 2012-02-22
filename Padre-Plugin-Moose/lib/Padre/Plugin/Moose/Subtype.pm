@@ -21,7 +21,7 @@ sub to_code {
       . " } => "
       . "\nmessage { "
       . $self->error_message
-      . " }\n\n";
+      . " };\n";
 
     return $code;
 }

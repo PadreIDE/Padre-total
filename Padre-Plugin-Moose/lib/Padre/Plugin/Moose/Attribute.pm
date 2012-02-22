@@ -17,12 +17,12 @@ sub to_code {
 
 	my $code = '';
 
-	$code = "\nhas '". $self->name . "' => (\n";
+	$code = "has '". $self->name . "' => (\n";
 	$code .= ("    is  => '" . $self->access . "',\n") if defined $self->access;
 	$code .= ("    isa => '" . $self->type . "',\n") if defined $self->type;
 	$code .= ("trigger => " . $self->trigger . ",\n") if $self->trigger;
 	$code .= ("required => 1,\n") if $self->required;
-	$code .= ");\n\n";
+	$code .= ");\n";
 
 	return $code;
 }

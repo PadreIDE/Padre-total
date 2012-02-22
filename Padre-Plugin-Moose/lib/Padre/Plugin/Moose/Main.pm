@@ -188,34 +188,14 @@ sub update_tree {
 			-1, -1,
 			Wx::TreeItemData->new($class)
 			);
-			
-		for my $attribute (@{$class->attributes}) {
+		for my $class_item (@{$class->attributes}, @{$class->subtypes}, @{$class->methods}) {
 			$tree->AppendItem(
 				$node,
-				$attribute->name,
+				$class_item->name,
 				-1, -1,
-				Wx::TreeItemData->new($attribute)
+				Wx::TreeItemData->new($class_item)
 			);
 		}
-
-		for my $subtype (@{$class->subtypes}) {
-			$tree->AppendItem(
-				$node,
-				$subtype->name,
-				-1, -1,
-				Wx::TreeItemData->new($subtype)
-			);
-		}
-
-		for my $method (@{$class->methods}) {
-			$tree->AppendItem(
-				$node,
-				$method->name,
-				-1, -1,
-				Wx::TreeItemData->new($method)
-			);
-		}
-
 		$tree->Expand($node);
 	}
 	
@@ -246,8 +226,7 @@ sub show_inspector {
 		}
 		$row_index++;
 	}
-	
-	
+		
 	$grid->Show(1);
 	$self->Layout;
 	$grid->SetFocus;
@@ -259,81 +238,69 @@ sub show_inspector {
 sub on_add_class_button {
 	my $self = shift;
 
-	my $class_name = "Class" . $self->{class_count}++;
-
 	# Add a new class object to program
 	require Padre::Plugin::Moose::Class;
 	my $class = Padre::Plugin::Moose::Class->new;
-	$class->name($class_name);
+	$class->name("Class" . $self->{class_count}++);
 	$class->immutable(1);
 	$class->namespace_autoclean(1);
 	push @{$self->{program}->classes}, $class;
 	
 	$self->show_inspector( $class );
-
 	$self->show_code_in_preview();
 }
 
 sub on_add_role_button {
 	my $self = shift;
 	
-	my $role_name = "Role" . $self->{role_count}++;
-	
 	# Add a new role object to program
 	require Padre::Plugin::Moose::Role;
 	my $role = Padre::Plugin::Moose::Role->new;
-	$role->name($role_name);
+	$role->name("Role" . $self->{role_count}++);
 	push @{$self->{program}->roles}, $role;
 	
 	$self->show_inspector( $role );
-
 	$self->show_code_in_preview();
 }
 
 sub on_add_attribute_button {
 	my $self = shift;
 
+	# Only allowed within a class element
 	return unless defined $self->{current_element};
 	return unless $self->{current_element}->isa('Padre::Plugin::Moose::Class');
 
-	
-
-	my $attribute_name = 'attribute' . $self->{attribute_count}++;
-	
 	# Add a new attribute object to class
 	require Padre::Plugin::Moose::Attribute;
 	my $attribute = Padre::Plugin::Moose::Attribute->new;
-	$attribute->name($attribute_name);
+	$attribute->name('attribute' . $self->{attribute_count}++);
 	push @{$self->{current_element}->attributes}, $attribute;
 	
 	$self->show_inspector( $attribute );
-
 	$self->show_code_in_preview();
 }
 
 sub on_add_subtype_button {
 	my $self = shift;
 
+	# Only allowed within a class element
 	return unless defined $self->{current_element};
 	return unless $self->{current_element}->isa('Padre::Plugin::Moose::Class');
-
-
-	my $subtype_name = 'Subtype' . $self->{subtype_count}++;
 
 	# Add a new subtype object to class
 	require Padre::Plugin::Moose::Subtype;
 	my $subtype = Padre::Plugin::Moose::Subtype->new;
-	$subtype->name($subtype_name);
+	$subtype->name('Subtype' . $self->{subtype_count}++);
 	push @{$self->{current_element}->subtypes}, $subtype;
 
 	$self->show_inspector( $subtype );
-
 	$self->show_code_in_preview();
 }
 
 sub on_add_method_button {
 	my $self = shift;
 
+	# Only allowed within a class element
 	return unless defined $self->{current_element};
 	return unless $self->{current_element}->isa('Padre::Plugin::Moose::Class');
 
@@ -346,7 +313,6 @@ sub on_add_method_button {
 	push @{$self->{current_element}->methods}, $method;
 
 	$self->show_inspector( $method );
-
 	$self->show_code_in_preview();
 }
 

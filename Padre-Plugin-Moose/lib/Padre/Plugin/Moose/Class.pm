@@ -55,17 +55,20 @@ sub to_code {
 		$code .= "with '$role';\n";
 	}
 
+	$code .= "\n" if scalar @{$self->attributes};
 	# Generate attributes
 	for my $attribute (@{$self->attributes}) {
 		$code .= $attribute->to_code($comments);
 	}
 
 	# Generate subtypes
+	$code .= "\n" if scalar @{$self->subtypes};
 	for my $subtype (@{$self->subtypes}) {
 		$code .= $subtype->to_code($comments);
 	}
 
 	# Generate methods
+	$code .= "\n" if scalar @{$self->methods};
 	for my $method (@{$self->methods}) {
 		$code .= $method->to_code($comments);
 	}
