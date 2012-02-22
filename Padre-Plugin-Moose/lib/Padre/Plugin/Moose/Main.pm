@@ -10,6 +10,37 @@ our @ISA     = qw{
 	Padre::Plugin::Moose::FBP::Main
 };
 
+
+my %INSPECTOR = (
+    
+    'Class' => [
+        { name => Wx::gettext('Name:') },
+        { name => Wx::gettext('Superclass:') },
+        { name => Wx::gettext('Roles:') },
+        { name => Wx::gettext('Clean namespace?'), is_bool => 1 },
+        { name => Wx::gettext('Make Immutable?'), is_bool => 1 }
+    ],
+
+    'Role' => [
+        { name => Wx::gettext('Name:') },
+        { name => Wx::gettext('Requires:') },
+    ],
+
+    'Attribute' => [
+        { name => Wx::gettext('Name:') },
+        { name => Wx::gettext('Type:') },
+        { name => Wx::gettext('Access:') },
+        { name => Wx::gettext('Trigger:'), is_bool => 1 },
+        { name => Wx::gettext('Requires:'), is_bool => 1 }
+    ],
+
+    'Subtype' => [
+        { name => Wx::gettext('Name:') },
+        { name => Wx::gettext('Type:') },
+        { name => Wx::gettext('Error Message:') },
+    ],
+);
+
 sub new {
 	my $class = shift;
 	my $main  = shift;
@@ -128,6 +159,17 @@ sub update_tree {
 			my $is_class = $element->isa('Padre::Plugin::Moose::Class');
 			$self->{add_attribute_button}->Enable($is_class);
 			$self->{add_subtype_button}->Enable($is_class);
+			
+			if($is_class) {
+				$self->show_inspector($element);
+			} elsif($element->isa('Padre::Plugin::Moose::Role')) {
+				$self->show_inspector($element);
+			}elsif($element->isa('Padre::Plugin::Moose::Attribute')) {
+				$self->show_inspector($element);
+			}elsif($element->isa('Padre::Plugin::Moose::Subtype')) {
+				$self->show_inspector($element);
+			}
+				
 
 			$self->{current_element} = $element;
 		}
@@ -175,10 +217,18 @@ sub update_tree {
 	$tree->ExpandAll;
 }
 
-sub setup_inspector {
+sub show_inspector {
 	my $self = shift;
-	my $rows = shift;
-	
+	my $element = shift;
+
+	require Scalar::Util;
+	my $type = Scalar::Util::blessed($element);
+	if((not defined $type) or ($type !~ /(Class|Role|Attribute|Subtype)$/)) {
+		die "type: $element is not Class, Role, Attribute or Subtype\n";
+	}
+	$type =~ s/.+?(Class|Role|Attribute|Subtype)$/$1/g;
+
+	my $rows = $INSPECTOR{$type};
 	my $grid = $self->{grid};
 	$grid->DeleteRows(0, $grid->GetNumberRows);
 	$grid->InsertRows(0, scalar @$rows);
@@ -191,25 +241,20 @@ sub setup_inspector {
 		}
 		$row_index++;
 	}
+	
+	
 	$grid->Show(1);
 	$self->Layout;
 	$grid->SetFocus;
 	$grid->SetGridCursor(0, 1);
+
+	$grid->SetCellValue(0, 1, $element->name);
 }
 
 sub on_add_class_button {
 	my $self = shift;
 
-	my $data = [{name => Wx::gettext('Name:')},
-			{name => Wx::gettext('Superclass:')},
-			{name => Wx::gettext('Roles:')},
-			{name => Wx::gettext('Clean namespace?'), is_bool => 1},
-			{name =>  Wx::gettext('Make Immutable?'), is_bool => 1}];
-	$self->setup_inspector( $data );
-
-	my $class_name = "Class" . $self->{class_count};
-	$self->{grid}->SetCellValue(0,1, $class_name);
-	$self->{class_count}++;
+	my $class_name = "Class" . $self->{class_count}++;
 
 	# Add a new class object to program
 	require Padre::Plugin::Moose::Class;
@@ -218,6 +263,8 @@ sub on_add_class_button {
 	$class->immutable(1);
 	$class->namespace_autoclean(1);
 	push @{$self->{program}->classes}, $class;
+	
+	$self->show_inspector( $class );
 
 	$self->show_code_in_preview();
 }
@@ -225,19 +272,15 @@ sub on_add_class_button {
 sub on_add_role_button {
 	my $self = shift;
 	
-	my $data = [{name => Wx::gettext('Name:')},
-			{name => Wx::gettext('Requires:')}, ];
-	$self->setup_inspector( $data );
-
-	my $role_name = "Role" . $self->{role_count};
-	$self->{grid}->SetCellValue(0,1, $role_name);
-	$self->{role_count}++;
+	my $role_name = "Role" . $self->{role_count}++;
 	
 	# Add a new role object to program
 	require Padre::Plugin::Moose::Role;
 	my $role = Padre::Plugin::Moose::Role->new;
 	$role->name($role_name);
 	push @{$self->{program}->roles}, $role;
+	
+	$self->show_inspector( $role );
 
 	$self->show_code_in_preview();
 }
@@ -248,22 +291,17 @@ sub on_add_attribute_button {
 	return unless defined $self->{current_element};
 	return unless $self->{current_element}->isa('Padre::Plugin::Moose::Class');
 
-	my $data = [{name => Wx::gettext('Name:')},
-			{name => Wx::gettext('Type:')},
-			{name => Wx::gettext('Access:')},
-			{name => Wx::gettext('Trigger:'), is_bool => 1},
-			{name =>  Wx::gettext('Requires:'), is_bool => 1}];
-	$self->setup_inspector( $data );
+	
 
-	my $attribute_name = 'attribute' . $self->{attribute_count};
-	$self->{grid}->SetCellValue(0,1, $attribute_name);
-	$self->{attribute_count}++;
+	my $attribute_name = 'attribute' . $self->{attribute_count}++;
 	
 	# Add a new attribute object to class
 	require Padre::Plugin::Moose::Attribute;
 	my $attribute = Padre::Plugin::Moose::Attribute->new;
 	$attribute->name($attribute_name);
 	push @{$self->{current_element}->attributes}, $attribute;
+	
+	$self->show_inspector( $attribute );
 
 	$self->show_code_in_preview();
 }
@@ -274,20 +312,16 @@ sub on_add_subtype_button {
 	return unless defined $self->{current_element};
 	return unless $self->{current_element}->isa('Padre::Plugin::Moose::Class');
 
-	my $data = [{name => Wx::gettext('Name:')},
-			{name => Wx::gettext('Type:')},
-			{name => Wx::gettext('Error Message:')}, ];
-	$self->setup_inspector( $data );
 
-	my $subtype_name = 'Subtype' . $self->{subtype_count};
-	$self->{grid}->SetCellValue(0,1, $subtype_name);
-	$self->{subtype_count}++;
+	my $subtype_name = 'Subtype' . $self->{subtype_count}++;
 
 	# Add a new subtype object to class
 	require Padre::Plugin::Moose::Subtype;
 	my $subtype = Padre::Plugin::Moose::Subtype->new;
 	$subtype->name($subtype_name);
 	push @{$self->{current_element}->subtypes}, $subtype;
+
+	$self->show_inspector( $subtype );
 
 	$self->show_code_in_preview();
 }
