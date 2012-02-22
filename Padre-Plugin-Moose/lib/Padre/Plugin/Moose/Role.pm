@@ -5,7 +5,7 @@ use Moose;
 
 with 'Padre::Plugin::Moose::CodeGen';
 
-has 'name'          => ( is => 'rw', isa => 'Str' );
+has 'name' => ( is => 'rw', isa => 'Str' );
 has 'requires_list' => ( is => 'rw', isa => 'Str', default => '' );
 
 with 'Padre::Plugin::Moose::CodeGen';
@@ -13,10 +13,10 @@ with 'Padre::Plugin::Moose::CodeGen';
 sub to_code {
 	my $self = shift;
 
-	my $role = $self->name;
+	my $role     = $self->name;
 	my $requires = $self->requires_list;
 
-	$role =~ s/^\s+|\s+$//g;
+	$role     =~ s/^\s+|\s+$//g;
 	$requires =~ s/^\s+|\s+$//g;
 	my @requires = split /,/, $requires;
 
