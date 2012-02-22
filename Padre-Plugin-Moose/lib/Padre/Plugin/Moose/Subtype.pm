@@ -3,6 +3,8 @@ package Padre::Plugin::Moose::Subtype;
 use namespace::clean;
 use Moose;
 
+with 'Padre::Plugin::Moose::CodeGen';
+
 has 'name'          => ( is => 'rw', isa => 'Str' );
 has 'constraint'    => ( is => 'rw', isa => 'Str', default => '' );
 has 'error_message' => ( is => 'rw', isa => 'Str', default => '' );

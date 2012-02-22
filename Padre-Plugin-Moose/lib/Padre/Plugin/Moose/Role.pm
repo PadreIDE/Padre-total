@@ -3,8 +3,12 @@ package Padre::Plugin::Moose::Role;
 use namespace::clean;
 use Moose;
 
+with 'Padre::Plugin::Moose::CodeGen';
+
 has 'name'          => ( is => 'rw', isa => 'Str' );
 has 'requires_list' => ( is => 'rw', isa => 'Str', default => '' );
+
+with 'Padre::Plugin::Moose::CodeGen';
 
 sub to_code {
 	my $self = shift;

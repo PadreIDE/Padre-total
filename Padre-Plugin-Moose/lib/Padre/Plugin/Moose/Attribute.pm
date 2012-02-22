@@ -1,7 +1,9 @@
 package Padre::Plugin::Moose::Attribute;
 
-use namespace::clean;
 use Moose;
+use namespace::clean;
+
+with 'Padre::Plugin::Moose::CodeGen';
 
 has 'name'     => ( is => 'rw', isa => 'Str' );
 has 'type'     => ( is => 'rw', isa => 'Str', default => 'Str' );

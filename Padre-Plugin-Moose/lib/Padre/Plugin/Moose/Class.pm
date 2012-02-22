@@ -1,7 +1,9 @@
 package Padre::Plugin::Moose::Class;
 
-use namespace::clean;
 use Moose;
+use namespace::clean;
+
+with 'Padre::Plugin::Moose::CodeGen';
 
 has 'name'         => ( is => 'rw', isa => 'Str', default => '' );
 has 'extends_list' => ( is => 'rw', isa => 'Str', default => '' );

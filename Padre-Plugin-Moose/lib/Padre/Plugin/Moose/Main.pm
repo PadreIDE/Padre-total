@@ -4,11 +4,6 @@ use 5.008;
 use strict;
 use warnings;
 use Padre::Plugin::Moose::FBP::Main ();
-use Padre::Plugin::Moose::Program ();
-use Padre::Plugin::Moose::Class ();
-use Padre::Plugin::Moose::Role ();
-use Padre::Plugin::Moose::Attribute ();
-use Padre::Plugin::Moose::Subtype ();
 
 our $VERSION = '0.04';
 our @ISA     = qw{
@@ -27,6 +22,7 @@ sub new {
 	$self->{attribute_count} = 1;
 	$self->{subtype_count} = 1;
 	
+	require Padre::Plugin::Moose::Program;
 	$self->{program} = Padre::Plugin::Moose::Program->new;
 	$self->{current_element} = undef;
 
@@ -79,7 +75,6 @@ sub on_about_button_clicked {
 			)
 	);
 	$about->SetVersion($Padre::Plugin::Moose::VERSION);
-	Padre::Unload->unload('Moose');
 	Wx::AboutBox($about);
 
 	return;
@@ -217,6 +212,7 @@ sub on_add_class_button {
 	$self->{class_count}++;
 
 	# Add a new class object to program
+	require Padre::Plugin::Moose::Class;
 	my $class = Padre::Plugin::Moose::Class->new;
 	$class->name($class_name);
 	$class->immutable(1);
@@ -238,6 +234,7 @@ sub on_add_role_button {
 	$self->{role_count}++;
 	
 	# Add a new role object to program
+	require Padre::Plugin::Moose::Role;
 	my $role = Padre::Plugin::Moose::Role->new;
 	$role->name($role_name);
 	push @{$self->{program}->roles}, $role;
@@ -263,6 +260,7 @@ sub on_add_attribute_button {
 	$self->{attribute_count}++;
 	
 	# Add a new attribute object to class
+	require Padre::Plugin::Moose::Attribute;
 	my $attribute = Padre::Plugin::Moose::Attribute->new;
 	$attribute->name($attribute_name);
 	push @{$self->{current_element}->attributes}, $attribute;
@@ -286,6 +284,7 @@ sub on_add_subtype_button {
 	$self->{subtype_count}++;
 
 	# Add a new subtype object to class
+	require Padre::Plugin::Moose::Subtype;
 	my $subtype = Padre::Plugin::Moose::Subtype->new;
 	$subtype->name($subtype_name);
 	push @{$self->{current_element}->subtypes}, $subtype;
