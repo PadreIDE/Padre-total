@@ -155,6 +155,22 @@ sub on_tree_selection_change {
 
 	$self->{current_element} = $element;
 	$self->Layout;
+
+	# TODO improve the crude workaround to positioning
+	unless($is_program) {
+		my $preview = $self->{preview};
+		my $code = $preview->GetText;
+		my @lines = split /\n/, $code;
+		my $line_num = 0;
+		for my $line (@lines) {
+			my $name = $element->name;
+			if($line =~ /.+?$name.+?/) {
+				$preview->goto_line_centerize($line_num);
+				last;
+			}
+			$line_num++;
+		}
+	}
 }
 
 sub on_about_button_clicked {
@@ -222,7 +238,7 @@ sub update_tree {
 		$selected_item = $program_node;
 	}
 
-	for my $class ( @{ $program->classes }, @{ $program->roles } ) {
+	for my $class ( @{ $program->roles }, @{ $program->classes } ) {
 		my $class_node = $tree->AppendItem(
 			$program_node,
 			$class->name,
