@@ -6,7 +6,7 @@ use warnings;
 use Padre::Plugin::Moose::FBP::Main ();
 use Padre::Wx::Role::Idle ();
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 our @ISA     = qw{
 	Padre::Plugin::Moose::FBP::Main

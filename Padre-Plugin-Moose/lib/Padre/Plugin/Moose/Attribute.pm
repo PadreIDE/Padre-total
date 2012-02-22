@@ -3,7 +3,7 @@ package Padre::Plugin::Moose::Attribute;
 use Moose;
 use namespace::clean;
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 with 'Padre::Plugin::Moose::CodeGen';
 
