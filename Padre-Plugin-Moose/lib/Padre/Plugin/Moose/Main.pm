@@ -156,6 +156,10 @@ sub update_tree {
 		Wx::TreeItemData->new($program)
 	);
 
+	if($program eq $self->{current_element}) {
+		$tree->SelectItem($program_node);
+	}
+
 	# Set up the events
 	Wx::Event::EVT_TREE_SEL_CHANGED(
 		$tree, $tree,
@@ -219,24 +223,35 @@ sub update_tree {
 			Wx::TreeItemData->new($role)
 		);
 		$tree->Expand($node);
+		if($role == $self->{current_element}) {
+			$tree->SelectItem($node);
+		}
 	}
 
 	for my $class ( @{ $program->classes } ) {
-		my $node = $tree->AppendItem(
+		my $class_node = $tree->AppendItem(
 			$program_node,
 			$class->name,
 			-1, -1,
 			Wx::TreeItemData->new($class)
 		);
 		for my $class_item ( @{ $class->attributes }, @{ $class->subtypes }, @{ $class->methods } ) {
-			$tree->AppendItem(
-				$node,
+			my $class_item_node = $tree->AppendItem(
+				$class_node,
 				$class_item->name,
 				-1, -1,
 				Wx::TreeItemData->new($class_item)
 			);
+			if($class_item == $self->{current_element}) {
+				$tree->SelectItem($class_item_node);
+			}
 		}
-		$tree->Expand($node);
+		
+		if($class == $self->{current_element}) {
+			$tree->SelectItem($class_node);
+		}
+		
+		$tree->Expand($class_node);
 	}
 
 	$tree->ExpandAll;
@@ -309,6 +324,7 @@ sub on_add_class_button {
 	$class->namespace_autoclean(1);
 	push @{ $self->{program}->classes }, $class;
 
+	$self->{current_element} = $class;
 	$self->show_inspector($class);
 	$self->show_code_in_preview();
 }
@@ -322,6 +338,7 @@ sub on_add_role_button {
 	$role->name( "Role" . $self->{role_count}++ );
 	push @{ $self->{program}->roles }, $role;
 
+	$self->{current_element} = $role;
 	$self->show_inspector($role);
 	$self->show_code_in_preview();
 }
@@ -339,6 +356,7 @@ sub on_add_attribute_button {
 	$attribute->name( 'attribute' . $self->{attribute_count}++ );
 	push @{ $self->{current_element}->attributes }, $attribute;
 
+	$self->{current_element} = $attribute;
 	$self->show_inspector($attribute);
 	$self->show_code_in_preview();
 }
@@ -356,6 +374,7 @@ sub on_add_subtype_button {
 	$subtype->name( 'Subtype' . $self->{subtype_count}++ );
 	push @{ $self->{current_element}->subtypes }, $subtype;
 
+	$self->{current_element} = $subtype;
 	$self->show_inspector($subtype);
 	$self->show_code_in_preview();
 }
@@ -373,6 +392,7 @@ sub on_add_method_button {
 	$method->name('method_' . $self->{method_count}++);
 	push @{ $self->{current_element}->methods }, $method;
 
+	$self->{current_element} = $method;
 	$self->show_inspector($method);
 	$self->show_code_in_preview();
 }
