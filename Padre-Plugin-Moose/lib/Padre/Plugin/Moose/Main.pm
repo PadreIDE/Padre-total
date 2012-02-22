@@ -294,7 +294,7 @@ sub show_inspector {
 			$grid->SetCellValue( $row++, 1, $element->$field );
 		}
 	} elsif ( $element->isa('Padre::Plugin::Moose::Method') ) {
-		$element->name( $grid->GetCellValue( 0, 1 ) );
+		$grid->SetCellValue( 0, 1, $element->name );
 	}
 }
 
@@ -367,12 +367,10 @@ sub on_add_method_button {
 	return unless defined $self->{current_element};
 	return unless $self->{current_element}->isa('Padre::Plugin::Moose::Class');
 
-	my $method_name = 'method_' . $self->{method_count}++;
-
 	# Add a new method object to class
 	require Padre::Plugin::Moose::Method;
 	my $method = Padre::Plugin::Moose::Method->new;
-	$method->name($method_name);
+	$method->name('method_' . $self->{method_count}++);
 	push @{ $self->{current_element}->methods }, $method;
 
 	$self->show_inspector($method);
