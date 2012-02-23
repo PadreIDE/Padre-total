@@ -29,7 +29,7 @@ sub new {
 		-1,
 		Wx::gettext("Moose!"),
 		Wx::DefaultPosition,
-		[ 758, 575 ],
+		[ 701, 531 ],
 		Wx::DEFAULT_DIALOG_STYLE,
 	);
 
@@ -135,38 +135,9 @@ sub new {
 		},
 	);
 
-	$self->{grid_label} = Wx::StaticText->new(
+	$self->{preview} = Padre::Wx::Editor->new(
 		$self,
 		-1,
-		Wx::gettext("Inspector:"),
-	);
-
-	$self->{grid} = Wx::Grid->new(
-		$self,
-		-1,
-		Wx::DefaultPosition,
-		Wx::DefaultSize,
-	);
-	$self->{grid}->CreateGrid( 5, 2 );
-	$self->{grid}->EnableEditing(1);
-	$self->{grid}->EnableGridLines(1);
-	$self->{grid}->EnableDragGridSize(0);
-	$self->{grid}->SetMargins( 0, 0 );
-	$self->{grid}->SetColSize( 0, 150 );
-	$self->{grid}->SetColSize( 1, 75 );
-	$self->{grid}->EnableDragColMove(0);
-	$self->{grid}->EnableDragColSize(1);
-	$self->{grid}->SetColLabelSize(0);
-	$self->{grid}->SetColLabelAlignment( Wx::ALIGN_CENTRE, Wx::ALIGN_CENTRE );
-	$self->{grid}->EnableDragRowSize(1);
-	$self->{grid}->SetRowLabelAlignment( Wx::ALIGN_CENTRE, Wx::ALIGN_CENTRE );
-	$self->{grid}->SetDefaultCellAlignment( Wx::ALIGN_LEFT, Wx::ALIGN_TOP );
-
-	Wx::Event::EVT_GRID_CELL_CHANGE(
-		$self->{grid},
-		sub {
-			$self->on_grid_cell_change($_[1]);
-		},
 	);
 
 	$self->{comments_checkbox} = Wx::CheckBox->new(
@@ -201,50 +172,6 @@ sub new {
 		},
 	);
 
-	$self->{help_text} = Wx::TextCtrl->new(
-		$self,
-		-1,
-		"",
-		Wx::DefaultPosition,
-		Wx::DefaultSize,
-		Wx::TE_MULTILINE | Wx::TE_READONLY,
-	);
-
-	$self->{preview} = Padre::Wx::Editor->new(
-		$self,
-		-1,
-	);
-
-	$self->{moose_manual_hyperlink} = Wx::HyperlinkCtrl->new(
-		$self,
-		-1,
-		Wx::gettext("Moose Manual"),
-		"https://metacpan.org/module/Moose::Manual",
-		Wx::DefaultPosition,
-		Wx::DefaultSize,
-		Wx::HL_DEFAULT_STYLE,
-	);
-
-	$self->{moose_cookbook_hyperlink} = Wx::HyperlinkCtrl->new(
-		$self,
-		-1,
-		Wx::gettext("How to Cook a Moose?"),
-		"https://metacpan.org/module/Moose::Cookbook",
-		Wx::DefaultPosition,
-		Wx::DefaultSize,
-		Wx::HL_DEFAULT_STYLE,
-	);
-
-	$self->{moose_website_hyperlink} = Wx::HyperlinkCtrl->new(
-		$self,
-		-1,
-		Wx::gettext("Moose Website"),
-		"http://moose.iinteractive.com/",
-		Wx::DefaultPosition,
-		Wx::DefaultSize,
-		Wx::HL_DEFAULT_STYLE,
-	);
-
 	$self->{reset_button} = Wx::Button->new(
 		$self,
 		-1,
@@ -277,6 +204,49 @@ sub new {
 		},
 	);
 
+	$self->{grid_label} = Wx::StaticText->new(
+		$self,
+		-1,
+		Wx::gettext("Inspector:"),
+	);
+
+	$self->{grid} = Wx::Grid->new(
+		$self,
+		-1,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+	);
+	$self->{grid}->CreateGrid( 5, 2 );
+	$self->{grid}->EnableEditing(1);
+	$self->{grid}->EnableGridLines(1);
+	$self->{grid}->EnableDragGridSize(0);
+	$self->{grid}->SetMargins( 0, 0 );
+	$self->{grid}->SetColSize( 0, 150 );
+	$self->{grid}->SetColSize( 1, 75 );
+	$self->{grid}->EnableDragColMove(0);
+	$self->{grid}->EnableDragColSize(1);
+	$self->{grid}->SetColLabelSize(0);
+	$self->{grid}->SetColLabelAlignment( Wx::ALIGN_CENTRE, Wx::ALIGN_CENTRE );
+	$self->{grid}->EnableDragRowSize(1);
+	$self->{grid}->SetRowLabelAlignment( Wx::ALIGN_CENTRE, Wx::ALIGN_CENTRE );
+	$self->{grid}->SetDefaultCellAlignment( Wx::ALIGN_LEFT, Wx::ALIGN_TOP );
+
+	Wx::Event::EVT_GRID_CELL_CHANGE(
+		$self->{grid},
+		sub {
+			$self->on_grid_cell_change($_[1]);
+		},
+	);
+
+	$self->{help_text} = Wx::TextCtrl->new(
+		$self,
+		-1,
+		"",
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+		Wx::TE_MULTILINE | Wx::TE_READONLY,
+	);
+
 	$self->{about_button} = Wx::Button->new(
 		$self,
 		-1,
@@ -291,6 +261,36 @@ sub new {
 		sub {
 			shift->on_about_button_clicked(@_);
 		},
+	);
+
+	$self->{moose_manual_hyperlink} = Wx::HyperlinkCtrl->new(
+		$self,
+		-1,
+		Wx::gettext("Moose Manual"),
+		"https://metacpan.org/module/Moose::Manual",
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+		Wx::HL_DEFAULT_STYLE,
+	);
+
+	$self->{moose_cookbook_hyperlink} = Wx::HyperlinkCtrl->new(
+		$self,
+		-1,
+		Wx::gettext("How to Cook a Moose?"),
+		"https://metacpan.org/module/Moose::Cookbook",
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+		Wx::HL_DEFAULT_STYLE,
+	);
+
+	$self->{moose_website_hyperlink} = Wx::HyperlinkCtrl->new(
+		$self,
+		-1,
+		Wx::gettext("Moose Website"),
+		"http://moose.iinteractive.com/",
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+		Wx::HL_DEFAULT_STYLE,
 	);
 
 	$self->{close_button} = Wx::Button->new(
@@ -312,18 +312,26 @@ sub new {
 	$action_bar_sizer->Add( $self->{add_subtype_button}, 0, Wx::ALL, 2 );
 	$action_bar_sizer->Add( $self->{add_method_button}, 0, Wx::ALL, 2 );
 
-	my $left_sizer = Wx::BoxSizer->new(Wx::VERTICAL);
-	$left_sizer->Add( $tree_sizer, 1, Wx::EXPAND, 5 );
-	$left_sizer->Add( $action_bar_sizer, 0, Wx::ALL, 2 );
-
 	my $bottom_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
 	$bottom_sizer->Add( $self->{comments_checkbox}, 0, Wx::ALL, 5 );
 	$bottom_sizer->Add( $self->{sample_code_checkbox}, 0, Wx::ALL, 5 );
 
+	my $bSizer10 = Wx::BoxSizer->new(Wx::HORIZONTAL);
+	$bSizer10->Add( $bottom_sizer, 0, Wx::EXPAND, 5 );
+	$bSizer10->Add( 0, 0, 1, Wx::EXPAND, 5 );
+	$bSizer10->Add( $self->{reset_button}, 0, Wx::ALL, 2 );
+	$bSizer10->Add( 0, 0, 0, Wx::EXPAND, 5 );
+	$bSizer10->Add( $self->{generate_code_button}, 0, Wx::ALL, 2 );
+
+	my $left_sizer = Wx::BoxSizer->new(Wx::VERTICAL);
+	$left_sizer->Add( $tree_sizer, 1, Wx::EXPAND, 5 );
+	$left_sizer->Add( $action_bar_sizer, 0, Wx::ALL, 2 );
+	$left_sizer->Add( $self->{preview}, 1, Wx::ALL | Wx::EXPAND, 5 );
+	$left_sizer->Add( $bSizer10, 0, Wx::EXPAND, 5 );
+
 	my $right_sizer = Wx::BoxSizer->new(Wx::VERTICAL);
 	$right_sizer->Add( $self->{grid_label}, 0, Wx::ALL, 5 );
 	$right_sizer->Add( $self->{grid}, 0, Wx::ALL, 5 );
-	$right_sizer->Add( $bottom_sizer, 0, Wx::EXPAND, 5 );
 	$right_sizer->Add( $self->{help_text}, 1, Wx::ALL | Wx::EXPAND, 5 );
 
 	my $top_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
@@ -336,19 +344,13 @@ sub new {
 	$hyperlink_sizer->Add( $self->{moose_website_hyperlink}, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALL, 5 );
 
 	my $buttons_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
-	$buttons_sizer->Add( $hyperlink_sizer, 0, Wx::EXPAND, 5 );
-	$buttons_sizer->Add( 10, 0, 1, Wx::EXPAND, 5 );
-	$buttons_sizer->Add( $self->{reset_button}, 0, Wx::ALL, 2 );
-	$buttons_sizer->Add( 30, 0, 1, Wx::EXPAND, 5 );
-	$buttons_sizer->Add( $self->{generate_code_button}, 0, Wx::ALL, 2 );
-	$buttons_sizer->Add( 30, 0, 0, Wx::EXPAND, 5 );
 	$buttons_sizer->Add( $self->{about_button}, 0, Wx::ALL, 2 );
+	$buttons_sizer->Add( $hyperlink_sizer, 0, Wx::EXPAND, 5 );
 	$buttons_sizer->Add( 30, 0, 1, Wx::EXPAND, 5 );
 	$buttons_sizer->Add( $self->{close_button}, 0, Wx::ALL, 2 );
 
 	my $main_sizer = Wx::BoxSizer->new(Wx::VERTICAL);
 	$main_sizer->Add( $top_sizer, 1, Wx::EXPAND, 5 );
-	$main_sizer->Add( $self->{preview}, 1, Wx::ALL | Wx::EXPAND, 5 );
 	$main_sizer->Add( $buttons_sizer, 0, Wx::EXPAND, 5 );
 
 	$self->SetSizer($main_sizer);
@@ -381,10 +383,6 @@ sub on_add_method_button {
 	$_[0]->main->error('Handler method on_add_method_button for event add_method_button.OnButtonClick not implemented');
 }
 
-sub on_grid_cell_change {
-	$_[0]->main->error('Handler method on_grid_cell_change for event grid.OnGridCellChange not implemented');
-}
-
 sub on_comments_checkbox {
 	$_[0]->main->error('Handler method on_comments_checkbox for event comments_checkbox.OnCheckBox not implemented');
 }
@@ -399,6 +397,10 @@ sub on_reset_button_clicked {
 
 sub on_generate_code_button_clicked {
 	$_[0]->main->error('Handler method on_generate_code_button_clicked for event generate_code_button.OnButtonClick not implemented');
+}
+
+sub on_grid_cell_change {
+	$_[0]->main->error('Handler method on_grid_cell_change for event grid.OnGridCellChange not implemented');
 }
 
 sub on_about_button_clicked {
