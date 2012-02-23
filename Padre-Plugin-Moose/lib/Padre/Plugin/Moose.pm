@@ -83,8 +83,8 @@ Once you enable this Plugin under Padre, you'll get a brand new menu with the fo
 
 =head2 Moose...
 
-Opens up a user-friendly dialog where you can add classes, roles, attributes and subtypes. 
-The dialog contains a tree of stuff that are created while it is open and a preview of
+Opens up a user-friendly dialog where you can add classes, roles, attributes, subtypes and methods.
+The dialog contains a tree of class/role elements that are created while it is open and a preview of
 generated Perl code. It also contains links to Moose manual, cookbook and website.
 
 =head1 BUGS
