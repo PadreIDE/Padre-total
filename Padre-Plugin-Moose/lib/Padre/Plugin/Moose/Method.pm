@@ -5,9 +5,9 @@ use Moose;
 
 our $VERSION = '0.08';
 
-with 'Padre::Plugin::Moose::CanGenerateCode';
-with 'Padre::Plugin::Moose::CanProvideHelp';
-with 'Padre::Plugin::Moose::CanHandleInspector';
+with 'Padre::Plugin::Moose::Role::CanGenerateCode';
+with 'Padre::Plugin::Moose::Role::CanProvideHelp';
+with 'Padre::Plugin::Moose::Role::CanHandleInspector';
 
 has 'name' => ( is => 'rw', isa => 'Str' );
 

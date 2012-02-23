@@ -5,8 +5,8 @@ use Moose;
 
 our $VERSION = '0.08';
 
-with 'Padre::Plugin::Moose::CanGenerateCode';
-with 'Padre::Plugin::Moose::CanProvideHelp';
+with 'Padre::Plugin::Moose::Role::CanGenerateCode';
+with 'Padre::Plugin::Moose::Role::CanProvideHelp';
 
 has 'roles'   => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
 has 'classes' => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );

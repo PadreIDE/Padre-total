@@ -1,4 +1,4 @@
-package Padre::Plugin::Moose::HasClassMembers;
+package Padre::Plugin::Moose::Role::HasClassMembers;
 
 use Moose::Role;
 use namespace::clean;
@@ -44,6 +44,6 @@ __END__
 
 =head1 NAME
 
-Padre::Plugin::Moose::HasClassMembers - Something that has attributes, subtypes and methods
+Padre::Plugin::Moose::Role::HasClassMembers - Something that has attributes, subtypes and methods
 
 =cut
