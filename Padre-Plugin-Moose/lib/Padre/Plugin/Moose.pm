@@ -21,7 +21,7 @@ sub padre_interfaces {
 # Padre::Plugin Methods
 
 sub plugin_name {
-	Wx::gettext('Moose...');
+	Wx::gettext('Moose');
 }
 
 sub plugin_disable {
@@ -43,7 +43,7 @@ sub plugin_disable {
 sub menu_plugins {
 	my $self      = shift;
 	my $main      = $self->main;
-	my $menu_item = Wx::MenuItem->new( undef, -1, $self->plugin_name . "\tF8", );
+	my $menu_item = Wx::MenuItem->new( undef, -1, $self->plugin_name. "...\tF8", );
 	Wx::Event::EVT_MENU(
 		$main,
 		$menu_item,
