@@ -63,7 +63,7 @@ sub new {
 	require Padre::Plugin::Moose::Program;
 	$self->{program}         = Padre::Plugin::Moose::Program->new;
 	$self->{current_element} = $self->{program};
-	$self->{current_parent}  = undef;
+	$self->{current_parent}  = $self->{program};
 
 	# Defaults
 	$self->{comments_checkbox}->SetValue(1);
@@ -135,8 +135,9 @@ sub on_tree_selection_change {
 	my $self  = shift;
 	my $event = shift;
 
+	my $tree = $self->{tree};
 	my $item = $event->GetItem or return;
-	my $element = $self->{tree}->GetPlData($item) or return;
+	my $element = $tree->GetPlData($item) or return;
 
 	my $is_parent = $element->isa('Padre::Plugin::Moose::Class') ||
 		$element->isa('Padre::Plugin::Moose::Role');
@@ -152,7 +153,13 @@ sub on_tree_selection_change {
 	$self->{help_text}->SetValue($element->provide_help);
 
 	$self->{current_element} = $element;
-	$self->{current_parent} = $element if $is_parent;
+
+	# Find parent element
+	if ( Scalar::Util::blessed($element) =~ /(Attribute|Subtype|Method)$/ ) {
+		$self->{current_parent} = $tree->GetPlData($tree->GetItemParent($item));
+	} else {
+		$self->{current_parent} = $element if $is_parent;
+	}
 
 	my $not_program = not $is_program;
 	$self->{add_attribute_button}->Show($not_program);
