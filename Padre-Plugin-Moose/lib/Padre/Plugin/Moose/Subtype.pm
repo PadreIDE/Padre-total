@@ -7,6 +7,7 @@ our $VERSION = '0.08';
 
 with 'Padre::Plugin::Moose::CanGenerateCode';
 with 'Padre::Plugin::Moose::CanProvideHelp';
+with 'Padre::Plugin::Moose::CanHandleInspector';
 
 has 'name'          => ( is => 'rw', isa => 'Str' );
 has 'base_type'   => ( is => 'rw', isa => 'Str', default => '' );

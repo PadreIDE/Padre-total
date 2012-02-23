@@ -16,10 +16,10 @@ my %INSPECTOR = (
 
 	'Class' => [
 		{ name => Wx::gettext('Name:') },
-		{ name => Wx::gettext('Superclass:') },
+		{ name => Wx::gettext('Superclasses:') },
 		{ name => Wx::gettext('Roles:') },
 		{ name => Wx::gettext('Clean namespace?'), is_bool => 1 },
-		{ name => Wx::gettext('Make Immutable?'), is_bool => 1 }
+		{ name => Wx::gettext('Make immutable?'), is_bool => 1 }
 	],
 
 	'Role' => [
@@ -29,17 +29,19 @@ my %INSPECTOR = (
 
 	'Attribute' => [
 		{ name => Wx::gettext('Name:') },
+		{ name => Wx::gettext('Access type:') },
 		{ name => Wx::gettext('Type:') },
-		{ name => Wx::gettext('Access:') },
-		{ name => Wx::gettext('Trigger:'), is_bool => 1 },
-		{ name => Wx::gettext('Requires:'), is_bool => 1 }
+		{ name => Wx::gettext('Required:'), is_bool => 1 },
+		{ name => Wx::gettext('Trigger:') },
+		
+		
 	],
 
 	'Subtype' => [
 		{ name => Wx::gettext('Name:') },
-		{ name => Wx::gettext('Base Type:') },
+		{ name => Wx::gettext('Base type:') },
 		{ name => Wx::gettext('Constraint:') },
-		{ name => Wx::gettext('Error Message:') },
+		{ name => Wx::gettext('Error message:') },
 	],
 
 	'Method' => [
@@ -102,7 +104,7 @@ sub on_grid_cell_change {
 		}
 	} elsif ( $element->isa('Padre::Plugin::Moose::Attribute') ) {
 		my $row = 0;
-		for my $field (qw(name type access trigger required)) {
+		for my $field (qw(name access_type type required trigger)) {
 			$element->$field( $grid->GetCellValue( $row++, 1 ) );
 		}
 	} elsif ( $element->isa('Padre::Plugin::Moose::Subtype') ) {
