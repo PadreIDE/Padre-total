@@ -248,7 +248,6 @@ sub show_inspector {
 
 	$_->Show(1) for ( $self->{grid_label}, $grid );
 	$self->Layout;
-	$grid->SetFocus;
 	$grid->SetGridCursor( 0, 1 );
 
 	$element->write_to_inspector($grid)
