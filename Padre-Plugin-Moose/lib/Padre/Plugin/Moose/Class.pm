@@ -10,10 +10,10 @@ with 'Padre::Plugin::Moose::HasClassMembers';
 with 'Padre::Plugin::Moose::CanProvideHelp';
 with 'Padre::Plugin::Moose::CanHandleInspector';
 
-has 'name'         => ( is => 'rw', isa => 'Str',      default => '' );
-has 'superclasses' => ( is => 'rw', isa => 'Str',      default => '' );
-has 'roles'        => ( is => 'rw', isa => 'Str',      default => '' );
-has 'immutable'           => ( is => 'rw', isa => 'Bool' );
+has 'name'         => ( is => 'rw', isa => 'Str', default => '' );
+has 'superclasses' => ( is => 'rw', isa => 'Str', default => '' );
+has 'roles'        => ( is => 'rw', isa => 'Str', default => '' );
+has 'immutable'    => ( is => 'rw', isa => 'Bool' );
 has 'namespace_autoclean' => ( is => 'rw', isa => 'Bool' );
 
 sub generate_code {
@@ -75,7 +75,9 @@ sub generate_code {
 
 sub provide_help {
 	require Wx;
-	return Wx::gettext(' A class is a blueprint of how to create objects of itself. A class can contain attributes, subtypes and methods which enable objects to have state and behavior.');
+	return Wx::gettext(
+		' A class is a blueprint of how to create objects of itself. A class can contain attributes, subtypes and methods which enable objects to have state and behavior.'
+	);
 }
 
 __PACKAGE__->meta->make_immutable;

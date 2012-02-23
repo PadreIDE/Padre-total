@@ -28,9 +28,7 @@ sub plugin_disable {
 	my $self = shift;
 
 	# Destroy resident dialog
-	if(defined $self->{dialog}) {
-		$self->{dialog}->Destroy;
-	}
+	$self->{dialog}->Destroy if defined $self->{dialog};
 
 	# TODO uncomment once Padre 0.96 is released
 	#$_[0]->unload(
@@ -52,7 +50,7 @@ sub menu_plugins {
 		sub {
 			eval {
 				require Padre::Plugin::Moose::Main;
-				$self->{dialog} = Padre::Plugin::Moose::Main->new($main) 
+				$self->{dialog} = Padre::Plugin::Moose::Main->new($main)
 					unless defined $self->{dialog};
 				$self->{dialog}->ShowModal;
 			};

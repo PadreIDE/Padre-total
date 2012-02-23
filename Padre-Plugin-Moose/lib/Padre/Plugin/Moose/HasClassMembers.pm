@@ -5,9 +5,9 @@ use namespace::clean;
 
 our $VERSION = '0.08';
 
-has 'attributes'   => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
-has 'subtypes'     => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
-has 'methods'      => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
+has 'attributes' => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
+has 'subtypes'   => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
+has 'methods'    => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
 
 sub to_class_members_code {
 	my $self     = shift;
@@ -32,7 +32,7 @@ sub to_class_members_code {
 	for my $method ( @{ $self->methods } ) {
 		$code .= $method->generate_code($comments);
 	}
-	
+
 	return $code;
 }
 

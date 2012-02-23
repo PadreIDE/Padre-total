@@ -33,8 +33,8 @@ my %INSPECTOR = (
 		{ name => Wx::gettext('Type:') },
 		{ name => Wx::gettext('Required:'), is_bool => 1 },
 		{ name => Wx::gettext('Trigger:') },
-		
-		
+
+
 	],
 
 	'Subtype' => [
@@ -80,7 +80,7 @@ sub new {
 	my $style = $main->config->editor_style;
 	my $theme = Padre::Wx::Theme->find($style)->clone;
 	$theme->apply($preview);
-	
+
 	$self->show_code_in_preview(1);
 
 	return $self;
@@ -124,34 +124,34 @@ sub on_tree_selection_change {
 	my $self  = shift;
 	my $event = shift;
 
-	my $tree = $self->{tree};
-	my $item = $event->GetItem or return;
+	my $tree    = $self->{tree};
+	my $item    = $event->GetItem or return;
 	my $element = $tree->GetPlData($item) or return;
 
-	my $is_parent = $element->isa('Padre::Plugin::Moose::Class') ||
-		$element->isa('Padre::Plugin::Moose::Role');
+	my $is_parent = $element->isa('Padre::Plugin::Moose::Class')
+		|| $element->isa('Padre::Plugin::Moose::Role');
 	my $is_program = $element->isa('Padre::Plugin::Moose::Program');
 
-	if ( $is_program ) {
+	if ($is_program) {
 		$_->Show(0) for ( $self->{grid_label}, $self->{grid} );
 	} else {
 		$self->show_inspector($element);
 	}
-	
+
 	# Display help about the current element
-	$self->{help_text}->SetValue($element->provide_help);
+	$self->{help_text}->SetValue( $element->provide_help );
 
 	$self->{current_element} = $element;
 
 	# Find parent element
 	if ( Scalar::Util::blessed($element) =~ /(Attribute|Subtype|Method)$/ ) {
-		$self->{current_parent} = $tree->GetPlData($tree->GetItemParent($item));
+		$self->{current_parent} = $tree->GetPlData( $tree->GetItemParent($item) );
 	} else {
 		$self->{current_parent} = $element if $is_parent;
 	}
 
-	my $can_add_class_member = (not $is_program) && 
-		$self->{current_parent} != $self->{program};
+	my $can_add_class_member = ( not $is_program )
+		&& $self->{current_parent} != $self->{program};
 	$self->{add_attribute_button}->Show($can_add_class_member);
 	$self->{add_subtype_button}->Show($can_add_class_member);
 	$self->{add_method_button}->Show($can_add_class_member);
@@ -159,14 +159,14 @@ sub on_tree_selection_change {
 	$self->Layout;
 
 	# TODO improve the crude workaround to positioning
-	unless($is_program) {
-		my $preview = $self->{preview};
-		my $code = $preview->GetText;
-		my @lines = split /\n/, $code;
+	unless ($is_program) {
+		my $preview  = $self->{preview};
+		my $code     = $preview->GetText;
+		my @lines    = split /\n/, $code;
 		my $line_num = 0;
 		for my $line (@lines) {
 			my $name = $element->name;
-			if($line =~ /.+?$name.+?/) {
+			if ( $line =~ /.+?$name.+?/ ) {
 				$preview->goto_line_centerize($line_num);
 				last;
 			}
@@ -432,7 +432,7 @@ sub on_comments_checkbox {
 sub on_reset_button_clicked {
 	my $self = shift;
 
-	if($self->main->yes_no(Wx::gettext('Do you really want to reset?'))) {
+	if ( $self->main->yes_no( Wx::gettext('Do you really want to reset?') ) ) {
 		$self->restore_defaults;
 		$self->show_code_in_preview(1);
 	}
@@ -449,14 +449,14 @@ sub on_generate_code_button_clicked {
 			);
 			Wx::Event::EVT_IDLE( $self, undef );
 		}
-		);
+	);
 
 	$self->EndModal(Wx::ID_OK);
 }
 
 sub restore_defaults {
 	my $self = shift;
-	
+
 	$self->{class_count}     = 1;
 	$self->{role_count}      = 1;
 	$self->{attribute_count} = 1;
