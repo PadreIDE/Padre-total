@@ -1,5 +1,14 @@
 Changes for Padre-Plugin-Moose
 
+0.08  2012.2.23 (AZAWAWI)
+	- Refactored the dialog to be modal and improved its UI
+	- The dialog is resident until the plugin is disabled.
+	- Generate closes the dialog but does not destroy your work. Added "reset" button
+	- Class members can be added now when inside a class/role. There is no need to click on the parent again as before.
+	- Disable adding class members when you're over Program node
+	- Added q{ my $self = shift } to generated method body.
+	- Subtype has now a base type and is usable now.
+
 0.07  2012.2.22
 	- Show the generated code that is related the currently selected element (AZAWAWI)
 	- Added keyboard button accelerators and "Insert code" is now "Generate" (BOWTIE, AZAWAWI)
