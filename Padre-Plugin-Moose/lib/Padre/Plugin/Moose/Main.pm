@@ -148,10 +148,11 @@ sub on_tree_selection_change {
 		$self->{current_parent} = $element if $is_parent;
 	}
 
-	my $not_program = not $is_program;
-	$self->{add_attribute_button}->Show($not_program);
-	$self->{add_subtype_button}->Show($not_program);
-	$self->{add_method_button}->Show($not_program);
+	my $can_add_class_member = (not $is_program) && 
+		$self->{current_parent} != $self->{program};
+	$self->{add_attribute_button}->Show($can_add_class_member);
+	$self->{add_subtype_button}->Show($can_add_class_member);
+	$self->{add_method_button}->Show($can_add_class_member);
 
 	$self->Layout;
 
