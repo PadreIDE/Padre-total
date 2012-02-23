@@ -86,6 +86,7 @@ sub on_tree_selection_change {
 	$self->{current_element} = $element;
 
 	# Find parent element
+	require Scalar::Util;
 	if ( Scalar::Util::blessed($element) =~ /(Attribute|Subtype|Method)$/ ) {
 		$self->{current_parent} = $tree->GetPlData( $tree->GetItemParent($item) );
 	} else {
@@ -103,13 +104,14 @@ sub on_tree_selection_change {
 	# TODO improve the crude workaround to positioning
 	unless ($is_program) {
 		my $preview  = $self->{preview};
-		my $code     = $preview->GetText;
-		my @lines    = split /\n/, $code;
 		my $line_num = 0;
-		for my $line (@lines) {
+		for my $line (split /\n/, $preview->GetText) {
 			my $name = $element->name;
-			if ( $line =~ /.+?$name.+?/ ) {
-				$preview->goto_line_centerize($line_num);
+			if ( $line =~ /$name/ ) {
+				my $position = $preview->PositionFromLine($line_num);
+				$preview->SetCurrentPos( $position );
+				$preview->SetAnchor( $position );
+				$preview->ScrollToLine( $line_num );
 				last;
 			}
 			$line_num++;
