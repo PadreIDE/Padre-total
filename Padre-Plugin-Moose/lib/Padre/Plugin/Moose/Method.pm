@@ -21,9 +21,11 @@ sub provide_help {
 }
 
 sub read_from_inspector {
+	$_[0]->name( $_[1]->GetCellValue( 0, 1 ) );
 }
 
 sub write_to_inspector {
+	$_[1]->SetCellValue( 0, 1, $_[0]->name );
 }
 
 __PACKAGE__->meta->make_immutable;

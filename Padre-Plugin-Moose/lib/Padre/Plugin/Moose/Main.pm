@@ -91,33 +91,11 @@ sub on_grid_cell_change {
 	my $self = shift;
 
 	my $element = $self->{current_element} or return;
-	my $grid = $self->{grid};
-	if ( $element->isa('Padre::Plugin::Moose::Class') ) {
-		my $row = 0;
-		for my $field (qw(name superclasses roles immutable namespace_autoclean)) {
-			$element->$field( $grid->GetCellValue( $row++, 1 ) );
-		}
-	} elsif ( $element->isa('Padre::Plugin::Moose::Role') ) {
-		my $row = 0;
-		for my $field (qw(name requires_list)) {
-			$element->$field( $grid->GetCellValue( $row++, 1 ) );
-		}
-	} elsif ( $element->isa('Padre::Plugin::Moose::Attribute') ) {
-		my $row = 0;
-		for my $field (qw(name access_type type required trigger)) {
-			$element->$field( $grid->GetCellValue( $row++, 1 ) );
-		}
-	} elsif ( $element->isa('Padre::Plugin::Moose::Subtype') ) {
-		my $row = 0;
-		for my $field (qw(name base_type constraint error_message)) {
-			$element->$field( $grid->GetCellValue( $row++, 1 ) );
-		}
-	} elsif ( $element->isa('Padre::Plugin::Moose::Method') ) {
-		$element->name( $grid->GetCellValue( 0, 1 ) );
-	}
+
+	$element->read_from_inspector($self->{grid})
+		if $element->does('Padre::Plugin::Moose::Role::CanHandleInspector');
 
 	$self->show_code_in_preview(0);
-
 }
 
 sub on_tree_selection_change {
@@ -311,30 +289,8 @@ sub show_inspector {
 	$grid->SetFocus;
 	$grid->SetGridCursor( 0, 1 );
 
-
-	if ( $element->isa('Padre::Plugin::Moose::Class') ) {
-		my $row = 0;
-		for my $field (qw(name superclasses roles immutable namespace_autoclean)) {
-			$grid->SetCellValue( $row++, 1, $element->$field );
-		}
-	} elsif ( $element->isa('Padre::Plugin::Moose::Role') ) {
-		my $row = 0;
-		for my $field (qw(name requires_list)) {
-			$grid->SetCellValue( $row++, 1, $element->$field );
-		}
-	} elsif ( $element->isa('Padre::Plugin::Moose::Attribute') ) {
-		my $row = 0;
-		for my $field (qw(name type access_type trigger required)) {
-			$grid->SetCellValue( $row++, 1, $element->$field );
-		}
-	} elsif ( $element->isa('Padre::Plugin::Moose::Subtype') ) {
-		my $row = 0;
-		for my $field (qw(name base_type constraint error_message)) {
-			$grid->SetCellValue( $row++, 1, $element->$field );
-		}
-	} elsif ( $element->isa('Padre::Plugin::Moose::Method') ) {
-		$grid->SetCellValue( 0, 1, $element->name );
-	}
+	$element->write_to_inspector($grid)
+		if $element->does('Padre::Plugin::Moose::Role::CanHandleInspector');
 }
 
 sub on_add_class_button {

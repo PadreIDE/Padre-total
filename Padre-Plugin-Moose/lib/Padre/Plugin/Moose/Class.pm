@@ -81,9 +81,23 @@ sub provide_help {
 }
 
 sub read_from_inspector {
+	my $self = shift;
+	my $grid = shift;
+
+	my $row = 0;
+	for my $field (qw(name superclasses roles immutable namespace_autoclean)) {
+		$self->$field( $grid->GetCellValue( $row++, 1 ) );
+	}
 }
 
 sub write_to_inspector {
+	my $self = shift;
+	my $grid = shift;
+
+	my $row = 0;
+	for my $field (qw(name superclasses roles immutable namespace_autoclean)) {
+		$grid->SetCellValue( $row++, 1, $self->$field );
+	}
 }
 
 __PACKAGE__->meta->make_immutable;
