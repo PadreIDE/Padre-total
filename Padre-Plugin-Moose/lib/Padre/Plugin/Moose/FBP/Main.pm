@@ -245,6 +245,22 @@ sub new {
 		Wx::HL_DEFAULT_STYLE,
 	);
 
+	$self->{reset_button} = Wx::Button->new(
+		$self,
+		-1,
+		Wx::gettext("Reset"),
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+	);
+
+	Wx::Event::EVT_BUTTON(
+		$self,
+		$self->{reset_button},
+		sub {
+			shift->on_reset_button_clicked(@_);
+		},
+	);
+
 	$self->{generate_code_button} = Wx::Button->new(
 		$self,
 		-1,
@@ -322,9 +338,12 @@ sub new {
 	my $buttons_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
 	$buttons_sizer->Add( $hyperlink_sizer, 0, Wx::EXPAND, 5 );
 	$buttons_sizer->Add( 10, 0, 1, Wx::EXPAND, 5 );
+	$buttons_sizer->Add( $self->{reset_button}, 0, Wx::ALL, 2 );
+	$buttons_sizer->Add( 30, 0, 1, Wx::EXPAND, 5 );
 	$buttons_sizer->Add( $self->{generate_code_button}, 0, Wx::ALL, 2 );
 	$buttons_sizer->Add( 30, 0, 0, Wx::EXPAND, 5 );
 	$buttons_sizer->Add( $self->{about_button}, 0, Wx::ALL, 2 );
+	$buttons_sizer->Add( 30, 0, 1, Wx::EXPAND, 5 );
 	$buttons_sizer->Add( $self->{close_button}, 0, Wx::ALL, 2 );
 
 	my $main_sizer = Wx::BoxSizer->new(Wx::VERTICAL);
@@ -372,6 +391,10 @@ sub on_comments_checkbox {
 
 sub on_sample_code_checkbox {
 	$_[0]->main->error('Handler method on_sample_code_checkbox for event sample_code_checkbox.OnCheckBox not implemented');
+}
+
+sub on_reset_button_clicked {
+	$_[0]->main->error('Handler method on_reset_button_clicked for event reset_button.OnButtonClick not implemented');
 }
 
 sub on_generate_code_button_clicked {

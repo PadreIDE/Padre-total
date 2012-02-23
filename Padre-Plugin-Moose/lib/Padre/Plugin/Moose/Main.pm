@@ -54,20 +54,7 @@ sub new {
 	my $self = $class->SUPER::new($main);
 	$self->CenterOnParent;
 
-	$self->{class_count}     = 1;
-	$self->{role_count}      = 1;
-	$self->{attribute_count} = 1;
-	$self->{subtype_count}   = 1;
-	$self->{method_count}    = 1;
-
-	require Padre::Plugin::Moose::Program;
-	$self->{program}         = Padre::Plugin::Moose::Program->new;
-	$self->{current_element} = $self->{program};
-	$self->{current_parent}  = $self->{program};
-
-	# Defaults
-	$self->{comments_checkbox}->SetValue(1);
-	$self->{sample_code_checkbox}->SetValue(1);
+	$self->restore_defaults;
 
 	# TODO Bug Alias to fix the wxFormBuilder bug regarding this one
 	my $grid = $self->{grid};
@@ -439,12 +426,48 @@ sub on_comments_checkbox {
 	$_[0]->show_code_in_preview(1);
 }
 
+sub on_reset_button_clicked {
+	my $self = shift;
+
+	if($self->main->yes_no(Wx::gettext('Do you really want to reset?'))) {
+		$self->restore_defaults;
+		$self->show_code_in_preview(1);
+	}
+}
+
 sub on_generate_code_button_clicked {
 	my $self = shift;
 
-	$self->main->on_new;
-	my $editor = $self->current->editor or return;
-	$editor->insert_text( $self->{preview}->GetText );
+	Wx::Event::EVT_IDLE(
+		$self,
+		sub {
+			$self->main->new_document_from_string(
+				$self->{preview}->GetText => 'application/x-perl',
+			);
+			Wx::Event::EVT_IDLE( $self, undef );
+		}
+		);
+
+	$self->EndModal(Wx::ID_OK);
+}
+
+sub restore_defaults {
+	my $self = shift;
+	
+	$self->{class_count}     = 1;
+	$self->{role_count}      = 1;
+	$self->{attribute_count} = 1;
+	$self->{subtype_count}   = 1;
+	$self->{method_count}    = 1;
+
+	require Padre::Plugin::Moose::Program;
+	$self->{program}         = Padre::Plugin::Moose::Program->new;
+	$self->{current_element} = $self->{program};
+	$self->{current_parent}  = $self->{program};
+
+	# Defaults
+	$self->{comments_checkbox}->SetValue(1);
+	$self->{sample_code_checkbox}->SetValue(1);
 }
 
 1;
