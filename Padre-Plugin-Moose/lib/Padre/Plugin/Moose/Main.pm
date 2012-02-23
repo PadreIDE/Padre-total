@@ -4,11 +4,13 @@ use 5.008;
 use strict;
 use warnings;
 use Padre::Plugin::Moose::FBP::Main ();
+use Padre::Wx::Role::Dialog ();
 
 our $VERSION = '0.08';
 
 our @ISA = qw{
 	Padre::Plugin::Moose::FBP::Main
+	Padre::Wx::Role::Dialog
 };
 
 sub new {
@@ -155,7 +157,7 @@ sub show_code_in_preview {
 		$self->update_tree($should_select_item);
 	};
 	if ($@) {
-		$self->main->error( Wx::gettext( "Error: " . $@ ) );
+		$self->error( Wx::gettext( "Error: " . $@ ) );
 	}
 }
 
@@ -351,7 +353,7 @@ sub on_comments_checkbox {
 sub on_reset_button_clicked {
 	my $self = shift;
 
-	if ( $self->main->yes_no( Wx::gettext('Do you really want to reset?') ) ) {
+	if ( $self->yes_no( Wx::gettext('Do you really want to reset?') ) ) {
 		$self->restore_defaults;
 		$self->show_code_in_preview(1);
 	}
