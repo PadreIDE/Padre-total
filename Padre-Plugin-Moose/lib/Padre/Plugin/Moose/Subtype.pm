@@ -18,9 +18,9 @@ sub generate_code {
 	my $self = shift;
 
 	my $code = "subtype '" . $self->name . "'";
-	$code .= ",\n\tas '" . $self->base_type . "'";
+	$code .= ",\n\tas '" . $self->base_type . "'" if defined $self->base_type && $self->base_type ne '';
 	$code .= ",\n\twhere { " . $self->constraint . " }"
-		if ( defined $self->constraint )
+		if ( defined $self->constraint && $self->constraint ne '' )
 		and $self->constraint ne '';
 	$code .= ",\n\tmessage { \"" . $self->error_message . "\" }"
 		if ( defined $self->error_message )

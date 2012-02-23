@@ -10,7 +10,7 @@ with 'Padre::Plugin::Moose::Role::CanProvideHelp';
 with 'Padre::Plugin::Moose::Role::CanHandleInspector';
 
 has 'name'        => ( is => 'rw', isa => 'Str' );
-has 'access_type' => ( is => 'rw', isa => 'Str', default => 'rw' );
+has 'access_type' => ( is => 'rw', isa => 'Str' );
 has 'type'        => ( is => 'rw', isa => 'Str' );
 has 'trigger'     => ( is => 'rw', isa => 'Str' );
 has 'required'    => ( is => 'rw', isa => 'Bool' );
@@ -19,16 +19,15 @@ sub generate_code {
 	my $self    = shift;
 	my $comment = shift;
 
-	my $code = '';
+	my $has_code = '';
+	$has_code .= ( "\tis  => '" . $self->access_type . "',\n" ) if defined $self->access_type && $self->access_type ne '';
+	$has_code .= ( "\tisa => '" . $self->type . "',\n" )        if defined $self->type && $self->type ne '';
+	$has_code .= ( "\trequired => 1,\n")                         if $self->required;
+	$has_code .= ( "\ttrigger => " . $self->trigger . ",\n" )   if defined $self->trigger && $self->trigger ne '';
 
-	$code = "has '" . $self->name . "' => (\n";
-	$code .= ( "    is  => '" . $self->access_type . "',\n" ) if defined $self->access_type;
-	$code .= ( "    isa => '" . $self->type . "',\n" )        if defined $self->type;
-	$code .= ( "    trigger => " . $self->trigger . ",\n" )   if $self->trigger;
-	$code .= ("    required => 1,\n")                         if $self->required;
-	$code .= ");\n";
-
-	return $code;
+	return "has '" . $self->name . "'"
+		. ( $has_code ne '' ? qq{ => (\n$has_code)} : q{})
+		. ";\n";
 }
 
 sub provide_help {

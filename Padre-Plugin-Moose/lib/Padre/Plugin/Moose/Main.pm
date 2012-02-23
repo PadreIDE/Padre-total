@@ -92,7 +92,7 @@ sub on_grid_cell_change {
 
 	my $element = $self->{current_element} or return;
 
-	$element->read_from_inspector($self->{grid})
+	$element->read_from_inspector( $self->{grid} )
 		if $element->does('Padre::Plugin::Moose::Role::CanHandleInspector');
 
 	$self->show_code_in_preview(0);
