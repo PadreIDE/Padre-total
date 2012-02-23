@@ -4,7 +4,7 @@ use 5.008;
 use strict;
 use warnings;
 use Padre::Plugin::Moose::FBP::Main ();
-use Padre::Wx::Role::Dialog ();
+use Padre::Wx::Role::Dialog         ();
 
 our $VERSION = '0.08';
 
@@ -119,20 +119,15 @@ sub on_tree_selection_change {
 
 sub on_about_button_clicked {
 	require Moose;
-	require Padre::Unload;
-	my $about = Wx::AboutDialogInfo->new;
-	$about->SetName('Padre::Plugin::Moose');
-	$about->SetDescription(
-		Wx::gettext('Moose support for Padre') . "\n\n"
-			. sprintf(
+	$_[0]->message(
+		Wx::gettext('Moose support for Padre') . "\n\n" . sprintf(
 			Wx::gettext('This system is running Moose version %s'),
-			$Moose::VERSION
-			)
+			$Moose::VERSION,
+		)
+		. "\n\n" . 
+		Wx::gettext('Written with passion in 2012 by Ahmad M. Zawawi (c)'),
+		'Padre::Plugin::Moose'
 	);
-	$about->SetVersion($Padre::Plugin::Moose::VERSION);
-	Wx::AboutBox($about);
-
-	return;
 }
 
 sub show_code_in_preview {
@@ -234,7 +229,7 @@ sub show_inspector {
 	}
 
 	my $grid_data = $element->get_grid_data;
-	my $grid = $self->{grid};
+	my $grid      = $self->{grid};
 	$grid->DeleteRows( 0, $grid->GetNumberRows );
 	$grid->InsertRows( 0, scalar @$grid_data );
 	my $row_index = 0;
@@ -243,8 +238,8 @@ sub show_inspector {
 		if ( defined $row->{is_bool} ) {
 			$grid->SetCellEditor( $row_index, 1, Wx::GridCellBoolEditor->new );
 			$grid->SetCellValue( $row_index, 1, 1 );
-		} elsif( defined $row->{choices} ) {
-			$grid->SetCellEditor( $row_index, 1, Wx::GridCellBoolEditor->new($row->{choices}));
+		} elsif ( defined $row->{choices} ) {
+			$grid->SetCellEditor( $row_index, 1, Wx::GridCellBoolEditor->new( $row->{choices} ) );
 		}
 		$row_index++;
 	}
