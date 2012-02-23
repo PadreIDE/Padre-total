@@ -1,4 +1,8 @@
 Revision history for Padre-Plugin-SpellCheck
+1.23    2012.TBA
+    - fix the config DB to check on enable for past and new install (BOWTIE)
+    - Bump version to 1.23 (BOWTIE)
+    -
 
 1.22    2012.02.22
 	- remove dead code in plugin_icon method (ZENOG)
