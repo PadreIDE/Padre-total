@@ -3,12 +3,14 @@ package Padre::Plugin::SpellCheck::Engine;
 use warnings;
 use strict;
 
-use Padre::Logger;
-use Padre::Unload                          ();
-use Text::Aspell ();
+our $VERSION = '1.23';
 
-use Class::XSAccessor {	
-	replace => 1,
+use Padre::Logger;
+use Padre::Unload ();
+use Text::Aspell  ();
+
+use Class::XSAccessor {
+	replace   => 1,
 	accessors => {
 		_ignore    => '_ignore',    # list of words to ignore
 		                            # _plugin    => '_plugin',    # ref to spellecheck plugin
@@ -31,29 +33,30 @@ my %MIMETYPE_MODE = (
 # new
 #######
 sub new {
-	my $class = shift;   # What class are we constructing?
-	my $self  = {};      # Allocate new memory
+	my $class = shift; # What class are we constructing?
+	my $self  = {};    # Allocate new memory
 	bless $self, $class; # Mark it of the right type
 	$self->_init(@_);    # Call _init with remaining args
 	return $self;
 }
+
 sub new_old {
 
 	# my ( $class, $plugin, $mimetype ) = @_;
 	my ( $class, $mimetype, $iso ) = @_;
-	my $self  = {};    # Allocate new memory
+	my $self = {};       # Allocate new memory
 	bless $self, $class; # Mark it of the right type
-	# my $self = bless {
-		# _ignore => {},
+	                     # my $self = bless {
+	                     # _ignore => {},
 
-		# # _plugin    => $plugin,
-		# _utf_chars => 0,
+	# # _plugin    => $plugin,
+	# _utf_chars => 0,
 	# }, $class;
-	
+
 	$self->_ignore( {} );
 	$self->_utf_chars(0);
-	
-	
+
+
 	# # create speller object
 	my $speller = Text::Aspell->new;
 
@@ -65,11 +68,11 @@ sub new_old {
 	# # $speller->set_option( 'lang',     $config->{dictionary} );
 	$speller->set_option( 'lang', $iso );
 
-	# #$speller->print_config;  # to STDOUT	
+	# #$speller->print_config;  # to STDOUT
 	# # TRACE( "print config info = " . $speller->print_config ) if DEBUG;
-	
+
 	# my $speller = Text::SpellChecker->new(text => $text, from_frozen => $serialized_data, lang => $lang)
-	
+
 	if ( exists $MIMETYPE_MODE{$mimetype} ) {
 		if ( not defined $speller->set_option( 'mode', $MIMETYPE_MODE{$mimetype} ) ) {
 			my $err = $speller->errstr;
@@ -87,11 +90,13 @@ sub new_old {
 # _init
 #######
 sub _init {
+
 	# my ( $self, %args ) = @_;
 	my ( $self, $mimetype, $iso ) = @_;
-	
+
 	$self->_ignore( {} );
 	$self->_utf_chars(0);
+
 	# create speller object
 	my $speller = Text::Aspell->new;
 
@@ -103,9 +108,9 @@ sub _init {
 	# $speller->set_option( 'lang',     $config->{dictionary} );
 	$speller->set_option( 'lang', $iso );
 
-	#$speller->print_config;  # to STDOUT	
+	#$speller->print_config;  # to STDOUT
 	# TRACE( "print config info = " . $speller->print_config ) if DEBUG;
-	
+
 	if ( exists $MIMETYPE_MODE{$mimetype} ) {
 		if ( not defined $speller->set_option( 'mode', $MIMETYPE_MODE{$mimetype} ) ) {
 			my $err = $speller->errstr;
