@@ -37,7 +37,8 @@ my %INSPECTOR = (
 
 	'Subtype' => [
 		{ name => Wx::gettext('Name:') },
-		{ name => Wx::gettext('Type:') },
+		{ name => Wx::gettext('Base Type:') },
+		{ name => Wx::gettext('Constraint:') },
 		{ name => Wx::gettext('Error Message:') },
 	],
 
@@ -118,7 +119,7 @@ sub on_grid_cell_change {
 		}
 	} elsif ( $element->isa('Padre::Plugin::Moose::Subtype') ) {
 		my $row = 0;
-		for my $field (qw(name constraint error_message)) {
+		for my $field (qw(name base_type constraint error_message)) {
 			$element->$field( $grid->GetCellValue( $row++, 1 ) );
 		}
 	} elsif ( $element->isa('Padre::Plugin::Moose::Method') ) {
@@ -327,7 +328,7 @@ sub show_inspector {
 		}
 	} elsif ( $element->isa('Padre::Plugin::Moose::Subtype') ) {
 		my $row = 0;
-		for my $field (qw(name constraint error_message)) {
+		for my $field (qw(name base_type constraint error_message)) {
 			$grid->SetCellValue( $row++, 1, $element->$field );
 		}
 	} elsif ( $element->isa('Padre::Plugin::Moose::Method') ) {

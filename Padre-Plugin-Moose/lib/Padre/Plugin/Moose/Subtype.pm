@@ -9,22 +9,21 @@ with 'Padre::Plugin::Moose::CanGenerateCode';
 with 'Padre::Plugin::Moose::CanProvideHelp';
 
 has 'name'          => ( is => 'rw', isa => 'Str' );
+has 'base_type'   => ( is => 'rw', isa => 'Str', default => '' );
 has 'constraint'    => ( is => 'rw', isa => 'Str', default => '' );
 has 'error_message' => ( is => 'rw', isa => 'Str', default => '' );
 
 sub generate_code {
 	my $self = shift;
 
-	my $code
-		.= "subtype '"
-		. $self->name
-		. "'\n=> as 'Str'"
-		. "\n=> where { "
-		. $self->constraint
-		. " } => "
-		. "\nmessage { "
-		. $self->error_message . " };\n";
-
+	my $code = "subtype '" . $self->name . "'";
+	$code .= ",\n\tas '" . $self->base_type . "'";
+	$code .= ",\n\twhere { " . $self->constraint . " }"
+		if (defined $self->constraint) and $self->constraint ne '';
+	$code .= ",\n\tmessage { \"" . $self->error_message . "\" }"
+		if (defined $self->error_message) and $self->error_message ne '';
+	$code .= ";\n";
+		
 	return $code;
 }
 

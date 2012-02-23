@@ -11,7 +11,7 @@ with 'Padre::Plugin::Moose::CanProvideHelp';
 has 'name' => ( is => 'rw', isa => 'Str' );
 
 sub generate_code {
-	return "sub " . $_[0]->name . " { }\n";
+	return "sub " . $_[0]->name . " {\n\tmy \$self = shift;\n}\n";
 }
 
 sub provide_help {
