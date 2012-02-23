@@ -1,4 +1,4 @@
-use Test::More tests => 16;
+use Test::More tests => 17;
 
 use_ok( 'Padre',                 '0.94' );
 use_ok( 'Padre::Plugin',         '0.94' );
@@ -13,7 +13,7 @@ use_ok( 'Padre::Wx::Role::Main', '0.94' );
 # let's check our subs/methods.
 ######
 
-my @subs = qw( clean_dialog menu_plugins padre_interfaces
+my @subs = qw( clean_dialog config menu_plugins padre_interfaces
 	plugin_disable plugin_enable plugin_name plugin_preferences spell_check
 );
 

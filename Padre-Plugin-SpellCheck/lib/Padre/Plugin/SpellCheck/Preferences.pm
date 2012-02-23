@@ -10,7 +10,7 @@ use Padre::Locale                               ();
 use Padre::Unload                               ();
 use Padre::Plugin::SpellCheck::FBP::Preferences ();
 
-our $VERSION = '1.22';
+our $VERSION = '1.23';
 our @ISA     = qw{
 	Padre::Plugin::SpellCheck::FBP::Preferences
 };
@@ -53,13 +53,13 @@ sub set_up {
 	$self->display_dictionaries;
 
 	# Tidy up config DB if earler version
-	my $config = $self->{_parent}->config_read;
-	if ( eval { $config->{Version} < 1.22 } ) {
-		$self->{_parent}->config_write( {} );
-		$config = $self->{_parent}->config_read;
-		$config->{Version} = $VERSION;
-		$self->{_parent}->config_write($config);
-	}
+	# my $config = $self->{_parent}->config_read;
+	# if ( eval { $config->{Version} < 1.22 } ) {
+		# $self->{_parent}->config_write( {} );
+		# $config = $self->{_parent}->config_read;
+		# $config->{Version} = $VERSION;
+		# $self->{_parent}->config_write($config);
+	# }
 
 	return;
 }

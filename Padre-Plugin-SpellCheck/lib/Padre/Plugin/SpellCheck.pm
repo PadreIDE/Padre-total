@@ -7,7 +7,7 @@ use warnings;
 use Padre::Plugin;
 use Padre::Unload ();
 
-our $VERSION = '1.22';
+our $VERSION = '1.23';
 our @ISA     = 'Padre::Plugin';
 
 
@@ -61,7 +61,7 @@ sub menu_plugins {
 # as we have an external dependency
 #########
 sub plugin_enable {
-
+	my $self                       = shift;
 	my $local_dictonary_bin_exists = 0;
 
 	# Tests for external file in Path...
@@ -70,7 +70,63 @@ sub plugin_enable {
 	} elsif ( File::Which::which('hunspell') ) {
 		$local_dictonary_bin_exists = 1;
 	}
+
+	#Set/ReSet Config data
+	$self->config if $local_dictonary_bin_exists;
+
 	return $local_dictonary_bin_exists;
+}
+
+#######
+# Method config
+# called on enable in plugin manager, bit like run/setup for a Plugin
+#######
+sub config {
+	my $self = shift;
+	my $config = $self->config_read;
+	
+###
+#	Info P-P-SpellCheck 	< 1.21
+#	$config->{dictionary}   = iso
+#
+#	Info P-P-SpellCheck     = 1.22
+#	- $config->{dictionary} = iso
+#	+ $config->{Aspell}     = en_GB
+#	+ $config->{Hunspell}   = en_AU
+#	+ $config->{Version}    = $VERSION
+#
+#	Info P-P-SpellCheck    >= 1.23
+#	+ $config->{Engine}     = 'Aspell'
+###
+
+	if ( eval { $config->{Version} < 1.23; } ) {
+		$config->{Version}  = $VERSION;
+		$config->{Engine}  = 'Aspell';
+		$self->config_write($config);
+		return;
+	} elsif (
+		eval { $config->{dictionary}; }
+		)
+	{
+		my $tmp_iso = $config->{dictionary};
+		$self->config_write( {} );
+		$config             = $self->config_read;
+		$config->{Aspell}   = $tmp_iso;
+		$config->{Hunspell} = $tmp_iso;
+		$config->{Version}  = $VERSION;
+		$config->{Engine}  = 'Aspell';
+		$self->config_write($config);
+		return;
+	} else {
+		$self->config_write( {} );
+		$config->{Aspell}   = 'en_GB';
+		$config->{Hunspell} = 'en_GB';
+		$config->{Version}  = $VERSION;
+		$config->{Engine}  = 'Aspell';
+		$self->config_write($config);
+	}
+
+	return;
 }
 
 ########
@@ -151,6 +207,7 @@ sub spell_check {
 	return;
 }
 
+
 1;
 
 __END__
@@ -169,6 +226,21 @@ sub plugin_icon {
 		return Wx::Bitmap->new( $iconpath, Wx::wxBITMAP_TYPE_PNG );
 }
 
+sub menu_plugins_simple {
+	my $self = shift;
+	return Wx::gettext('Spell Check') => [
+		Wx::gettext("Check spelling...\tF7") => sub { $self->spell_check },
+		Wx::gettext('Preferences')           => sub { $self->plugin_preferences },
+	];
+}
+
+sub config {
+    my $self   = shift;
+    my $config = {
+        dictionary => 'en_GB',
+    };
+    return $self->config_read || $config;
+}
 
 
 =head1 NAME
