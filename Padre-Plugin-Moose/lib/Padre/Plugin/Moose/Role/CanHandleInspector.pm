@@ -7,6 +7,7 @@ our $VERSION = '0.08';
 
 requires 'read_from_inspector';
 requires 'write_to_inspector';
+requires 'get_grid_data';
 
 1;
 

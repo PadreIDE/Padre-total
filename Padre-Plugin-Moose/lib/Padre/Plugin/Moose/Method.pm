@@ -28,6 +28,11 @@ sub write_to_inspector {
 	$_[1]->SetCellValue( 0, 1, $_[0]->name );
 }
 
+sub get_grid_data {
+	require Wx;
+	return [ { name => Wx::gettext('Name:') } ];
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;

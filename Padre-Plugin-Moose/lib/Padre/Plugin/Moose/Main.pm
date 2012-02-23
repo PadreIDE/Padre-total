@@ -11,44 +11,6 @@ our @ISA = qw{
 	Padre::Plugin::Moose::FBP::Main
 };
 
-
-my %INSPECTOR = (
-
-	'Class' => [
-		{ name => Wx::gettext('Name:') },
-		{ name => Wx::gettext('Superclasses:') },
-		{ name => Wx::gettext('Roles:') },
-		{ name => Wx::gettext('Clean namespace?'), is_bool => 1 },
-		{ name => Wx::gettext('Make immutable?'), is_bool => 1 }
-	],
-
-	'Role' => [
-		{ name => Wx::gettext('Name:') },
-		{ name => Wx::gettext('Requires:') },
-	],
-
-	'Attribute' => [
-		{ name => Wx::gettext('Name:') },
-		{ name => Wx::gettext('Access type:') },
-		{ name => Wx::gettext('Type:') },
-		{ name => Wx::gettext('Required:'), is_bool => 1 },
-		{ name => Wx::gettext('Trigger:') },
-
-
-	],
-
-	'Subtype' => [
-		{ name => Wx::gettext('Name:') },
-		{ name => Wx::gettext('Base type:') },
-		{ name => Wx::gettext('Constraint:') },
-		{ name => Wx::gettext('Error message:') },
-	],
-
-	'Method' => [
-		{ name => Wx::gettext('Name:') },
-	],
-);
-
 sub new {
 	my $class = shift;
 	my $main  = shift;
@@ -268,18 +230,19 @@ sub show_inspector {
 	if ( ( not defined $type ) or ( $type !~ /(Class|Role|Attribute|Subtype|Method)$/ ) ) {
 		die "type: $element is not Class, Role, Attribute, Subtype or Method\n";
 	}
-	$type =~ s/.+?(Class|Role|Attribute|Subtype|Method)$/$1/g;
 
-	my $rows = $INSPECTOR{$type};
+	my $grid_data = $element->get_grid_data;
 	my $grid = $self->{grid};
 	$grid->DeleteRows( 0, $grid->GetNumberRows );
-	$grid->InsertRows( 0, scalar @$rows );
+	$grid->InsertRows( 0, scalar @$grid_data );
 	my $row_index = 0;
-	for my $row (@$rows) {
+	for my $row (@$grid_data) {
 		$grid->SetCellValue( $row_index, 0, $row->{name} );
 		if ( defined $row->{is_bool} ) {
 			$grid->SetCellEditor( $row_index, 1, Wx::GridCellBoolEditor->new );
 			$grid->SetCellValue( $row_index, 1, 1 );
+		} elsif( defined $row->{choices} ) {
+			$grid->SetCellEditor( $row_index, 1, Wx::GridCellBoolEditor->new($row->{choices}));
 		}
 		$row_index++;
 	}

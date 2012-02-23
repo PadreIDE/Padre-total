@@ -69,6 +69,14 @@ sub write_to_inspector {
 	}
 }
 
+sub get_grid_data {
+	require Wx;
+	return [
+		{ name => Wx::gettext('Name:') },
+		{ name => Wx::gettext('Requires:') },
+	];
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;

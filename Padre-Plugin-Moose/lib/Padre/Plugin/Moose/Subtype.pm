@@ -56,6 +56,16 @@ sub write_to_inspector {
 	}
 }
 
+sub get_grid_data {
+	require Wx;
+	return [
+		{ name => Wx::gettext('Name:') },
+		{ name => Wx::gettext('Base type:') },
+		{ name => Wx::gettext('Constraint:') },
+		{ name => Wx::gettext('Error message:') },
+	];
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;
