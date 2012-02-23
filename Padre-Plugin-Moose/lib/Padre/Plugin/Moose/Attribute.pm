@@ -36,6 +36,12 @@ sub provide_help {
 	return Wx::gettext('An attribute is a property that every member of a class has.');
 }
 
+sub read_from_inspector {
+}
+
+sub write_to_inspector {
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;

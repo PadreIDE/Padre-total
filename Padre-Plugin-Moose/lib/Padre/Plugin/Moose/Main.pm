@@ -324,7 +324,7 @@ sub show_inspector {
 		}
 	} elsif ( $element->isa('Padre::Plugin::Moose::Attribute') ) {
 		my $row = 0;
-		for my $field (qw(name type access trigger required)) {
+		for my $field (qw(name type access_type trigger required)) {
 			$grid->SetCellValue( $row++, 1, $element->$field );
 		}
 	} elsif ( $element->isa('Padre::Plugin::Moose::Subtype') ) {

@@ -80,6 +80,12 @@ sub provide_help {
 	);
 }
 
+sub read_from_inspector {
+}
+
+sub write_to_inspector {
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;

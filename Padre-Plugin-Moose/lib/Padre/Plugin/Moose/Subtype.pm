@@ -36,6 +36,12 @@ sub provide_help {
 		'A subtype provides the ability to create custom type constraints to be used in attribute definition.');
 }
 
+sub read_from_inspector {
+}
+
+sub write_to_inspector {
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;

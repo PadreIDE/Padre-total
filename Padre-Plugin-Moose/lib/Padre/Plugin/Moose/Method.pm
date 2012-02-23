@@ -20,6 +20,12 @@ sub provide_help {
 	return Wx::gettext('A method is a subroutine within a class that defines behavior at runtime');
 }
 
+sub read_from_inspector {
+}
+
+sub write_to_inspector {
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;
