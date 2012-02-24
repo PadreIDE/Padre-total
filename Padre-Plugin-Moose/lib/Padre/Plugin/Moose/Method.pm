@@ -11,8 +11,31 @@ with 'Padre::Plugin::Moose::Role::CanGenerateCode';
 with 'Padre::Plugin::Moose::Role::CanProvideHelp';
 with 'Padre::Plugin::Moose::Role::CanHandleInspector';
 
+has 'modifier' => (is => 'rw', isa => 'Str');
+
 sub generate_code {
-	return "sub " . $_[0]->name . " {\n\tmy \$self = shift;\n}\n";
+	my $self = shift;
+	my $comments = shift;
+
+	my $code;
+	my $name = $self->name;
+	my $modifier = $self->modifier;
+	if(defined $modifier && $modifier eq 'around') {
+		$code = "around '$name' => sub {\n";
+		$code .= "\tmy \$orig = shift;\n";
+		$code .= "\tmy \$self = shift;\n";
+		$code .= "\n";
+		$code .= $comments ? "\t# before calling $name\n" : "\n";
+		$code .= "\t\$self->\$orig(\@_)\n";
+		$code .= $comments ? "\t# after calling $name\n" : q{};
+		$code .= "};\n";
+	} elsif(defined $modifier && $modifier =~ /^(before|after)$/) {
+		$code = $self->modifier . " '$name' => sub {\n\tmy \$self = shift;\n};\n";
+	} else {
+		$code = "sub $name {\n\tmy \$self = shift;\n}\n";
+	}
+	 
+	return $code;
 }
 
 sub provide_help {
@@ -21,16 +44,31 @@ sub provide_help {
 }
 
 sub read_from_inspector {
-	$_[0]->name( $_[1]->GetCellValue( 0, 1 ) );
+	my $self = shift;
+	my $grid = shift;
+
+	my $row = 0;
+	for my $field (qw(name modifier)) {
+		$self->$field( $grid->GetCellValue( $row++, 1 ) );
+	}
 }
 
 sub write_to_inspector {
-	$_[1]->SetCellValue( 0, 1, $_[0]->name );
+	my $self = shift;
+	my $grid = shift;
+
+	my $row = 0;
+	for my $field (qw(name modifier)) {
+		$grid->SetCellValue( $row++, 1, $self->$field );
+	}
 }
 
 sub get_grid_data {
 	require Wx;
-	return [ { name => Wx::gettext('Name:') } ];
+	return [ 
+		{ name => Wx::gettext('Name:') },
+		{ name => Wx::gettext('Modifier:') },
+	];
 }
 
 __PACKAGE__->meta->make_immutable;
