@@ -1,5 +1,9 @@
 Changes for Padre-Plugin-Moose
 
+0.10  2012.2.24 (AZAWAWI)
+	- Fixed future timestamp for recently released 0.09. Stupid old dev VM
+	  image :)
+
 0.09  2012.2.24 (AZAWAWI)
 	- Escape regular expression while positioning the preview editor
 	- Current editor theme is always applied. 
