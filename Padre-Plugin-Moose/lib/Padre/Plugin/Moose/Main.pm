@@ -231,7 +231,7 @@ sub show_inspector {
 			$inspector->SetCellEditor( $row_index, 1, Wx::GridCellBoolEditor->new );
 			$inspector->SetCellValue( $row_index, 1, 1 );
 		} elsif ( defined $row->{choices} ) {
-			$inspector->SetCellEditor( $row_index, 1, Wx::GridCellBoolEditor->new( $row->{choices} ) );
+			$inspector->SetCellEditor( $row_index, 1, Wx::GridCellChoiceEditor->new( $row->{choices}, 1 ) );
 		}
 		$row_index++;
 	}
