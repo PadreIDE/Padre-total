@@ -35,6 +35,7 @@ sub new {
 
 	# Setup preview editor
 	my $preview = $self->{preview};
+	require Padre::Document;
 	$preview->{Document} = Padre::Document->new( mimetype => 'application/x-perl', );
 	$preview->{Document}->set_editor($preview);
 	$preview->SetLexer('application/x-perl');
