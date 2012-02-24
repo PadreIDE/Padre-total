@@ -1,5 +1,21 @@
 Changes for Padre-Plugin-Moose
 
+0.09  2012.2.24 (AZAWAWI)
+	- Escape regular expression while positioning the preview editor
+	- Current editor theme is always applied. 
+	- No need to hide controls. Let us do the right way and validate each action (bowtie++).
+	- Use Moose sugar 'blessed' instead of Scalar::Util::blessed - which is the same but cooler :)
+	- Fixed ellipsis in plugin manager (bowtie++)
+	- Stop doing that grid focus automatically. It screws up navigation
+	- Various POD updates regarding methods.
+	- Clicking on a tree element scrolls to the first line of its generated code instead of the Padre-default centerize
+	- About dialog is reusing ->message() and is modal friendly
+	- ::Main now does('Padre::Wx::Role::Dialog'). Alias++
+	- ::Role::CanHandleInspector now requires 'get_grid_data'. No global %INSPECTOR in ::Main
+	- has 'attribute'; # is now supported, no default values. Just the basics :) Better attribute/subtype code generation
+	- Each tree element knows how to handle the inspector via ::Role::CanHandleInspector
+	- Various name refactoring and more roles in ::Role namespace
+
 0.08  2012.2.23 (AZAWAWI)
 	- Refactored the dialog to be modal and improved its UI
 	- The dialog is resident until the plugin is disabled.
