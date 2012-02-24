@@ -19,7 +19,7 @@ sub new {
 
 	my $self = $class->SUPER::new($main);
 	$self->CenterOnParent;
-	$self->SetLabel(sprintf(
+	$self->SetTitle(sprintf(
 		Wx::gettext('Padre::Plugin::Moose %s - Written for fun by Ahmad M. Zawawi (azawawi)'), $VERSION)
 	);
 
