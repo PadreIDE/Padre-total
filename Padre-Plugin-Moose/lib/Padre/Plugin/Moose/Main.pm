@@ -100,7 +100,7 @@ sub on_tree_selection_change {
 		my $preview  = $self->{preview};
 		my $line_num = 0;
 		for my $line ( split /\n/, $preview->GetText ) {
-			my $name = $element->name;
+			my $name = quotemeta $element->name;
 			if ( $line =~ /$name/ ) {
 				my $position = $preview->PositionFromLine($line_num);
 				$preview->SetCurrentPos($position);
