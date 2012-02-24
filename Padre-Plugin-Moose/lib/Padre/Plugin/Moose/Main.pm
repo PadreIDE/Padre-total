@@ -6,7 +6,7 @@ use Moose;
 use Padre::Plugin::Moose::FBP::Main ();
 use Padre::Wx::Role::Dialog         ();
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 our @ISA = qw{
 	Padre::Plugin::Moose::FBP::Main
