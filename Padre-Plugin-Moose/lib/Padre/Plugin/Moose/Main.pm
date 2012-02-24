@@ -19,6 +19,9 @@ sub new {
 
 	my $self = $class->SUPER::new($main);
 	$self->CenterOnParent;
+	$self->SetLabel(sprintf(
+		Wx::gettext('Padre::Plugin::Moose %s - Written for fun by Ahmad M. Zawawi (azawawi)'), $VERSION)
+	);
 
 	$self->restore_defaults;
 
@@ -112,20 +115,6 @@ sub on_tree_selection_change {
 			$line_num++;
 		}
 	}
-}
-
-sub on_about_button_clicked {
-	require Moose;
-	$_[0]->message(
-		Wx::gettext('Moose support for Padre') . "\n\n"
-			. sprintf(
-			Wx::gettext('This system is running Moose version %s'),
-			$Moose::VERSION,
-			)
-			. "\n\n"
-			. Wx::gettext('Written with passion in 2012 by Ahmad M. Zawawi (c)'),
-		"Padre::Plugin::Moose $VERSION"
-	);
 }
 
 sub show_code_in_preview {

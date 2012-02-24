@@ -108,7 +108,6 @@ sub new {
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
 	);
-	$self->{add_class_button}->SetMinSize( [ 50, -1 ] );
 
 	Wx::Event::EVT_BUTTON(
 		$self,
@@ -125,7 +124,6 @@ sub new {
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
 	);
-	$self->{add_role_button}->SetMinSize( [ 50, -1 ] );
 
 	Wx::Event::EVT_BUTTON(
 		$self,
@@ -150,7 +148,6 @@ sub new {
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
 	);
-	$self->{add_attribute_button}->SetMinSize( [ 50, -1 ] );
 
 	Wx::Event::EVT_BUTTON(
 		$self,
@@ -167,7 +164,6 @@ sub new {
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
 	);
-	$self->{add_subtype_button}->SetMinSize( [ 50, -1 ] );
 
 	Wx::Event::EVT_BUTTON(
 		$self,
@@ -184,7 +180,6 @@ sub new {
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
 	);
-	$self->{add_method_button}->SetMinSize( [ 50, -1 ] );
 
 	Wx::Event::EVT_BUTTON(
 		$self,
@@ -266,22 +261,6 @@ sub new {
 		$self->{sample_code_checkbox},
 		sub {
 			shift->on_sample_code_checkbox(@_);
-		},
-	);
-
-	$self->{about_button} = Wx::Button->new(
-		$self,
-		-1,
-		Wx::gettext("About"),
-		Wx::DefaultPosition,
-		Wx::DefaultSize,
-	);
-
-	Wx::Event::EVT_BUTTON(
-		$self,
-		$self->{about_button},
-		sub {
-			shift->on_about_button_clicked(@_);
 		},
 	);
 
@@ -401,7 +380,6 @@ sub new {
 	$button_sizer->Add( $self->{comments_checkbox}, 0, Wx::ALL, 5 );
 	$button_sizer->Add( $self->{sample_code_checkbox}, 0, Wx::ALL, 5 );
 	$button_sizer->Add( 0, 0, 1, Wx::EXPAND, 5 );
-	$button_sizer->Add( $self->{about_button}, 0, Wx::ALL, 2 );
 	$button_sizer->Add( $self->{close_button}, 0, Wx::ALL, 2 );
 	$button_sizer->Add( $self->{reset_button}, 0, Wx::ALL, 2 );
 	$button_sizer->Add( $self->{generate_code_button}, 0, Wx::ALL, 2 );
@@ -459,10 +437,6 @@ sub on_comments_checkbox {
 
 sub on_sample_code_checkbox {
 	$_[0]->main->error('Handler method on_sample_code_checkbox for event sample_code_checkbox.OnCheckBox not implemented');
-}
-
-sub on_about_button_clicked {
-	$_[0]->main->error('Handler method on_about_button_clicked for event about_button.OnButtonClick not implemented');
 }
 
 sub on_reset_button_clicked {
