@@ -13,18 +13,17 @@ use Class::XSAccessor {
 		_list        => '_list',        # listbox listing the suggestions
 		_offset      => '_offset',      # offset of _text within the editor
 		                                # _plugin      => '_plugin',      # reference to spellcheck plugin
+		_parent      => '_parent',      # reference to spellcheck plugin
 		_sizer       => '_sizer',       # window sizer
 		_text        => '_text',        # text being spellchecked
 		_iso_name    => '_iso_name',    # our stored dictonary lanaguage
 	},
 };
 
-# use Padre::Current;
-# use Padre::Wx   ();
-# use Padre::Util ('_T');
+
 use Encode;
 use Padre::Logger;
-use Padre::Unload                          ();
+use Padre::Unload                           ();
 use Padre::Plugin::SpellCheck::FBP::Checker ();
 
 our $VERSION = '1.23';
@@ -32,25 +31,19 @@ our @ISA     = qw{
 	Padre::Plugin::SpellCheck::FBP::Checker
 };
 
-# -- constructor
 
 #######
 # Method new
 #######
 sub new {
-	my $class = shift;
-	# my $main  = shift; # Padre $main window integration
-	# my $lang_iso = shift;
-
+	my $class   = shift;
 	my $_parent = shift; # parent $self
 
 	# Create the dialog
-	my $self = $class->SUPER::new($_parent->main);
-	my $lang_iso = $_parent->config_read->{Aspell};
-	$self->_iso_name($lang_iso);
+	my $self = $class->SUPER::new( $_parent->main );
 
-	#TODO there must be a better way
-	# $self->{_plugin} = $_plugin;
+	# for access to P-P-SpellCheck DB config
+	$self->{_parent} = $_parent;
 
 	# define where to display main dialog
 	$self->CenterOnParent;
@@ -67,6 +60,10 @@ sub set_up {
 	my $self    = shift;
 	my $main    = $self->main;
 	my $current = $main->current;
+
+
+	my $lang_iso = $self->{_parent}->config_read->{Aspell};
+	$self->_iso_name($lang_iso);
 
 	# my $iso     = $self->iso;
 
@@ -85,6 +82,7 @@ sub set_up {
 	my $selection = $current->text;
 	my $wholetext = $current->document->text_get;
 	my $text      = $selection || $wholetext;
+
 	# p $text;
 	my $offset = $selection ? $current->editor->GetSelectionStart : 0;
 
@@ -127,13 +125,11 @@ sub set_up {
 	return;
 }
 
-#
-# $dialog->_create_labels;
-#
-# create the top labels.
-#
-# no params. no return values.
-#
+#######
+# Method _create_labels
+# create the top labels
+#######
+#TODO rename, current is naff and ambigous
 sub _create_labels {
 	my $self = shift;
 
@@ -149,11 +145,10 @@ sub _create_labels {
 	return;
 }
 
-#
-# self->_update;
-#
+#######
+# Method _update;
 # update the dialog box with current error. aa
-#
+#######
 sub _update {
 	my $self    = shift;
 	my $main    = $self->main;
@@ -199,7 +194,7 @@ sub _update {
 		my $item = Wx::ListItem->new;
 		$item->SetText($w);
 		my $idx = $self->list->InsertItem($item);
-		last if ++$i == 32; #TODO Fixme: should be a preference
+		last if ++$i == 32; #TODO Fixme: should be a preference, why
 	}
 
 	# select first item
@@ -209,21 +204,14 @@ sub _update {
 }
 
 
-
-# -- private methods
-
-
-
-
-
-#
+#######
 # dialog->_next;
 #
 # try to find next mistake, and update dialog to show this new error. if
 # no error, display a message and exit.
 #
 # no params. no return value.
-#
+#######
 sub _next {
 	my ($self) = @_;
 	my $autoreplace = $self->_autoreplace;
@@ -246,6 +234,7 @@ sub _next {
 			$self->list->DeleteAllItems;
 			$self->labeltext->SetLabel('Spell check finished:...');
 			$self->label->SetLabel('Click Close');
+
 			# $self->replace->Disable;
 			# $self->replace_all->Disable;
 			# $self->{ignore}->Disable;
@@ -265,13 +254,13 @@ sub _next {
 	$self->_update;
 }
 
-#
-# $self->_replace( $word );
+#######
+# Method _replace( $word );
 #
 # fix current error by replacing faulty word with $word.
 #
 # no param. no return value.
-#
+#######
 sub _replace {
 	my ( $self, $new ) = @_;
 	my $main   = $self->main;
@@ -308,34 +297,13 @@ sub _replace {
 }
 
 
-
-
-
-# -- public methods
-
-
-
-
-
 ########
 # Event Handlers
 ########
 
-#
-# $self->_on_butclose_clicked;
-#
-# handler called when the close button has been clicked.
-#
-# sub _on_butclose_clicked {
-# my $self = shift;
-# $self->Destroy;
-# }
-
-#
-# $self->_on_butignore_all_clicked;
-#
-# handler called when the ignore all button has been clicked.
-#
+#######
+# Event Handler _on_ignore_all_clicked;
+#######
 sub _on_ignore_all_clicked {
 	my $self  = shift;
 	my $error = $self->{error};
@@ -344,11 +312,9 @@ sub _on_ignore_all_clicked {
 	$self->_on_ignore_clicked;
 }
 
-#
-# $self->_on_butignore_clicked;
-#
-# handler called when the ignore button has been clicked.
-#
+#######
+# Event Handler$self->_on_ignore_clicked;
+#######
 sub _on_ignore_clicked {
 	my $self = shift;
 
@@ -374,40 +340,32 @@ sub _on_ignore_clicked {
 	$self->_next;
 }
 
-#
-# $self->_on_butreplace_all_clicked;
-#
-# handler called when the replace all button has been clicked.
-#
+#######
+# Event Handler _on_replace_all_clicked;
+#######
 sub _on_replace_all_clicked {
 	my $self  = shift;
 	my $error = $self->{error};
 	my ( $word, $pos ) = @$error;
 
 	# get replacing word
-	# my $list = $self->_list;
 	my $index = $self->list->GetNextItem( -1, Wx::wxLIST_NEXT_ALL, Wx::wxLIST_STATE_SELECTED );
 	return if $index == -1;
 	my $selected_word = $self->list->GetItem($index)->GetText;
 
 	# store automatic replacement
-	# my $old = $self->_error->[0];
 	$self->_autoreplace->{$word} = $selected_word;
 
 	# do the replacement
 	$self->_on_replace_clicked;
 }
 
-#
-# $self->_on_butreplace_clicked;
-#
-# handler called when the replace button has been clicked.
-#
+#######
+# Event Handler _on_replace_clicked;
+#######
 sub _on_replace_clicked {
 	my $self  = shift;
 	my $event = shift;
-
-	# my $list = $self->_list;
 
 	# get replacing word
 	my $index = $self->list->GetNextItem( -1, Wx::wxLIST_NEXT_ALL, Wx::wxLIST_STATE_SELECTED );
@@ -415,6 +373,7 @@ sub _on_replace_clicked {
 	# p $index;
 	return if $index == -1;
 	my $selected_word = $self->list->GetItem($index)->GetText;
+
 	# p $selected_word;
 
 	# actually replace word in editor
@@ -423,10 +382,6 @@ sub _on_replace_clicked {
 	# try to find next error
 	$self->_next;
 }
-
-
-
-
 
 
 1;

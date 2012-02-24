@@ -25,14 +25,13 @@ sub padre_interfaces {
 	return (
 		'Padre::Plugin' => '0.94',
 		'Padre::Unload' => '0.94',
-		'Padre::Locale' => '0.94',
 
 		# used by my sub packages
+		'Padre::Locale'         => '0.94',
 		'Padre::Logger'         => '0.94',
 		'Padre::Wx'             => '0.94',
 		'Padre::Wx::Role::Main' => '0.94',
 		'Padre::Util'           => '0.94',
-
 	);
 }
 
@@ -82,30 +81,32 @@ sub plugin_enable {
 # called on enable in plugin manager, bit like run/setup for a Plugin
 #######
 sub config {
-	my $self = shift;
+	my $self   = shift;
 	my $config = $self->config_read;
-	
-###
-#	Info P-P-SpellCheck 	< 1.21
-#	$config->{dictionary}   = iso
-#
-#	Info P-P-SpellCheck     = 1.22
-#	- $config->{dictionary} = iso
-#	+ $config->{Aspell}     = en_GB
-#	+ $config->{Hunspell}   = en_AU
-#	+ $config->{Version}    = $VERSION
-#
-#	Info P-P-SpellCheck    >= 1.23
-#	+ $config->{Engine}     = 'Aspell'
-###
+
+	###
+	#	Info P-P-SpellCheck 	< 1.21
+	#	$config->{dictionary}   = iso
+	#
+	#	Info P-P-SpellCheck     = 1.22
+	#	- $config->{dictionary} = iso
+	#	+ $config->{Aspell}     = en_GB
+	#	+ $config->{Hunspell}   = en_AU
+	#	+ $config->{Version}    = $VERSION
+	#
+	#	Info P-P-SpellCheck    >= 1.23
+	#	+ $config->{Engine}     = 'Aspell'
+	###
 
 	if ( eval { $config->{Version} < 1.23; } ) {
-		$config->{Version}  = $VERSION;
+		$config->{Version} = $VERSION;
 		$config->{Engine}  = 'Aspell';
 		$self->config_write($config);
 		return;
 	} elsif (
-		eval { $config->{dictionary}; }
+		eval {
+			$config->{dictionary};
+		}
 		)
 	{
 		my $tmp_iso = $config->{dictionary};
@@ -114,7 +115,7 @@ sub config {
 		$config->{Aspell}   = $tmp_iso;
 		$config->{Hunspell} = $tmp_iso;
 		$config->{Version}  = $VERSION;
-		$config->{Engine}  = 'Aspell';
+		$config->{Engine}   = 'Aspell';
 		$self->config_write($config);
 		return;
 	} else {
@@ -122,7 +123,7 @@ sub config {
 		$config->{Aspell}   = 'en_GB';
 		$config->{Hunspell} = 'en_GB';
 		$config->{Version}  = $VERSION;
-		$config->{Engine}  = 'Aspell';
+		$config->{Engine}   = 'Aspell';
 		$self->config_write($config);
 	}
 

@@ -26,6 +26,7 @@ sub new {
 	# Create the dialog
 	my $self = $class->SUPER::new( $_parent->main );
 
+	# for access to P-P-SpellCheck DB config
 	$self->{_parent} = $_parent;
 
 	# define where to display main dialog
@@ -51,15 +52,6 @@ sub set_up {
 
 	# update dialog with locally install dictionaries;
 	$self->display_dictionaries;
-
-	# Tidy up config DB if earler version
-	# my $config = $self->{_parent}->config_read;
-	# if ( eval { $config->{Version} < 1.22 } ) {
-		# $self->{_parent}->config_write( {} );
-		# $config = $self->{_parent}->config_read;
-		# $config->{Version} = $VERSION;
-		# $self->{_parent}->config_write($config);
-	# }
 
 	return;
 }
@@ -232,6 +224,24 @@ sub on_dictionary_chosen {
 	return;
 }
 
+#######
+# event handler on_dictionary_chosen
+#######
+sub on_engine_chosen {
+	my $self = shift;
+
+	if ( $self->chosen_dictionary->GetSelection() == 0 ) {
+		$self->{dictionary} = 'Aspell';
+		$self->_local_aspell_dictionaries;
+	} else {
+		$self->{dictionary} = 'Hunspell';
+		$self->_local_hunspell_dictionaries;
+	}
+
+	$self->display_dictionaries;
+
+	return;
+}
 #######
 # Composed Method padre_local_label
 # aspell to padre local label
