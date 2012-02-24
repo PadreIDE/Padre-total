@@ -5,11 +5,11 @@ use Moose;
 
 our $VERSION = '0.08';
 
+extends 'Padre::Plugin::Moose::ClassMember';
+
 with 'Padre::Plugin::Moose::Role::CanGenerateCode';
 with 'Padre::Plugin::Moose::Role::CanProvideHelp';
 with 'Padre::Plugin::Moose::Role::CanHandleInspector';
-
-has 'name' => ( is => 'rw', isa => 'Str' );
 
 sub generate_code {
 	return "sub " . $_[0]->name . " {\n\tmy \$self = shift;\n}\n";

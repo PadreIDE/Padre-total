@@ -5,11 +5,12 @@ use namespace::clean;
 
 our $VERSION = '0.08';
 
+extends 'Padre::Plugin::Moose::ClassMember';
+
 with 'Padre::Plugin::Moose::Role::CanGenerateCode';
 with 'Padre::Plugin::Moose::Role::CanProvideHelp';
 with 'Padre::Plugin::Moose::Role::CanHandleInspector';
 
-has 'name'        => ( is => 'rw', isa => 'Str' );
 has 'access_type' => ( is => 'rw', isa => 'Str' );
 has 'type'        => ( is => 'rw', isa => 'Str' );
 has 'trigger'     => ( is => 'rw', isa => 'Str' );

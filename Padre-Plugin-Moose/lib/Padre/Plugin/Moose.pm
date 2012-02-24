@@ -43,7 +43,7 @@ sub plugin_disable {
 sub menu_plugins {
 	my $self      = shift;
 	my $main      = $self->main;
-	my $menu_item = Wx::MenuItem->new( undef, -1, $self->plugin_name. "...\tF8", );
+	my $menu_item = Wx::MenuItem->new( undef, -1, $self->plugin_name . "...\tF8", );
 	Wx::Event::EVT_MENU(
 		$main,
 		$menu_item,
@@ -52,6 +52,7 @@ sub menu_plugins {
 				require Padre::Plugin::Moose::Main;
 				$self->{dialog} = Padre::Plugin::Moose::Main->new($main)
 					unless defined $self->{dialog};
+				$self->{dialog}->run;
 				$self->{dialog}->ShowModal;
 			};
 			print "Error: $@" if $@;

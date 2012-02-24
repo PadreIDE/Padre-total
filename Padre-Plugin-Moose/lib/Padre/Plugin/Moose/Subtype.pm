@@ -5,11 +5,12 @@ use Moose;
 
 our $VERSION = '0.08';
 
+extends 'Padre::Plugin::Moose::ClassMember';
+
 with 'Padre::Plugin::Moose::Role::CanGenerateCode';
 with 'Padre::Plugin::Moose::Role::CanProvideHelp';
 with 'Padre::Plugin::Moose::Role::CanHandleInspector';
 
-has 'name'          => ( is => 'rw', isa => 'Str' );
 has 'base_type'     => ( is => 'rw', isa => 'Str', default => '' );
 has 'constraint'    => ( is => 'rw', isa => 'Str', default => '' );
 has 'error_message' => ( is => 'rw', isa => 'Str', default => '' );

@@ -12,7 +12,7 @@ use strict;
 use warnings;
 use Padre::Wx 'Grid';
 use Padre::Wx::Role::Main ();
-use Padre::Wx::Editor ();
+use Padre::Wx::Editor     ();
 
 our $VERSION = '0.08';
 our @ISA     = qw{
@@ -234,7 +234,7 @@ sub new {
 	Wx::Event::EVT_GRID_CELL_CHANGE(
 		$self->{grid},
 		sub {
-			$self->on_grid_cell_change($_[1]);
+			$self->on_grid_cell_change( $_[1] );
 		},
 	);
 
@@ -306,14 +306,14 @@ sub new {
 	$tree_sizer->Add( $self->{tree}, 1, Wx::ALL | Wx::EXPAND, 5 );
 
 	my $action_bar_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
-	$action_bar_sizer->Add( $self->{add_class_button}, 0, Wx::ALIGN_CENTER_HORIZONTAL | Wx::ALL, 2 );
-	$action_bar_sizer->Add( $self->{add_role_button}, 0, Wx::ALL, 2 );
-	$action_bar_sizer->Add( $self->{add_attribute_button}, 0, Wx::ALL, 2 );
-	$action_bar_sizer->Add( $self->{add_subtype_button}, 0, Wx::ALL, 2 );
-	$action_bar_sizer->Add( $self->{add_method_button}, 0, Wx::ALL, 2 );
+	$action_bar_sizer->Add( $self->{add_class_button},     0, Wx::ALIGN_CENTER_HORIZONTAL | Wx::ALL, 2 );
+	$action_bar_sizer->Add( $self->{add_role_button},      0, Wx::ALL,                               2 );
+	$action_bar_sizer->Add( $self->{add_attribute_button}, 0, Wx::ALL,                               2 );
+	$action_bar_sizer->Add( $self->{add_subtype_button},   0, Wx::ALL,                               2 );
+	$action_bar_sizer->Add( $self->{add_method_button},    0, Wx::ALL,                               2 );
 
 	my $bottom_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
-	$bottom_sizer->Add( $self->{comments_checkbox}, 0, Wx::ALL, 5 );
+	$bottom_sizer->Add( $self->{comments_checkbox},    0, Wx::ALL, 5 );
 	$bottom_sizer->Add( $self->{sample_code_checkbox}, 0, Wx::ALL, 5 );
 
 	my $bSizer10 = Wx::BoxSizer->new(Wx::HORIZONTAL);
@@ -324,33 +324,33 @@ sub new {
 	$bSizer10->Add( $self->{generate_code_button}, 0, Wx::ALL, 2 );
 
 	my $left_sizer = Wx::BoxSizer->new(Wx::VERTICAL);
-	$left_sizer->Add( $tree_sizer, 1, Wx::EXPAND, 5 );
-	$left_sizer->Add( $action_bar_sizer, 0, Wx::ALL, 2 );
-	$left_sizer->Add( $self->{preview}, 1, Wx::ALL | Wx::EXPAND, 5 );
-	$left_sizer->Add( $bSizer10, 0, Wx::EXPAND, 5 );
+	$left_sizer->Add( $tree_sizer,       1, Wx::EXPAND,           5 );
+	$left_sizer->Add( $action_bar_sizer, 0, Wx::ALL,              2 );
+	$left_sizer->Add( $self->{preview},  1, Wx::ALL | Wx::EXPAND, 5 );
+	$left_sizer->Add( $bSizer10,         0, Wx::EXPAND,           5 );
 
 	my $right_sizer = Wx::BoxSizer->new(Wx::VERTICAL);
-	$right_sizer->Add( $self->{grid_label}, 0, Wx::ALL, 5 );
-	$right_sizer->Add( $self->{grid}, 0, Wx::ALL, 5 );
-	$right_sizer->Add( $self->{help_text}, 1, Wx::ALL | Wx::EXPAND, 5 );
+	$right_sizer->Add( $self->{grid_label}, 0, Wx::ALL,              5 );
+	$right_sizer->Add( $self->{grid},       0, Wx::ALL,              5 );
+	$right_sizer->Add( $self->{help_text},  1, Wx::ALL | Wx::EXPAND, 5 );
 
 	my $top_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
-	$top_sizer->Add( $left_sizer, 2, Wx::EXPAND, 5 );
+	$top_sizer->Add( $left_sizer,  2, Wx::EXPAND, 5 );
 	$top_sizer->Add( $right_sizer, 1, Wx::EXPAND, 5 );
 
 	my $hyperlink_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
-	$hyperlink_sizer->Add( $self->{moose_manual_hyperlink}, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALL, 5 );
+	$hyperlink_sizer->Add( $self->{moose_manual_hyperlink},   0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALL, 5 );
 	$hyperlink_sizer->Add( $self->{moose_cookbook_hyperlink}, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALL, 5 );
-	$hyperlink_sizer->Add( $self->{moose_website_hyperlink}, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALL, 5 );
+	$hyperlink_sizer->Add( $self->{moose_website_hyperlink},  0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALL, 5 );
 
 	my $buttons_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
-	$buttons_sizer->Add( $self->{about_button}, 0, Wx::ALL, 2 );
-	$buttons_sizer->Add( $hyperlink_sizer, 0, Wx::EXPAND, 5 );
+	$buttons_sizer->Add( $self->{about_button}, 0, Wx::ALL,    2 );
+	$buttons_sizer->Add( $hyperlink_sizer,      0, Wx::EXPAND, 5 );
 	$buttons_sizer->Add( 30, 0, 1, Wx::EXPAND, 5 );
 	$buttons_sizer->Add( $self->{close_button}, 0, Wx::ALL, 2 );
 
 	my $main_sizer = Wx::BoxSizer->new(Wx::VERTICAL);
-	$main_sizer->Add( $top_sizer, 1, Wx::EXPAND, 5 );
+	$main_sizer->Add( $top_sizer,     1, Wx::EXPAND, 5 );
 	$main_sizer->Add( $buttons_sizer, 0, Wx::EXPAND, 5 );
 
 	$self->SetSizer($main_sizer);
@@ -372,11 +372,13 @@ sub on_add_role_button {
 }
 
 sub on_add_attribute_button {
-	$_[0]->main->error('Handler method on_add_attribute_button for event add_attribute_button.OnButtonClick not implemented');
+	$_[0]->main->error(
+		'Handler method on_add_attribute_button for event add_attribute_button.OnButtonClick not implemented');
 }
 
 sub on_add_subtype_button {
-	$_[0]->main->error('Handler method on_add_subtype_button for event add_subtype_button.OnButtonClick not implemented');
+	$_[0]->main->error(
+		'Handler method on_add_subtype_button for event add_subtype_button.OnButtonClick not implemented');
 }
 
 sub on_add_method_button {
@@ -388,7 +390,8 @@ sub on_comments_checkbox {
 }
 
 sub on_sample_code_checkbox {
-	$_[0]->main->error('Handler method on_sample_code_checkbox for event sample_code_checkbox.OnCheckBox not implemented');
+	$_[0]->main->error(
+		'Handler method on_sample_code_checkbox for event sample_code_checkbox.OnCheckBox not implemented');
 }
 
 sub on_reset_button_clicked {
@@ -396,7 +399,8 @@ sub on_reset_button_clicked {
 }
 
 sub on_generate_code_button_clicked {
-	$_[0]->main->error('Handler method on_generate_code_button_clicked for event generate_code_button.OnButtonClick not implemented');
+	$_[0]->main->error(
+		'Handler method on_generate_code_button_clicked for event generate_code_button.OnButtonClick not implemented');
 }
 
 sub on_grid_cell_change {

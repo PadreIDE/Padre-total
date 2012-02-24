@@ -1,8 +1,8 @@
 package Padre::Plugin::Moose::Main;
 
 use 5.008;
-use strict;
-use warnings;
+use Moose;
+
 use Padre::Plugin::Moose::FBP::Main ();
 use Padre::Wx::Role::Dialog         ();
 
@@ -30,8 +30,8 @@ sub new {
 		$grid->SetReadOnly( $row, 0 );
 	}
 
-	# Hide them!
-	$_->Show(0) for ( $self->{grid_label}, $grid );
+	# Hide the inspector as needed
+	$self->show_inspector(undef);
 
 	# Setup preview editor
 	my $preview = $self->{preview};
@@ -40,14 +40,19 @@ sub new {
 	$preview->SetLexer('application/x-perl');
 	$preview->Show(1);
 
-	# Apply the current theme
-	my $style = $main->config->editor_style;
-	my $theme = Padre::Wx::Theme->find($style)->clone;
-	$theme->apply($preview);
-
 	$self->show_code_in_preview(1);
 
 	return $self;
+}
+
+# This is called before the dialog is shown
+sub run {
+	my $self = shift;
+
+	# Apply the current theme to the preview editor
+	my $style = $self->main->config->editor_style;
+	my $theme = Padre::Wx::Theme->find($style)->clone;
+	$theme->apply( $self->{preview} );
 }
 
 # Set up the events
@@ -70,15 +75,11 @@ sub on_tree_selection_change {
 	my $item    = $event->GetItem or return;
 	my $element = $tree->GetPlData($item) or return;
 
-	my $is_parent = $element->isa('Padre::Plugin::Moose::Class')
-		|| $element->isa('Padre::Plugin::Moose::Role');
+	my $is_parent  = $element->does('Padre::Plugin::Moose::Role::HasClassMembers');
 	my $is_program = $element->isa('Padre::Plugin::Moose::Program');
 
-	if ($is_program) {
-		$_->Show(0) for ( $self->{grid_label}, $self->{grid} );
-	} else {
-		$self->show_inspector($element);
-	}
+	# Show/Hide the inspector as needed
+	$self->show_inspector( $is_program ? undef : $element );
 
 	# Display help about the current element
 	$self->{help_text}->SetValue( $element->provide_help );
@@ -86,18 +87,11 @@ sub on_tree_selection_change {
 	$self->{current_element} = $element;
 
 	# Find parent element
-	require Scalar::Util;
-	if ( Scalar::Util::blessed($element) =~ /(Attribute|Subtype|Method)$/ ) {
+	if ( $element->does('Padre::Plugin::Moose::Role::ClassMember') ) {
 		$self->{current_parent} = $tree->GetPlData( $tree->GetItemParent($item) );
 	} else {
 		$self->{current_parent} = $element if $is_parent;
 	}
-
-	my $can_add_class_member = ( not $is_program )
-		&& $self->{current_parent} != $self->{program};
-	$self->{add_attribute_button}->Show($can_add_class_member);
-	$self->{add_subtype_button}->Show($can_add_class_member);
-	$self->{add_method_button}->Show($can_add_class_member);
 
 	$self->Layout;
 
@@ -105,13 +99,13 @@ sub on_tree_selection_change {
 	unless ($is_program) {
 		my $preview  = $self->{preview};
 		my $line_num = 0;
-		for my $line (split /\n/, $preview->GetText) {
+		for my $line ( split /\n/, $preview->GetText ) {
 			my $name = $element->name;
 			if ( $line =~ /$name/ ) {
 				my $position = $preview->PositionFromLine($line_num);
-				$preview->SetCurrentPos( $position );
-				$preview->SetAnchor( $position );
-				$preview->ScrollToLine( $line_num );
+				$preview->SetCurrentPos($position);
+				$preview->SetAnchor($position);
+				$preview->ScrollToLine($line_num);
 				last;
 			}
 			$line_num++;
@@ -122,12 +116,13 @@ sub on_tree_selection_change {
 sub on_about_button_clicked {
 	require Moose;
 	$_[0]->message(
-		Wx::gettext('Moose support for Padre') . "\n\n" . sprintf(
+		Wx::gettext('Moose support for Padre') . "\n\n"
+			. sprintf(
 			Wx::gettext('This system is running Moose version %s'),
 			$Moose::VERSION,
-		)
-		. "\n\n" . 
-		Wx::gettext('Written with passion in 2012 by Ahmad M. Zawawi (c)'),
+			)
+			. "\n\n"
+			. Wx::gettext('Written with passion in 2012 by Ahmad M. Zawawi (c)'),
 		'Padre::Plugin::Moose'
 	);
 }
@@ -224,10 +219,15 @@ sub show_inspector {
 	my $self    = shift;
 	my $element = shift;
 
-	require Scalar::Util;
-	my $type = Scalar::Util::blessed($element);
+	unless ( defined $element ) {
+		$_->Show(0) for ( $self->{grid_label}, $self->{grid} );
+		return;
+	}
+
+	my $type = blessed($element);
 	if ( ( not defined $type ) or ( $type !~ /(Class|Role|Attribute|Subtype|Method)$/ ) ) {
-		die "type: $element is not Class, Role, Attribute, Subtype or Method\n";
+		$self->error("type: $element is not Class, Role, Attribute, Subtype or Method\n");
+		return;
 	}
 
 	my $grid_data = $element->get_grid_data;
@@ -287,9 +287,21 @@ sub on_add_role_button {
 sub on_add_attribute_button {
 	my $self = shift;
 
+
+	if ( $self->{current_parent}->does('Padre::Plugin::Moose::Role::HasClassMembers') ) {
+		print $self->{current_parent} . " does role\n";
+	} else {
+		print $self->{current_parent} . " doesnt do role\n";
+	}
+
 	# Only allowed within a class/role element
-	return unless defined $self->{current_element};
-	return unless defined $self->{current_parent};
+	unless ( defined $self->{current_element}
+		&& defined $self->{current_parent}
+		&& $self->{current_parent}->does('Padre::Plugin::Moose::Role::HasClassMembers') )
+	{
+		$self->error( Wx::gettext('You can only add an attribute to a class or role') );
+		return;
+	}
 
 	# Add a new attribute object to class
 	require Padre::Plugin::Moose::Attribute;
@@ -306,8 +318,14 @@ sub on_add_subtype_button {
 	my $self = shift;
 
 	# Only allowed within a class/role element
-	return unless defined $self->{current_element};
-	return unless defined $self->{current_parent};
+	unless ( defined $self->{current_element}
+		&& defined $self->{current_parent}
+		&& $self->{current_parent}->does('Padre::Plugin::Moose::Role::HasClassMembers') )
+	{
+		$self->error( Wx::gettext('You can only add a subtype to a class or role') );
+		return;
+	}
+
 
 	# Add a new subtype object to class
 	require Padre::Plugin::Moose::Subtype;
@@ -324,8 +342,13 @@ sub on_add_method_button {
 	my $self = shift;
 
 	# Only allowed within a class/role element
-	return unless defined $self->{current_element};
-	return unless defined $self->{current_parent};
+	unless ( defined $self->{current_element}
+		&& defined $self->{current_parent}
+		&& $self->{current_parent}->does('Padre::Plugin::Moose::Role::HasClassMembers') )
+	{
+		$self->error( Wx::gettext('You can only add a method to a class or role') );
+		return;
+	}
 
 	# Add a new method object to class
 	require Padre::Plugin::Moose::Method;
