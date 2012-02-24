@@ -41,6 +41,14 @@ sub new {
 		Wx::TR_DEFAULT_STYLE,
 	);
 
+	Wx::Event::EVT_TREE_ITEM_MENU(
+		$self,
+		$self->{tree},
+		sub {
+			shift->on_tree_item_menu(@_);
+		},
+	);
+
 	Wx::Event::EVT_TREE_SEL_CHANGED(
 		$self,
 		$self->{tree},
@@ -401,6 +409,10 @@ sub new {
 	$self->Layout;
 
 	return $self;
+}
+
+sub on_tree_item_menu {
+	$_[0]->main->error('Handler method on_tree_item_menu for event tree.OnTreeItemMenu not implemented');
 }
 
 sub on_tree_selection_change {

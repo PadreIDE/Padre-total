@@ -178,7 +178,7 @@
                                                 <event name="OnTreeItemExpanded"></event>
                                                 <event name="OnTreeItemExpanding"></event>
                                                 <event name="OnTreeItemGetTooltip"></event>
-                                                <event name="OnTreeItemMenu"></event>
+                                                <event name="OnTreeItemMenu">on_tree_item_menu</event>
                                                 <event name="OnTreeItemMiddleClick"></event>
                                                 <event name="OnTreeItemRightClick"></event>
                                                 <event name="OnTreeKeyDown"></event>

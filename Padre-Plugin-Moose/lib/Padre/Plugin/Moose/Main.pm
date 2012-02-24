@@ -395,6 +395,37 @@ sub restore_defaults {
 	$self->{sample_code_checkbox}->SetValue(1);
 }
 
+# Called when a item context menu is requested.
+sub on_tree_item_menu {
+	my $self  = shift;
+	my $event = shift;
+	my $item  = $event->GetItem;
+	my $tree  = $self->{tree};
+	my $element  = $tree->GetPlData($item) or return;
+	return if $element->isa('Padre::Plugin::Moose::Program');
+
+	# Generate the context menu for this element
+	my $menu = Wx::Menu->new;
+
+	Wx::Event::EVT_MENU(
+		$self,
+		$menu->Append( -1, Wx::gettext('Delete') ),
+		sub {
+			if($self->yes_no(Wx::gettext('Really delete item?'))) {
+			}
+		}
+	);
+
+	# Pops up the context menu
+	$tree->PopupMenu(
+		$menu,
+		$event->GetPoint->x,
+		$event->GetPoint->y,
+	);
+
+	return;
+}
+
 1;
 
 # Copyright 2008-2012 The Padre development team as listed in Padre.pm.
