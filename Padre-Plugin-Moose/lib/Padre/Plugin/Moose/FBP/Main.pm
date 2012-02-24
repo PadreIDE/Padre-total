@@ -181,6 +181,22 @@ sub new {
 		},
 	);
 
+	$self->{add_constructor_button} = Wx::Button->new(
+		$self->{members},
+		-1,
+		Wx::gettext("&Constructor"),
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+	);
+
+	Wx::Event::EVT_BUTTON(
+		$self,
+		$self->{add_constructor_button},
+		sub {
+			shift->on_add_constructor_button(@_);
+		},
+	);
+
 	$self->{add_method_button} = Wx::Button->new(
 		$self->{members},
 		-1,
@@ -194,6 +210,22 @@ sub new {
 		$self->{add_method_button},
 		sub {
 			shift->on_add_method_button(@_);
+		},
+	);
+
+	$self->{add_destructor_button} = Wx::Button->new(
+		$self->{members},
+		-1,
+		Wx::gettext("&Destructor"),
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+	);
+
+	Wx::Event::EVT_BUTTON(
+		$self,
+		$self->{add_destructor_button},
+		sub {
+			shift->on_add_destructor_button(@_);
 		},
 	);
 
@@ -347,7 +379,9 @@ sub new {
 	my $members_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
 	$members_sizer->Add( $self->{add_attribute_button}, 0, Wx::ALL, 2 );
 	$members_sizer->Add( $self->{add_subtype_button}, 0, Wx::ALL, 2 );
+	$members_sizer->Add( $self->{add_constructor_button}, 0, Wx::ALL, 2 );
 	$members_sizer->Add( $self->{add_method_button}, 0, Wx::ALL, 2 );
+	$members_sizer->Add( $self->{add_destructor_button}, 0, Wx::ALL, 2 );
 
 	$self->{members}->SetSizerAndFit($members_sizer);
 	$self->{members}->Layout;
@@ -439,8 +473,16 @@ sub on_add_subtype_button {
 	$_[0]->main->error('Handler method on_add_subtype_button for event add_subtype_button.OnButtonClick not implemented');
 }
 
+sub on_add_constructor_button {
+	$_[0]->main->error('Handler method on_add_constructor_button for event add_constructor_button.OnButtonClick not implemented');
+}
+
 sub on_add_method_button {
 	$_[0]->main->error('Handler method on_add_method_button for event add_method_button.OnButtonClick not implemented');
+}
+
+sub on_add_destructor_button {
+	$_[0]->main->error('Handler method on_add_destructor_button for event add_destructor_button.OnButtonClick not implemented');
 }
 
 sub on_comments_checkbox {

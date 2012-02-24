@@ -343,6 +343,52 @@ sub on_add_method_button {
 	$self->show_code_in_preview(1);
 }
 
+sub on_add_constructor_button {
+	my $self = shift;
+
+	# Only allowed within a class/role element
+	unless ( defined $self->{current_element}
+		&& defined $self->{current_parent}
+		&& $self->{current_parent}->does('Padre::Plugin::Moose::Role::HasClassMembers') )
+	{
+		$self->error( Wx::gettext('You can only add a constructor to a class or role') );
+		return;
+	}
+
+	# # Add a new constructor object to class
+	# require Padre::Plugin::Moose::Constructor;
+	# my $method = Padre::Plugin::Moose::Constructor->new;
+	# $method->name( 'method_' . $self->{method_count}++ );
+	# push @{ $self->{current_parent}->constructor }, $method;
+
+	# $self->{current_element} = $method;
+	# $self->show_inspector($method);
+	# $self->show_code_in_preview(1);
+}
+
+sub on_add_destructor_button {
+	my $self = shift;
+
+	# Only allowed within a class/role element
+	unless ( defined $self->{current_element}
+		&& defined $self->{current_parent}
+		&& $self->{current_parent}->does('Padre::Plugin::Moose::Role::HasClassMembers') )
+	{
+		$self->error( Wx::gettext('You can only add a destructor to a class or role') );
+		return;
+	}
+
+	# # Add a new destructor object to class
+	# require Padre::Plugin::Moose::Destructor;
+	# my $method = Padre::Plugin::Moose::Destructor->new;
+	# $method->name( 'method_' . $self->{method_count}++ );
+	# push @{ $self->{current_parent}->methods }, $method;
+
+	# $self->{current_element} = $method;
+	# $self->show_inspector($method);
+	# $self->show_code_in_preview(1);
+}
+
 sub on_sample_code_checkbox {
 	$_[0]->show_code_in_preview(1);
 }
