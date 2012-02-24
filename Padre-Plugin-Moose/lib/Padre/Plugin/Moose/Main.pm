@@ -124,7 +124,7 @@ sub on_about_button_clicked {
 			)
 			. "\n\n"
 			. Wx::gettext('Written with passion in 2012 by Ahmad M. Zawawi (c)'),
-		'Padre::Plugin::Moose'
+		"Padre::Plugin::Moose $VERSION"
 	);
 }
 
