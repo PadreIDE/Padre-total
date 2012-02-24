@@ -23,11 +23,11 @@ sub new {
 	$self->restore_defaults;
 
 	# TODO Bug Alias to fix the wxFormBuilder bug regarding this one
-	my $grid = $self->{grid};
-	$grid->SetRowLabelSize(0);
+	my $inspector = $self->{inspector};
+	$inspector->SetRowLabelSize(0);
 
-	for my $row ( 0 .. $grid->GetNumberRows - 1 ) {
-		$grid->SetReadOnly( $row, 0 );
+	for my $row ( 0 .. $inspector->GetNumberRows - 1 ) {
+		$inspector->SetReadOnly( $row, 0 );
 	}
 
 	# Hide the inspector as needed
@@ -62,7 +62,7 @@ sub on_grid_cell_change {
 
 	my $element = $self->{current_element} or return;
 
-	$element->read_from_inspector( $self->{grid} )
+	$element->read_from_inspector( $self->{inspector} )
 		if $element->does('Padre::Plugin::Moose::Role::CanHandleInspector');
 
 	$self->show_code_in_preview(0);
@@ -83,7 +83,7 @@ sub on_tree_selection_change {
 	$self->show_inspector( $is_program ? undef : $element );
 
 	# Display help about the current element
-	$self->{help_text}->SetValue( $element->provide_help );
+	$self->{help}->SetValue( $element->provide_help );
 
 	$self->{current_element} = $element;
 
@@ -221,7 +221,7 @@ sub show_inspector {
 	my $element = shift;
 
 	unless ( defined $element ) {
-		$_->Show(0) for ( $self->{grid_label}, $self->{grid} );
+		$self->{inspector}->Show(0);
 		return;
 	}
 
@@ -231,27 +231,27 @@ sub show_inspector {
 		return;
 	}
 
-	my $grid_data = $element->get_grid_data;
-	my $grid      = $self->{grid};
-	$grid->DeleteRows( 0, $grid->GetNumberRows );
-	$grid->InsertRows( 0, scalar @$grid_data );
+	my $inspector_data = $element->get_grid_data;
+	my $inspector      = $self->{inspector};
+	$inspector->DeleteRows( 0, $inspector->GetNumberRows );
+	$inspector->InsertRows( 0, scalar @$inspector_data );
 	my $row_index = 0;
-	for my $row (@$grid_data) {
-		$grid->SetCellValue( $row_index, 0, $row->{name} );
+	for my $row (@$inspector_data) {
+		$inspector->SetCellValue( $row_index, 0, $row->{name} );
 		if ( defined $row->{is_bool} ) {
-			$grid->SetCellEditor( $row_index, 1, Wx::GridCellBoolEditor->new );
-			$grid->SetCellValue( $row_index, 1, 1 );
+			$inspector->SetCellEditor( $row_index, 1, Wx::GridCellBoolEditor->new );
+			$inspector->SetCellValue( $row_index, 1, 1 );
 		} elsif ( defined $row->{choices} ) {
-			$grid->SetCellEditor( $row_index, 1, Wx::GridCellBoolEditor->new( $row->{choices} ) );
+			$inspector->SetCellEditor( $row_index, 1, Wx::GridCellBoolEditor->new( $row->{choices} ) );
 		}
 		$row_index++;
 	}
 
-	$_->Show(1) for ( $self->{grid_label}, $grid );
+	$inspector->Show(1);
 	$self->Layout;
-	$grid->SetGridCursor( 0, 1 );
+	$inspector->SetGridCursor( 0, 1 );
 
-	$element->write_to_inspector($grid)
+	$element->write_to_inspector($inspector)
 		if $element->does('Padre::Plugin::Moose::Role::CanHandleInspector');
 }
 
