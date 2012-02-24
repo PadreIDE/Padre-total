@@ -6,7 +6,7 @@ use Moose;
 use Padre::Plugin::Moose::FBP::Main ();
 use Padre::Wx::Role::Dialog         ();
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 our @ISA = qw{
 	Padre::Plugin::Moose::FBP::Main
@@ -287,13 +287,6 @@ sub on_add_role_button {
 sub on_add_attribute_button {
 	my $self = shift;
 
-
-	if ( $self->{current_parent}->does('Padre::Plugin::Moose::Role::HasClassMembers') ) {
-		print $self->{current_parent} . " does role\n";
-	} else {
-		print $self->{current_parent} . " doesnt do role\n";
-	}
-
 	# Only allowed within a class/role element
 	unless ( defined $self->{current_element}
 		&& defined $self->{current_parent}
@@ -325,7 +318,6 @@ sub on_add_subtype_button {
 		$self->error( Wx::gettext('You can only add a subtype to a class or role') );
 		return;
 	}
-
 
 	# Add a new subtype object to class
 	require Padre::Plugin::Moose::Subtype;

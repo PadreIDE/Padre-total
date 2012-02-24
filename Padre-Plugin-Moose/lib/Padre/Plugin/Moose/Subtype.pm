@@ -3,7 +3,7 @@ package Padre::Plugin::Moose::Subtype;
 use namespace::clean;
 use Moose;
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 extends 'Padre::Plugin::Moose::ClassMember';
 
