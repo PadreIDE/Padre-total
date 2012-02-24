@@ -25,9 +25,9 @@ sub generate_code {
 		$code .= "\tmy \$orig = shift;\n";
 		$code .= "\tmy \$self = shift;\n";
 		$code .= "\n";
-		$code .= $comments ? "\t# before calling $name\n" : "\n";
+		$code .= "\t# before calling $name\n" if $comments;
 		$code .= "\t\$self->\$orig(\@_)\n";
-		$code .= $comments ? "\t# after calling $name\n" : q{};
+		$code .= "\t# after calling $name\n" if $comments;
 		$code .= "};\n";
 	} elsif(defined $modifier && $modifier =~ /^(before|after)$/) {
 		$code = $self->modifier . " '$name' => sub {\n\tmy \$self = shift;\n};\n";
