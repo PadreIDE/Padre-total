@@ -91,18 +91,12 @@ sub set_up {
 	my $selection = $current->text;
 	my $wholetext = $current->document->text_get;
 	my $text      = $selection || $wholetext;
-
-	# p $text;
-	my $offset = $selection ? $current->editor->GetSelectionStart : 0;
+	my $offset    = $selection ? $current->editor->GetSelectionStart : 0;
 
 	# try to find a mistake
 	my ( $word, $pos ) = $engine->check($text);
-
-	# p $word;
-	# p $pos;
 	my @error = $engine->check($text);
 
-	# p @error;
 	$self->{error} = \@error;
 
 
@@ -140,20 +134,8 @@ sub _update {
 	my $current = $main->current;
 	my $editor  = $current->editor;
 
-	# my $error = $self->_error;
-	# my ( $word, $pos ) = @$error;
-
-	# p $self->{error};
-
 	my $error = $self->{error};
-
-	# p $error;
 	my ( $word, $pos ) = @$error;
-
-	# p @error;
-	# my ( $word, $pos ) = @{$self->{error}};
-	# p $word;
-	# p $pos;
 
 	# update selection in parent window
 	## my $editor = Padre::Current->editor;
@@ -170,8 +152,6 @@ sub _update {
 	# update list
 	my @suggestions = $self->_engine->get_suggestions($word);
 
-	# my $list        = $self->_list;
-	# $list->DeleteAllItems;
 	$self->list->DeleteAllItems;
 	my $i = 0;
 	foreach my $w ( reverse @suggestions ) {
@@ -251,16 +231,12 @@ sub _replace {
 	my $main   = $self->main;
 	my $editor = $main->current->editor;
 
-	# my $editor = Padre::Current->editor;
-
 	# replace word in editor
 	my $error = $self->{error};
 	my ( $word, $pos ) = @$error;
 
-	# my $error  = $self->_error;
 	my $offset = $self->_offset;
 
-	# my ( $word, $pos ) = @$error;
 	my $from = $offset + $pos + $self->_engine->_utf_chars;
 	my $to   = $from + length Encode::encode_utf8($word);
 	$editor->SetSelection( $from, $to );
@@ -307,8 +283,6 @@ sub _on_ignore_clicked {
 	my $error = $self->{error};
 	my ( $word, $pos ) = @$error;
 
-	# my $error = $self->_error;
-	# my ( $word, $pos ) = @$error;
 	$pos += length $word;
 	my $text = substr $self->_text, $pos;
 	$self->_text($text);
@@ -354,12 +328,8 @@ sub _on_replace_clicked {
 
 	# get replacing word
 	my $index = $self->list->GetNextItem( -1, Wx::wxLIST_NEXT_ALL, Wx::wxLIST_STATE_SELECTED );
-
-	# p $index;
 	return if $index == -1;
 	my $selected_word = $self->list->GetItem($index)->GetText;
-
-	# p $selected_word;
 
 	# actually replace word in editor
 	$self->_replace($selected_word);
@@ -376,8 +346,7 @@ sub padre_locale_label {
 	my $self             = shift;
 	my $local_dictionary = shift;
 
-	# my $lc_local_dictionary = lc( $local_dictionary ? $local_dictionary : 'en_GB' );
-	my $lc_local_dictionary = lc $local_dictionary;
+	my $lc_local_dictionary = lc( $local_dictionary ? $local_dictionary : 'en_GB' );
 	$lc_local_dictionary =~ s/_/-/;
 	require Padre::Locale;
 	my $label = Padre::Locale::label($lc_local_dictionary);

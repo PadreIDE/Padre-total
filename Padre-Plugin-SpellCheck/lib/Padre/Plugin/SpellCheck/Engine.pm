@@ -6,7 +6,7 @@ use strict;
 our $VERSION = '1.23';
 
 use Padre::Logger;
-use Padre::Unload  ();
+use Padre::Unload ();
 
 use Class::XSAccessor {
 	replace   => 1,
@@ -41,18 +41,16 @@ sub new {
 
 
 #######
-# _init
+# Method _init
 #######
 sub _init {
-
-	# my ( $self, %args ) = @_;
 	my ( $self, $mimetype, $iso, $engine ) = @_;
 
 	$self->_ignore( {} );
 	$self->_utf_chars(0);
-	
+
 	#just for testing
-	print "Using Text::$engine with language $iso\n";
+	# print "Using Text::$engine with language $iso\n";
 
 	# create speller object
 	my $speller;
@@ -65,19 +63,14 @@ sub _init {
 		$speller->set_option( 'lang',     $iso );
 	} else {
 		require Text::Hunspell;
-		
-		#TODO add some checking
 
+		#TODO add some checking
 		# You can use relative or absolute paths.
 		$speller = Text::Hunspell->new(
 			"/usr/share/hunspell/$iso.aff", # Hunspell affix file
 			"/usr/share/hunspell/$iso.dic"  # Hunspell dictionary file
 		);
-
 	}
-
-	#$speller->print_config;  # to STDOUT
-	# TRACE( "print config info = " . $speller->print_config ) if DEBUG;
 
 	if ( exists $MIMETYPE_MODE{$mimetype} ) {
 		if ( not defined $speller->set_option( 'mode', $MIMETYPE_MODE{$mimetype} ) ) {
@@ -94,11 +87,14 @@ sub _init {
 }
 
 
-
+#######
+# Method check
+#######
 sub check {
 	my ( $self, $text ) = @_;
+
 	# my $speller = $self->_speller;
-	my $ignore  = $self->_ignore;
+	my $ignore = $self->_ignore;
 
 	# iterate over word boundaries
 	while ( $text =~ /(.+?)(\b|\z)/g ) {
@@ -116,6 +112,7 @@ sub check {
 			$self->_count_utf_chars($word);
 			next;
 		}
+
 		# if ( $speller->check($word) ) {
 		if ( $self->_speller->check($word) ) {
 			$self->_count_utf_chars($word);
@@ -156,8 +153,8 @@ sub get_suggestions {
 }
 
 
-#
-# FIXME: as soon as STC issues is resolved
+#######
+#TODO FIXME: as soon as STC issues is resolved
 #
 sub _count_utf_chars {
 	my ( $self, $word ) = @_;
