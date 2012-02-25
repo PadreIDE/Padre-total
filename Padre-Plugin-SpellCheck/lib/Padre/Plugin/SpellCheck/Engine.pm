@@ -141,35 +141,22 @@ sub check {
 }
 
 #######
-# Method dictionaries
-# only use against Text::Aspell
-#todo change to get_dictionaries
+# Method set_ignore_word
 #######
-sub dictionaries {
-	my ($self) = @_;
-	return grep { $_ =~ /^\w+$/ }
-		map { $_->{name} } $self->_speller->dictionary_info;
-}
-
-#######
-# Method ignore
-#todo change to set_ignore_word
-#######
-sub ignore {
+sub set_ignore_word {
 	my ( $self, $word ) = @_;
 	$self->_ignore->{$word} = 1;
 	return;
 }
+
 #######
-# Method suggestions
-#todo change to get_suggestions
+# Method get_suggestions
 #######
-sub suggestions {
+sub get_suggestions {
 	my ( $self, $word ) = @_;
 	return $self->_speller->suggest($word);
 }
 
-# -- private methods
 
 #
 # FIXME: as soon as STC issues is resolved

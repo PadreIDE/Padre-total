@@ -270,7 +270,7 @@ sub _update {
 	$self->label->SetLabel($word);
 
 	# update list
-	my @suggestions = $self->_engine->suggestions($word);
+	my @suggestions = $self->_engine->get_suggestions($word);
 
 	# my $list        = $self->_list;
 	# $list->DeleteAllItems;
@@ -395,7 +395,7 @@ sub _on_ignore_all_clicked {
 	my $self  = shift;
 	my $error = $self->{error};
 	my ( $word, $pos ) = @$error;
-	$self->_engine->ignore($word);
+	$self->_engine->set_ignore_word($word);
 	$self->_on_ignore_clicked;
 }
 
