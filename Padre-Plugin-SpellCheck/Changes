@@ -6,6 +6,7 @@ Revision history for Padre-Plugin-SpellCheck
     - added Text::Hunspell (BOWTIE)
     - Update Status info in Checker to show dictionary and language (ALIAS)(BOWTIE)
     - rename Method accessors to inc get/set (BOWTIE)
+    - remove un-used Methods (BOWTIE)
     - 
 
 1.22    2012.02.22

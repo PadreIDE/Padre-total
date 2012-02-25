@@ -16,7 +16,7 @@ use Class::XSAccessor {
 		_parent      => '_parent',      # reference to spellcheck plugin
 		_sizer       => '_sizer',       # window sizer
 		_text        => '_text',        # text being spellchecked
-		# _iso_name    => '_iso_name',    # our stored dictonary lanaguage
+		                                # _iso_name    => '_iso_name',    # our stored dictonary lanaguage
 	},
 };
 
@@ -67,20 +67,14 @@ sub set_up {
 	my $current = $main->current;
 
 	p $self->{_parent}->config_read;
-	
+
 	my $text_spell = $self->{_parent}->config_read->{Engine};
-	my $iso_name = $self->{_parent}->config_read->{$text_spell};
-	
+	my $iso_name   = $self->{_parent}->config_read->{$text_spell};
+
 	#Thanks alias
-	my $status_info = "$text_spell => ".$self->padre_locale_label($iso_name);
+	my $status_info = "$text_spell => " . $self->padre_locale_label($iso_name);
 	$self->{status_info}->GetStaticBox->SetLabel($status_info);
-	
-	
-	# my $text_spell = $self->{_parent}->config_read->{Engine};
-	# $text_spell = 'Hunspell';
-	# $self->_iso_name($lang_iso);
 
-	# my $iso     = $self->iso;
 
 	# TODO: maybe grey out the menu option if
 	# no file is opened?
@@ -91,7 +85,7 @@ sub set_up {
 
 	my $mime_type = $current->document->mimetype;
 	require Padre::Plugin::SpellCheck::Engine;
-	my $engine = Padre::Plugin::SpellCheck::Engine->new( $mime_type, $iso_name, $text_spell  );
+	my $engine = Padre::Plugin::SpellCheck::Engine->new( $mime_type, $iso_name, $text_spell );
 
 	# fetch text to check
 	my $selection = $current->text;
@@ -131,104 +125,8 @@ sub set_up {
 	# # $self->_plugin( $_plugin );
 	$self->_autoreplace( {} );
 
-	# create the controls
-	$self->_create_labels;
-
-
 	$self->_update;
 
-	return;
-}
-#######
-# Method set_up
-#######
-sub set_up_aspell {
-	my $self    = shift;
-	my $main    = $self->main;
-	my $current = $main->current;
-
-
-	my $lang_iso = $self->{_parent}->config_read->{Aspell};
-	$self->_iso_name($lang_iso);
-	
-
-	# my $iso     = $self->iso;
-
-	# TODO: maybe grey out the menu option if
-	# no file is opened?
-	unless ( $current->document ) {
-		$main->message( Wx::gettext('No document opened.'), 'Padre' );
-		return;
-	}
-
-	my $mime_type = $current->document->mimetype;
-	require Padre::Plugin::SpellCheck::Engine;
-	my $engine = Padre::Plugin::SpellCheck::Engine->new( $mime_type, $self->_iso_name );
-
-	# fetch text to check
-	my $selection = $current->text;
-	my $wholetext = $current->document->text_get;
-	my $text      = $selection || $wholetext;
-
-	# p $text;
-	my $offset = $selection ? $current->editor->GetSelectionStart : 0;
-
-	# try to find a mistake
-	my ( $word, $pos ) = $engine->check($text);
-
-	# p $word;
-	# p $pos;
-	my @error = $engine->check($text);
-
-	# p @error;
-	$self->{error} = \@error;
-
-
-	# no mistake means bbb we're done
-	if ( not defined $word ) {
-
-		# $main->message( Wx::gettext('Spell check finished.'), 'Padre' );
-		# $self->{replace}->Disable;
-		# $self->{replace_all}->Disable;
-		# $self->{ignore}->Disable;
-		# $self->{ignore_all}->Disable;
-		return;
-	}
-
-	# $self->_error( $word, $pos );
-	$self->_engine($engine);
-	$self->_offset($offset);
-	$self->_text($text);
-
-	# # $self->_plugin( $_plugin );
-	$self->_autoreplace( {} );
-
-	# create the controls
-	$self->_create_labels;
-
-
-	$self->_update;
-
-	return;
-}
-
-#######
-# Method _create_labels
-# create the top labels
-#######
-#TODO rename, current is naff and ambigous
-sub _create_labels {
-	my $self = shift;
-
-	#TODO alias how do we change the contents of the top bar, known as 'title'
-	# $self->title->SetLabel( 'FUN' );
-	#
-	# Status Info.
-	#	labeltext	_label
-	#
-	# $self->{status_info}->SetLabel('iso');
-	$self->labeltext->SetLabel('ready willing &');
-	$self->label->SetLabel('able');
 	return;
 }
 
@@ -475,8 +373,9 @@ sub _on_replace_clicked {
 # aspell to padre local label
 #######
 sub padre_locale_label {
-	my $self                = shift;
-	my $local_dictionary    = shift;
+	my $self             = shift;
+	my $local_dictionary = shift;
+
 	# my $lc_local_dictionary = lc( $local_dictionary ? $local_dictionary : 'en_GB' );
 	my $lc_local_dictionary = lc $local_dictionary;
 	$lc_local_dictionary =~ s/_/-/;
