@@ -32,24 +32,6 @@ sub new {
 		Wx::DEFAULT_DIALOG_STYLE | Wx::RESIZE_BORDER,
 	);
 
-	$self->{m_checkBox1} = Wx::CheckBox->new(
-		$self,
-		-1,
-		Wx::gettext("Aspell"),
-		Wx::DefaultPosition,
-		Wx::DefaultSize,
-	);
-	$self->{m_checkBox1}->Disable;
-
-	$self->{m_checkBox2} = Wx::CheckBox->new(
-		$self,
-		-1,
-		Wx::gettext("Hunspell"),
-		Wx::DefaultPosition,
-		Wx::DefaultSize,
-	);
-	$self->{m_checkBox2}->Disable;
-
 	$self->{chosen_dictionary} = Wx::RadioBox->new(
 		$self,
 		-1,
@@ -100,22 +82,11 @@ sub new {
 		Wx::ID_CANCEL,
 	);
 
-	my $sbSizer41 = Wx::StaticBoxSizer->new(
-		Wx::StaticBox->new(
-			$self,
-			-1,
-			Wx::gettext("Dictionary Used for Checking"),
-		),
-		Wx::HORIZONTAL,
-	);
-	$sbSizer41->Add( $self->{m_checkBox1}, 1, Wx::ALL, 5 );
-	$sbSizer41->Add( $self->{m_checkBox2}, 1, Wx::ALL, 5 );
-
 	$self->{sbSizer4} = Wx::StaticBoxSizer->new(
 		Wx::StaticBox->new(
 			$self,
 			-1,
-			Wx::gettext("VIEW: Local Lanaguages foreach"),
+			Wx::gettext("Select Dictionary and Language"),
 		),
 		Wx::VERTICAL,
 	);
@@ -128,7 +99,6 @@ sub new {
 	$self->{m_sdbSizer1}->Realize;
 
 	my $bSizer1 = Wx::BoxSizer->new(Wx::VERTICAL);
-	$bSizer1->Add( $sbSizer41, 0, Wx::ALL | Wx::EXPAND, 5 );
 	$bSizer1->Add( $self->{sbSizer4}, 1, Wx::ALL | Wx::EXPAND, 5 );
 	$bSizer1->Add( $self->{m_sdbSizer1}, 0, Wx::ALL | Wx::EXPAND, 5 );
 

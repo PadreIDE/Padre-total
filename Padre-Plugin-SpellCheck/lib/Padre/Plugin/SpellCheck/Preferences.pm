@@ -3,7 +3,6 @@ package Padre::Plugin::SpellCheck::Preferences;
 use warnings;
 use strict;
 
-#TODO check logger against Plug-in Manager! for adamk
 use Padre::Logger;
 use Padre::Util                                 ();
 use Padre::Locale                               ();
@@ -48,8 +47,8 @@ sub set_up {
 
 	# $self->{dictionary} = 'Aspell';
 	$self->{dictionary} = $self->{_parent}->config_read->{Engine};
-	
-	print " dictionary/engine = $self->{dictionary}\n";
+
+	# print " dictionary/engine = $self->{dictionary}\n";
 
 	if ( $self->{dictionary} eq 'Aspell' ) {
 
@@ -85,8 +84,8 @@ sub _local_aspell_dictionaries {
 
 		my @local_dictionaries = grep { $_ =~ /^\w+$/ } map { $_->{name} } $speller->dictionary_info;
 		$self->{local_dictionaries} = \@local_dictionaries;
-		TRACE("locally installed dictionaries found = $self->{local_dictionaries}") if DEBUG;
-		TRACE("iso to dictionary names = $self->{dictionary_names}")                if DEBUG;
+		TRACE("locally installed dictionaries found = @local_dictionaries") if DEBUG;
+		TRACE("iso to dictionary names = $self->{dictionary_names}")        if DEBUG;
 
 		#TODO compose method local iso to padre names
 		for (@local_dictionaries) {
@@ -211,12 +210,14 @@ sub _on_button_save_clicked {
 	# save config info
 	my $config = $self->{_parent}->config_read;
 	$config->{ $self->{dictionary} } = $select_dictionary_iso;
-	$config->{ Engine } = $self->{dictionary};
+	$config->{Engine} = $self->{dictionary};
 	$self->{_parent}->config_write($config);
 	
-	
+	#this is naff
+	# TRACE("Saved P-P-SpellCheck config DB = $self->{_parent}->config_read ") if DEBUG;
+
 	p $self->{_parent}->config_read;
-	
+
 	$self->{_parent}->clean_dialog;
 	return;
 }
@@ -263,10 +264,11 @@ sub on_engine_chosen {
 # aspell to padre local label
 #######
 sub padre_locale_label {
-	my $self                = shift;
-	my $local_dictionary    = shift;
-	# my $lc_local_dictionary = lc( $local_dictionary ? $local_dictionary : 'en_GB' );
-	my $lc_local_dictionary = lc $local_dictionary;
+	my $self             = shift;
+	my $local_dictionary = shift;
+
+	my $lc_local_dictionary = lc( $local_dictionary ? $local_dictionary : 'en_GB' );
+	# my $lc_local_dictionary = lc $local_dictionary;
 	$lc_local_dictionary =~ s/_/-/;
 	require Padre::Locale;
 	my $label = Padre::Locale::label($lc_local_dictionary);
