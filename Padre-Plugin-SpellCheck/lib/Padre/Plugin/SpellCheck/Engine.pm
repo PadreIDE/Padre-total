@@ -7,8 +7,6 @@ our $VERSION = '1.23';
 
 use Padre::Logger;
 use Padre::Unload  ();
-# use Text::Aspell   ();
-# use Text::Hunspell ();
 
 use Class::XSAccessor {
 	replace   => 1,
@@ -62,7 +60,7 @@ sub _init {
 		require Text::Aspell;
 		$speller = Text::Aspell->new;
 
-		# TODO: configurable later
+		# TODO: configurable later, ask jq why
 		$speller->set_option( 'sug-mode', 'normal' );
 		$speller->set_option( 'lang',     $iso );
 	} else {
@@ -230,50 +228,3 @@ etc.), refer to L<Padre::Plugin::SpellCheck>.
 =cut
 
 
-
-# sub new_old {
-
-	# # my ( $class, $plugin, $mimetype ) = @_;
-	# my ( $class, $mimetype, $iso ) = @_;
-	# my $self = {};       # Allocate new memory
-	# bless $self, $class; # Mark it of the right type
-	                     # # my $self = bless {
-	                     # # _ignore => {},
-
-	# # # _plugin    => $plugin,
-	# # _utf_chars => 0,
-	# # }, $class;
-
-	# $self->_ignore( {} );
-	# $self->_utf_chars(0);
-
-
-	# # # create speller object
-	# my $speller = Text::Aspell->new;
-
-	# # # my $config  = $plugin->config;
-
-	# # # TODO: configurable later
-	# $speller->set_option( 'sug-mode', 'normal' );
-
-	# # # $speller->set_option( 'lang',     $config->{dictionary} );
-	# $speller->set_option( 'lang', $iso );
-
-	# # #$speller->print_config;  # to STDOUT
-	# # # TRACE( "print config info = " . $speller->print_config ) if DEBUG;
-
-	# # my $speller = Text::SpellChecker->new(text => $text, from_frozen => $serialized_data, lang => $lang)
-
-	# if ( exists $MIMETYPE_MODE{$mimetype} ) {
-		# if ( not defined $speller->set_option( 'mode', $MIMETYPE_MODE{$mimetype} ) ) {
-			# my $err = $speller->errstr;
-			# warn "Could not set aspell mode '$MIMETYPE_MODE{$mimetype}': $err\n";
-		# }
-	# }
-
-	# TRACE( $speller->print_config ) if DEBUG;
-
-	# $self->_speller($speller);
-
-	# return $self;
-# }
