@@ -173,58 +173,7 @@ sub _count_utf_chars {
 
 __END__
 
-=head1 PUBLIC METHODS
-
-=head2 Constructor
-
-=over 4
-
-=item my $engine = PPS::Engine->new;
-
-Create a new engine to be used later on.
-
-
-=back
-
-
-
-=head2 Instance methods
-
-=over 4
-
-=item * my ($word, $pos) = $engine->check( $text );
-
-Spell check C<$text> (according to current speller), and return the
-first error encountered (undef if no spelling mistake). An error is
-reported as the faulty C<$word>, as well as the C<$pos> of the word in
-the text (position of the start of the faulty word).
-
-
-=item * $engine->ignore( $word );
-
-Tell engine to ignore C<$word> for rest of the spell check.
-
-
-=item * my @dictionaries = $engine->dictionaries;
-
-Return a (reduced) list of dictionaries installed with aspell. The
-names returned are the dictionary locale names (eg C<en_US>). Note
-that only plain locales are reported, the variations coming with
-aspell are stripped.
-
-
-=item * my @suggestions = $engine->suggestions( $word );
-
-Return suggestions for C<$word>.
-
-
-
-=back
-
-=head1 SEE ALSO
-
-For all related information (bug reporting, source code repository,
-etc.), refer to L<Padre::Plugin::SpellCheck>.
-=cut
-
-
+# Copyright 2008-2012 The Padre development team as listed in Padre.pm.
+# LICENSE
+# This program is free software; you can redistribute it and/or
+# modify it under the same terms as Perl 5 itself.

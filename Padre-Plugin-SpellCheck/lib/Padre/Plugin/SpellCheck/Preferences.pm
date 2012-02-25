@@ -212,7 +212,7 @@ sub _on_button_save_clicked {
 	$config->{ $self->{dictionary} } = $select_dictionary_iso;
 	$config->{Engine} = $self->{dictionary};
 	$self->{_parent}->config_write($config);
-	
+
 	#this is naff
 	# TRACE("Saved P-P-SpellCheck config DB = $self->{_parent}->config_read ") if DEBUG;
 
@@ -242,24 +242,6 @@ sub on_dictionary_chosen {
 }
 
 #######
-# event handler on_dictionary_chosen
-#######
-sub on_engine_chosen {
-	my $self = shift;
-
-	if ( $self->chosen_dictionary->GetSelection() == 0 ) {
-		$self->{dictionary} = 'Aspell';
-		$self->_local_aspell_dictionaries;
-	} else {
-		$self->{dictionary} = 'Hunspell';
-		$self->_local_hunspell_dictionaries;
-	}
-
-	$self->display_dictionaries;
-
-	return;
-}
-#######
 # Composed Method padre_local_label
 # aspell to padre local label
 #######
@@ -268,6 +250,7 @@ sub padre_locale_label {
 	my $local_dictionary = shift;
 
 	my $lc_local_dictionary = lc( $local_dictionary ? $local_dictionary : 'en_GB' );
+
 	# my $lc_local_dictionary = lc $local_dictionary;
 	$lc_local_dictionary =~ s/_/-/;
 	require Padre::Locale;
@@ -281,32 +264,7 @@ sub padre_locale_label {
 
 __END__
 
-=head1 DESCRIPTION
-
-This module implements the dialog window that will be used to set the
-spell check preferences.
-
-
-
-=head1 PUBLIC METHODS
-
-=head2 Constructor
-
-=over 4
-
-=item my $dialog = P-P-S::Preferences->new( %params );
-
-Create and return a new dialog window.
-
-
-=back
-
-
-
-
-=head1 SEE ALSO
-
-For all related information (bug reporting, source code repository,
-etc.), refer to L<Padre::Plugin::SpellCheck>.
-
-=cut
+# Copyright 2008-2012 The Padre development team as listed in Padre.pm.
+# LICENSE
+# This program is free software; you can redistribute it and/or
+# modify it under the same terms as Perl 5 itself.

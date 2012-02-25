@@ -389,59 +389,7 @@ sub padre_locale_label {
 
 __END__
 
-=head1 DESCRIPTION
-
-This module implements the dialog window that will be used to interact
-with the user when mistakes have been spotted.
-
-
-
-=head1 PUBLIC METHODS
-
-=head2 Constructor
-
-=over 4
-
-=item my $dialog = PPS::Dialog->new( %params );
-
-Create and return a new dialog window. The following params are needed:
-
-=over 4
-
-=item text => $text
-
-The text being spell checked.
-
-=item offset => $offset
-
-The offset of C<$text> within the editor. 0 if spell checking the whole file.
-
-=item error => [ $word, $pos ]
-
-The first spotted error, on C<$word> (at position C<$pos>), with some
-associated C<$suggestions> (a list reference).
-
-=item engine => $engine
-
-The $engine being used (a C<Padre::Plugin::SpellCheck::Engine> object).
-
-=back
-
-=back
-
-
-
-=head2 Instance methods
-
-=over 4
-
-=back
-
-
-
-=head1 SEE ALSO
-
-For all related information (bug reporting, source code repository,
-etc.), refer to L<Padre::Plugin::SpellCheck>.
-
-=cut
+# Copyright 2008-2012 The Padre development team as listed in Padre.pm.
+# LICENSE
+# This program is free software; you can redistribute it and/or
+# modify it under the same terms as Perl 5 itself.

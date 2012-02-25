@@ -7,7 +7,7 @@ Revision history for Padre-Plugin-SpellCheck
     - Update Status info in Checker to show dictionary and language (ALIAS)(BOWTIE)
     - rename Method accessors to inc get/set (BOWTIE)
     - remove un-used Methods (BOWTIE)
-    - 
+    - add the standard License to the tail as and where (BOWTIE)
 
 1.22    2012.02.22
 	- remove dead code in plugin_icon method (ZENOG)
