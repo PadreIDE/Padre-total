@@ -4,7 +4,7 @@ Revision history for Padre-Plugin-SpellCheck
     - fix the config DB to check on enable for past and new install (BOWTIE)
     - Bump version to 1.23 (BOWTIE)
     - added Text::Hunspell (BOWTIE)
-    -
+    - Update Status info in Checker to show dictionary and lanaguage (ALIAS)(BOWTIE)
 
 1.22    2012.02.22
 	- remove dead code in plugin_icon method (ZENOG)
