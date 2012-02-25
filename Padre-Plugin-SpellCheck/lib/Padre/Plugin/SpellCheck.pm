@@ -9,7 +9,10 @@ use Padre::Unload ();
 
 our $VERSION = '1.23';
 our @ISA     = 'Padre::Plugin';
-
+use Data::Printer {
+	caller_info => 1,
+	colored     => 1,
+};
 
 #######
 # Define Plugin Name Spell Checker
@@ -64,15 +67,20 @@ sub plugin_enable {
 	my $local_dictonary_bin_exists = 0;
 
 	# Tests for external file in Path...
-	if ( File::Which::which('aspell') ) {
+	# if ( File::Which::which('aspell') ) {
+	if ( eval {require Text::Aspell } ) {
 		$local_dictonary_bin_exists = 1;
-	} elsif ( File::Which::which('hunspell') ) {
+	} 
+	# if ( File::Which::which('hunspell') ) {
+	if ( eval {require Text::Hunspell } ) {
 		$local_dictonary_bin_exists = 1;
 	}
 
 	#Set/ReSet Config data
 	$self->config if $local_dictonary_bin_exists;
-
+	
+	p $self->config_read;
+	
 	return $local_dictonary_bin_exists;
 }
 
@@ -97,8 +105,14 @@ sub config {
 	#	Info P-P-SpellCheck    >= 1.23
 	#	+ $config->{Engine}     = 'Aspell'
 	###
-
-	if ( eval { $config->{Version} < 1.23; } ) {
+	if ( eval { $config->{Version} >= 1.23; } ) {
+		return;
+	} elsif (
+		eval {
+			$config->{Version} < 1.23;
+		}
+		)
+	{
 		$config->{Version} = $VERSION;
 		$config->{Engine}  = 'Aspell';
 		$self->config_write($config);

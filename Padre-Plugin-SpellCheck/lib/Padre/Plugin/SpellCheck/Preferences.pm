@@ -14,7 +14,10 @@ our $VERSION = '1.23';
 our @ISA     = qw{
 	Padre::Plugin::SpellCheck::FBP::Preferences
 };
-
+use Data::Printer {
+	caller_info => 1,
+	colored     => 1,
+};
 
 #######
 # Method new
@@ -43,12 +46,20 @@ sub new {
 sub set_up {
 	my $self = shift;
 
-	$self->{dictionary} = 'Aspell';
+	# $self->{dictionary} = 'Aspell';
+	$self->{dictionary} = $self->{_parent}->config_read->{Engine};
+	
+	print " dictionary/engine = $self->{dictionary}\n";
 
-	# use Aspell as default, as the aspell engine works
-	$self->_local_aspell_dictionaries;
+	if ( $self->{dictionary} eq 'Aspell' ) {
 
-	# $self->_local_hunspell_dictionaries;
+		# use Aspell as default, as the aspell engine works
+		$self->chosen_dictionary->SetSelection(0);
+		$self->_local_aspell_dictionaries;
+	} else {
+		$self->chosen_dictionary->SetSelection(1);
+		$self->_local_hunspell_dictionaries;
+	}
 
 	# update dialog with locally install dictionaries;
 	$self->display_dictionaries;
@@ -200,8 +211,13 @@ sub _on_button_save_clicked {
 	# save config info
 	my $config = $self->{_parent}->config_read;
 	$config->{ $self->{dictionary} } = $select_dictionary_iso;
+	$config->{ Engine } = $self->{dictionary};
 	$self->{_parent}->config_write($config);
-
+	
+	
+	p $self->{_parent}->config_read;
+	
+	$self->{_parent}->clean_dialog;
 	return;
 }
 
@@ -249,7 +265,8 @@ sub on_engine_chosen {
 sub padre_locale_label {
 	my $self                = shift;
 	my $local_dictionary    = shift;
-	my $lc_local_dictionary = lc( $local_dictionary ? $local_dictionary : 'en_GB' );
+	# my $lc_local_dictionary = lc( $local_dictionary ? $local_dictionary : 'en_GB' );
+	my $lc_local_dictionary = lc $local_dictionary;
 	$lc_local_dictionary =~ s/_/-/;
 	require Padre::Locale;
 	my $label = Padre::Locale::label($lc_local_dictionary);

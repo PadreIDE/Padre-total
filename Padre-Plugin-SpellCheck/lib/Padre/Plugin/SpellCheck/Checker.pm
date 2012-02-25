@@ -16,10 +16,14 @@ use Class::XSAccessor {
 		_parent      => '_parent',      # reference to spellcheck plugin
 		_sizer       => '_sizer',       # window sizer
 		_text        => '_text',        # text being spellchecked
-		_iso_name    => '_iso_name',    # our stored dictonary lanaguage
+		# _iso_name    => '_iso_name',    # our stored dictonary lanaguage
 	},
 };
 
+use Data::Printer {
+	caller_info => 1,
+	colored     => 1,
+};
 
 use Encode;
 use Padre::Logger;
@@ -61,9 +65,85 @@ sub set_up {
 	my $main    = $self->main;
 	my $current = $main->current;
 
+	p $self->{_parent}->config_read;
+	
+	my $text_spell = $self->{_parent}->config_read->{Engine};
+	my $iso_name = $self->{_parent}->config_read->{$text_spell};
+	# my $text_spell = $self->{_parent}->config_read->{Engine};
+	# $text_spell = 'Hunspell';
+	# $self->_iso_name($lang_iso);
+
+	# my $iso     = $self->iso;
+
+	# TODO: maybe grey out the menu option if
+	# no file is opened?
+	unless ( $current->document ) {
+		$main->message( Wx::gettext('No document opened.'), 'Padre' );
+		return;
+	}
+
+	my $mime_type = $current->document->mimetype;
+	require Padre::Plugin::SpellCheck::Engine;
+	my $engine = Padre::Plugin::SpellCheck::Engine->new( $mime_type, $iso_name, $text_spell  );
+
+	# fetch text to check
+	my $selection = $current->text;
+	my $wholetext = $current->document->text_get;
+	my $text      = $selection || $wholetext;
+
+	# p $text;
+	my $offset = $selection ? $current->editor->GetSelectionStart : 0;
+
+	# try to find a mistake
+	my ( $word, $pos ) = $engine->check($text);
+
+	# p $word;
+	# p $pos;
+	my @error = $engine->check($text);
+
+	# p @error;
+	$self->{error} = \@error;
+
+
+	# no mistake means bbb we're done
+	if ( not defined $word ) {
+
+		# $main->message( Wx::gettext('Spell check finished.'), 'Padre' );
+		# $self->{replace}->Disable;
+		# $self->{replace_all}->Disable;
+		# $self->{ignore}->Disable;
+		# $self->{ignore_all}->Disable;
+		return;
+	}
+
+	# $self->_error( $word, $pos );
+	$self->_engine($engine);
+	$self->_offset($offset);
+	$self->_text($text);
+
+	# # $self->_plugin( $_plugin );
+	$self->_autoreplace( {} );
+
+	# create the controls
+	$self->_create_labels;
+
+
+	$self->_update;
+
+	return;
+}
+#######
+# Method set_up
+#######
+sub set_up_aspell {
+	my $self    = shift;
+	my $main    = $self->main;
+	my $current = $main->current;
+
 
 	my $lang_iso = $self->{_parent}->config_read->{Aspell};
 	$self->_iso_name($lang_iso);
+	
 
 	# my $iso     = $self->iso;
 

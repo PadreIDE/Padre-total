@@ -3,6 +3,7 @@ Revision history for Padre-Plugin-SpellCheck
     - fix plugin_enable school boy error (BOWTIE)
     - fix the config DB to check on enable for past and new install (BOWTIE)
     - Bump version to 1.23 (BOWTIE)
+    - added Text::Hunspell (BOWTIE)
     -
 
 1.22    2012.02.22
