@@ -41,6 +41,13 @@ sub new {
 		Wx::TR_DEFAULT_STYLE,
 	);
 
+	Wx::Event::EVT_KEY_UP(
+		$self->{tree},
+		sub {
+			$self->on_tree_key_up($_[1]);
+		},
+	);
+
 	Wx::Event::EVT_TREE_ITEM_MENU(
 		$self,
 		$self->{tree},
@@ -443,6 +450,10 @@ sub new {
 	$self->Layout;
 
 	return $self;
+}
+
+sub on_tree_key_up {
+	$_[0]->main->error('Handler method on_tree_key_up for event tree.OnKeyUp not implemented');
 }
 
 sub on_tree_item_menu {

@@ -456,8 +456,7 @@ sub on_tree_item_menu {
 		$self,
 		$menu->Append( -1, Wx::gettext('Delete') ),
 		sub {
-			if ( $self->yes_no( Wx::gettext('Really delete item?') ) ) {
-			}
+			$self->delete_element($element);
 		}
 	);
 
@@ -467,6 +466,38 @@ sub on_tree_item_menu {
 		$event->GetPoint->x,
 		$event->GetPoint->y,
 	);
+
+	return;
+}
+
+sub on_tree_key_up {
+	my $self  = shift;
+	my $event = shift;
+	my $mod   = $event->GetModifiers || 0;
+
+	# see Padre::Wx::Main::key_up
+	$mod = $mod & ( Wx::MOD_ALT + Wx::MOD_CMD + Wx::MOD_SHIFT );
+
+	my $tree = $self->{tree};
+	my $item_id = $tree->GetSelection;
+	my $element    = $tree->GetPlData($item_id) or return;
+
+	if ( $event->GetKeyCode == Wx::K_DELETE ) {
+		$self->delete_element($element);
+	}
+
+	$event->Skip;
+
+	return;
+}
+
+sub delete_element {
+	my $self = shift;
+	my $element = shift or return;
+
+	if ( $self->yes_no( sprintf(Wx::gettext('Do you want to delete %s?'), $element->name ) )) {
+		#TODO do the actual item deletion
+	}
 
 	return;
 }
