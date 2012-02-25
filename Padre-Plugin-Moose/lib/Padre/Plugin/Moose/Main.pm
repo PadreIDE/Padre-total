@@ -19,9 +19,8 @@ sub new {
 
 	my $self = $class->SUPER::new($main);
 	$self->CenterOnParent;
-	$self->SetTitle(sprintf(
-		Wx::gettext('Padre::Plugin::Moose %s - Written for fun by Ahmad M. Zawawi (azawawi)'), $VERSION)
-	);
+	$self->SetTitle(
+		sprintf( Wx::gettext('Padre::Plugin::Moose %s - Written for fun by Ahmad M. Zawawi (azawawi)'), $VERSION ) );
 
 	$self->restore_defaults;
 
@@ -443,11 +442,11 @@ sub restore_defaults {
 
 # Called when a item context menu is requested.
 sub on_tree_item_menu {
-	my $self  = shift;
-	my $event = shift;
-	my $item  = $event->GetItem;
-	my $tree  = $self->{tree};
-	my $element  = $tree->GetPlData($item) or return;
+	my $self    = shift;
+	my $event   = shift;
+	my $item    = $event->GetItem;
+	my $tree    = $self->{tree};
+	my $element = $tree->GetPlData($item) or return;
 	return if $element->isa('Padre::Plugin::Moose::Program');
 
 	# Generate the context menu for this element
@@ -457,7 +456,7 @@ sub on_tree_item_menu {
 		$self,
 		$menu->Append( -1, Wx::gettext('Delete') ),
 		sub {
-			if($self->yes_no(Wx::gettext('Really delete item?'))) {
+			if ( $self->yes_no( Wx::gettext('Really delete item?') ) ) {
 			}
 		}
 	);

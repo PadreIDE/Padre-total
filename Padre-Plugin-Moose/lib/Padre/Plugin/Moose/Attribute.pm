@@ -60,7 +60,11 @@ sub get_grid_data {
 	return [
 		{ name => Wx::gettext('Name:') },
 		{ name => Wx::gettext('Access type:'), choices => [qw(rw ro bare)] },
-		{ name => Wx::gettext('Type:'), choices => [qw(Any Item Bool Maybe[] Undef Defined Value Str Num Int ClassName RoleName Ref ScalarRef[] ArrayRef[] HashRef[] CodeRef RegexpRef GlobRef FileHandle Object)] },
+		{   name    => Wx::gettext('Type:'),
+			choices => [
+				qw(Any Item Bool Maybe[] Undef Defined Value Str Num Int ClassName RoleName Ref ScalarRef[] ArrayRef[] HashRef[] CodeRef RegexpRef GlobRef FileHandle Object)
+			]
+		},
 		{ name => Wx::gettext('Required:'), is_bool => 1 },
 		{ name => Wx::gettext('Trigger:') },
 	];

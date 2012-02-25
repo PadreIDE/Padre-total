@@ -61,7 +61,11 @@ sub get_grid_data {
 	require Wx;
 	return [
 		{ name => Wx::gettext('Name:') },
-		{ name => Wx::gettext('Base Type:'), choices => [qw(Any Item Bool Maybe[] Undef Defined Value Str Num Int ClassName RoleName Ref ScalarRef[] ArrayRef[] HashRef[] CodeRef RegexpRef GlobRef FileHandle Object)] },
+		{   name    => Wx::gettext('Base Type:'),
+			choices => [
+				qw(Any Item Bool Maybe[] Undef Defined Value Str Num Int ClassName RoleName Ref ScalarRef[] ArrayRef[] HashRef[] CodeRef RegexpRef GlobRef FileHandle Object)
+			]
+		},
 		{ name => Wx::gettext('Constraint:') },
 		{ name => Wx::gettext('Error message:') },
 	];
