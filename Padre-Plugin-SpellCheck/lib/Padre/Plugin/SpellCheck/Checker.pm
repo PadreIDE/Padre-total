@@ -27,6 +27,7 @@ use Data::Printer {
 
 use Encode;
 use Padre::Logger;
+use Padre::Locale                           ();
 use Padre::Unload                           ();
 use Padre::Plugin::SpellCheck::FBP::Checker ();
 
@@ -69,6 +70,12 @@ sub set_up {
 	
 	my $text_spell = $self->{_parent}->config_read->{Engine};
 	my $iso_name = $self->{_parent}->config_read->{$text_spell};
+	
+	#Thanks alias
+	my $status_info = "$text_spell => ".$self->padre_locale_label($iso_name);
+	$self->{status_info}->GetStaticBox->SetLabel($status_info);
+	
+	
 	# my $text_spell = $self->{_parent}->config_read->{Engine};
 	# $text_spell = 'Hunspell';
 	# $self->_iso_name($lang_iso);
@@ -463,6 +470,21 @@ sub _on_replace_clicked {
 	$self->_next;
 }
 
+#######
+# Composed Method padre_local_label
+# aspell to padre local label
+#######
+sub padre_locale_label {
+	my $self                = shift;
+	my $local_dictionary    = shift;
+	# my $lc_local_dictionary = lc( $local_dictionary ? $local_dictionary : 'en_GB' );
+	my $lc_local_dictionary = lc $local_dictionary;
+	$lc_local_dictionary =~ s/_/-/;
+	require Padre::Locale;
+	my $label = Padre::Locale::label($lc_local_dictionary);
+
+	return $label;
+}
 
 1;
 

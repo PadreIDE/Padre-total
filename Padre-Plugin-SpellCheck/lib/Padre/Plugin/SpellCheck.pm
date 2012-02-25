@@ -4,7 +4,7 @@ use 5.008005;
 use strict;
 use warnings;
 
-use Padre::Plugin;
+use Padre::Plugin ();
 use Padre::Unload ();
 
 our $VERSION = '1.23';
