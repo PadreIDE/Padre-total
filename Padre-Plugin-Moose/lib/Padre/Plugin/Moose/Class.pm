@@ -19,6 +19,7 @@ has 'singleton'    => ( is => 'rw', isa => 'Bool' );
 
 sub generate_code {
 	my $self     = shift;
+	my $use_mouse = shift;
 	my $comments = shift;
 
 	my $class               = $self->name;
@@ -34,7 +35,11 @@ sub generate_code {
 
 	my $code = "package $class;\n";
 
-	$code .= "\nuse Moose;";
+	if($use_mouse) {
+		$code .= "\nuse Mouse;";
+	} else {
+		$code .= "\nuse Moose;";
+	}
 	$code .=
 		$comments
 		? " # automatically turns on strict and warnings\n"
@@ -49,11 +54,16 @@ sub generate_code {
 	}
 
 	# If there is at least one subtype, we need to add this import
-	$code .= "use Moose::Util::TypeConstraints;\n"
-		if scalar @{ $self->subtypes };
+	if(scalar @{ $self->subtypes }) {
+		if($use_mouse) {
+			$code .= "use Mouse::Util::TypeConstraints;\n"
+		} else {
+			$code .= "use Moose::Util::TypeConstraints;\n"
+		}
+	}
 
 	# Singleton...
-	$code .= "use MooseX::Singleton;\n" if $self->singleton;
+	$code .= "use MooseX::Singleton;\n" if $self->singleton && not $use_mouse;
 
 	$code .= "\nextends '$superclasses';\n" if $superclasses ne '';
 

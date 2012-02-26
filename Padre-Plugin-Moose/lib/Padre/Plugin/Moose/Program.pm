@@ -13,6 +13,7 @@ has 'classes' => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
 
 sub generate_code {
 	my $self        = shift;
+	my $use_mouse   = shift;
 	my $comments    = shift;
 	my $sample_code = shift;
 
@@ -20,12 +21,12 @@ sub generate_code {
 
 	# Generate roles
 	for my $role ( @{ $self->roles } ) {
-		$code .= $role->generate_code($comments);
+		$code .= $role->generate_code($use_mouse, $comments);
 	}
 
 	# Generate classes
 	for my $class ( @{ $self->classes } ) {
-		$code .= $class->generate_code($comments);
+		$code .= $class->generate_code($use_mouse, $comments);
 	}
 
 	# Generate sample usage code

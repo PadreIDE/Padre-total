@@ -120,8 +120,9 @@ sub show_code_in_preview {
 
 		# Generate code
 		my $code = $self->{program}->generate_code(
+			$self->{use_mouse_checkbox}->IsChecked,
 			$self->{comments_checkbox}->IsChecked,
-			$self->{sample_code_checkbox}->IsChecked
+			$self->{sample_code_checkbox}->IsChecked,
 		);
 
 		# And show it in preview editor
@@ -385,6 +386,10 @@ sub on_add_destructor_button {
 	# $self->{current_element} = $method;
 	# $self->show_inspector($method);
 	# $self->show_code_in_preview(1);
+}
+
+sub on_use_mouse_checkbox {
+	$_[0]->show_code_in_preview(1);	
 }
 
 sub on_sample_code_checkbox {
