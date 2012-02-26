@@ -15,6 +15,7 @@ has 'superclasses' => ( is => 'rw', isa => 'Str', default => '' );
 has 'roles'        => ( is => 'rw', isa => 'Str', default => '' );
 has 'immutable'    => ( is => 'rw', isa => 'Bool' );
 has 'namespace_autoclean' => ( is => 'rw', isa => 'Bool' );
+has 'singleton'    => ( is => 'rw', isa => 'Bool' );
 
 sub generate_code {
 	my $self     = shift;
@@ -51,6 +52,9 @@ sub generate_code {
 	$code .= "use Moose::Util::TypeConstraints;\n"
 		if scalar @{ $self->subtypes };
 
+	# Singleton...
+	$code .= "use MooseX::Singleton;\n" if $self->singleton;
+
 	$code .= "\nextends '$superclasses';\n" if $superclasses ne '';
 
 	$code .= "\n" if scalar @roles;
@@ -85,7 +89,7 @@ sub read_from_inspector {
 	my $grid = shift;
 
 	my $row = 0;
-	for my $field (qw(name superclasses roles immutable namespace_autoclean)) {
+	for my $field (qw(name superclasses roles immutable namespace_autoclean singleton)) {
 		$self->$field( $grid->GetCellValue( $row++, 1 ) );
 	}
 }
@@ -95,7 +99,7 @@ sub write_to_inspector {
 	my $grid = shift;
 
 	my $row = 0;
-	for my $field (qw(name superclasses roles immutable namespace_autoclean)) {
+	for my $field (qw(name superclasses roles immutable namespace_autoclean singleton)) {
 		$grid->SetCellValue( $row++, 1, $self->$field );
 	}
 }
@@ -107,7 +111,8 @@ sub get_grid_data {
 		{ name => Wx::gettext('Superclasses:') },
 		{ name => Wx::gettext('Roles:') },
 		{ name => Wx::gettext('Clean namespace?'), is_bool => 1 },
-		{ name => Wx::gettext('Make immutable?'), is_bool => 1 }
+		{ name => Wx::gettext('Make immutable?'), is_bool => 1 },
+		{ name => Wx::gettext('Singleton?'), is_bool => 1 },
 	];
 }
 

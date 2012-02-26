@@ -33,7 +33,11 @@ sub generate_code {
 		$code .= "\npackage main;\n";
 		my $count = 1;
 		for my $class ( @{ $self->classes } ) {
-			$code .= "my \$o$count = " . $class->name . "->new;\n";
+			if($class->singleton) {
+				$code .= "my \$o$count = " . $class->name . "->instance;\n";
+			} else {
+				$code .= "my \$o$count = " . $class->name . "->new;\n";
+			}
 			$count++;
 		}
 	}
