@@ -3,7 +3,7 @@ package Padre::Plugin::SpellCheck::Engine;
 use warnings;
 use strict;
 
-our $VERSION = '1.23';
+our $VERSION = '1.24';
 
 use Padre::Logger;
 use Padre::Unload ();

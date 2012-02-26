@@ -9,7 +9,7 @@ use Padre::Locale                               ();
 use Padre::Unload                               ();
 use Padre::Plugin::SpellCheck::FBP::Preferences ();
 
-our $VERSION = '1.23';
+our $VERSION = '1.24';
 our @ISA     = qw{
 	Padre::Plugin::SpellCheck::FBP::Preferences
 };

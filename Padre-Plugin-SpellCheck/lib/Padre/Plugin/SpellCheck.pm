@@ -8,7 +8,7 @@ use Padre::Plugin ();
 use Padre::Unload ();
 use File::Which   ();
 
-our $VERSION = '1.23';
+our $VERSION = '1.24';
 our @ISA     = 'Padre::Plugin';
 # use Data::Printer {
 	# caller_info => 1,
