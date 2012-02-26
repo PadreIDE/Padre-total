@@ -62,8 +62,16 @@ sub generate_code {
 		}
 	}
 
-	# Singleton...
+	# Singleton via MooseX::Singleton
 	$code .= "use MooseX::Singleton;\n" if $self->singleton && not $use_mouse;
+
+	# Class attributes via MooseX::ClassAttribute
+	for my $attribute ( @{ $self->attributes } ) {
+		if($attribute->class_has) {
+			$code .= "use MooseX::ClassAttribute;\n" if $attribute->class_has && not $use_mouse;		
+			last;
+		}
+	}
 
 	$code .= "\nextends '$superclasses';\n" if $superclasses ne '';
 
@@ -73,7 +81,7 @@ sub generate_code {
 	}
 
 	# Generate class members
-	$code .= $self->to_class_members_code($comments);
+	$code .= $self->to_class_members_code($use_mouse, $comments);
 
 	if ($make_immutable) {
 		$code .= "\n__PACKAGE__->meta->make_immutable;";

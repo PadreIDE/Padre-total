@@ -15,7 +15,7 @@ has 'access_type'   => ( is => 'rw', isa => 'Str' );
 has 'type'          => ( is => 'rw', isa => 'Str' );
 has 'trigger'       => ( is => 'rw', isa => 'Str' );
 has 'required'      => ( is => 'rw', isa => 'Bool' );
-has 'has_class'     => ( is => 'rw', isa => 'Bool' );
+has 'class_has'     => ( is => 'rw', isa => 'Bool' );
 has 'coerce'        => ( is => 'rw', isa => 'Bool' );
 has 'does'          => ( is => 'rw', isa => 'Str' );
 has 'weak_ref'      => ( is => 'rw', isa => 'Bool' );
@@ -27,11 +27,12 @@ has 'predicate'     => ( is => 'rw', isa => 'Str' );
 has 'documentation' => ( is => 'rw', isa => 'Str' );
 
 my @FIELDS = qw(
-	name access_type type has_class required trigger coerce does weak_ref
+	name access_type type class_has required trigger coerce does weak_ref
 	lazy builder default clearer predicate documentation);
 
 sub generate_code {
 	my $self    = shift;
+	my $use_mouse = shift;
 	my $comment = shift;
 
 	my $has_code = '';
@@ -41,7 +42,7 @@ sub generate_code {
 	$has_code .= ("\trequired => 1,\n")                       if $self->required;
 	$has_code .= ( "\ttrigger => " . $self->trigger . ",\n" ) if defined $self->trigger && $self->trigger ne '';
 
-	my $has = $self->has_class ? 'has_class' : 'has';
+	my $has = ($self->class_has && not $use_mouse) ? 'class_has' : 'has';
 	return "$has '" . $self->name . "'" . ( $has_code ne '' ? qq{ => (\n$has_code)} : q{} ) . ";\n";
 }
 
