@@ -28,10 +28,6 @@ sub new {
 	my $inspector = $self->{inspector};
 	$inspector->SetRowLabelSize(0);
 
-	for my $row ( 0 .. $inspector->GetNumberRows - 1 ) {
-		$inspector->SetReadOnly( $row, 0 );
-	}
-
 	# Hide the inspector as needed
 	$self->show_inspector(undef);
 
@@ -232,6 +228,10 @@ sub show_inspector {
 			$inspector->SetCellEditor( $row_index, 1, Wx::GridCellChoiceEditor->new( $row->{choices}, 1 ) );
 		}
 		$row_index++;
+	}
+
+	for my $row ( 0 .. $row_index - 1 ) {
+		$inspector->SetReadOnly( $row, 0 );
 	}
 
 	$inspector->Show(1);
