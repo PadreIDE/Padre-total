@@ -64,13 +64,22 @@ sub new {
 		},
 	);
 
-	$self->{inspector} = Wx::Grid->new(
+	$self->{inspector_scrolled_window} = Wx::ScrolledWindow->new(
 		$self,
 		-1,
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
+		Wx::HSCROLL | Wx::VSCROLL,
 	);
-	$self->{inspector}->CreateGrid( 5, 2 );
+	$self->{inspector_scrolled_window}->SetScrollRate( 5, 5 );
+
+	$self->{inspector} = Wx::Grid->new(
+		$self->{inspector_scrolled_window},
+		-1,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+	);
+	$self->{inspector}->CreateGrid( 20, 2 );
 	$self->{inspector}->EnableEditing(1);
 	$self->{inspector}->EnableGridLines(1);
 	$self->{inspector}->EnableDragGridSize(0);
@@ -361,7 +370,13 @@ sub new {
 	);
 	$tree_sizer->Add( $self->{tree}, 1, Wx::ALL | Wx::EXPAND, 5 );
 
-	my $inspector_size = Wx::StaticBoxSizer->new(
+	my $inspector_scrolled_sizer = Wx::BoxSizer->new(Wx::VERTICAL);
+	$inspector_scrolled_sizer->Add( $self->{inspector}, 0, Wx::ALL | Wx::EXPAND, 5 );
+
+	$self->{inspector_scrolled_window}->SetSizerAndFit($inspector_scrolled_sizer);
+	$self->{inspector_scrolled_window}->Layout;
+
+	my $inspector_sizer = Wx::StaticBoxSizer->new(
 		Wx::StaticBox->new(
 			$self,
 			-1,
@@ -369,12 +384,12 @@ sub new {
 		),
 		Wx::VERTICAL,
 	);
-	$inspector_size->Add( $self->{inspector}, 0, Wx::ALL, 5 );
-	$inspector_size->Add( $self->{help}, 1, Wx::ALL | Wx::EXPAND, 5 );
+	$inspector_sizer->Add( $self->{inspector_scrolled_window}, 1, Wx::ALL | Wx::EXPAND, 5 );
+	$inspector_sizer->Add( $self->{help}, 1, Wx::ALL | Wx::EXPAND, 5 );
 
 	my $left_sizer = Wx::BoxSizer->new(Wx::VERTICAL);
 	$left_sizer->Add( $tree_sizer, 1, Wx::EXPAND, 5 );
-	$left_sizer->Add( $inspector_size, 1, Wx::EXPAND, 5 );
+	$left_sizer->Add( $inspector_sizer, 1, Wx::EXPAND, 5 );
 
 	my $container_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
 	$container_sizer->Add( $self->{add_class_button}, 0, Wx::ALIGN_CENTER_HORIZONTAL | Wx::ALL, 2 );

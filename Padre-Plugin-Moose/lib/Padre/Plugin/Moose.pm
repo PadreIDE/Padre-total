@@ -55,7 +55,7 @@ sub menu_plugins {
 				$self->{dialog}->run;
 				$self->{dialog}->ShowModal;
 			};
-			$main->error( sprintf(Wx::gettext('Error:%s'), $@) )
+			$main->error( sprintf( Wx::gettext('Error:%s'), $@ ) )
 				if $@;
 		},
 	);

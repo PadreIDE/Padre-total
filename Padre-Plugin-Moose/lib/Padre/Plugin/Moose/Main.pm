@@ -137,7 +137,7 @@ sub show_code_in_preview {
 		# Update tree
 		$self->update_tree($should_select_item);
 	};
-	$self->error( sprintf(Wx::gettext('Error:%s'), $@) )
+	$self->error( sprintf( Wx::gettext('Error:%s'), $@ ) )
 		if $@;
 }
 
@@ -477,9 +477,9 @@ sub on_tree_key_up {
 	# see Padre::Wx::Main::key_up
 	$mod = $mod & ( Wx::MOD_ALT + Wx::MOD_CMD + Wx::MOD_SHIFT );
 
-	my $tree = $self->{tree};
+	my $tree    = $self->{tree};
 	my $item_id = $tree->GetSelection;
-	my $element    = $tree->GetPlData($item_id) or return;
+	my $element = $tree->GetPlData($item_id) or return;
 
 	if ( $event->GetKeyCode == Wx::K_DELETE ) {
 		$self->delete_element($element);
@@ -494,7 +494,8 @@ sub delete_element {
 	my $self = shift;
 	my $element = shift or return;
 
-	if ( $self->yes_no( sprintf(Wx::gettext('Do you want to delete %s?'), $element->name ) )) {
+	if ( $self->yes_no( sprintf( Wx::gettext('Do you want to delete %s?'), $element->name ) ) ) {
+
 		#TODO do the actual item deletion
 	}
 
