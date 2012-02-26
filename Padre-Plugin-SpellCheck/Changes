@@ -1,5 +1,11 @@
 Revision history for Padre-Plugin-SpellCheck
-1.23    2012.TBA
+1.25    TBA
+    - 
+
+1.24    2012.02.26
+    - remove unwanited test for Text::Aspell installed (BOWTIE)
+
+1.23    2012.02.26
     - fix plugin_enable school boy error (BOWTIE)
     - fix the config DB to check on enable for past and new install (BOWTIE)
     - Bump version to 1.23 (BOWTIE)
