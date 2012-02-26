@@ -204,7 +204,7 @@ sub show_inspector {
 	my $element = shift;
 
 	unless ( defined $element ) {
-		$self->{inspector}->Show(0);
+		$self->{inspector_scrolled_window}->Show(0);
 		return;
 	}
 
@@ -234,7 +234,7 @@ sub show_inspector {
 		$inspector->SetReadOnly( $row, 0 );
 	}
 
-	$inspector->Show(1);
+	$self->{inspector_scrolled_window}->Show(1);
 	$self->Layout;
 	$inspector->SetGridCursor( 0, 1 );
 
