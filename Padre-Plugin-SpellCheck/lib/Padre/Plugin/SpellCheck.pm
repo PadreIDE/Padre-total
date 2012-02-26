@@ -76,18 +76,18 @@ sub plugin_enable {
 	}
 
 	#Set/ReSet Config data
-	$self->config if $local_dictonary_bin_exists;
+	$self->_config if $local_dictonary_bin_exists;
 
-	# p $self->config_read;
+	# p $self->_config_read;
 
 	return $local_dictonary_bin_exists;
 }
 
 #######
-# Method config
+# Composed Method _config
 # called on enable in plugin manager, bit like run/setup for a Plugin
 #######
-sub config {
+sub _config {
 	my $self   = shift;
 	my $config = $self->config_read;
 
@@ -291,35 +291,33 @@ information.
 
 The following methods are implemented:
 
-=over 4
+=over 7
 
-=item menu_plugins_simple()
+=item clean_dialog()
+
+=item menu_plugins()
 
 =item padre_interfaces()
 
-=item plugin_icon()
+=item plugin_enable()
+
+=item plugin_disable()
 
 =item plugin_name()
+
+=item plugin_preferences()
 
 =back
 
 
 =head2 Spell checking methods
 
-=over 4
-
-=item * config()
-
-Return the plugin's configuration, or a suitable default one if none
-exist previously.
+=over 1
 
 =item * spell_check()
 
 Spell checks the current selection (or the whole document).
 
-=item * plugin_preferences()
-
-Open the check spelling preferences window.
 
 =back
 
@@ -345,10 +343,19 @@ notified of progress on your bug as I make changes.
 Plugin icon courtesy of Mark James, at
 L<http://www.famfamfam.com/lab/icons/silk/>.
 
-Our svn repository is located at L<http://svn.perlide.org/padre/trunk/Padre-Plugin-
-SpellCheck>, and can be browsed at L<http://padre.perlide.org/browser/trunk/Padre-Plugin-
-SpellCheck>.
+=over 2
 
+=item * Padre-Plugin-SpellCheck web page
+
+L<http://padre.perlide.org/trac/wiki/PadrePluginSpellCheck>
+
+=item * Our svn repository 
+
+L<http://svn.perlide.org/padre/trunk/Padre-Plugin-SpellCheck>, 
+and can be browsed at 
+L<http://padre.perlide.org/browser/trunk/Padre-Plugin-SpellCheck>.
+
+=back
 
 You can also look for information on this module at:
 

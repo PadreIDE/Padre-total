@@ -13,7 +13,7 @@ use_ok( 'File::Which',           '1.09' );
 # let's check our subs/methods.
 ######
 
-my @subs = qw( clean_dialog config menu_plugins padre_interfaces
+my @subs = qw( _config clean_dialog menu_plugins padre_interfaces
 	plugin_disable plugin_enable plugin_name plugin_preferences spell_check
 );
 
