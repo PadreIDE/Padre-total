@@ -248,14 +248,6 @@ sub menu_plugins_simple {
 	];
 }
 
-sub config {
-    my $self   = shift;
-    my $config = {
-        dictionary => 'en_GB',
-    };
-    return $self->config_read || $config;
-}
-
 
 =head1 NAME
 
@@ -263,29 +255,28 @@ Padre::Plugin::SpellCheck - Check spelling in Padre The Perl IDE
 
 =head1 DESCRIPTION
 
-This plugins allows one to check there text spelling within Padre using
-C<F7> (standard spelling shortcut across text processors). 
+This plug-in allows one to check there spelling within Padre using
+C<F7> (standard spelling short-cut across text processors). 
 
 One can change the dictionary language used (based upon install languages) in the preferences window via Plug-in Manager. 
 Preferences are persistent. You need to Save your preferred language.
 
-This plugin is using C<Text::Aspell> default at present, You can also use C<Text::Hunspell> under-development, so check these module's
-pod for more information.
+This plug-in is using C<Text::Aspell> default (legacy). You can also use C<Text::Hunspell>, so check these module's
+pod for more information and install the one for you.
 
 Of course, you need to have the relevant Dictionary binary, dev and dictionary installed.
 
 
 =head1 SYNOPSIS
 
-    $ padre file-with-spell-errors
+    Check your file or selected text for spelling errors in your preferred language.
     F7
-
 
 =head1 PUBLIC METHODS
 
 =head2 Standard Padre::Plugin API
 
-C<Padre::Plugin::SpellCheck> defines a plugin which follows
+C<Padre::Plugin::SpellCheck> defines a plug-in which follows
 C<Padre::Plugin> API. Refer to this module's documentation for more
 information.
 
@@ -299,13 +290,17 @@ The following methods are implemented:
 
 =item padre_interfaces()
 
+=item plugin_disable()
+
 =item plugin_enable()
 
-=item plugin_disable()
+Return the plug-in's configuration, or a suitable default one if none exist previously.
 
 =item plugin_name()
 
 =item plugin_preferences()
+
+Open the check spelling preferences window.
 
 =back
 
@@ -326,8 +321,8 @@ Spell checks the current selection (or the whole document).
 Spell-checking non-ascii files has bugs: the selection does not
 match the word boundaries, and as the spell checks moves further in
 the document, offsets are totally irrelevant. This is a bug in
-C<Wx::StyledTextCtrl> that has some unicode problems... So
-unfortunately, there's nothing that I can do in this plugin to
+C<Wx::StyledTextCtrl> that has some Unicode problems... So
+unfortunately, there's nothing that I can do in this plug-in to
 tackle this bug.
 
 Please report any bugs or feature requests to C<padre-plugin-spellcheck
@@ -340,7 +335,7 @@ notified of progress on your bug as I make changes.
 
 =head1 SEE ALSO
 
-Plugin icon courtesy of Mark James, at
+Plug-in icon courtesy of Mark James, at
 L<http://www.famfamfam.com/lab/icons/silk/>.
 
 =over 2
@@ -375,7 +370,9 @@ L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Padre-Plugin-SpellCheck>
 
 =back
 
-Everything aspell related: L<http://aspell.net>.
+Everything Aspell related: L<http://aspell.net>.
+
+Everything Hunspell related: L<http://hunspell.sourceforge.net/>.
 
 =head1 AUTHORS
 

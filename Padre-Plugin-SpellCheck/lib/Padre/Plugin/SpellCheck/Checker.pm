@@ -164,6 +164,8 @@ sub _update {
 	my $item = $self->list->GetItem(0);
 	$item->SetState(Wx::wxLIST_STATE_SELECTED);
 	$self->list->SetItem($item);
+	
+	return;
 }
 
 
@@ -207,6 +209,7 @@ sub _next {
 
 	# update gui with new error
 	$self->_update;
+	return;
 }
 
 #######
@@ -245,6 +248,8 @@ sub _replace {
 	$self->_text($text);
 	$offset += $posnew;
 	$self->_offset($offset);
+	
+	return;
 }
 
 
@@ -261,6 +266,8 @@ sub _on_ignore_all_clicked {
 	my ( $word, $pos ) = @$error;
 	$self->_engine->set_ignore_word($word);
 	$self->_on_ignore_clicked;
+	
+	return;
 }
 
 #######
@@ -287,6 +294,7 @@ sub _on_ignore_clicked {
 
 	# try to find next error
 	$self->_next;
+	return;
 }
 
 #######
@@ -307,6 +315,7 @@ sub _on_replace_all_clicked {
 
 	# do the replacement
 	$self->_on_replace_clicked;
+	return;
 }
 
 #######
@@ -326,6 +335,7 @@ sub _on_replace_clicked {
 
 	# try to find next error
 	$self->_next;
+	return;
 }
 
 #######
