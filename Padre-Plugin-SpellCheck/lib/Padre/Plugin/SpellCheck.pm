@@ -10,10 +10,10 @@ use File::Which   ();
 
 our $VERSION = '1.23';
 our @ISA     = 'Padre::Plugin';
-use Data::Printer {
-	caller_info => 1,
-	colored     => 1,
-};
+# use Data::Printer {
+	# caller_info => 1,
+	# colored     => 1,
+# };
 
 #######
 # Define Plugin Name Spell Checker
@@ -78,7 +78,7 @@ sub plugin_enable {
 	#Set/ReSet Config data
 	$self->config if $local_dictonary_bin_exists;
 
-	p $self->config_read;
+	# p $self->config_read;
 
 	return $local_dictonary_bin_exists;
 }

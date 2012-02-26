@@ -13,10 +13,10 @@ our $VERSION = '1.23';
 our @ISA     = qw{
 	Padre::Plugin::SpellCheck::FBP::Preferences
 };
-use Data::Printer {
-	caller_info => 1,
-	colored     => 1,
-};
+# use Data::Printer {
+	# caller_info => 1,
+	# colored     => 1,
+# };
 
 #######
 # Method new
@@ -216,7 +216,7 @@ sub _on_button_save_clicked {
 	#this is naff
 	# TRACE("Saved P-P-SpellCheck config DB = $self->{_parent}->config_read ") if DEBUG;
 
-	p $self->{_parent}->config_read;
+	# p $self->{_parent}->config_read;
 
 	$self->{_parent}->clean_dialog;
 	return;

@@ -20,10 +20,10 @@ use Class::XSAccessor {
 	},
 };
 
-use Data::Printer {
-	caller_info => 1,
-	colored     => 1,
-};
+# use Data::Printer {
+	# caller_info => 1,
+	# colored     => 1,
+# };
 
 use Encode;
 use Padre::Logger;
@@ -66,7 +66,7 @@ sub set_up {
 	my $main    = $self->main;
 	my $current = $main->current;
 
-	p $self->{_parent}->config_read;
+	# p $self->{_parent}->config_read;
 
 	my $text_spell = $self->{_parent}->config_read->{Engine};
 	my $iso_name   = $self->{_parent}->config_read->{$text_spell};
@@ -111,12 +111,10 @@ sub set_up {
 		return;
 	}
 
-	# $self->_error( $word, $pos );
 	$self->_engine($engine);
 	$self->_offset($offset);
 	$self->_text($text);
 
-	# # $self->_plugin( $_plugin );
 	$self->_autoreplace( {} );
 
 	$self->_update;
@@ -181,38 +179,30 @@ sub _next {
 	my ($self) = @_;
 	my $autoreplace = $self->_autoreplace;
 
-	{
+	# try to find next mistake
+	my ( $word, $pos ) = $self->_engine->check( $self->_text );
 
-		# try to find next mistake
-		my ( $word, $pos ) = $self->_engine->check( $self->_text );
+	my @error = $self->_engine->check( $self->_text );
+	$self->{error} = \@error;
 
-		# $self->_error( [ $word, $pos ] );
+	# no mistake means we're done
+	if ( not defined $word ) {
+		$self->list->DeleteAllItems;
+		$self->labeltext->SetLabel('Spell check finished:...');
+		$self->label->SetLabel('Click Close');
 
-		my @error = $self->_engine->check( $self->_text );
-		$self->{error} = \@error;
+		# $self->replace->Disable;
+		# $self->replace_all->Disable;
+		# $self->{ignore}->Disable;
+		# $self->{ignore_all}->Disable;
+		# $self->list->DeleteAllItems;
+		return;
+	}
 
-		# my $error = $self->{error};
-		# my ( $word, $pos ) = @error;
-
-		# no mistake means we're done
-		if ( not defined $word ) {
-			$self->list->DeleteAllItems;
-			$self->labeltext->SetLabel('Spell check finished:...');
-			$self->label->SetLabel('Click Close');
-
-			# $self->replace->Disable;
-			# $self->replace_all->Disable;
-			# $self->{ignore}->Disable;
-			# $self->{ignore_all}->Disable;
-			# $self->list->DeleteAllItems;
-			return;
-		}
-
-		# check if we have hit a replace all word
-		if ( exists $autoreplace->{$word} ) {
-			$self->_replace( $autoreplace->{$word} );
-			redo; # move on to next error
-		}
+	# check if we have hit a replace all word
+	if ( exists $autoreplace->{$word} ) {
+		$self->_replace( $autoreplace->{$word} );
+		redo; # move on to next error
 	}
 
 	# update gui with new error

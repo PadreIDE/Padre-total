@@ -32,8 +32,8 @@ my %MIMETYPE_MODE = (
 # new
 #######
 sub new {
-	my $class = shift; # What class are we constructing?
-	my $self  = {};    # Allocate new memory
+	my $class = shift;   # What class are we constructing?
+	my $self  = {};      # Allocate new memory
 	bless $self, $class; # Mark it of the right type
 	$self->_init(@_);    # Call _init with remaining args
 	return $self;
@@ -79,8 +79,6 @@ sub _init {
 		);
 	}
 
-
-
 	TRACE( $speller->print_config ) if DEBUG;
 
 	$self->_speller($speller);
@@ -94,8 +92,6 @@ sub _init {
 #######
 sub check {
 	my ( $self, $text ) = @_;
-
-	# my $speller = $self->_speller;
 	my $ignore = $self->_ignore;
 
 	# iterate over word boundaries

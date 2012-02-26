@@ -9,7 +9,7 @@ requires_from lib/Padre/Plugin/SpellCheck/Preferences.pm
 requires Padre				0.93
 requires Module::Util		1.07
 requires Class::XSAccessor	1.13
-requires Data::Printer		0.3
+# requires Data::Printer		0.3
 requires File::Which		1.09
 
 no_index directory	qw{ t xt eg share inc privinc }
