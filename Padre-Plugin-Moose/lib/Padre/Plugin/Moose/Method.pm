@@ -67,7 +67,7 @@ sub get_grid_data {
 	require Wx;
 	return [
 		{ name => Wx::gettext('Name:') },
-		{ name => Wx::gettext('Modifier:') },
+		{ name => Wx::gettext('Modifier:'), choices => [qw(around after before)] },
 	];
 }
 
