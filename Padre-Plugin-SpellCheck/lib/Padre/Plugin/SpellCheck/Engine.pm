@@ -59,8 +59,17 @@ sub _init {
 		$speller = Text::Aspell->new;
 
 		# TODO: configurable later, ask jq why
-		$speller->set_option( 'sug-mode', 'normal' );
+		# $speller->set_option( 'sug-mode', 'normal' );bad-spellers
+		$speller->set_option( 'sug-mode', 'bad-spellers' );
 		$speller->set_option( 'lang',     $iso );
+
+		if ( exists $MIMETYPE_MODE{$mimetype} ) {
+			if ( not defined $speller->set_option( 'mode', $MIMETYPE_MODE{$mimetype} ) ) {
+				my $err = $speller->errstr;
+				warn "Could not set aspell mode '$MIMETYPE_MODE{$mimetype}': $err\n";
+			}
+		}
+
 	} else {
 		require Text::Hunspell;
 
@@ -72,12 +81,7 @@ sub _init {
 		);
 	}
 
-	if ( exists $MIMETYPE_MODE{$mimetype} ) {
-		if ( not defined $speller->set_option( 'mode', $MIMETYPE_MODE{$mimetype} ) ) {
-			my $err = $speller->errstr;
-			warn "Could not set aspell mode '$MIMETYPE_MODE{$mimetype}': $err\n";
-		}
-	}
+
 
 	TRACE( $speller->print_config ) if DEBUG;
 
