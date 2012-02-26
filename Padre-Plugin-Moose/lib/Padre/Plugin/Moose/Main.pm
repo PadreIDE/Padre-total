@@ -137,9 +137,8 @@ sub show_code_in_preview {
 		# Update tree
 		$self->update_tree($should_select_item);
 	};
-	if ($@) {
-		$self->error( Wx::gettext( "Error: " . $@ ) );
-	}
+	$self->error( sprintf(Wx::gettext('Error:%s'), $@) )
+		if $@;
 }
 
 sub update_tree {
