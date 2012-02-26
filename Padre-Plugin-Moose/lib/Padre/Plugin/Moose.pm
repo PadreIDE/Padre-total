@@ -55,7 +55,7 @@ sub menu_plugins {
 				$self->{dialog}->run;
 				$self->{dialog}->ShowModal;
 			};
-			print "Error: $@" if $@;
+			$main->error("Error has occured:\n@_");
 		},
 	);
 
