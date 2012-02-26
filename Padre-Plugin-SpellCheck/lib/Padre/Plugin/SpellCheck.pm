@@ -6,6 +6,7 @@ use warnings;
 
 use Padre::Plugin ();
 use Padre::Unload ();
+use File::Which   ();
 
 our $VERSION = '1.23';
 our @ISA     = 'Padre::Plugin';
@@ -66,21 +67,19 @@ sub plugin_enable {
 	my $self                       = shift;
 	my $local_dictonary_bin_exists = 0;
 
-	# Tests for external file in Path...
-	# if ( File::Which::which('aspell') ) {
-	if ( eval {require Text::Aspell } ) {
+	# Tests for externals used by Preference's
+	if ( eval { require Text::Aspell } ) {
 		$local_dictonary_bin_exists = 1;
-	} 
-	# if ( File::Which::which('hunspell') ) {
-	if ( eval {require Text::Hunspell } ) {
+	}
+	if ( File::Which::which('hunspell') ) {
 		$local_dictonary_bin_exists = 1;
 	}
 
 	#Set/ReSet Config data
 	$self->config if $local_dictonary_bin_exists;
-	
+
 	p $self->config_read;
-	
+
 	return $local_dictonary_bin_exists;
 }
 
