@@ -58,9 +58,7 @@ sub _init {
 		require Text::Aspell;
 		$speller = Text::Aspell->new;
 
-		# TODO: configurable later, ask jq why
-		# $speller->set_option( 'sug-mode', 'normal' );bad-spellers
-		$speller->set_option( 'sug-mode', 'bad-spellers' );
+		$speller->set_option( 'sug-mode', 'normal' );
 		$speller->set_option( 'lang',     $iso );
 
 		if ( exists $MIMETYPE_MODE{$mimetype} ) {
