@@ -1,5 +1,12 @@
 Changes for Padre-Plugin-Moose
 
+0.12  2012.2.26 (AZAWAWI)
+	- Delete key and right-click (context menu) now work on the delete option. 
+	  No actual deletion is done at the moment
+	- Add the UI/event hooks for constructor/destructor buttons.
+	  No code generation at the moment
+	- Choice combo list is now in inspector. (bowtie++ for the idea)
+
 0.11  2012.2.24 (AZAWAWI)
 	- New polished dialog UI :)
 	- Added method modifiers (around, before, after)

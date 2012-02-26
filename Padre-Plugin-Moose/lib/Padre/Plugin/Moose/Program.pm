@@ -3,7 +3,7 @@ package Padre::Plugin::Moose::Program;
 use namespace::clean;
 use Moose;
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 with 'Padre::Plugin::Moose::Role::CanGenerateCode';
 with 'Padre::Plugin::Moose::Role::CanProvideHelp';
