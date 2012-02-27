@@ -63,7 +63,7 @@ sub generate_mouse_code {
 };
 
 sub generate_moosex_declare_code {
-	return '';
+	return $_[0]->generate_moose_code(@_);
 }
 
 sub provide_help {
