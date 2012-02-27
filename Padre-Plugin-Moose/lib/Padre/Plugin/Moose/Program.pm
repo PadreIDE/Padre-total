@@ -13,7 +13,6 @@ has 'classes' => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
 
 sub generate_moose_code {
 	my $self        = shift;
-	my $use_mouse   = shift;
 	my $comments    = shift;
 	my $sample_code = shift;
 
@@ -21,12 +20,12 @@ sub generate_moose_code {
 
 	# Generate roles
 	for my $role ( @{ $self->roles } ) {
-		$code .= $role->generate_code( $use_mouse, $comments );
+		$code .= $role->generate_moose_code( $comments );
 	}
 
 	# Generate classes
 	for my $class ( @{ $self->classes } ) {
-		$code .= $class->generate_code( $use_mouse, $comments );
+		$code .= $class->generate_moose_code( $comments );
 	}
 
 	# Generate sample usage code
@@ -48,10 +47,13 @@ sub generate_moose_code {
 
 # Generate Mouse code!
 sub generate_mouse_code {
-}
+	my $code = $_[0]->generate_moose_code(@_);
+	$code =~ s/\->instance;$/\->new;/g;
+	return $code;
+};
 
-# Generate MooseX::Declare code!
 sub generate_moosex_declare_code {
+	return '';
 }
 
 sub provide_help {

@@ -11,6 +11,7 @@ has 'methods'    => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
 
 sub to_class_members_code {
 	my $self      = shift;
+	my $code_type = shift;
 	my $comments  = shift;
 
 	my $code = '';
@@ -18,19 +19,19 @@ sub to_class_members_code {
 	# Generate attributes
 	$code .= "\n" if scalar @{ $self->attributes };
 	for my $attribute ( @{ $self->attributes } ) {
-		$code .= $attribute->generate_code( $comments );
+		$code .= $attribute->generate_code( $code_type, $comments );
 	}
 
 	# Generate subtypes
 	$code .= "\n" if scalar @{ $self->subtypes };
 	for my $subtype ( @{ $self->subtypes } ) {
-		$code .= $subtype->generate_code($comments);
+		$code .= $subtype->generate_code( $code_type, $comments);
 	}
 
 	# Generate methods
 	$code .= "\n" if scalar @{ $self->methods };
 	for my $method ( @{ $self->methods } ) {
-		$code .= $method->generate_code($comments);
+		$code .= $method->generate_code( $code_type, $comments);
 	}
 
 	return $code;

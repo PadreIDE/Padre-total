@@ -15,7 +15,6 @@ has 'requires_list' => ( is => 'rw', isa => 'Str', default => '' );
 
 sub generate_moose_code {
 	my $self      = shift;
-	my $use_mouse = shift;
 	my $comments  = shift;
 
 	my $role     = $self->name;
@@ -26,19 +25,11 @@ sub generate_moose_code {
 	my @requires = split /,/, $requires;
 
 	my $code = "package $role;\n";
-	if ($use_mouse) {
-		$code .= "\nuse Mouse::Role;\n";
-	} else {
-		$code .= "\nuse Moose::Role;\n";
-	}
+	$code .= "\nuse Moose::Role;\n";
 
 	# If there is at least one subtype, we need to add this import
 	if ( scalar @{ $self->subtypes } ) {
-		if ($use_mouse) {
-			$code .= "use Mouse::Util::TypeConstraints;\n";
-		} else {
-			$code .= "use Moose::Util::TypeConstraints;\n";
-		}
+		$code .= "use Moose::Util::TypeConstraints;\n";
 	}
 
 	$code .= "\n" if scalar @requires;
@@ -47,7 +38,7 @@ sub generate_moose_code {
 	}
 
 	# Generate class members
-	$code .= $self->to_class_members_code($comments);
+	$code .= $self->to_class_members_code('Moose', $comments);
 
 	$code .= "\n1;\n\n";
 
@@ -56,10 +47,13 @@ sub generate_moose_code {
 
 # Generate Mouse code!
 sub generate_mouse_code {
-}
+	my $code = $_[0]->generate_moose_code(@_);
+	$code =~ s/use Moose/use Mouse/g;
+	return $code;
+};
 
-# Generate MooseX::Declare code!
 sub generate_moosex_declare_code {
+	return '';
 }
 
 sub provide_help {

@@ -297,6 +297,15 @@ sub new {
 			"Mouse",
 			"MooseX::Declare",
 		],
+		Wx::CB_READONLY,
+	);
+
+	Wx::Event::EVT_COMBOBOX(
+		$self,
+		$self->{generated_code_combo},
+		sub {
+			shift->on_generated_code_combo(@_);
+		},
 	);
 
 	$self->{comments_checkbox} = Wx::CheckBox->new(
@@ -379,7 +388,7 @@ sub new {
 		),
 		Wx::VERTICAL,
 	);
-	$tree_sizer->Add( $self->{tree}, 1, Wx::ALL | Wx::EXPAND, 5 );
+	$tree_sizer->Add( $self->{tree}, 2, Wx::ALL | Wx::EXPAND, 5 );
 
 	my $inspector_sizer = Wx::StaticBoxSizer->new(
 		Wx::StaticBox->new(
@@ -391,8 +400,8 @@ sub new {
 	);
 	$inspector_sizer->Add( $self->{inspector}, 0, Wx::ALL | Wx::EXPAND, 5 );
 	$inspector_sizer->Add( $self->{help}, 1, Wx::ALL | Wx::EXPAND, 5 );
+
 	my $left_sizer = Wx::BoxSizer->new(Wx::VERTICAL);
-	$left_sizer->Add( $tree_sizer,      1, Wx::EXPAND, 5 );
 	$left_sizer->Add( $tree_sizer, 1, Wx::EXPAND, 5 );
 	$left_sizer->Add( $inspector_sizer, 1, Wx::EXPAND, 5 );
 
@@ -529,6 +538,10 @@ sub on_add_method_button {
 
 sub on_add_destructor_button {
 	$_[0]->main->error('Handler method on_add_destructor_button for event add_destructor_button.OnButtonClick not implemented');
+}
+
+sub on_generated_code_combo {
+	$_[0]->main->error('Handler method on_generated_code_combo for event generated_code_combo.OnCombobox not implemented');
 }
 
 sub on_comments_checkbox {

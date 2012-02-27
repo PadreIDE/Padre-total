@@ -32,7 +32,6 @@ my @FIELDS = qw(
 
 sub generate_moose_code {
 	my $self      = shift;
-	my $use_mouse = shift;
 	my $comment   = shift;
 
 	my $has_code = '';
@@ -42,16 +41,19 @@ sub generate_moose_code {
 	$has_code .= ("\trequired => 1,\n")                       if $self->required;
 	$has_code .= ( "\ttrigger => " . $self->trigger . ",\n" ) if defined $self->trigger && $self->trigger ne '';
 
-	my $has = ( $self->class_has && not $use_mouse ) ? 'class_has' : 'has';
+	my $has = ( $self->class_has ) ? 'class_has' : 'has';
 	return "$has '" . $self->name . "'" . ( $has_code ne '' ? qq{ => (\n$has_code)} : q{} ) . ";\n";
 }
 
 # Generate Mouse code!
 sub generate_mouse_code {
-}
+	my $code = $_[0]->generate_moose_code(@_);
+	$code =~ s/^class_has/has/g;
+	return $code;
+};
 
-# Generate MooseX::Declare code!
 sub generate_moosex_declare_code {
+	return '';
 }
 
 sub provide_help {

@@ -119,9 +119,9 @@ sub show_code_in_preview {
 	eval {
 
 		# Generate code
-		my $type = $self->{generated_code_combo}->GetCurrentSelection;
-		print $type . "\n";
+		print $self->{generated_code_combo}->GetValue . "\n";
 		my $code = $self->{program}->generate_code(
+			$self->{generated_code_combo}->GetValue,
 			$self->{comments_checkbox}->IsChecked,
 			$self->{sample_code_checkbox}->IsChecked,
 		);
@@ -506,6 +506,12 @@ sub delete_element {
 	}
 
 	return;
+}
+
+sub on_generated_code_combo {
+	my $self = shift;
+
+	$self->show_code_in_preview(1);
 }
 
 1;

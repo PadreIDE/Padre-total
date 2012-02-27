@@ -73,7 +73,7 @@ sub generate_moose_code {
 	}
 
 	# Generate class members
-	$code .= $self->to_class_members_code( $comments );
+	$code .= $self->to_class_members_code( 'Moose', $comments );
 
 	if ($make_immutable) {
 		$code .= "\n__PACKAGE__->meta->make_immutable;";
@@ -90,12 +90,12 @@ sub generate_moose_code {
 # Generate Mouse code!
 sub generate_mouse_code {
 	my $code = $_[0]->generate_moose_code(@_);
-	$code =~ s/use Moose/use Mouse/g;
+	$code =~ s/^use Moose/use Mouse/gm;
 	return $code;
-}
+};
 
-# Generate MooseX::Declare code!
 sub generate_moosex_declare_code {
+	return '';
 }
 
 sub provide_help {

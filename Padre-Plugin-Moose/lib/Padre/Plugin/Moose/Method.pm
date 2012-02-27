@@ -40,10 +40,11 @@ sub generate_moose_code {
 
 # Generate Mouse code!
 sub generate_mouse_code {
-}
+	return $_[0]->generate_moose_code(@_);
+};
 
-# Generate MooseX::Declare code!
 sub generate_moosex_declare_code {
+	return '';
 }
 
 sub provide_help {

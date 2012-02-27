@@ -6,17 +6,18 @@ use namespace::clean;
 
 our $VERSION = '0.13';
 
-enum 'GeneratedCodeType', [qw(Moose Mouse MooseXDeclare)];
+enum 'GeneratedCodeType', [qw(Moose Mouse MooseX::Declare)];
 
 has 'code_type' => (is => 'rw', isa => 'GeneratedCodeType', default => 'Moose');
 
 sub generate_code {
 	my $self = shift;
+	my $code_type = shift;
 
-	my $code_type = $self->code_type;
+	$self->code_type($code_type);
 	return $self->generate_moose_code if $code_type eq 'Moose';
 	return $self->generate_mouse_code if $code_type eq 'Mouse';
-	return $self->generate_moosex_declare_code if $code_type eq 'MooseXDeclare';
+	return $self->generate_moosex_declare_code if $code_type eq 'MooseX::Declare';
 	die "Unsupported code_type: '" . $code_type . "'\n";
 }
 
