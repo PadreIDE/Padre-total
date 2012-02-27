@@ -3,7 +3,7 @@ package Padre::Plugin::Moose::Role::CanHandleInspector;
 use Moose::Role;
 use namespace::clean;
 
-our $VERSION = '0.12';
+our $VERSION = '0.13';
 
 requires 'read_from_inspector';
 requires 'write_to_inspector';

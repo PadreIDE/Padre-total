@@ -3,7 +3,7 @@ package Padre::Plugin::Moose::Role::CanGenerateCode;
 use Moose::Role;
 use namespace::clean;
 
-our $VERSION = '0.12';
+our $VERSION = '0.13';
 
 requires 'generate_code';
 

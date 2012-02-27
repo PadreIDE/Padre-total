@@ -3,7 +3,7 @@ package Padre::Plugin::Moose::Role::HasClassMembers;
 use Moose::Role;
 use namespace::clean;
 
-our $VERSION = '0.12';
+our $VERSION = '0.13';
 
 has 'attributes' => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
 has 'subtypes'   => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
