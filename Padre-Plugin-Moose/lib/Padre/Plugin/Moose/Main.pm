@@ -119,12 +119,11 @@ sub show_code_in_preview {
 	eval {
 
 		# Generate code
-		print $self->{generated_code_combo}->GetValue . "\n";
-		my $code = $self->{program}->generate_code(
-			$self->{generated_code_combo}->GetValue,
-			$self->{comments_checkbox}->IsChecked,
-			$self->{sample_code_checkbox}->IsChecked,
-		);
+		my $code = $self->{program}->generate_code({
+			code_type => $self->{generated_code_combo}->GetValue,
+			comments => $self->{comments_checkbox}->IsChecked,
+			sample_code => $self->{sample_code_checkbox}->IsChecked,
+		});
 
 		# And show it in preview editor
 		my $preview = $self->{preview};

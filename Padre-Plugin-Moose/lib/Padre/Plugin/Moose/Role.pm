@@ -1,7 +1,7 @@
 package Padre::Plugin::Moose::Role;
 
-use namespace::clean;
 use Moose;
+use namespace::clean;
 
 our $VERSION = '0.13';
 
@@ -15,7 +15,7 @@ has 'requires_list' => ( is => 'rw', isa => 'Str', default => '' );
 
 sub generate_moose_code {
 	my $self      = shift;
-	my $comments  = shift;
+	my $code_gen_options = shift;
 
 	my $role     = $self->name;
 	my $requires = $self->requires_list;
@@ -38,7 +38,7 @@ sub generate_moose_code {
 	}
 
 	# Generate class members
-	$code .= $self->to_class_members_code('Moose', $comments);
+	$code .= $self->to_class_members_code($code_gen_options);
 
 	$code .= "\n1;\n\n";
 
@@ -47,8 +47,34 @@ sub generate_moose_code {
 
 # Generate Mouse code!
 sub generate_mouse_code {
-	my $code = $_[0]->generate_moose_code(@_);
-	$code =~ s/use Moose/use Mouse/g;
+	my $self      = shift;
+	my $code_gen_options = shift;
+
+	my $role     = $self->name;
+	my $requires = $self->requires_list;
+
+	$role     =~ s/^\s+|\s+$//g;
+	$requires =~ s/^\s+|\s+$//g;
+	my @requires = split /,/, $requires;
+
+	my $code = "package $role;\n";
+	$code .= "\nuse Mouse::Role;\n";
+
+	# If there is at least one subtype, we need to add this import
+	if ( scalar @{ $self->subtypes } ) {
+		$code .= "use Mouse::Util::TypeConstraints;\n";
+	}
+
+	$code .= "\n" if scalar @requires;
+	for my $require (@requires) {
+		$code .= "requires '$require';\n";
+	}
+
+	# Generate class members
+	$code .= $self->to_class_members_code($code_gen_options);
+
+	$code .= "\n1;\n\n";
+
 	return $code;
 };
 

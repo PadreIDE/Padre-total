@@ -1,7 +1,7 @@
 package Padre::Plugin::Moose::Method;
 
-use namespace::clean;
 use Moose;
+use namespace::clean;
 
 our $VERSION = '0.13';
 
@@ -15,7 +15,8 @@ has 'modifier' => ( is => 'rw', isa => 'Str' );
 
 sub generate_moose_code {
 	my $self     = shift;
-	my $comments = shift;
+	my $code_gen_options = shift;
+	my $comments = $code_gen_options->{comments};
 
 	my $code;
 	my $name     = $self->name;

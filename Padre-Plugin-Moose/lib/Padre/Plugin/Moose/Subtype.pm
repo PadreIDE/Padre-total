@@ -1,7 +1,7 @@
 package Padre::Plugin::Moose::Subtype;
 
-use namespace::clean;
 use Moose;
+use namespace::clean;
 
 our $VERSION = '0.13';
 

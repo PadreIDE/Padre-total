@@ -1,7 +1,7 @@
 package Padre::Plugin::Moose::Program;
 
-use namespace::clean;
 use Moose;
+use namespace::clean;
 
 our $VERSION = '0.13';
 
@@ -13,23 +13,22 @@ has 'classes' => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
 
 sub generate_moose_code {
 	my $self        = shift;
-	my $comments    = shift;
-	my $sample_code = shift;
+	my $code_gen_options    = shift;
 
 	my $code = '';
 
 	# Generate roles
 	for my $role ( @{ $self->roles } ) {
-		$code .= $role->generate_moose_code( $comments );
+		$code .= $role->generate_moose_code( $code_gen_options );
 	}
 
 	# Generate classes
 	for my $class ( @{ $self->classes } ) {
-		$code .= $class->generate_moose_code( $comments );
+		$code .= $class->generate_moose_code( $code_gen_options );
 	}
 
 	# Generate sample usage code
-	if ($sample_code) {
+	if ($code_gen_options->{sample_code}) {
 		$code .= "\npackage main;\n";
 		my $count = 1;
 		for my $class ( @{ $self->classes } ) {
@@ -47,8 +46,31 @@ sub generate_moose_code {
 
 # Generate Mouse code!
 sub generate_mouse_code {
-	my $code = $_[0]->generate_moose_code(@_);
-	$code =~ s/\->instance;$/\->new;/g;
+	my $self        = shift;
+	my $code_gen_options    = shift;
+
+	my $code = '';
+
+	# Generate roles
+	for my $role ( @{ $self->roles } ) {
+		$code .= $role->generate_mouse_code( $code_gen_options );
+	}
+
+	# Generate classes
+	for my $class ( @{ $self->classes } ) {
+		$code .= $class->generate_mouse_code( $code_gen_options );
+	}
+
+	# Generate sample usage code
+	if ($code_gen_options->{sample_code}) {
+		$code .= "\npackage main;\n";
+		my $count = 1;
+		for my $class ( @{ $self->classes } ) {
+			$code .= "my \$o$count = " . $class->name . "->new;\n";
+			$count++;
+		}
+	}
+
 	return $code;
 };
 

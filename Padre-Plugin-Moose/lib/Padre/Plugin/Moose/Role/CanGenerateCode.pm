@@ -1,24 +1,18 @@
 package Padre::Plugin::Moose::Role::CanGenerateCode;
 
 use Moose::Role;
-use Moose::Util::TypeConstraints;
 use namespace::clean;
 
 our $VERSION = '0.13';
 
-enum 'GeneratedCodeType', [qw(Moose Mouse MooseX::Declare)];
-
-has 'code_type' => (is => 'rw', isa => 'GeneratedCodeType', default => 'Moose');
-
 sub generate_code {
 	my $self = shift;
-	my $code_type = shift;
+	my $code_gen_options = shift;
+	my $code_type = $code_gen_options->{code_type};
 
-	$self->code_type($code_type);
-	return $self->generate_moose_code if $code_type eq 'Moose';
-	return $self->generate_mouse_code if $code_type eq 'Mouse';
-	return $self->generate_moosex_declare_code if $code_type eq 'MooseX::Declare';
-	die "Unsupported code_type: '" . $code_type . "'\n";
+	return $self->generate_moose_code($code_gen_options) if $code_type eq 'Moose';
+	return $self->generate_mouse_code($code_gen_options) if $code_type eq 'Mouse';
+	return $self->generate_moosex_declare_code($code_gen_options) if $code_type eq 'MooseX::Declare';
 }
 
 requires 'generate_moose_code';

@@ -19,7 +19,8 @@ has 'singleton'           => ( is => 'rw', isa => 'Bool' );
 
 sub generate_moose_code {
 	my $self      = shift;
-	my $comments  = shift;
+	my $code_gen_options  = shift;
+	my $comments = $code_gen_options->{comments};
 
 	my $class               = $self->name;
 	my $superclasses        = $self->superclasses;
@@ -73,7 +74,7 @@ sub generate_moose_code {
 	}
 
 	# Generate class members
-	$code .= $self->to_class_members_code( 'Moose', $comments );
+	$code .= $self->to_class_members_code( $code_gen_options );
 
 	if ($make_immutable) {
 		$code .= "\n__PACKAGE__->meta->make_immutable;";
@@ -89,8 +90,62 @@ sub generate_moose_code {
 
 # Generate Mouse code!
 sub generate_mouse_code {
-	my $code = $_[0]->generate_moose_code(@_);
-	$code =~ s/^use Moose/use Mouse/gm;
+	my $self      = shift;
+	my $code_gen_options  = shift;
+	my $comments = $code_gen_options->{comments};
+
+	my $class               = $self->name;
+	my $superclasses        = $self->superclasses;
+	my $roles               = $self->roles;
+	my $namespace_autoclean = $self->namespace_autoclean;
+	my $make_immutable      = $self->immutable;
+
+	$class        =~ s/^\s+|\s+$//g;
+	$superclasses =~ s/^\s+|\s+$//g;
+	$roles        =~ s/^\s+|\s+$//g;
+	my @roles = split /,/, $roles;
+
+	my $code = "package $class;\n";
+
+	$code .= "\nuse Mouse;";
+
+	$code .=
+		$comments
+		? " # automatically turns on strict and warnings\n"
+		: "\n";
+
+	if ($namespace_autoclean) {
+		$code .= "use namespace::clean;";
+		$code .=
+			$comments
+			? " # Keep imports out of your namespace\n"
+			: "\n";
+	}
+
+	# If there is at least one subtype, we need to add this import
+	if ( scalar @{ $self->subtypes } ) {
+		$code .= "use Mouse::Util::TypeConstraints;\n";
+	}
+
+	$code .= "\nextends '$superclasses';\n" if $superclasses ne '';
+
+	$code .= "\n" if scalar @roles;
+	for my $role (@roles) {
+		$code .= "with '$role';\n";
+	}
+
+	# Generate class members
+	$code .= $self->to_class_members_code( $code_gen_options );
+
+	if ($make_immutable) {
+		$code .= "\n__PACKAGE__->meta->make_immutable;";
+		$code .=
+			$comments
+			? " # Makes it faster at the cost of startup time\n"
+			: "\n";
+	}
+	$code .= "\n1;\n\n";
+
 	return $code;
 };
 
