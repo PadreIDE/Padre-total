@@ -10,9 +10,10 @@ use File::Which   ();
 
 our $VERSION = '1.24';
 our @ISA     = 'Padre::Plugin';
+
 # use Data::Printer {
-	# caller_info => 1,
-	# colored     => 1,
+# caller_info => 1,
+# colored     => 1,
 # };
 
 #######
@@ -64,23 +65,26 @@ sub menu_plugins {
 # as we have an external dependency
 #########
 sub plugin_enable {
-	my $self                       = shift;
-	my $local_dictonary_bin_exists = 0;
+	my $self                        = shift;
+	my $local_dictionary_bin_exists = 0;
 
 	# Tests for externals used by Preference's
-	if ( eval { require Text::Aspell } ) {
-		$local_dictonary_bin_exists = 1;
+	if ( eval { require Text::Aspell2 } ) {
+		$local_dictionary_bin_exists = 1;
 	}
-	if ( File::Which::which('hunspell') ) {
-		$local_dictonary_bin_exists = 1;
+	if ( File::Which::which('hunspell2') ) {
+
+		# print "found hunspell\n";
+		$local_dictionary_bin_exists = 1;
 	}
 
 	#Set/ReSet Config data
-	$self->_config if $local_dictonary_bin_exists;
+	$self->_config if $local_dictionary_bin_exists;
 
 	# p $self->_config_read;
+	print "local_dictionary_bin_exists = $local_dictionary_bin_exists\n";
 
-	return $local_dictonary_bin_exists;
+	return $local_dictionary_bin_exists;
 }
 
 #######
