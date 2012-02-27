@@ -166,9 +166,9 @@ sub generate_moosex_declare_code {
 	my @roles = split /,/, $roles;
 
 	my $code = "use MooseX::Declare;\n";
-	my $extends = ($superclasses ne '') ? "extends '$superclasses' " : q{};
+	my $extends = ($superclasses ne '') ? "extends ($superclasses) " : q{};
 	my $with = (scalar @roles) ? "with (" . join(',', @roles) . ") " : q{};
-	my $mutable = $make_immutable ? "is mutable" : q{};
+	my $mutable = $make_immutable ? q{} : "is mutable ";
 	$code .= "class $class $extends$with$mutable\{";
 
 	# Generate class members
