@@ -128,8 +128,8 @@ sub get_grid_data {
 		{ name => Wx::gettext('Name:') },
 		{ name => Wx::gettext('Superclasses:') },
 		{ name => Wx::gettext('Roles:') },
-		{ name => Wx::gettext('Clean namespace?'), is_bool => 1 },
 		{ name => Wx::gettext('Make immutable?'), is_bool => 1 },
+		{ name => Wx::gettext('Clean namespace?'), is_bool => 1 },
 		{ name => Wx::gettext('Singleton?'), is_bool => 1 },
 	];
 }
