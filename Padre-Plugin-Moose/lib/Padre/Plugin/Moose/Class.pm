@@ -165,23 +165,26 @@ sub generate_moosex_declare_code {
 	$roles        =~ s/^\s+|\s+$//g;
 	my @roles = split /,/, $roles;
 
-	my $code = "use MooseX::Declare;\n";
-	my $extends = ($superclasses ne '') ? "extends ($superclasses) " : q{};
-	my $with = (scalar @roles) ? "with (" . join(',', @roles) . ") " : q{};
-	my $mutable = $make_immutable ? q{} : "is mutable ";
-	$code .= "class $class $extends$with$mutable\{\n";
-
+	my $class_body = '';
 	# If there is at least one subtype, we need to add this import
 	if ( scalar @{ $self->subtypes } ) {
-		$code .= "use Mouse::Util::TypeConstraints;\n";
+		$class_body .= "use Mouse::Util::TypeConstraints;\n";
 	}
 
 	# Generate class members
-	$code .= $self->to_class_members_code( $code_gen_options );
+	$class_body .= $self->to_class_members_code( $code_gen_options );
 
-	$code .= "}\n\n";
+	my @lines = split /\n/, $class_body;
+	for my $line (@lines) {
+		$line = "\t$line" if $line ne '';
+	}
+	$class_body = join "\n", @lines;
 
-	return $code;
+	my $extends = ($superclasses ne '') ? "extends ($superclasses) " : q{};
+	my $with = (scalar @roles) ? "with ($roles) " : q{};
+	my $mutable = $make_immutable ? q{} : "is mutable ";
+
+	return "use MooseX::Declare;\nclass $class $extends$with$mutable\{\n$class_body\n}\n\n";
 }
 
 sub provide_help {

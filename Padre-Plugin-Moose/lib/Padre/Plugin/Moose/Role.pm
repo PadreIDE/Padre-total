@@ -90,25 +90,28 @@ sub generate_moosex_declare_code {
 	my @requires = split /,/, $requires;
 
 	
-	my $code = "use MooseX::Declare;\n";
-	$code .= "role $role {\n";
+	my $role_body = '';
 
 	# If there is at least one subtype, we need to add this import
 	if ( scalar @{ $self->subtypes } ) {
-		$code .= "use Mouse::Util::TypeConstraints;\n";
+		$role_body .= "use Mouse::Util::TypeConstraints;\n";
 	}
 
-	$code .= "\n" if scalar @requires;
+	$role_body .= "\n" if scalar @requires;
 	for my $require (@requires) {
-		$code .= "requires '$require';\n";
+		$role_body
+		 .= "requires '$require';\n";
 	}
-
 	# Generate class members
-	$code .= $self->to_class_members_code($code_gen_options);
+	$role_body .= $self->to_class_members_code($code_gen_options);
 
-	$code .= "}\n\n";
+	my @lines = split /\n/, $role_body;
+	for my $line (@lines) {
+		$line = "\t$line" if $line ne '';
+	}
+	$role_body = join "\n", @lines;
 
-	return $code;
+	return "use MooseX::Declare;\nrole $role {\n$role_body\n}\n\n";
 }
 
 sub provide_help {
