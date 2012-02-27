@@ -64,17 +64,8 @@ sub new {
 		},
 	);
 
-	$self->{inspector_scrolled_window} = Wx::ScrolledWindow->new(
-		$self,
-		-1,
-		Wx::DefaultPosition,
-		Wx::DefaultSize,
-		Wx::HSCROLL | Wx::VSCROLL,
-	);
-	$self->{inspector_scrolled_window}->SetScrollRate( 5, 5 );
-
 	$self->{inspector} = Wx::Grid->new(
-		$self->{inspector_scrolled_window},
+		$self,
 		-1,
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
@@ -93,6 +84,7 @@ sub new {
 	$self->{inspector}->EnableDragRowSize(1);
 	$self->{inspector}->SetRowLabelAlignment( Wx::ALIGN_CENTRE, Wx::ALIGN_CENTRE );
 	$self->{inspector}->SetDefaultCellAlignment( Wx::ALIGN_LEFT, Wx::ALIGN_TOP );
+	$self->{inspector}->SetMinSize( [ -1, 100 ] );
 
 	Wx::Event::EVT_GRID_CELL_CHANGE(
 		$self->{inspector},
@@ -386,12 +378,6 @@ sub new {
 	);
 	$tree_sizer->Add( $self->{tree}, 1, Wx::ALL | Wx::EXPAND, 5 );
 
-	my $inspector_scrolled_sizer = Wx::BoxSizer->new(Wx::VERTICAL);
-	$inspector_scrolled_sizer->Add( $self->{inspector}, 0, Wx::ALL | Wx::EXPAND, 5 );
-
-	$self->{inspector_scrolled_window}->SetSizerAndFit($inspector_scrolled_sizer);
-	$self->{inspector_scrolled_window}->Layout;
-
 	my $inspector_sizer = Wx::StaticBoxSizer->new(
 		Wx::StaticBox->new(
 			$self,
@@ -400,7 +386,7 @@ sub new {
 		),
 		Wx::VERTICAL,
 	);
-	$inspector_sizer->Add( $self->{inspector_scrolled_window}, 1, Wx::ALL | Wx::EXPAND, 5 );
+	$inspector_sizer->Add( $self->{inspector}, 0, Wx::ALL | Wx::EXPAND, 5 );
 	$inspector_sizer->Add( $self->{help}, 1, Wx::ALL | Wx::EXPAND, 5 );
 
 	my $left_sizer = Wx::BoxSizer->new(Wx::VERTICAL);
