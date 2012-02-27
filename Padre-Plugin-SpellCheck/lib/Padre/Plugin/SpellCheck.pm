@@ -69,20 +69,15 @@ sub plugin_enable {
 	my $local_dictionary_bin_exists = 0;
 
 	# Tests for externals used by Preference's
-	if ( eval { require Text::Aspell2 } ) {
+	if ( eval { require Text::Aspell } ) {
 		$local_dictionary_bin_exists = 1;
 	}
-	if ( File::Which::which('hunspell2') ) {
-
-		# print "found hunspell\n";
+	if ( File::Which::which('hunspell') ) {
 		$local_dictionary_bin_exists = 1;
 	}
 
 	#Set/ReSet Config data
 	$self->_config if $local_dictionary_bin_exists;
-
-	# p $self->_config_read;
-	print "local_dictionary_bin_exists = $local_dictionary_bin_exists\n";
 
 	return $local_dictionary_bin_exists;
 }
