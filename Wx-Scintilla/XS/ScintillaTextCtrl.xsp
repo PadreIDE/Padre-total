@@ -1622,6 +1622,9 @@ wxScintillaTextCtrl::AppendTextRaw( text )
     void LineDownExtend();
     void LineDownRectExtend();
     void LineDuplicate();
+    
+    void LineUp();
+    void LineDown();
 
     void LineEnd();
     void LineEndExtend();
