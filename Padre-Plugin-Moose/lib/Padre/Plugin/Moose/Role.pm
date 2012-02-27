@@ -91,7 +91,12 @@ sub generate_moosex_declare_code {
 
 	
 	my $code = "use MooseX::Declare;\n";
-	$code .= "role $role {";
+	$code .= "role $role {\n";
+
+	# If there is at least one subtype, we need to add this import
+	if ( scalar @{ $self->subtypes } ) {
+		$code .= "use Mouse::Util::TypeConstraints;\n";
+	}
 
 	$code .= "\n" if scalar @requires;
 	for my $require (@requires) {

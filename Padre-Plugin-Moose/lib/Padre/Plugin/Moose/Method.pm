@@ -64,7 +64,9 @@ sub generate_moosex_declare_code {
 	} elsif ( defined $modifier && $modifier =~ /^(before|after)$/ ) {
 		$code = $self->modifier . " '$name' => sub {\n\tmy \$self = shift;\n};\n";
 	} else {
-		$code = "method $name {\n\tmy \$self = shift;\n}\n";
+		$code = "method $name {\n" .
+			($comments ? "\t# \$self is predeclared by MooseX::Declare" : q{}) .
+			"\n}\n";
 	}
 
 	return $code;

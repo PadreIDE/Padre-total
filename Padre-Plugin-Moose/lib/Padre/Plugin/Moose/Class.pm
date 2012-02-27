@@ -169,7 +169,12 @@ sub generate_moosex_declare_code {
 	my $extends = ($superclasses ne '') ? "extends ($superclasses) " : q{};
 	my $with = (scalar @roles) ? "with (" . join(',', @roles) . ") " : q{};
 	my $mutable = $make_immutable ? q{} : "is mutable ";
-	$code .= "class $class $extends$with$mutable\{";
+	$code .= "class $class $extends$with$mutable\{\n";
+
+	# If there is at least one subtype, we need to add this import
+	if ( scalar @{ $self->subtypes } ) {
+		$code .= "use Mouse::Util::TypeConstraints;\n";
+	}
 
 	# Generate class members
 	$code .= $self->to_class_members_code( $code_gen_options );
