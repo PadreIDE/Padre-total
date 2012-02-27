@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <wxFormBuilder_Project>
     <FileVersion major="1" minor="10" />
-    <object class="Project" expanded="0">
+    <object class="Project" expanded="1">
         <property name="class_decoration"></property>
         <property name="code_generation">C++</property>
         <property name="disconnect_events">1</property>
@@ -34,11 +34,11 @@
             <property name="hidden">0</property>
             <property name="id">wxID_ANY</property>
             <property name="maximum_size"></property>
-            <property name="minimum_size"></property>
+            <property name="minimum_size">640,480</property>
             <property name="name">Padre::Plugin::Moose::FBP::Main</property>
             <property name="pos"></property>
-            <property name="size">759,531</property>
-            <property name="style">wxDEFAULT_DIALOG_STYLE</property>
+            <property name="size">640,480</property>
+            <property name="style">wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</property>
             <property name="subclass"></property>
             <property name="title">Moose!</property>
             <property name="tooltip"></property>

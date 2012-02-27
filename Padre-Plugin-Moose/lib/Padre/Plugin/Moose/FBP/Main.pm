@@ -29,9 +29,11 @@ sub new {
 		-1,
 		Wx::gettext("Moose!"),
 		Wx::DefaultPosition,
-		[ 759, 531 ],
-		Wx::DEFAULT_DIALOG_STYLE,
+		[ 640, 480 ],
+		Wx::DEFAULT_DIALOG_STYLE | Wx::RESIZE_BORDER,
 	);
+	$self->SetSizeHints( [ 640, 480 ], Wx::DefaultSize );
+	$self->SetMinSize( [ 640, 480 ] );
 
 	$self->{tree} = Wx::TreeCtrl->new(
 		$self,
