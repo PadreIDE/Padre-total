@@ -3,7 +3,7 @@ package Padre::Plugin::Moose::Role;
 use Moose;
 use namespace::clean;
 
-our $VERSION = '0.13';
+our $VERSION = '0.14';
 
 with 'Padre::Plugin::Moose::Role::CanGenerateCode';
 with 'Padre::Plugin::Moose::Role::HasClassMembers';
@@ -14,7 +14,7 @@ has 'name' => ( is => 'rw', isa => 'Str' );
 has 'requires_list' => ( is => 'rw', isa => 'Str', default => '' );
 
 sub generate_moose_code {
-	my $self      = shift;
+	my $self             = shift;
 	my $code_gen_options = shift;
 
 	my $role     = $self->name;
@@ -47,7 +47,7 @@ sub generate_moose_code {
 
 # Generate Mouse code!
 sub generate_mouse_code {
-	my $self      = shift;
+	my $self             = shift;
 	my $code_gen_options = shift;
 
 	my $role     = $self->name;
@@ -76,10 +76,10 @@ sub generate_mouse_code {
 	$code .= "\n1;\n\n";
 
 	return $code;
-};
+}
 
 sub generate_moosex_declare_code {
-	my $self      = shift;
+	my $self             = shift;
 	my $code_gen_options = shift;
 
 	my $role     = $self->name;
@@ -89,7 +89,7 @@ sub generate_moosex_declare_code {
 	$requires =~ s/^\s+|\s+$//g;
 	my @requires = split /,/, $requires;
 
-	
+
 	my $role_body = '';
 
 	# If there is at least one subtype, we need to add this import
@@ -99,9 +99,9 @@ sub generate_moosex_declare_code {
 
 	$role_body .= "\n" if scalar @requires;
 	for my $require (@requires) {
-		$role_body
-		 .= "requires '$require';\n";
+		$role_body .= "requires '$require';\n";
 	}
+
 	# Generate class members
 	$role_body .= $self->to_class_members_code($code_gen_options);
 

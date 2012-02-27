@@ -3,7 +3,7 @@ package Padre::Plugin::Moose::Class;
 use Moose;
 use namespace::clean;
 
-our $VERSION = '0.13';
+our $VERSION = '0.14';
 
 with 'Padre::Plugin::Moose::Role::CanGenerateCode';
 with 'Padre::Plugin::Moose::Role::HasClassMembers';
@@ -18,9 +18,9 @@ has 'namespace_autoclean' => ( is => 'rw', isa => 'Bool' );
 has 'singleton'           => ( is => 'rw', isa => 'Bool' );
 
 sub generate_moose_code {
-	my $self      = shift;
-	my $code_gen_options  = shift;
-	my $comments = $code_gen_options->{comments};
+	my $self             = shift;
+	my $code_gen_options = shift;
+	my $comments         = $code_gen_options->{comments};
 
 	my $class               = $self->name;
 	my $superclasses        = $self->superclasses;
@@ -74,7 +74,7 @@ sub generate_moose_code {
 	}
 
 	# Generate class members
-	$code .= $self->to_class_members_code( $code_gen_options );
+	$code .= $self->to_class_members_code($code_gen_options);
 
 	if ($make_immutable) {
 		$code .= "\n__PACKAGE__->meta->make_immutable;";
@@ -90,9 +90,9 @@ sub generate_moose_code {
 
 # Generate Mouse code!
 sub generate_mouse_code {
-	my $self      = shift;
-	my $code_gen_options  = shift;
-	my $comments = $code_gen_options->{comments};
+	my $self             = shift;
+	my $code_gen_options = shift;
+	my $comments         = $code_gen_options->{comments};
 
 	my $class               = $self->name;
 	my $superclasses        = $self->superclasses;
@@ -135,7 +135,7 @@ sub generate_mouse_code {
 	}
 
 	# Generate class members
-	$code .= $self->to_class_members_code( $code_gen_options );
+	$code .= $self->to_class_members_code($code_gen_options);
 
 	if ($make_immutable) {
 		$code .= "\n__PACKAGE__->meta->make_immutable;";
@@ -147,12 +147,12 @@ sub generate_mouse_code {
 	$code .= "\n1;\n\n";
 
 	return $code;
-};
+}
 
 sub generate_moosex_declare_code {
-	my $self      = shift;
-	my $code_gen_options  = shift;
-	my $comments = $code_gen_options->{comments};
+	my $self             = shift;
+	my $code_gen_options = shift;
+	my $comments         = $code_gen_options->{comments};
 
 	my $class               = $self->name;
 	my $superclasses        = $self->superclasses;
@@ -166,13 +166,14 @@ sub generate_moosex_declare_code {
 	my @roles = split /,/, $roles;
 
 	my $class_body = '';
+
 	# If there is at least one subtype, we need to add this import
 	if ( scalar @{ $self->subtypes } ) {
 		$class_body .= "use Mouse::Util::TypeConstraints;\n";
 	}
 
 	# Generate class members
-	$class_body .= $self->to_class_members_code( $code_gen_options );
+	$class_body .= $self->to_class_members_code($code_gen_options);
 
 	my @lines = split /\n/, $class_body;
 	for my $line (@lines) {
@@ -180,9 +181,9 @@ sub generate_moosex_declare_code {
 	}
 	$class_body = join "\n", @lines;
 
-	my $extends = ($superclasses ne '') ? "extends ($superclasses) " : q{};
-	my $with = (scalar @roles) ? "with ($roles) " : q{};
-	my $mutable = $make_immutable ? q{} : "is mutable ";
+	my $extends = ( $superclasses ne '' ) ? "extends ($superclasses) " : q{};
+	my $with    = ( scalar @roles )       ? "with ($roles) "           : q{};
+	my $mutable = $make_immutable         ? q{}                        : "is mutable ";
 
 	return "use MooseX::Declare;\nclass $class $extends$with$mutable\{\n$class_body\n}\n\n";
 }

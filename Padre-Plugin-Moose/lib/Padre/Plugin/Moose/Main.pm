@@ -6,7 +6,7 @@ use Moose;
 use Padre::Plugin::Moose::FBP::Main ();
 use Padre::Wx::Role::Dialog         ();
 
-our $VERSION = '0.13';
+our $VERSION = '0.14';
 
 our @ISA = qw{
 	Padre::Plugin::Moose::FBP::Main
@@ -119,11 +119,12 @@ sub show_code_in_preview {
 	eval {
 
 		# Generate code
-		my $code = $self->{program}->generate_code({
-			code_type => $self->{generated_code_combo}->GetValue,
-			comments => $self->{comments_checkbox}->IsChecked,
-			sample_code => $self->{sample_code_checkbox}->IsChecked,
-		});
+		my $code = $self->{program}->generate_code(
+			{   code_type   => $self->{generated_code_combo}->GetValue,
+				comments    => $self->{comments_checkbox}->IsChecked,
+				sample_code => $self->{sample_code_checkbox}->IsChecked,
+			}
+		);
 
 		# And show it in preview editor
 		my $preview = $self->{preview};
