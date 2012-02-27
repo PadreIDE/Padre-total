@@ -30,7 +30,7 @@ my @FIELDS = qw(
 	name access_type type class_has required trigger coerce does weak_ref
 	lazy builder default clearer predicate documentation);
 
-sub generate_code {
+sub generate_moose_code {
 	my $self      = shift;
 	my $use_mouse = shift;
 	my $comment   = shift;
@@ -44,6 +44,14 @@ sub generate_code {
 
 	my $has = ( $self->class_has && not $use_mouse ) ? 'class_has' : 'has';
 	return "$has '" . $self->name . "'" . ( $has_code ne '' ? qq{ => (\n$has_code)} : q{} ) . ";\n";
+}
+
+# Generate Mouse code!
+sub generate_mouse_code {
+}
+
+# Generate MooseX::Declare code!
+sub generate_moosex_declare_code {
 }
 
 sub provide_help {

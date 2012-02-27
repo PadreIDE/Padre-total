@@ -13,7 +13,7 @@ with 'Padre::Plugin::Moose::Role::CanHandleInspector';
 
 has 'modifier' => ( is => 'rw', isa => 'Str' );
 
-sub generate_code {
+sub generate_moose_code {
 	my $self     = shift;
 	my $comments = shift;
 
@@ -36,6 +36,14 @@ sub generate_code {
 	}
 
 	return $code;
+}
+
+# Generate Mouse code!
+sub generate_mouse_code {
+}
+
+# Generate MooseX::Declare code!
+sub generate_moosex_declare_code {
 }
 
 sub provide_help {

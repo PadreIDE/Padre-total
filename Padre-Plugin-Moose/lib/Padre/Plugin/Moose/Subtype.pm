@@ -15,7 +15,7 @@ has 'base_type'     => ( is => 'rw', isa => 'Str', default => '' );
 has 'constraint'    => ( is => 'rw', isa => 'Str', default => '' );
 has 'error_message' => ( is => 'rw', isa => 'Str', default => '' );
 
-sub generate_code {
+sub generate_moose_code {
 	my $self = shift;
 
 	my $code = "subtype '" . $self->name . "'";
@@ -29,6 +29,14 @@ sub generate_code {
 	$code .= ";\n";
 
 	return $code;
+}
+
+# Generate Mouse code!
+sub generate_mouse_code {
+}
+
+# Generate MooseX::Declare code!
+sub generate_moosex_declare_code {
 }
 
 sub provide_help {

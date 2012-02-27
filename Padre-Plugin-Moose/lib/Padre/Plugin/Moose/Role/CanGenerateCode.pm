@@ -5,7 +5,9 @@ use namespace::clean;
 
 our $VERSION = '0.13';
 
-requires 'generate_code';
+requires 'generate_moose_code';
+requires 'generate_mouse_code';
+requires 'generate_moosex_declare_code';
 
 1;
 
