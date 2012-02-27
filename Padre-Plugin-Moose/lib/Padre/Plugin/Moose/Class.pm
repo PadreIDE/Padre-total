@@ -15,12 +15,12 @@ has 'superclasses' => ( is => 'rw', isa => 'Str', default => '' );
 has 'roles'        => ( is => 'rw', isa => 'Str', default => '' );
 has 'immutable'    => ( is => 'rw', isa => 'Bool' );
 has 'namespace_autoclean' => ( is => 'rw', isa => 'Bool' );
-has 'singleton'    => ( is => 'rw', isa => 'Bool' );
+has 'singleton'           => ( is => 'rw', isa => 'Bool' );
 
 sub generate_code {
-	my $self     = shift;
+	my $self      = shift;
 	my $use_mouse = shift;
-	my $comments = shift;
+	my $comments  = shift;
 
 	my $class               = $self->name;
 	my $superclasses        = $self->superclasses;
@@ -35,7 +35,7 @@ sub generate_code {
 
 	my $code = "package $class;\n";
 
-	if($use_mouse) {
+	if ($use_mouse) {
 		$code .= "\nuse Mouse;";
 	} else {
 		$code .= "\nuse Moose;";
@@ -54,11 +54,11 @@ sub generate_code {
 	}
 
 	# If there is at least one subtype, we need to add this import
-	if(scalar @{ $self->subtypes }) {
-		if($use_mouse) {
-			$code .= "use Mouse::Util::TypeConstraints;\n"
+	if ( scalar @{ $self->subtypes } ) {
+		if ($use_mouse) {
+			$code .= "use Mouse::Util::TypeConstraints;\n";
 		} else {
-			$code .= "use Moose::Util::TypeConstraints;\n"
+			$code .= "use Moose::Util::TypeConstraints;\n";
 		}
 	}
 
@@ -67,8 +67,8 @@ sub generate_code {
 
 	# Class attributes via MooseX::ClassAttribute
 	for my $attribute ( @{ $self->attributes } ) {
-		if($attribute->class_has) {
-			$code .= "use MooseX::ClassAttribute;\n" if $attribute->class_has && not $use_mouse;		
+		if ( $attribute->class_has ) {
+			$code .= "use MooseX::ClassAttribute;\n" if $attribute->class_has && not $use_mouse;
 			last;
 		}
 	}
@@ -81,7 +81,7 @@ sub generate_code {
 	}
 
 	# Generate class members
-	$code .= $self->to_class_members_code($use_mouse, $comments);
+	$code .= $self->to_class_members_code( $use_mouse, $comments );
 
 	if ($make_immutable) {
 		$code .= "\n__PACKAGE__->meta->make_immutable;";

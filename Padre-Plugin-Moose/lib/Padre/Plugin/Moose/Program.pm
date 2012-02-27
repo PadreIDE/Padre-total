@@ -21,12 +21,12 @@ sub generate_code {
 
 	# Generate roles
 	for my $role ( @{ $self->roles } ) {
-		$code .= $role->generate_code($use_mouse, $comments);
+		$code .= $role->generate_code( $use_mouse, $comments );
 	}
 
 	# Generate classes
 	for my $class ( @{ $self->classes } ) {
-		$code .= $class->generate_code($use_mouse, $comments);
+		$code .= $class->generate_code( $use_mouse, $comments );
 	}
 
 	# Generate sample usage code
@@ -34,7 +34,7 @@ sub generate_code {
 		$code .= "\npackage main;\n";
 		my $count = 1;
 		for my $class ( @{ $self->classes } ) {
-			if($class->singleton) {
+			if ( $class->singleton ) {
 				$code .= "my \$o$count = " . $class->name . "->instance;\n";
 			} else {
 				$code .= "my \$o$count = " . $class->name . "->new;\n";

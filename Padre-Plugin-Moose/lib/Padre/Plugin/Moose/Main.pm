@@ -389,7 +389,7 @@ sub on_add_destructor_button {
 }
 
 sub on_use_mouse_checkbox {
-	$_[0]->show_code_in_preview(1);	
+	$_[0]->show_code_in_preview(1);
 }
 
 sub on_sample_code_checkbox {

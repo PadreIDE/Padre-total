@@ -31,9 +31,9 @@ my @FIELDS = qw(
 	lazy builder default clearer predicate documentation);
 
 sub generate_code {
-	my $self    = shift;
+	my $self      = shift;
 	my $use_mouse = shift;
-	my $comment = shift;
+	my $comment   = shift;
 
 	my $has_code = '';
 	$has_code .= ( "\tis  => '" . $self->access_type . "',\n" )
@@ -42,7 +42,7 @@ sub generate_code {
 	$has_code .= ("\trequired => 1,\n")                       if $self->required;
 	$has_code .= ( "\ttrigger => " . $self->trigger . ",\n" ) if defined $self->trigger && $self->trigger ne '';
 
-	my $has = ($self->class_has && not $use_mouse) ? 'class_has' : 'has';
+	my $has = ( $self->class_has && not $use_mouse ) ? 'class_has' : 'has';
 	return "$has '" . $self->name . "'" . ( $has_code ne '' ? qq{ => (\n$has_code)} : q{} ) . ";\n";
 }
 
@@ -81,13 +81,13 @@ sub get_grid_data {
 				qw(Any Item Bool Maybe[] Undef Defined Value Str Num Int ClassName RoleName Ref ScalarRef[] ArrayRef[] HashRef[] CodeRef RegexpRef GlobRef FileHandle Object)
 			]
 		},
-		{ name => Wx::gettext('Class Attribute?'), is_bool => 1},
-		{ name => Wx::gettext('Required?'), is_bool => 1 },
+		{ name => Wx::gettext('Class Attribute?'), is_bool => 1 },
+		{ name => Wx::gettext('Required?'),        is_bool => 1 },
 		{ name => Wx::gettext('Trigger:') },
-		{ name => Wx::gettext('Coerce?'), is_bool => 1 },
+		{ name => Wx::gettext('Coerce?'),          is_bool => 1 },
 		{ name => Wx::gettext('Does role:') },
-		{ name => Wx::gettext('Weak Ref?'), is_bool => 1 },
-		{ name => Wx::gettext('lazy?'), is_bool => 1 },
+		{ name => Wx::gettext('Weak Ref?'),        is_bool => 1 },
+		{ name => Wx::gettext('lazy?'),            is_bool => 1 },
 		{ name => Wx::gettext('Builder:') },
 		{ name => Wx::gettext('Default:') },
 		{ name => Wx::gettext('Clearer:') },

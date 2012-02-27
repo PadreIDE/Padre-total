@@ -14,9 +14,9 @@ has 'name' => ( is => 'rw', isa => 'Str' );
 has 'requires_list' => ( is => 'rw', isa => 'Str', default => '' );
 
 sub generate_code {
-	my $self     = shift;
+	my $self      = shift;
 	my $use_mouse = shift;
-	my $comments = shift;
+	my $comments  = shift;
 
 	my $role     = $self->name;
 	my $requires = $self->requires_list;
@@ -26,18 +26,18 @@ sub generate_code {
 	my @requires = split /,/, $requires;
 
 	my $code = "package $role;\n";
-	if($use_mouse) {
+	if ($use_mouse) {
 		$code .= "\nuse Mouse::Role;\n";
 	} else {
 		$code .= "\nuse Moose::Role;\n";
 	}
 
 	# If there is at least one subtype, we need to add this import
-	if(scalar @{ $self->subtypes }) {
-		if($use_mouse) {
-			$code .= "use Mouse::Util::TypeConstraints;\n"
+	if ( scalar @{ $self->subtypes } ) {
+		if ($use_mouse) {
+			$code .= "use Mouse::Util::TypeConstraints;\n";
 		} else {
-			$code .= "use Moose::Util::TypeConstraints;\n"
+			$code .= "use Moose::Util::TypeConstraints;\n";
 		}
 	}
 
