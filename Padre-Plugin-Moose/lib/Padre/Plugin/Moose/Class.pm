@@ -150,7 +150,33 @@ sub generate_mouse_code {
 };
 
 sub generate_moosex_declare_code {
-	return '';
+	my $self      = shift;
+	my $code_gen_options  = shift;
+	my $comments = $code_gen_options->{comments};
+
+	my $class               = $self->name;
+	my $superclasses        = $self->superclasses;
+	my $roles               = $self->roles;
+	my $namespace_autoclean = $self->namespace_autoclean;
+	my $make_immutable      = $self->immutable;
+
+	$class        =~ s/^\s+|\s+$//g;
+	$superclasses =~ s/^\s+|\s+$//g;
+	$roles        =~ s/^\s+|\s+$//g;
+	my @roles = split /,/, $roles;
+
+	my $code = "use MooseX::Declare;\n";
+	my $extends = ($superclasses ne '') ? "extends '$superclasses' " : q{};
+	my $with = (scalar @roles) ? "with (" . join(',', @roles) . ") " : q{};
+	my $mutable = $make_immutable ? "is mutable" : q{};
+	$code .= "class $class $extends$with$mutable\{";
+
+	# Generate class members
+	$code .= $self->to_class_members_code( $code_gen_options );
+
+	$code .= "}\n\n";
+
+	return $code;
 }
 
 sub provide_help {

@@ -75,7 +75,32 @@ sub generate_mouse_code {
 };
 
 sub generate_moosex_declare_code {
-	return '';
+	my $self        = shift;
+	my $code_gen_options    = shift;
+
+	my $code = '';
+
+	# Generate roles
+	for my $role ( @{ $self->roles } ) {
+		$code .= $role->generate_moosex_declare_code( $code_gen_options );
+	}
+
+	# Generate classes
+	for my $class ( @{ $self->classes } ) {
+		$code .= $class->generate_moosex_declare_code( $code_gen_options );
+	}
+
+	# Generate sample usage code
+	if ($code_gen_options->{sample_code}) {
+		$code .= "\npackage main;\n";
+		my $count = 1;
+		for my $class ( @{ $self->classes } ) {
+			$code .= "my \$o$count = " . $class->name . "->new;\n";
+			$count++;
+		}
+	}
+
+	return $code;
 }
 
 sub provide_help {

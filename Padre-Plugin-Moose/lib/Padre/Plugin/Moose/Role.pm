@@ -79,7 +79,31 @@ sub generate_mouse_code {
 };
 
 sub generate_moosex_declare_code {
-	return '';
+	my $self      = shift;
+	my $code_gen_options = shift;
+
+	my $role     = $self->name;
+	my $requires = $self->requires_list;
+
+	$role     =~ s/^\s+|\s+$//g;
+	$requires =~ s/^\s+|\s+$//g;
+	my @requires = split /,/, $requires;
+
+	
+	my $code = "use MooseX::Declare;\n";
+	$code .= "role $role {";
+
+	$code .= "\n" if scalar @requires;
+	for my $require (@requires) {
+		$code .= "requires '$require';\n";
+	}
+
+	# Generate class members
+	$code .= $self->to_class_members_code($code_gen_options);
+
+	$code .= "}\n\n";
+
+	return $code;
 }
 
 sub provide_help {
