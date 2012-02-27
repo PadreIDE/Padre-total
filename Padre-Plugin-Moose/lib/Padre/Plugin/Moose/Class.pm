@@ -19,7 +19,6 @@ has 'singleton'           => ( is => 'rw', isa => 'Bool' );
 
 sub generate_moose_code {
 	my $self      = shift;
-	my $use_mouse = shift;
 	my $comments  = shift;
 
 	my $class               = $self->name;
@@ -35,11 +34,8 @@ sub generate_moose_code {
 
 	my $code = "package $class;\n";
 
-	if ($use_mouse) {
-		$code .= "\nuse Mouse;";
-	} else {
-		$code .= "\nuse Moose;";
-	}
+	$code .= "\nuse Moose;";
+
 	$code .=
 		$comments
 		? " # automatically turns on strict and warnings\n"
@@ -55,20 +51,16 @@ sub generate_moose_code {
 
 	# If there is at least one subtype, we need to add this import
 	if ( scalar @{ $self->subtypes } ) {
-		if ($use_mouse) {
-			$code .= "use Mouse::Util::TypeConstraints;\n";
-		} else {
-			$code .= "use Moose::Util::TypeConstraints;\n";
-		}
+		$code .= "use Moose::Util::TypeConstraints;\n";
 	}
 
 	# Singleton via MooseX::Singleton
-	$code .= "use MooseX::Singleton;\n" if $self->singleton && not $use_mouse;
+	$code .= "use MooseX::Singleton;\n" if $self->singleton;
 
 	# Class attributes via MooseX::ClassAttribute
 	for my $attribute ( @{ $self->attributes } ) {
 		if ( $attribute->class_has ) {
-			$code .= "use MooseX::ClassAttribute;\n" if $attribute->class_has && not $use_mouse;
+			$code .= "use MooseX::ClassAttribute;\n" if $attribute->class_has;
 			last;
 		}
 	}
@@ -81,7 +73,7 @@ sub generate_moose_code {
 	}
 
 	# Generate class members
-	$code .= $self->to_class_members_code( $use_mouse, $comments );
+	$code .= $self->to_class_members_code( $comments );
 
 	if ($make_immutable) {
 		$code .= "\n__PACKAGE__->meta->make_immutable;";
@@ -97,6 +89,9 @@ sub generate_moose_code {
 
 # Generate Mouse code!
 sub generate_mouse_code {
+	my $code = $_[0]->generate_moose_code(@_);
+	$code =~ s/use Moose/use Mouse/g;
+	return $code;
 }
 
 # Generate MooseX::Declare code!

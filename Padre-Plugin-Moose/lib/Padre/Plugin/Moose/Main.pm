@@ -119,8 +119,9 @@ sub show_code_in_preview {
 	eval {
 
 		# Generate code
+		my $type = $self->{generated_code_combo}->GetCurrentSelection;
+		print $type . "\n";
 		my $code = $self->{program}->generate_code(
-			$self->{use_mouse_checkbox}->IsChecked,
 			$self->{comments_checkbox}->IsChecked,
 			$self->{sample_code_checkbox}->IsChecked,
 		);
