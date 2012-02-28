@@ -29,11 +29,11 @@ sub new {
 		-1,
 		Wx::gettext("Moose!"),
 		Wx::DefaultPosition,
-		[ 640, 480 ],
+		[ 750, 480 ],
 		Wx::DEFAULT_DIALOG_STYLE | Wx::RESIZE_BORDER,
 	);
-	$self->SetSizeHints( [ 640, 480 ], Wx::DefaultSize );
-	$self->SetMinSize( [ 640, 480 ] );
+	$self->SetSizeHints( [ 750, 480 ], Wx::DefaultSize );
+	$self->SetMinSize( [ 750, 480 ] );
 
 	$self->{tree} = Wx::TreeCtrl->new(
 		$self,
@@ -77,8 +77,8 @@ sub new {
 	$self->{inspector}->EnableGridLines(1);
 	$self->{inspector}->EnableDragGridSize(0);
 	$self->{inspector}->SetMargins( 0, 0 );
-	$self->{inspector}->SetColSize( 0, 150 );
-	$self->{inspector}->SetColSize( 1, 75 );
+	$self->{inspector}->SetColSize( 0, 140 );
+	$self->{inspector}->SetColSize( 1, 140 );
 	$self->{inspector}->EnableDragColMove(0);
 	$self->{inspector}->EnableDragColSize(1);
 	$self->{inspector}->SetColLabelSize(0);
