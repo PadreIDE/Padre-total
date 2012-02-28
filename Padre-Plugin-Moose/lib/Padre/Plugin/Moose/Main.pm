@@ -63,9 +63,17 @@ sub run {
 
 		if($line =~ /^\s*has$/) {
 			# has property completion
-			$editor->AddText(" '' => ( isa => 'Str', is => 'ro', );");
+			$editor->SetTargetStart($current_pos - 3);
+			$editor->SetTargetEnd($current_pos);
+			$editor->ReplaceTarget("has '' => ( isa => 'Str', is => 'ro', );");
 			$editor->GotoPos( $current_pos + 2 );
-		} elsif($line =~ /^\s*around$/) {
+		} elsif($line =~ /^\s*BUILD$/) {
+			$editor->SetTargetStart($current_pos - 5);
+			$editor->SetTargetEnd($current_pos);
+			$editor->ReplaceTarget("sub BUILD {\n" .
+				"\tmy ( \$self, \$param ) = \@_;\n\n" .
+				"}\n");
+			$editor->GotoPos( $current_pos + 35 );
 		}
 
 		# Keep processing
