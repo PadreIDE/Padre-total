@@ -28,7 +28,7 @@ sub new {
 		Wx::gettext("SVN Commit"),
 		Wx::DefaultPosition(),
 		[ 879, 678 ],
-		Wx::DEFAULT_DIALOG_STYLE ()| Wx::RESIZE_BORDER(),
+		Wx::DEFAULT_DIALOG_STYLE() | Wx::RESIZE_BORDER(),
 	);
 
 	$self->{m_panel1} = Wx::Panel->new(
@@ -75,7 +75,7 @@ sub new {
 		Wx::gettext("currentRevision"),
 	);
 
-	$self->{txtMessage} = Wx::TextCtrl->new(
+	$self->{m_textCtrl4} = Wx::TextCtrl->new(
 		$self,
 		-1,
 		"",
@@ -86,19 +86,12 @@ sub new {
 
 	$self->{btnCancel} = Wx::Button->new(
 		$self,
-		-1,
+		Wx::ID_CANCEL(),
 		Wx::gettext("Cancel"),
 		Wx::DefaultPosition(),
 		Wx::DefaultSize(),
 	);
-
-	Wx::Event::EVT_BUTTON(
-		$self,
-		$self->{btnCancel},
-		sub {
-			shift->on_click_cancel(@_);
-		},
-	);
+	$self->{btnCancel}->SetDefault;
 
 	$self->{btnOK} = Wx::Button->new(
 		$self,
@@ -117,11 +110,11 @@ sub new {
 	);
 
 	my $gSizer2 = Wx::GridSizer->new( 2, 2, 2, 5 );
-	$gSizer2->Add( $self->{m_staticText4}, 0, Wx::ALIGN_RIGHT ()| Wx::EXPAND(), 5 );
+	$gSizer2->Add( $self->{m_staticText4}, 0, Wx::ALIGN_RIGHT() | Wx::EXPAND(), 5 );
 	$gSizer2->Add( $self->{txtFilePath}, 0, Wx::ALIGN_LEFT() | Wx::EXPAND(), 5 );
 	$gSizer2->Add( $self->{m_staticText6}, 0, Wx::ALIGN_RIGHT() | Wx::EXPAND() | Wx::RIGHT(), 5 );
-	$gSizer2->Add( $self->{txtRepo}, 0, Wx::ALIGN_LEFT ()| Wx::EXPAND(), 5 );
-	$gSizer2->Add( $self->{m_staticText8}, 0, Wx::ALIGN_RIGHT() | Wx::EXPAND ()| Wx::RIGHT(), 5 );
+	$gSizer2->Add( $self->{txtRepo}, 0, Wx::ALIGN_LEFT() | Wx::EXPAND(), 5 );
+	$gSizer2->Add( $self->{m_staticText8}, 0, Wx::ALIGN_RIGHT() | Wx::EXPAND() | Wx::RIGHT(), 5 );
 	$gSizer2->Add( $self->{txtCurrentRevision}, 0, Wx::ALIGN_LEFT() | Wx::EXPAND(), 5 );
 
 	$self->{m_panel1}->SetSizerAndFit($gSizer2);
@@ -136,8 +129,8 @@ sub new {
 
 	my $bSizer1 = Wx::BoxSizer->new(Wx::VERTICAL());
 	$bSizer1->Add( $self->{m_panel1}, 0, Wx::EXPAND(), 5 );
-	$bSizer1->Add( $self->{txtMessage}, 1, Wx::ALL() | Wx::EXPAND(), 5 );
-	$bSizer1->Add( $bSizer6, 0, Wx::ALIGN_BOTTOM ()| Wx::EXPAND(), 5 );
+	$bSizer1->Add( $self->{m_textCtrl4}, 1, Wx::ALL() | Wx::EXPAND(), 5 );
+	$bSizer1->Add( $bSizer6, 0, Wx::ALIGN_BOTTOM() | Wx::EXPAND(), 5 );
 
 	$self->SetSizer($bSizer1);
 	$self->Layout;
@@ -145,12 +138,16 @@ sub new {
 	return $self;
 }
 
-sub txtMessage {
-	$_[0]->{txtMessage};
+sub txtFilePath {
+	$_[0]->{txtFilePath};
 }
 
-sub on_click_cancel {
-	$_[0]->main->error('Handler method on_click_cancel for event btnCancel.OnButtonClick not implemented');
+sub txtRepo {
+	$_[0]->{txtRepo};
+}
+
+sub txtCurrentRevision {
+	$_[0]->{txtCurrentRevision};
 }
 
 sub on_click_ok {
