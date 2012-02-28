@@ -37,7 +37,7 @@ unless ($wx_dir) {
 	# Let us download it from sourceforge and unzip it
 
 	# The name of the wxwidget ZIP filename to download from the sourceforge website
-	my $WX_WIGDETS_HTML_ZIP = 'wxWidgets-2.8.10-HTML.zip';
+	my $WX_WIGDETS_HTML_ZIP = 'wxWidgets-2.8.12-HTML.zip';
 
 	# Download and unzip the wxWidgets HTML documentation zip file
 	my $dir = _download_unzipped_wxwidgets_html_doc($WX_WIGDETS_HTML_ZIP);
@@ -116,7 +116,7 @@ sub _download_unzipped_wxwidgets_html_doc {
 	# Let us try to download it if the zip file is not found in the current
 	# directory
 	unless ( -e $WX_WIGDETS_HTML_ZIP ) {
-		my $url = "http://garr.dl.sourceforge.net/project/wxwindows/Documents/2.8.10/$WX_WIGDETS_HTML_ZIP";
+		my $url = "http://garr.dl.sourceforge.net/project/wxwindows/2.8.12/$WX_WIGDETS_HTML_ZIP";
 		TRACE("Downloading $url. Please wait...");
 		require LWP::UserAgent;
 		require HTTP::Request;
