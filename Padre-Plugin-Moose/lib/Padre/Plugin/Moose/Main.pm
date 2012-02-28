@@ -53,6 +53,27 @@ sub run {
 	my $theme = Padre::Wx::Theme->find($style)->clone;
 	$theme->apply( $self->{preview} );
 
+	# Register keyboard event handler for the current editor
+	my $editor = $self->current->editor or return;
+	Wx::Event::EVT_CHAR($editor, undef );
+	Wx::Event::EVT_CHAR($editor, sub {
+		my $current_pos = $editor->GetCurrentPos;
+		my $line_num = $editor->LineFromPosition($current_pos);
+		my $line = $editor->GetTextRange($editor->PositionFromLine($line_num), $current_pos);
+
+		if($line =~ /^\s*has$/) {
+			# has property completion
+			$editor->AddText(" '' => ( isa => 'Str', is => 'ro', );");
+			$editor->GotoPos( $current_pos + 2 );
+		} elsif($line =~ /^\s*around$/) {
+		}
+
+		# Keep processing
+		$_[1]->Skip(1);
+
+		return;
+	});
+
 	return;
 }
 
