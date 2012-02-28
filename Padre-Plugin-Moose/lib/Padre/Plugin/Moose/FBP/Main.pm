@@ -175,6 +175,22 @@ sub new {
 		},
 	);
 
+	$self->{add_method_button} = Wx::Button->new(
+		$self->{members},
+		-1,
+		Wx::gettext("&Method"),
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+	);
+
+	Wx::Event::EVT_BUTTON(
+		$self,
+		$self->{add_method_button},
+		sub {
+			shift->on_add_method_button(@_);
+		},
+	);
+
 	$self->{add_subtype_button} = Wx::Button->new(
 		$self->{members},
 		-1,
@@ -204,22 +220,6 @@ sub new {
 		$self->{add_constructor_button},
 		sub {
 			shift->on_add_constructor_button(@_);
-		},
-	);
-
-	$self->{add_method_button} = Wx::Button->new(
-		$self->{members},
-		-1,
-		Wx::gettext("&Method"),
-		Wx::DefaultPosition,
-		Wx::DefaultSize,
-	);
-
-	Wx::Event::EVT_BUTTON(
-		$self,
-		$self->{add_method_button},
-		sub {
-			shift->on_add_method_button(@_);
 		},
 	);
 
@@ -413,9 +413,9 @@ sub new {
 
 	my $members_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
 	$members_sizer->Add( $self->{add_attribute_button},   0, Wx::ALL, 2 );
+	$members_sizer->Add( $self->{add_method_button},      0, Wx::ALL, 2 );
 	$members_sizer->Add( $self->{add_subtype_button},     0, Wx::ALL, 2 );
 	$members_sizer->Add( $self->{add_constructor_button}, 0, Wx::ALL, 2 );
-	$members_sizer->Add( $self->{add_method_button},      0, Wx::ALL, 2 );
 	$members_sizer->Add( $self->{add_destructor_button},  0, Wx::ALL, 2 );
 
 	$self->{members}->SetSizerAndFit($members_sizer);
@@ -524,6 +524,10 @@ sub on_add_attribute_button {
 		'Handler method on_add_attribute_button for event add_attribute_button.OnButtonClick not implemented');
 }
 
+sub on_add_method_button {
+	$_[0]->main->error('Handler method on_add_method_button for event add_method_button.OnButtonClick not implemented');
+}
+
 sub on_add_subtype_button {
 	$_[0]->main->error(
 		'Handler method on_add_subtype_button for event add_subtype_button.OnButtonClick not implemented');
@@ -532,10 +536,6 @@ sub on_add_subtype_button {
 sub on_add_constructor_button {
 	$_[0]->main->error(
 		'Handler method on_add_constructor_button for event add_constructor_button.OnButtonClick not implemented');
-}
-
-sub on_add_method_button {
-	$_[0]->main->error('Handler method on_add_method_button for event add_method_button.OnButtonClick not implemented');
 }
 
 sub on_add_destructor_button {
