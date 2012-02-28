@@ -74,6 +74,12 @@ sub run {
 				"\tmy ( \$self, \$param ) = \@_;\n\n" .
 				"}\n");
 			$editor->GotoPos( $current_pos + 35 );
+		} elsif($line =~ /^\s*DEMOLISH$/) {
+			$editor->SetTargetStart($current_pos - 8);
+			$editor->SetTargetEnd($current_pos);
+			$editor->ReplaceTarget("sub DEMOLISH {\n" .
+			 "\tmy \$self = shift;\n\n}\n");
+			 $editor->GotoPos( $current_pos + 26 );
 		}
 
 		# Keep processing
