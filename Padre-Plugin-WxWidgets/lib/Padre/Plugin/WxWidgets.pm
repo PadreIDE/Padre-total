@@ -1,11 +1,9 @@
 package Padre::Plugin::WxWidgets;
 
-# ABSTRACT: wxWidgets support for Padre
-
 use warnings;
 use strict;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 use base 'Padre::Plugin';
 
@@ -44,6 +42,10 @@ sub show_about {
 
 1;
 __END__
+
+=head1 NAME
+
+Padre::Plugin::WxWidgets - wxWidgets support for Padre
 
 =head1 SYNOPSIS
 
