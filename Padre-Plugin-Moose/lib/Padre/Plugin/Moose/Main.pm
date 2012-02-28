@@ -64,9 +64,11 @@ sub run {
 
 		my $cursor = 'CURSOR';
 		my %hash = (
-			'has' => qq{has '$cursor' => ( isa => 'Str', is => 'ro', );},
-			'BUILD' => qq{sub BUILD {\n\tmy ( \$self, \$param ) = \@_;\n\t$cursor\n}\n},
-			'DEMOLISH' => qq{sub DEMOLISH {\n\tmy \$self = shift;\n\t$cursor\n}\n},
+			'has' => qq|has '$cursor' => ( isa => 'Str', is => 'ro', );|,
+			'BUILD' => qq|sub BUILD {\n\tmy ( \$self, \$param ) = \@_;\n\t$cursor\n}\n|,
+			'DEMOLISH' => qq|sub DEMOLISH {\n\tmy \$self = shift;\n\t$cursor\n}\n|,
+			'excludes' => qq|excludes '$cursor'|,
+			'meth' => qq|sub $cursor \n\tmy \$self = shift;\n}\n|,
 		);
 		
 		for my $e (keys %hash) {
