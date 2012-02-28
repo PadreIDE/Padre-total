@@ -69,6 +69,7 @@ sub run {
 			'DEMOLISH' => qq|sub DEMOLISH {\n\tmy \$self = shift;\n\t$cursor\n}\n|,
 			'excludes' => qq|excludes '$cursor'|,
 			'meth' => qq|sub $cursor \n\tmy \$self = shift;\n}\n|,
+			'class' => qq|package $cursor;\n\nuse Moose;\n\nno Moose;\n1;|,
 		);
 		
 		for my $e (keys %hash) {
