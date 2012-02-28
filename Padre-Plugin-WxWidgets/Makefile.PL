@@ -15,4 +15,6 @@ homepage 'http://padre.perlide.org/trac/wiki/PadrePluginWxWidgets';
 bugtracker 'http://padre.perlide.org/';
 repository 'http://svn.perlide.org/padre/trunk/Padre-Plugin-WxWidgets';
 
+install_share_with_mofiles;
+
 WriteAll;
