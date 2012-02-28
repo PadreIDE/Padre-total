@@ -6,6 +6,7 @@ name 'Padre-Plugin-Moose';
 license 'perl';
 author 'Ahmad M. Zawawi <ahmad.zawawi@gmail.com>';
 all_from 'lib/Padre/Plugin/Moose.pm';
+
 requires 'Padre'            => '0.94';
 requires 'Moose'            => '2.0402';
 requires 'namespace::clean' => '0.22';
