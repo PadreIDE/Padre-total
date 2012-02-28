@@ -52,6 +52,8 @@ sub run {
 	my $style = $self->main->config->editor_style;
 	my $theme = Padre::Wx::Theme->find($style)->clone;
 	$theme->apply( $self->{preview} );
+
+	return;
 }
 
 # Set up the events
@@ -64,6 +66,8 @@ sub on_grid_cell_change {
 		if $element->does('Padre::Plugin::Moose::Role::CanHandleInspector');
 
 	$self->show_code_in_preview(0);
+
+	return;
 }
 
 sub on_tree_selection_change {
@@ -110,6 +114,8 @@ sub on_tree_selection_change {
 			$line_num++;
 		}
 	}
+
+	return;
 }
 
 sub show_code_in_preview {
@@ -137,6 +143,8 @@ sub show_code_in_preview {
 	};
 	$self->error( sprintf( Wx::gettext('Error:%s'), $@ ) )
 		if $@;
+
+	return;
 }
 
 sub update_tree {
@@ -199,6 +207,8 @@ sub update_tree {
 		)
 		if $should_select_item
 			&& defined $selected_item;
+
+	return;
 }
 
 sub show_inspector {
@@ -211,7 +221,7 @@ sub show_inspector {
 	}
 
 	my $type = blessed($element);
-	if ( ( not defined $type ) or ( $type !~ /(Class|Role|Attribute|Subtype|Method)$/ ) ) {
+	if ( ( not defined $type ) or ( $type !~ /(Class|Role|Attribute|Subtype|Method|Constructor|Destructor)$/ ) ) {
 		$self->error("type: $element is not Class, Role, Attribute, Subtype or Method\n");
 		return;
 	}
@@ -242,6 +252,8 @@ sub show_inspector {
 
 	$element->write_to_inspector($inspector)
 		if $element->does('Padre::Plugin::Moose::Role::CanHandleInspector');
+
+	return;
 }
 
 sub on_add_class_button {
@@ -258,6 +270,8 @@ sub on_add_class_button {
 	$self->{current_element} = $class;
 	$self->show_inspector($class);
 	$self->show_code_in_preview(1);
+
+	return;
 }
 
 sub on_add_role_button {
@@ -272,6 +286,8 @@ sub on_add_role_button {
 	$self->{current_element} = $role;
 	$self->show_inspector($role);
 	$self->show_code_in_preview(1);
+
+	return;
 }
 
 sub on_add_attribute_button {
@@ -295,6 +311,8 @@ sub on_add_attribute_button {
 	$self->{current_element} = $attribute;
 	$self->show_inspector($attribute);
 	$self->show_code_in_preview(1);
+
+	return;
 }
 
 sub on_add_subtype_button {
@@ -318,6 +336,8 @@ sub on_add_subtype_button {
 	$self->{current_element} = $subtype;
 	$self->show_inspector($subtype);
 	$self->show_code_in_preview(1);
+
+	return;
 }
 
 sub on_add_method_button {
@@ -341,6 +361,8 @@ sub on_add_method_button {
 	$self->{current_element} = $method;
 	$self->show_inspector($method);
 	$self->show_code_in_preview(1);
+
+	return;
 }
 
 sub on_add_constructor_button {
@@ -355,15 +377,17 @@ sub on_add_constructor_button {
 		return;
 	}
 
-	# # Add a new constructor object to class
-	# require Padre::Plugin::Moose::Constructor;
-	# my $method = Padre::Plugin::Moose::Constructor->new;
-	# $method->name( 'method_' . $self->{method_count}++ );
-	# push @{ $self->{current_parent}->constructor }, $method;
+	# Add a new constructor object to class/role
+	require Padre::Plugin::Moose::Constructor;
+	my $constructor = Padre::Plugin::Moose::Constructor->new;
+	$constructor->name( 'BUILD' );
+	push @{ $self->{current_parent}->methods }, $constructor;
 
-	# $self->{current_element} = $method;
-	# $self->show_inspector($method);
-	# $self->show_code_in_preview(1);
+	$self->{current_element} = $constructor;
+	$self->show_inspector($constructor);
+	$self->show_code_in_preview(1);
+
+	return;
 }
 
 sub on_add_destructor_button {
@@ -378,15 +402,17 @@ sub on_add_destructor_button {
 		return;
 	}
 
-	# # Add a new destructor object to class
-	# require Padre::Plugin::Moose::Destructor;
-	# my $method = Padre::Plugin::Moose::Destructor->new;
-	# $method->name( 'method_' . $self->{method_count}++ );
-	# push @{ $self->{current_parent}->methods }, $method;
+	# Add a new destructor object to class/role
+	require Padre::Plugin::Moose::Destructor;
+	my $destructor = Padre::Plugin::Moose::Destructor->new;
+	$destructor->name( 'DEMOLISH' );
+	push @{ $self->{current_parent}->methods }, $destructor;
 
-	# $self->{current_element} = $method;
-	# $self->show_inspector($method);
-	# $self->show_code_in_preview(1);
+	$self->{current_element} = $destructor;
+	$self->show_inspector($destructor);
+	$self->show_code_in_preview(1);
+
+	return;
 }
 
 sub on_use_mouse_checkbox {
@@ -408,6 +434,8 @@ sub on_reset_button_clicked {
 		$self->restore_defaults;
 		$self->show_code_in_preview(1);
 	}
+
+	return;
 }
 
 sub on_generate_code_button_clicked {
@@ -424,6 +452,8 @@ sub on_generate_code_button_clicked {
 	);
 
 	$self->EndModal(Wx::ID_OK);
+
+	return;
 }
 
 sub restore_defaults {
@@ -443,6 +473,8 @@ sub restore_defaults {
 	# Defaults
 	$self->{comments_checkbox}->SetValue(1);
 	$self->{sample_code_checkbox}->SetValue(1);
+
+	return;
 }
 
 # Called when a item context menu is requested.
@@ -509,9 +541,7 @@ sub delete_element {
 }
 
 sub on_generated_code_combo {
-	my $self = shift;
-
-	$self->show_code_in_preview(1);
+	$_[0]->show_code_in_preview(1);
 }
 
 1;
