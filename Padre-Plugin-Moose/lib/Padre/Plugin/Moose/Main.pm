@@ -57,29 +57,34 @@ sub run {
 	my $editor = $self->current->editor or return;
 	Wx::Event::EVT_CHAR($editor, undef );
 	Wx::Event::EVT_CHAR($editor, sub {
-		my $current_pos = $editor->GetCurrentPos;
-		my $line_num = $editor->LineFromPosition($current_pos);
-		my $line = $editor->GetTextRange($editor->PositionFromLine($line_num), $current_pos);
+		my $position = $editor->GetCurrentPos;
+		my $start_position = 
+			$editor->PositionFromLine($editor->LineFromPosition($position));
+		my $line = $editor->GetTextRange($start_position, $position);
 
-		if($line =~ /^\s*has$/) {
-			# has property completion
-			$editor->SetTargetStart($current_pos - 3);
-			$editor->SetTargetEnd($current_pos);
-			$editor->ReplaceTarget("has '' => ( isa => 'Str', is => 'ro', );");
-			$editor->GotoPos( $current_pos + 2 );
-		} elsif($line =~ /^\s*BUILD$/) {
-			$editor->SetTargetStart($current_pos - 5);
-			$editor->SetTargetEnd($current_pos);
-			$editor->ReplaceTarget("sub BUILD {\n" .
-				"\tmy ( \$self, \$param ) = \@_;\n\n" .
-				"}\n");
-			$editor->GotoPos( $current_pos + 35 );
-		} elsif($line =~ /^\s*DEMOLISH$/) {
-			$editor->SetTargetStart($current_pos - 8);
-			$editor->SetTargetEnd($current_pos);
-			$editor->ReplaceTarget("sub DEMOLISH {\n" .
-			 "\tmy \$self = shift;\n\n}\n");
-			 $editor->GotoPos( $current_pos + 26 );
+		my $cursor = 'CURSOR';
+		my %hash = (
+			'has' => qq{has '$cursor' => ( isa => 'Str', is => 'ro', );},
+			'BUILD' => qq{sub BUILD {\n\tmy ( \$self, \$param ) = \@_;\n\t$cursor\n}\n},
+			'DEMOLISH' => qq{sub DEMOLISH {\n\tmy \$self = shift;\n\t$cursor\n}\n},
+		);
+		
+		for my $e (keys %hash) {
+			my $v = $hash{$e};
+			if($line =~ /^\s*\Q$e\E$/) {
+				$editor->SetTargetStart($position - length($e));
+				$editor->SetTargetEnd($position);
+				my $m = $v;
+				$m =~ s/$cursor//;
+				$editor->ReplaceTarget($m);
+				if($v =~ /($cursor)/g) {
+					$editor->GotoPos( 
+						$position - length($e) + 
+						pos($v) - length($cursor) 
+					);
+				}
+				last;
+			}
 		}
 
 		# Keep processing
