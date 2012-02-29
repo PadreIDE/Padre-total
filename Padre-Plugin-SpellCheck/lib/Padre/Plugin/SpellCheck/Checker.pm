@@ -31,7 +31,7 @@ use Padre::Locale                           ();
 use Padre::Unload                           ();
 use Padre::Plugin::SpellCheck::FBP::Checker ();
 
-our $VERSION = '1.24';
+our $VERSION = '1.25';
 our @ISA     = qw{
 	Padre::Plugin::SpellCheck::FBP::Checker
 };
@@ -52,7 +52,7 @@ sub new {
 
 	# define where to display main dialog
 	$self->CenterOnParent;
-
+	$self->SetTitle( sprintf( Wx::gettext('Spell-Checker v%s'), $VERSION ) );
 	$self->set_up;
 
 	return $self;

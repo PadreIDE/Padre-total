@@ -1,9 +1,10 @@
 Revision history for Padre-Plugin-SpellCheck
 1.25    TBA
+    - dynamic Dialogue Titles (BOWTIE)
     - 
 
 1.24    2012.02.26
-    - remove unwanited test for Text::Aspell installed (BOWTIE)
+    - remove unwanted test for Text::Aspell installed (BOWTIE)
 
 1.23    2012.02.26
     - fix plugin_enable school boy error (BOWTIE)
