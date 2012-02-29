@@ -55,46 +55,87 @@ sub run {
 
 	# Register keyboard event handler for the current editor
 	my $editor = $self->current->editor or return;
-	Wx::Event::EVT_CHAR($editor, undef );
-	Wx::Event::EVT_CHAR($editor, sub {
-		my $position = $editor->GetCurrentPos;
-		my $start_position = 
-			$editor->PositionFromLine($editor->LineFromPosition($position));
-		my $line = $editor->GetTextRange($start_position, $position);
+	Wx::Event::EVT_CHAR( $editor, undef );
+	Wx::Event::EVT_CHAR(
+		$editor,
+		sub {
+			my $position       = $editor->GetCurrentPos;
+			my $start_position = $editor->PositionFromLine( $editor->LineFromPosition($position) );
+			my $line           = $editor->GetTextRange( $start_position, $position );
 
-		my $cursor = 'CURSOR';
-		my %hash = (
-			'has' => qq|has '$cursor' => ( isa => 'Str', is => 'ro', );|,
-			'BUILD' => qq|sub BUILD {\n\tmy ( \$self, \$param ) = \@_;\n\t$cursor\n}\n|,
-			'DEMOLISH' => qq|sub DEMOLISH {\n\tmy \$self = shift;\n\t$cursor\n}\n|,
-			'excludes' => qq|excludes '$cursor'|,
-			'meth' => qq|sub $cursor \n\tmy \$self = shift;\n}\n|,
-			'class' => qq|package $cursor;\n\nuse Moose;\n\nno Moose;\n1;|,
-		);
-		
-		for my $e (keys %hash) {
-			my $v = $hash{$e};
-			if($line =~ /^\s*\Q$e\E$/) {
-				$editor->SetTargetStart($position - length($e));
-				$editor->SetTargetEnd($position);
-				my $m = $v;
-				$m =~ s/$cursor//;
-				$editor->ReplaceTarget($m);
-				if($v =~ /($cursor)/g) {
-					$editor->GotoPos( 
-						$position - length($e) + 
-						pos($v) - length($cursor) 
-					);
+			my $cursor = 'CURSOR';
+			my %hash   = (
+				'has'      => qq|has '$cursor' => ( isa => 'Str', is => 'ro', );|,
+				'BUILD'    => qq|sub BUILD {\n\tmy ( \$self, \$param ) = \@_;\n\t$cursor\n}\n|,
+				'DEMOLISH' => qq|sub DEMOLISH {\n\tmy \$self = shift;\n\t$cursor\n}\n|,
+				'excludes' => qq|excludes '$cursor'|,
+				'meth'     => qq|sub $cursor \n\tmy \$self = shift;\n}\n|,
+				'class'    => <<"END",
+package $cursor;
+
+nuse Moose;
+
+no Moose;
+1;
+END
+
+				'requires' => qq|requires '$cursor';|,
+				'role'     => <<"END",
+package $cursor;
+
+use Moose::Role;
+
+no Moose::Role;
+1;
+END
+
+				'script'   => <<"END",
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+{
+    package $cursor;
+    use Moose;
+    
+    with 'MooseX::Getopt';
+    
+    sub run {
+        
+    }
+}
+
+X->new_with_options->run;
+
+END
+	'augment' => qq|augment '$cursor' => sub { };|,
+	'around' => qq|around '$cursor' => sub { };|,
+	'before' => qq|before '$cursor' => sub { };|,
+	'after' => qq|after '$cursor' => sub { };|,
+			);
+
+			for my $e ( keys %hash ) {
+				my $v = $hash{$e};
+				if ( $line =~ /^\s*\Q$e\E$/ ) {
+					$editor->SetTargetStart( $position - length($e) );
+					$editor->SetTargetEnd($position);
+					my $m = $v;
+					$m =~ s/$cursor//;
+					$editor->ReplaceTarget($m);
+					if ( $v =~ /($cursor)/g ) {
+						$editor->GotoPos( $position - length($e) + pos($v) - length($cursor) );
+					}
+					last;
 				}
-				last;
 			}
+
+			# Keep processing
+			$_[1]->Skip(1);
+
+			return;
 		}
-
-		# Keep processing
-		$_[1]->Skip(1);
-
-		return;
-	});
+	);
 
 	return;
 }
@@ -423,7 +464,7 @@ sub on_add_constructor_button {
 	# Add a new constructor object to class/role
 	require Padre::Plugin::Moose::Constructor;
 	my $constructor = Padre::Plugin::Moose::Constructor->new;
-	$constructor->name( 'BUILD' );
+	$constructor->name('BUILD');
 	push @{ $self->{current_parent}->methods }, $constructor;
 
 	$self->{current_element} = $constructor;
@@ -448,7 +489,7 @@ sub on_add_destructor_button {
 	# Add a new destructor object to class/role
 	require Padre::Plugin::Moose::Destructor;
 	my $destructor = Padre::Plugin::Moose::Destructor->new;
-	$destructor->name( 'DEMOLISH' );
+	$destructor->name('DEMOLISH');
 	push @{ $self->{current_parent}->methods }, $destructor;
 
 	$self->{current_element} = $destructor;
