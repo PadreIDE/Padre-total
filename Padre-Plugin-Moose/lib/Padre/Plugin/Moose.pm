@@ -17,6 +17,10 @@ sub padre_interfaces {
 	'Padre::Plugin' => 0.94;
 }
 
+sub registered_documents {
+	'application/x-perl' => 'Padre::Plugin::Moose::Document',;
+}
+
 ######################################################################
 # Padre::Plugin Methods
 
