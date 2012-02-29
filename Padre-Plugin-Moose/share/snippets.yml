@@ -8,12 +8,12 @@
 # Adapted from 'TextMate Bundle for Moose' by Chris Prather (perigrin)
 # https://github.com/perigrin/perl-moose.tmbundle/Snippets
 
-# Method modifiers
+# after method modifier
 after: after '$0' => sub { $1 }; 
 # before method modifier
 before: before '$0' => sub { $1 }; 
-# after method modifier
-after: around '$0' => sub { $1 }; 
+# around method modifier
+around: around '$0' => sub { $1 }; 
 # Augment method modifier
 augment: augment '$0' => sub { $1 }; 
 # Override method modifier
