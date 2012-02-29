@@ -1,3 +1,4 @@
+
 ---
 # Copyright 2008-2012 The Padre development team as listed in Padre.pm.
 # LICENSE
@@ -24,28 +25,32 @@ class_type:
  code: class_type '$0';
 # Type coercion
 coerce:
- code: coerce '|' 
-	=> from '$0' 
-	=> via { $1 };
+ code: |
+  coerce '$0' 
+      => from '$1' 
+         via { $2 };
 # Desctrutor
 DEMOLISH:
- code: sub DEMOLISH {
-	my $self = shift;
-	$0
-}
+ code: |
+  sub DEMOLISH {
+      my $self = shift;
+      $0
+  }
 # Constructor
 BUILD:
- code: sub BUILD {
-	my $self = shift;
-	$0
-}
+ code: |
+  sub BUILD {
+      my $self = shift;
+      $0
+  }
 # Property
 has:
- code: has '$0' => (	isa => 'Str',	is  => 'ro', );
+ code: has '$0' => ( isa => 'Str', is  => 'ro', );
 # Type
 type:
- code: type '$0' 
-	=> where { $1 };
+ code: |
+  type '$0' 
+      => where { $1 };
 # Subtype
 subtype:
  code: subtype '$0' => as '$1' => where { $2 }};
@@ -60,56 +65,60 @@ excludes:
  code: excludes '$1';
 # Lazy Property
 has_lazy_build:
- code: has $0 => (
-	isa => '$1',
-	is  => '$2',	
-	lazy_build => 1,
-);
-
-sub _build_$0 {
-	my $self = shift;
-
-	$3
-}
+ code: |
+  has $0 => (
+      isa => '$1',
+      is  => '$2',
+      lazy_build => 1,
+  );
+  
+  sub _build_$0 {
+      my $self = shift;
+  
+     $3
+  }
 # MooseX::Getopt Script
 script:
-code: \#!/usr/bin/perl
-
-use strict;
-use warnings;
-
-{
-	package $0;
-	use Moose;
-
-	with 'MooseX::Getopt';
-
-	sub run {
-		$1
-	}
-}
-
-$0->new_with_options->run;
+code: |
+  \#!/usr/bin/perl
+  
+  use strict;
+  use warnings;
+  
+  {
+      package $0;
+      use Moose;
+  
+      with 'MooseX::Getopt';
+  
+      sub run {
+          $1
+      }
+  }
+  
+  $0->new_with_options->run;
 # Role definition
 Role:
- code: package $0;
-	use Moose::Role;
-
-$1
-no Moose::Role; 
-1;
+ code: |
+  package $0;
+  use Moose::Role;
+  $1
+  no Moose::Role; 
+  1;
 # Require a method definition
 Requires:
  code: requires '$0';
 # Class definition
 Class:
-code: package $0;
-use Moose;
-
-no Moose;
-1;
+code: |
+  package $0;
+  use Moose;
+  
+  no Moose;
+  1;
 Method:
-code: sub $0 {
-	my $self = shift;
-	$2
-}
+code: |
+  sub $0 {
+      my $self = shift;
+      $2
+  }
