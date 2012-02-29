@@ -252,6 +252,10 @@ sub menu_plugins_simple {
 
 Padre::Plugin::SpellCheck - Check spelling in Padre The Perl IDE
 
+=head1 VERSION
+
+version 1.25
+
 =head1 DESCRIPTION
 
 This plug-in allows one to check there spelling within Padre using

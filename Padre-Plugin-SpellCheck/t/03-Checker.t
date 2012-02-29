@@ -10,7 +10,7 @@ use_ok( 'Padre::Logger', '0.94' );
 
 my @subs = qw( _next _on_ignore_all_clicked _on_ignore_clicked
 	_on_replace_all_clicked _on_replace_clicked _replace _update
-	new padre_locale_label set_up
+	new padre_locale_label _set_up
 );
 
 use_ok( 'Padre::Plugin::SpellCheck::Checker', @subs );

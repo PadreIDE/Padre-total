@@ -53,15 +53,15 @@ sub new {
 	# define where to display main dialog
 	$self->CenterOnParent;
 	$self->SetTitle( sprintf( Wx::gettext('Spell-Checker v%s'), $VERSION ) );
-	$self->set_up;
+	$self->_set_up;
 
 	return $self;
 }
 
 #######
-# Method set_up
+# Method _set_up
 #######
-sub set_up {
+sub _set_up {
 	my $self    = shift;
 	my $main    = $self->main;
 	my $current = $main->current;
@@ -357,6 +357,95 @@ sub padre_locale_label {
 1;
 
 __END__
+
+=pod
+
+=head1 NAME
+
+Padre::Plugin::SpellCheck::Dialog - Check spelling in Padre The Perl IDE
+
+=head1 VERSION
+
+version 1.25
+
+=head1 DESCRIPTION
+
+This module implements the dialog window that will be used to interact
+with the user when mistakes have been spotted.
+
+=head1 PUBLIC METHODS
+
+=head2 Constructor
+
+=over 4
+
+=item my $dialog = PPS::Dialog->new( %params );
+
+Create and return a new dialog window. The following params are needed:
+
+=over 4
+
+=item text => $text
+
+The text being spell checked.
+
+=item offset => $offset
+
+The offset of C<$text> within the editor. 0 if spell checking the whole file.
+
+=item error => [ $word, $pos ]
+
+The first spotted error, on C<$word> (at position C<$pos>), with some
+associated C<$suggestions> (a list reference).
+
+=item engine => $engine
+
+The $engine being used (a C<Padre::Plugin::SpellCheck::Engine> object).
+
+=back
+
+=back
+
+=head2 Instance methods
+
+=over 4
+
+=back
+
+=head1 BUGS AND LIMITATIONS
+
+Text::Hunspell hard coded for /usr/share/hunspell/
+
+=head1 DEPENDENCIES
+
+Padre, Class::XSAccessor, Padre::Plugin::SpellCheck::FBP::Checker, 
+and either or ( Text::Hunspell or Text::Aspell )
+
+=head1 SEE ALSO
+
+For all related information (bug reporting, source code repository,
+etc.), refer to L<Padre::Plugin::SpellCheck>.
+
+=head1 AUTHORS
+
+Kevin Dawson E<lt>bowtie@cpan.orgE<gt>
+
+Ahmad M. Zawawi E<lt>ahmad.zawawi@gmail.comE<gt>
+
+Fayland Lam E<lt>fayland@gmail.comE<gt>
+
+Jerome Quelin E<lt>jquelin@gmail.comE<gt>
+
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Fayland Lam, Jerome Quelin.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut
+
 
 # Copyright 2008-2012 The Padre development team as listed in Padre.pm.
 # LICENSE

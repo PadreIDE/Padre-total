@@ -168,6 +168,91 @@ sub _count_utf_chars {
 
 __END__
 
+=pod
+
+=head1 NAME
+
+Padre::Plugin::SpellCheck::Engine - Check spelling in Padre The Perl IDE
+
+=head1 VERSION
+
+version 1.25
+
+=head1 PUBLIC METHODS
+
+=head2 Constructor
+
+=over 4
+
+=item my $engine = PPS::Engine->new;
+
+Create a new engine to be used later on.
+
+=back
+
+=head2 Instance methods
+
+=over 4
+
+=item * my ($word, $pos) = $engine->check( $text );
+
+Spell check C<$text> (according to current speller), and return the
+first error encountered (undef if no spelling mistake). An error is
+reported as the faulty C<$word>, as well as the C<$pos> of the word in
+the text (position of the start of the faulty word).
+
+=item * $engine->set_ignore_word( $word );
+
+Tell engine to ignore C<$word> for rest of the spell check.
+
+=item * my @dictionaries = $engine->dictionaries;
+
+Return a (reduced) list of dictionaries installed with aspell. The
+names returned are the dictionary locale names (eg C<en_US>). Note
+that only plain locales are reported, the variations coming with
+aspell are stripped.
+
+=item * my @suggestions = $engine->get_suggestions( $word );
+
+Return suggestions for C<$word>.
+
+
+=back
+
+=head1 BUGS AND LIMITATIONS
+
+Text::Hunspell hard coded for /usr/share/hunspell/
+
+=head1 DEPENDENCIES
+
+Padre, Class::XSAccessor and either or ( Text::Hunspell or Text::Aspell )
+
+=head1 SEE ALSO
+
+For all related information (bug reporting, source code repository,
+etc.), refer to L<Padre::Plugin::SpellCheck>.
+
+=head1 AUTHORS
+
+Kevin Dawson E<lt>bowtie@cpan.orgE<gt>
+
+Ahmad M. Zawawi E<lt>ahmad.zawawi@gmail.comE<gt>
+
+Fayland Lam E<lt>fayland@gmail.comE<gt>
+
+Jerome Quelin E<lt>jquelin@gmail.comE<gt>
+
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Fayland Lam, Jerome Quelin.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut
+
+
 # Copyright 2008-2012 The Padre development team as listed in Padre.pm.
 # LICENSE
 # This program is free software; you can redistribute it and/or
