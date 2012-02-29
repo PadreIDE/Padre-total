@@ -5,6 +5,9 @@
 # This program is free software; you can redistribute it and/or
 # modify it under the same terms as Perl 5 itself.
 
+# Adapted from 'TextMate Bundle for Moose' by Chris Prather (perigrin)
+# https://github.com/perigrin/perl-moose.tmbundle/Snippets
+
 # Method modifiers
 after: after '$0' => sub { $1 }; 
 # before method modifier

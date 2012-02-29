@@ -63,67 +63,21 @@ sub run {
 			my $start_position = $editor->PositionFromLine( $editor->LineFromPosition($position) );
 			my $line           = $editor->GetTextRange( $start_position, $position );
 
-			my $cursor = 'CURSOR';
-			my %hash   = (
-				'has'      => qq|has '$cursor' => ( isa => 'Str', is => 'ro', );|,
-				'BUILD'    => qq|sub BUILD {\n\tmy ( \$self, \$param ) = \@_;\n\t$cursor\n}\n|,
-				'DEMOLISH' => qq|sub DEMOLISH {\n\tmy \$self = shift;\n\t$cursor\n}\n|,
-				'excludes' => qq|excludes '$cursor'|,
-				'meth'     => qq|sub $cursor \n\tmy \$self = shift;\n}\n|,
-				'class'    => <<"END",
-package $cursor;
+			# Open the config
+			require YAML::Tiny;
+			require File::ShareDir;
+			my $snippets = YAML::Tiny::LoadFile( File::ShareDir::dist_file('Padre-Plugin-Moose', 'snippets.yml') );
 
-nuse Moose;
-
-no Moose;
-1;
-END
-
-				'requires' => qq|requires '$cursor';|,
-				'role'     => <<"END",
-package $cursor;
-
-use Moose::Role;
-
-no Moose::Role;
-1;
-END
-
-				'script'   => <<"END",
-#!/usr/bin/perl
-
-use strict;
-use warnings;
-
-{
-    package $cursor;
-    use Moose;
-    
-    with 'MooseX::Getopt';
-    
-    sub run {
-        
-    }
-}
-
-X->new_with_options->run;
-
-END
-	'augment' => qq|augment '$cursor' => sub { };|,
-	'around' => qq|around '$cursor' => sub { };|,
-	'before' => qq|before '$cursor' => sub { };|,
-	'after' => qq|after '$cursor' => sub { };|,
-			);
-
-			for my $e ( keys %hash ) {
-				my $v = $hash{$e};
+			my $cursor = '$0';
+			for my $e ( keys %$snippets ) {
+				my $v = $snippets->{$e};
 				if ( $line =~ /^\s*\Q$e\E$/ ) {
 					$editor->SetTargetStart( $position - length($e) );
 					$editor->SetTargetEnd($position);
 					my $m = $v;
-					$m =~ s/$cursor//;
+					$m =~ s/\$\d//g;
 					$editor->ReplaceTarget($m);
-					if ( $v =~ /($cursor)/g ) {
+					if ( $v =~ /(\Q$cursor\E)/g ) {
 						$editor->GotoPos( $position - length($e) + pos($v) - length($cursor) );
 					}
 					last;
