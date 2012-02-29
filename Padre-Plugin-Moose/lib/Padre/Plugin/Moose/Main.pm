@@ -53,44 +53,6 @@ sub run {
 	my $theme = Padre::Wx::Theme->find($style)->clone;
 	$theme->apply( $self->{preview} );
 
-	# Register keyboard event handler for the current editor
-	my $editor = $self->current->editor or return;
-	Wx::Event::EVT_CHAR( $editor, undef );
-	Wx::Event::EVT_CHAR(
-		$editor,
-		sub {
-			my $position       = $editor->GetCurrentPos;
-			my $start_position = $editor->PositionFromLine( $editor->LineFromPosition($position) );
-			my $line           = $editor->GetTextRange( $start_position, $position );
-
-			# Open the config
-			require YAML::Tiny;
-			require File::ShareDir;
-			my $snippets = YAML::Tiny::LoadFile( File::ShareDir::dist_file('Padre-Plugin-Moose', 'snippets.yml') );
-
-			my $cursor = '$0';
-			for my $e ( keys %$snippets ) {
-				my $v = $snippets->{$e};
-				if ( $line =~ /^\s*\Q$e\E$/ ) {
-					$editor->SetTargetStart( $position - length($e) );
-					$editor->SetTargetEnd($position);
-					my $m = $v;
-					$m =~ s/\$\d//g;
-					$editor->ReplaceTarget($m);
-					if ( $v =~ /(\Q$cursor\E)/g ) {
-						$editor->GotoPos( $position - length($e) + pos($v) - length($cursor) );
-					}
-					last;
-				}
-			}
-
-			# Keep processing
-			$_[1]->Skip(1);
-
-			return;
-		}
-	);
-
 	return;
 }
 

@@ -16,18 +16,49 @@ sub set_editor {
 
 	$self->SUPER::set_editor($editor);
 
+	# Load snippets
+	require YAML::Tiny;
+	require File::ShareDir;
+	my $snippets = YAML::Tiny::LoadFile( File::ShareDir::dist_file('Padre-Plugin-Moose', 'snippets.yml') );
+
 	# TODO Padre should fire event_key_down instead of this hack :)
+	# Register keyboard event handler for the current editor
 	Wx::Event::EVT_KEY_DOWN($editor, undef);
 	Wx::Event::EVT_KEY_DOWN($editor, sub {
 		my $event = $_[1];
 
 		if($event->GetKeyCode == Wx::WXK_TAB) {
-			print "Tab pressed\n";
+			my $position       = $editor->GetCurrentPos;
+			my $start_position = $editor->PositionFromLine( $editor->LineFromPosition($position) );
+			my $line           = $editor->GetTextRange( $start_position, $position );
+
+			my $cursor = '$0';
+			for my $e ( keys %$snippets ) {
+				my $v = $snippets->{$e};
+				if ( $line =~ /^\s*\Q$e\E$/ ) {
+					$editor->SetTargetStart( $position - length($e) );
+					$editor->SetTargetEnd($position);
+					my $m = $v;
+					$m =~ s/\$\d//g;
+					$editor->ReplaceTarget($m);
+					if ( $v =~ /(\Q$cursor\E)/g ) {
+						$editor->GotoPos( $position - length($e) + pos($v) - length($cursor) );
+					}
+					last;
+				}
+			}
+			
+			# Consume the TAB :)
+			$event->StopPropagation;
+		} else {
+			# Keep processing
+			$event->Skip(1);
 		}
 
-		$event->Skip(1);
+		return;
 	});
 }
+
 1;
 
 __END__
