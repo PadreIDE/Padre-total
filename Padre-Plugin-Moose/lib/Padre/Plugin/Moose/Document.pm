@@ -25,8 +25,41 @@ sub set_editor {
 			$self->on_key_down(@_);
 		}
 	);
+
+	return;
 }
 
+sub get_indentation_style {
+	 my $self = shift;
+
+	# Syntax highlight Moose keywords after get_indentation_style is called :)	
+	# TODO remove hack once Padre supports a better way
+	$self->highlight_moose_keywords;
+
+	return $self->SUPER::get_indentation_style;
+}
+
+sub highlight_moose_keywords {
+	my $self = shift;
+
+	my $editor = $self->editor or return;
+	my $keywords = Padre::Wx::Scintilla->keywords($self);
+	if ( Params::Util::_ARRAY($keywords) ) {
+		foreach my $i ( 0 .. $#$keywords ) {
+			my $keyword_list = $keywords->[$i];
+			$keyword_list .= " has with extends before around after "
+				. "override super augment inner type subtype "
+				. "enum class_type as where coerce via from "
+				. "requires excludes"
+				if $i == 0;
+			$editor->Wx::Scintilla::TextCtrl::SetKeyWords( $i, $keyword_list );
+		}
+	}
+
+	return;
+}
+
+# Called when the a key is pressed
 sub on_key_down {
 	my $self   = shift;
 	my $editor = shift;
@@ -73,7 +106,7 @@ sub on_key_down {
 
 	# Keep processing it there was snippet completion
 	# Other consume the TAB key down event
-	$event->Skip(1) unless ($snippet_added);
+	$event->Skip(1) unless $snippet_added;
 
 	return;
 }
