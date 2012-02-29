@@ -5,7 +5,8 @@ Changes for Padre-Plugin-Moose
 	- Add YAML-based TextMate-style Moose keyword snippet
 	  completion (Thanks for El_Che and perigrin)
 	- Added basic constructor/destructor support
-	- Switch order of members tab to be most used first: attributes, methods, subtypes, constructor and then destructor.
+	- Switch order of members tab to be most used first: attributes, methods,
+	  subtypes, constructor and then destructor.
 	- Inspector is now bigger since it is a scrolled window.
 	- Fix q{editable inspector in Program node at startup} TODO
 	- Dialog is no longer cramped (width is 750 width instead of 640 pixels)
