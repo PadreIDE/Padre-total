@@ -17,7 +17,7 @@ around: around '$0' => sub { $1 };
 # Augment method modifier
 augment: augment '$0' => sub { $1 }; 
 # Override method modifier
-override: override '$0' =&gt; sub { $2 }; 
+override: override '$0' => sub { $2 }; 
 # Define class type
 classtype: class_type '$0';
 # Type coercion
