@@ -1,0 +1,115 @@
+---
+# Copyright 2008-2012 The Padre development team as listed in Padre.pm.
+# LICENSE
+# This program is free software; you can redistribute it and/or
+# modify it under the same terms as Perl 5 itself.
+
+# Method modifiers
+after:
+ code: after '$0' => sub { $1 }; 
+# before method modifier
+before:
+ code: before '$0' => sub { $1 }; 
+# after method modifier
+after:
+ code: around '$0' => sub { $1 }; 
+# Augment method modifier
+augment:
+ code: augment '$0' => sub { $1 }; 
+# Override method modifier
+override:
+ code: override '$0' =&gt; sub { $2 }; 
+# Define class type
+class_type:
+ code: class_type '$0';
+# Type coercion
+coerce:
+ code: coerce '|' 
+	=> from '$0' 
+	=> via { $1 };
+# Desctrutor
+DEMOLISH:
+ code: sub DEMOLISH {
+	my $self = shift;
+	$0
+}
+# Constructor
+BUILD:
+ code: sub BUILD {
+	my $self = shift;
+	$0
+}
+# Property
+has:
+ code: has '$0' => (	isa => 'Str',	is  => 'ro', );
+# Type
+type:
+ code: type '$0' 
+	=> where { $1 };
+# Subtype
+subtype:
+ code: subtype '$0' => as '$1' => where { $2 }};
+# Does a list of roles
+with:
+ code: with qw($0);
+# Extend a list of parents
+extends:
+ code: extends qw($0);
+# Exclude
+excludes:
+ code: excludes '$1';
+# Lazy Property
+has_lazy_build:
+ code: has $0 => (
+	isa => '$1',
+	is  => '$2',	
+	lazy_build => 1,
+);
+
+sub _build_$0 {
+	my $self = shift;
+
+	$3
+}
+# MooseX::Getopt Script
+script:
+code: \#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+{
+	package $0;
+	use Moose;
+
+	with 'MooseX::Getopt';
+
+	sub run {
+		$1
+	}
+}
+
+$0->new_with_options->run;
+# Role definition
+Role:
+ code: package $0;
+	use Moose::Role;
+
+$1
+no Moose::Role; 
+1;
+# Require a method definition
+Requires:
+ code: requires '$0';
+# Class definition
+Class:
+code: package $0;
+use Moose;
+
+no Moose;
+1;
+Method:
+code: sub $0 {
+	my $self = shift;
+	$2
+}
