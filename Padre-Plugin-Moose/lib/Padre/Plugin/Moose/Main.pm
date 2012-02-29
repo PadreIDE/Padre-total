@@ -37,6 +37,12 @@ sub new {
 	$preview->{Document} = Padre::Document->new( mimetype => 'application/x-perl', );
 	$preview->{Document}->set_editor($preview);
 	$preview->SetLexer('application/x-perl');
+
+	# Syntax highlight Moose keywords after get_indentation_style is called :)
+	# TODO remove hack once Padre supports a better way
+	require Padre::Plugin::Moose::Util;
+	Padre::Plugin::Moose::Util::add_moose_keywords_highlighting($preview->{Document});
+
 	$preview->Show(1);
 
 	$self->show_code_in_preview(1);
