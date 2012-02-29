@@ -30,9 +30,9 @@ sub set_editor {
 }
 
 sub get_indentation_style {
-	 my $self = shift;
+	my $self = shift;
 
-	# Syntax highlight Moose keywords after get_indentation_style is called :)	
+	# Syntax highlight Moose keywords after get_indentation_style is called :)
 	# TODO remove hack once Padre supports a better way
 	$self->highlight_moose_keywords;
 
@@ -47,7 +47,8 @@ sub highlight_moose_keywords {
 	if ( Params::Util::_ARRAY($keywords) ) {
 		foreach my $i ( 0 .. $#$keywords ) {
 			my $keyword_list = $keywords->[$i];
-			$keyword_list .= " has with extends before around after "
+			$keyword_list
+				.= " has with extends before around after "
 				. "override super augment inner type subtype "
 				. "enum class_type as where coerce via from "
 				. "requires excludes"
