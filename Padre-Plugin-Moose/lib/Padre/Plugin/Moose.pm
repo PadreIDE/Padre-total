@@ -3,23 +3,51 @@ package Padre::Plugin::Moose;
 use 5.008;
 use strict;
 use warnings;
-
-our $VERSION = '0.15';
-
 use Padre::Plugin ();
 
-our @ISA = 'Padre::Plugin';
+our $VERSION = '0.16';
+our @ISA     = 'Padre::Plugin';
+
+# Child modules we need to unload when disabled
+use constant CHILDREN => qw{
+	Padre::Plugin::Moose::Role::CanGenerateCode
+	Padre::Plugin::Moose::Role::CanHandleInspector
+	Padre::Plugin::Moose::Role::CanProvideHelp
+	Padre::Plugin::Moose::Role::HasClassMembers
+	Padre::Plugin::Moose::Attribute
+	Padre::Plugin::Moose::Class
+	Padre::Plugin::Moose::ClassMember
+	Padre::Plugin::Moose::Constructor
+	Padre::Plugin::Moose::Destructor
+	Padre::Plugin::Moose::Document
+	Padre::Plugin::Moose::Method
+	Padre::Plugin::Moose::Program
+	Padre::Plugin::Moose::Role
+	Padre::Plugin::Moose::Subtype
+	Padre::Plugin::Moose::Util
+	Padre::Plugin::Moose::Main
+	Padre::Plugin::Moose::FBP::Main
+};
+
+
+
+
 
 ######################################################################
 # Padre Integration
 
 sub padre_interfaces {
-	'Padre::Plugin' => 0.94;
+	'Padre::Plugin'   => 0.94,
+	'Padre::Wx::Main' => 0.94,
 }
 
 sub registered_documents {
 	'application/x-perl' => 'Padre::Plugin::Moose::Document',;
 }
+
+
+
+
 
 ######################################################################
 # Padre::Plugin Methods
@@ -32,13 +60,14 @@ sub plugin_disable {
 	my $self = shift;
 
 	# Destroy resident dialog
-	$self->{dialog}->Destroy if defined $self->{dialog};
+	if ( defined $self->{dialog} ) {
+		$self->{dialog}->Destroy;
+		$self->{dialog} = undef;
+	}
 
-	# TODO uncomment once Padre 0.96 is released
-	#$_[0]->unload(
-	#    ( 'Padre::Plugin::Moose', 'Padre::Plugin::Moose::Main', 'Moose' ) );
-	for my $package ( ( 'Padre::Plugin::Moose', 'Padre::Plugin::Moose::Main', 'Moose' ) ) {
-		require Padre::Unload;
+	# TODO: Switch to Padre::Unload once Padre 0.96 is released
+	require Padre::Unload;
+	for my $package ( CHILDREN ) {
 		Padre::Unload->unload($package);
 	}
 }
@@ -53,18 +82,32 @@ sub menu_plugins {
 		$menu_item,
 		sub {
 			eval {
-				require Padre::Plugin::Moose::Main;
-				$self->{dialog} = Padre::Plugin::Moose::Main->new($main)
-					unless defined $self->{dialog};
-				$self->{dialog}->run;
-				$self->{dialog}->ShowModal;
+				$self->dialog->run;
 			};
-			$main->error( sprintf( Wx::gettext('Error:%s'), $@ ) )
-				if $@;
+			return unless $@;
+			$main->error(
+				sprintf( Wx::gettext('Error: %s'), $@ )
+			);
 		},
 	);
 
 	return $menu_item;
+}
+
+
+
+
+
+######################################################################
+# Support Methods
+
+sub dialog {
+	my $self = shift;
+	unless ( defined $self->{dialog} ) {
+		require Padre::Plugin::Moose::Main;
+		$self->{dialog} = Padre::Plugin::Moose::Main->new($self->main);
+	}
+	return $self->{dialog};
 }
 
 1;
@@ -79,7 +122,7 @@ Padre::Plugin::Moose - Moose support for Padre
 
 =head1 SYNOPSIS
 
-	cpan Padre::Plugin::Moose;
+    cpan Padre::Plugin::Moose;
 
 Then use it via L<Padre>, The Perl IDE.
 
@@ -104,8 +147,7 @@ automatically be notified of progress on your bug as I make changes.
 
 You can find documentation for this module with the perldoc command.
 
-	perldoc Padre::Plugin::Moose
-
+    perldoc Padre::Plugin::Moose
 
 You can also look for information at:
 

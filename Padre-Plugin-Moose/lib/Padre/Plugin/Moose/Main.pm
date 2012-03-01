@@ -6,7 +6,7 @@ use Moose;
 use Padre::Plugin::Moose::FBP::Main ();
 use Padre::Wx::Role::Dialog         ();
 
-our $VERSION = '0.15';
+our $VERSION = '0.16';
 
 our @ISA = qw{
 	Padre::Plugin::Moose::FBP::Main
@@ -25,8 +25,7 @@ sub new {
 	$self->restore_defaults;
 
 	# TODO Bug Alias to fix the wxFormBuilder bug regarding this one
-	my $inspector = $self->{inspector};
-	$inspector->SetRowLabelSize(0);
+	$self->{inspector}->SetRowLabelSize(0);
 
 	# Hide the inspector as needed
 	$self->show_inspector(undef);
@@ -50,7 +49,7 @@ sub new {
 	return $self;
 }
 
-# This is called before the dialog is shown
+# This is called to start and show the dialog
 sub run {
 	my $self = shift;
 
@@ -59,7 +58,7 @@ sub run {
 	my $theme = Padre::Wx::Theme->find($style)->clone;
 	$theme->apply( $self->{preview} );
 
-	return;
+	$self->ShowModal;
 }
 
 # Set up the events
@@ -68,8 +67,9 @@ sub on_grid_cell_change {
 
 	my $element = $self->{current_element} or return;
 
-	$element->read_from_inspector( $self->{inspector} )
-		if $element->does('Padre::Plugin::Moose::Role::CanHandleInspector');
+	if ( $element->does('Padre::Plugin::Moose::Role::CanHandleInspector') ) {
+		$element->read_from_inspector( $self->{inspector} );
+	}
 
 	$self->show_code_in_preview(0);
 
@@ -77,9 +77,8 @@ sub on_grid_cell_change {
 }
 
 sub on_tree_selection_change {
-	my $self  = shift;
-	my $event = shift;
-
+	my $self    = shift;
+	my $event   = shift;
 	my $tree    = $self->{tree};
 	my $item    = $event->GetItem or return;
 	my $element = $tree->GetPlData($item) or return;
@@ -222,7 +221,7 @@ sub show_inspector {
 	my $element = shift;
 
 	unless ( defined $element ) {
-		$self->{inspector}->GetContainingSizer->Show( 0, 0 );
+		$self->{inspector}->Enable(0);
 		return;
 	}
 
@@ -252,12 +251,12 @@ sub show_inspector {
 		$inspector->SetReadOnly( $row, 0 );
 	}
 
-	$self->{inspector}->GetContainingSizer->Show( 0, 1 );
-	$self->Layout;
+	$inspector->Enable(1);
 	$inspector->SetGridCursor( 0, 1 );
 
-	$element->write_to_inspector($inspector)
-		if $element->does('Padre::Plugin::Moose::Role::CanHandleInspector');
+	if ( $element->does('Padre::Plugin::Moose::Role::CanHandleInspector') ) {
+		$element->write_to_inspector($inspector);
+	}
 
 	return;
 }
