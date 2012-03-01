@@ -10,47 +10,62 @@
 
 # after method modifier
 after: after '$0' => sub { $1 }; 
+
 # before method modifier
 before: before '$0' => sub { $1 }; 
+
 # around method modifier
 around: around '$0' => sub { $1 }; 
+
 # Augment method modifier
 augment: augment '$0' => sub { $1 }; 
+
 # Override method modifier
 override: override '$0' => sub { $2 }; 
+
 # Define class type
 classtype: class_type '$0';
+
 # Type coercion
 coerce: |
   coerce '$0' 
       => from '$1' 
          via { $2 };
+
 # Desctrutor
 DEMOLISH: |
   sub DEMOLISH {
       my $self = shift;
       $0
   }
+
 # Constructor
 BUILD: |
   sub BUILD {
       my $self = shift;
       $0
   }
+
 # Property
 has: has '$0' => ( isa => 'Str', is  => 'ro', );
+
 # Type
 type: |
   type '$0' 
       => where { $1 };
+
 # Subtype
 subtype: subtype '$0' => as '$1' => where { $2 }};
+
 # Does a list of roles
 with: with qw($0);
 # Extend a list of parents
+
 ext: extends qw($0);
+
 # Exclude
 excludes: excludes '$1';
+
 # has lazy property builder
 hasl: |
   has $0 => (
@@ -64,6 +79,7 @@ hasl: |
   
      $3
   }
+
 # MooseX::Getopt Script
 script: |
   #!/usr/bin/perl
@@ -83,6 +99,7 @@ script: |
   }
   
   $0->new_with_options->run;
+
 # Role definition
 role: |
   package $0;
@@ -90,15 +107,19 @@ role: |
   $1
   no Moose::Role; 
   1;
+
 # Require a method definition
 requires: requires '$0';
-# Class definition
+
+# Class declaration
 class: |
   package $0;
   use Moose;
   
   no Moose;
   1;
+
+# Method declaration
 meth: |
   sub $0 {
       my $self = shift;
