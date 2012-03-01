@@ -154,8 +154,9 @@ sub show_code_in_preview {
 sub update_tree {
 	my $self               = shift;
 	my $should_select_item = shift;
+	my $tree               = $self->{tree};
+	my $lock               = $self->lock_update($tree);
 
-	my $tree = $self->{tree};
 	$tree->DeleteAllItems;
 
 	my $selected_item;
@@ -216,11 +217,13 @@ sub update_tree {
 }
 
 sub show_inspector {
-	my $self    = shift;
-	my $element = shift;
+	my $self      = shift;
+	my $element   = shift;
+	my $inspector = $self->{inspector};
+	my $lock      = $self->lock_update($inspector);
 
+	$inspector->DeleteRows( 0, $inspector->GetNumberRows );
 	unless ( defined $element ) {
-		$self->{inspector}->Enable(0);
 		return;
 	}
 
@@ -230,28 +233,20 @@ sub show_inspector {
 		return;
 	}
 
-	my $inspector_data = $element->get_grid_data;
-	my $inspector      = $self->{inspector};
-	$inspector->DeleteRows( 0, $inspector->GetNumberRows );
-	$inspector->InsertRows( 0, scalar @$inspector_data );
-	my $row_index = 0;
-	for my $row (@$inspector_data) {
-		$inspector->SetCellValue( $row_index, 0, $row->{name} );
-		if ( defined $row->{is_bool} ) {
-			$inspector->SetCellEditor( $row_index, 1, Wx::GridCellBoolEditor->new );
-			$inspector->SetCellValue( $row_index, 1, 1 );
-		} elsif ( defined $row->{choices} ) {
-			$inspector->SetCellEditor( $row_index, 1, Wx::GridCellChoiceEditor->new( $row->{choices}, 1 ) );
-		}
-		$row_index++;
-	}
-
-	for my $row ( 0 .. $row_index - 1 ) {
-		$inspector->SetReadOnly( $row, 0 );
-	}
-
-	$inspector->Enable(1);
+	my $data = $element->get_grid_data;
+	$inspector->InsertRows( 0, scalar @$data );
 	$inspector->SetGridCursor( 0, 1 );
+	foreach my $i ( 0 .. $#$data ) {
+		my $row = $data->[$i];
+		$inspector->SetCellValue( $i, 0, $row->{name} );
+		$inspector->SetReadOnly( $i, 0 );
+		if ( defined $row->{is_bool} ) {
+			$inspector->SetCellEditor( $i, 1, Wx::GridCellBoolEditor->new );
+			$inspector->SetCellValue( $i, 1, 1 );
+		} elsif ( defined $row->{choices} ) {
+			$inspector->SetCellEditor( $i, 1, Wx::GridCellChoiceEditor->new( $row->{choices}, 1 ) );
+		}
+	}
 
 	if ( $element->does('Padre::Plugin::Moose::Role::CanHandleInspector') ) {
 		$element->write_to_inspector($inspector);
