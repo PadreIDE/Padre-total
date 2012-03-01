@@ -49,8 +49,9 @@ sub slurp {
 }
 
 # Find the sample files
-my $input = File::Spec->catfile( 't', 'data', 'regress.fbp' );
-my $naive = File::Spec->catfile( 't', 'data', 'naive.pl'  );
+my $year   = (localtime(time))[5] + 1900;
+my $input  = File::Spec->catfile( 't', 'data', 'regress.fbp' );
+my $naive  = File::Spec->catfile( 't', 'data', 'naive.pl'  );
 my $strict = File::Spec->catfile( 't', 'data', 'strict.pl' );
 ok( -f $input,  "Found test file $input"  );
 ok( -f $naive, "Found test file $naive" );
@@ -80,6 +81,7 @@ SCOPE: {
 	# Generate the entire dialog constructor
 	my $have = $code->dialog_class($dialog);
 	my $want = slurp($naive);
+	$want =~ s/2011/$year/g;
 	code( $have, $want, '->dialog_super ok' );
 	compiles( $have, 'Dialog class compiled' );
 	Padre::Unload::unload($dialog->name);
@@ -100,6 +102,7 @@ SCOPE: {
 	# Generate the entire dialog constructor
 	my $have = $code->dialog_class($dialog);
 	my $want = slurp($strict);
+	$want =~ s/2011/$year/g;
 	code( $have, $want, '->dialog_super ok' );
 	compiles( $have, 'Dialog class compiled' );
 }

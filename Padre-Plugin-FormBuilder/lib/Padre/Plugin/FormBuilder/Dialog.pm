@@ -565,7 +565,8 @@ sub show {
 		my $path = File::Spec->catfile( $project->root, $file );
 
 		# Do we have the module open
-		my $id = $main->editor_of_file($path);
+		my $id   = $main->editor_of_file($path);
+		my $open = defined $id;
 		unless ( defined $id ) {
 			# Open the file if it exists on disk
 			if ( -f $path and -r $path ) {
@@ -584,8 +585,14 @@ sub show {
 			# Apply to the existing file by delta
 			my $editor   = $main->notebook->GetPage($id);
 			my $document = $editor->{Document} or return;
-			$document->text_replace($code);
-			return $document;
+			my $changed  = $document->text_replace($code);
+			return $document if $changed;
+			return $document if $document->is_modified;
+
+			# Close the editor if we didn't change it and
+			# were also responsible for opening it.
+			$main->close($id) unless $open;
+			return;
 		}
 	}
 
