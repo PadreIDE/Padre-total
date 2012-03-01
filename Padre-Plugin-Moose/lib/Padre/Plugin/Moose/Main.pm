@@ -2,15 +2,13 @@ package Padre::Plugin::Moose::Main;
 
 use 5.008;
 use Moose;
-
-use Padre::Plugin::Moose::FBP::Main ();
 use Padre::Wx::Role::Dialog         ();
+use Padre::Plugin::Moose::FBP::Main ();
 
 our $VERSION = '0.16';
-
-our @ISA = qw{
-	Padre::Plugin::Moose::FBP::Main
+our @ISA     = qw{
 	Padre::Wx::Role::Dialog
+	Padre::Plugin::Moose::FBP::Main
 };
 
 sub new {
@@ -146,8 +144,9 @@ sub show_code_in_preview {
 		# Update tree
 		$self->update_tree($should_select_item);
 	};
-	$self->error( sprintf( Wx::gettext('Error:%s'), $@ ) )
-		if $@;
+	if ( $@ ) {
+		$self->error( sprintf( Wx::gettext('Error:%s'), $@ ) );
+	}
 
 	return;
 }
@@ -203,15 +202,15 @@ sub update_tree {
 
 	# Select the tree node outside this event to
 	# prevent deep recurision
-	Wx::Event::EVT_IDLE(
-		$self,
-		sub {
-			$tree->SelectItem($selected_item);
-			Wx::Event::EVT_IDLE( $self, undef );
-		}
-		)
-		if $should_select_item
-			&& defined $selected_item;
+	if ( $should_select_item and defined $selected_item ) {
+		Wx::Event::EVT_IDLE(
+			$self,
+			sub {
+				$tree->SelectItem($selected_item);
+				Wx::Event::EVT_IDLE( $self, undef );
+			}
+		);
+	}
 
 	return;
 }
@@ -226,7 +225,7 @@ sub show_inspector {
 	}
 
 	my $type = blessed($element);
-	if ( ( not defined $type ) or ( $type !~ /(Class|Role|Attribute|Subtype|Method|Constructor|Destructor)$/ ) ) {
+	unless ( defined $type and $type =~ /(Class|Role|Attribute|Subtype|Method|Constructor|Destructor)$/ ) {
 		$self->error("type: $element is not Class, Role, Attribute, Subtype or Method\n");
 		return;
 	}

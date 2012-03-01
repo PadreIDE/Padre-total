@@ -37,8 +37,13 @@ use constant CHILDREN => qw{
 # Padre Integration
 
 sub padre_interfaces {
-	'Padre::Plugin'   => 0.94,
-	'Padre::Wx::Main' => 0.94,
+	'Padre::Plugin'           => 0.94,
+	'Padre::Document'         => 0.94,
+	'Padre::Wx::Main'         => 0.94,
+	'Padre::Wx::Theme'        => 0.94,
+	'Padre::Wx::Editor'       => 0.94,
+	'Padre::Wx::Role::Main'   => 0.94,
+	'Padre::Wx::Role::Dialog' => 0.94,
 }
 
 sub registered_documents {
