@@ -31,9 +31,8 @@ use constant CHILDREN => qw{
 	Padre::Plugin::Moose::FBP::Preferences
 };
 
-######################################################################
-# Padre Integration
-
+# Called when Padre wants to check what package versions this
+# plugin needs
 sub padre_interfaces {
 	'Padre::Plugin'               => 0.94,
 		'Padre::Document'         => 0.94,
@@ -45,21 +44,49 @@ sub padre_interfaces {
 		;
 }
 
+# Called when Padre wants to knows what documents this Plugin supports
 sub registered_documents {
 	'application/x-perl' => 'Padre::Plugin::Moose::Document',;
 }
 
-
-
-
-
-######################################################################
-# Padre::Plugin Methods
-
+# Called when Padre wants a name for the plugin
 sub plugin_name {
 	Wx::gettext('Moose');
 }
 
+# Called when the plugin is enabled by Padre
+sub plugin_enable {
+	my $self = shift;
+
+	# Read the plugin configuration, and 
+	my $config = $self->config_read;
+	unless ( defined $config ) {
+
+		# No configuration, let us create it
+		$self->{config} = $config = {};
+	}
+
+	# Make sure defaults are respected if they are undefined.
+	unless( defined $config->{code_gen_type} ) {
+		$config->{code_gen_type} = 'Moose';
+	}
+	unless( defined $config->{comments_enabled} ) {
+		$config->{comments_enabled} = 1;
+	}
+	unless( defined $config->{sample_code_enabled} ) {
+		$config->{sample_code_enabled} = 1;
+	}
+
+	# Write the plugin's configuration
+	$self->config_write($config);
+
+	# Update configuration attribute
+	$self->config($config);
+
+	return;
+}
+
+# Called when the plugin is disabled by Padre
 sub plugin_disable {
 	my $self = shift;
 
@@ -76,16 +103,12 @@ sub plugin_disable {
 	}
 }
 
-sub menu_plugins_simple {
-	my $self = shift;
-	return Wx::gettext('Designer\tF8') => [];
-}
-
-# The command structure to show in the Plugins menu
+# Called when Padre wants to display plugin menu items
 sub menu_plugins {
 	my $self      = shift;
 	my $main      = $self->main;
 	my $menu_item = Wx::MenuItem->new( undef, -1, Wx::gettext('Moose Assistant') . "...\tF8", );
+
 	Wx::Event::EVT_MENU(
 		$main,
 		$menu_item,
@@ -93,10 +116,11 @@ sub menu_plugins {
 			$self->show_assistant;
 		},
 	);
-	return $menu_item;
 
+	return $menu_item;
 }
 
+# Shows the Moose assistant dialog. Creates it only once if needed
 sub show_assistant {
 	my $self = shift;
 
