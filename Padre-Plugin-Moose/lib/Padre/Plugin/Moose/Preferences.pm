@@ -9,10 +9,10 @@ our @ISA     = qw{
 };
 
 sub new {
-	my $class = shift;
-	my $main  = shift;
+	my $class  = shift;
+	my $parent = shift;
 
-	my $self = $class->SUPER::new($main);
+	my $self = $class->SUPER::new($parent);
 	$self->CenterOnParent;
 
 	return $self;

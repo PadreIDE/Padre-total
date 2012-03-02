@@ -61,28 +61,12 @@ sub new {
 		Wx::CB_READONLY,
 	);
 
-	Wx::Event::EVT_COMBOBOX(
-		$self,
-		$self->{generated_code_combo},
-		sub {
-			shift->on_generated_code_combo(@_);
-		},
-	);
-
 	$self->{sample_code_checkbox} = Wx::CheckBox->new(
 		$self,
 		-1,
 		Wx::gettext("Generate Sample code?"),
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
-	);
-
-	Wx::Event::EVT_CHECKBOX(
-		$self,
-		$self->{sample_code_checkbox},
-		sub {
-			shift->on_sample_code_checkbox(@_);
-		},
 	);
 
 	$self->{comments_checkbox} = Wx::CheckBox->new(
@@ -93,17 +77,9 @@ sub new {
 		Wx::DefaultSize,
 	);
 
-	Wx::Event::EVT_CHECKBOX(
-		$self,
-		$self->{comments_checkbox},
-		sub {
-			shift->on_comments_checkbox(@_);
-		},
-	);
-
 	$self->{ok_button} = Wx::Button->new(
 		$self,
-		-1,
+		Wx::ID_OK,
 		Wx::gettext("OK"),
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
@@ -140,18 +116,6 @@ sub new {
 	$self->Layout;
 
 	return $self;
-}
-
-sub on_generated_code_combo {
-	$_[0]->main->error('Handler method on_generated_code_combo for event generated_code_combo.OnCombobox not implemented');
-}
-
-		'Handler method on_sample_code_checkbox for event sample_code_checkbox.OnCheckBox not implemented');
-	$_[0]->main->error('Handler method on_sample_code_checkbox for event sample_code_checkbox.OnCheckBox not implemented');
-}
-
-sub on_comments_checkbox {
-	$_[0]->main->error('Handler method on_comments_checkbox for event comments_checkbox.OnCheckBox not implemented');
 }
 
 1;

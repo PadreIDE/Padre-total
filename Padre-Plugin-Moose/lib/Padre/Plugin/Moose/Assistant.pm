@@ -3,12 +3,12 @@ package Padre::Plugin::Moose::Assistant;
 use 5.008;
 use Moose;
 use Padre::Wx::Role::Dialog         ();
-use Padre::Plugin::Moose::FBP::Main ();
+use Padre::Plugin::Moose::FBP::Assistant ();
 
 our $VERSION = '0.16';
 our @ISA     = qw{
 	Padre::Wx::Role::Dialog
-	Padre::Plugin::Moose::FBP::Main
+	Padre::Plugin::Moose::FBP::Assistant
 };
 
 sub new {
@@ -129,9 +129,10 @@ sub show_code_in_preview {
 
 		# Generate code
 		my $code = $self->{program}->generate_code(
-			{   code_type   => 'Moose', #$self->{generated_code_combo}->GetValue,
-				comments    => 1,       # $self->{comments_checkbox}->IsChecked,
-				sample_code => 1,       #$self->{sample_code_checkbox}->IsChecked,
+			{   
+				code_type   => $self->{code_type},
+				comments    => $self->{comments},
+				sample_code => $self->{sample_code},
 			}
 		);
 
@@ -414,10 +415,6 @@ sub on_add_destructor_button {
 	return;
 }
 
-sub on_use_mouse_checkbox {
-	$_[0]->show_code_in_preview(1);
-}
-
 sub on_sample_code_checkbox {
 	$_[0]->show_code_in_preview(1);
 }
@@ -469,9 +466,10 @@ sub restore_defaults {
 	$self->{current_element} = $self->{program};
 	$self->{current_parent}  = $self->{program};
 
-	#	# Defaults
-	#	$self->{comments_checkbox}->SetValue(1);
-	#	$self->{sample_code_checkbox}->SetValue(1);
+	#TODO load from config
+	$self->{code_type} = 'Moose';
+	$self->{comments} = 1;
+	$self->{sample_code} = 1;
 
 	return;
 }
@@ -544,9 +542,17 @@ sub on_preferences_button_clicked {
 
 	require Padre::Plugin::Moose::Preferences;
 	my $dialog = Padre::Plugin::Moose::Preferences->new($self);
+	# TODO load from Config
+	$dialog->{generated_code_combo}->SetValue($self->{comments});
+	$dialog->{comments_checkbox}->SetValue($self->{comments});
+	$dialog->{sample_code_checkbox}->SetValue($self->{sample_code});
+	if($dialog->ShowModal == Wx::wxID_OK) {
+		$self->{code_type} = $dialog->{generated_code_combo}->GetValue;
+		$self->{comments}    = $dialog->{comments_checkbox}->IsChecked;
+		$self->{sample_code} = $dialog->{sample_code_checkbox}->IsChecked;
 
-	#$dialog->run;
-	$dialog->ShowModal;
+		$self->show_code_in_preview(1);
+	}
 }
 
 1;
