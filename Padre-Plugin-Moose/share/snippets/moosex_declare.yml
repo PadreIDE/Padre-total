@@ -67,7 +67,7 @@ hasl: |
   );
   
   method _build_$0 {
-     $3
+      $3
   }
 
 # Role definition
@@ -75,7 +75,7 @@ role: |
   use MooseX::Declare;
 
   role $0 with ($1) {
-  $2
+      $2
   };
 
   1;
@@ -88,7 +88,7 @@ class: |
   use MooseX::Declare;
 
   class $0 extends ($1) with ($2) {
-    $3
+      $3
   }
 
   1;
