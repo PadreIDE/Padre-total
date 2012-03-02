@@ -18,9 +18,9 @@ has 'namespace_autoclean' => ( is => 'rw', isa => 'Bool' );
 has 'singleton'           => ( is => 'rw', isa => 'Bool' );
 
 sub generate_moose_code {
-	my $self             = shift;
-	my $options = shift;
-	my $comments         = $options->{comments};
+	my $self     = shift;
+	my $options  = shift;
+	my $comments = $options->{comments};
 
 	my $class               = $self->name;
 	my $superclasses        = $self->superclasses;
@@ -90,9 +90,9 @@ sub generate_moose_code {
 
 # Generate Mouse code!
 sub generate_mouse_code {
-	my $self             = shift;
-	my $options = shift;
-	my $comments         = $options->{comments};
+	my $self     = shift;
+	my $options  = shift;
+	my $comments = $options->{comments};
 
 	my $class               = $self->name;
 	my $superclasses        = $self->superclasses;
@@ -150,9 +150,9 @@ sub generate_mouse_code {
 }
 
 sub generate_moosex_declare_code {
-	my $self             = shift;
-	my $options = shift;
-	my $comments         = $options->{comments};
+	my $self     = shift;
+	my $options  = shift;
+	my $comments = $options->{comments};
 
 	my $class               = $self->name;
 	my $superclasses        = $self->superclasses;

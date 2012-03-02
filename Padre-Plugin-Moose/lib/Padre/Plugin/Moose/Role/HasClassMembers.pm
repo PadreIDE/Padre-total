@@ -10,7 +10,7 @@ has 'subtypes'   => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
 has 'methods'    => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
 
 sub to_class_members_code {
-	my $self             = shift;
+	my $self    = shift;
 	my $options = shift;
 
 	my $code = '';

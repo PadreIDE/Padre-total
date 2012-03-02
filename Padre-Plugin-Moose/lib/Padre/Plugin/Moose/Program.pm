@@ -12,7 +12,7 @@ has 'roles'   => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
 has 'classes' => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
 
 sub generate_moose_code {
-	my $self             = shift;
+	my $self    = shift;
 	my $options = shift;
 
 	my $code = '';
@@ -46,7 +46,7 @@ sub generate_moose_code {
 
 # Generate Mouse code!
 sub generate_mouse_code {
-	my $self             = shift;
+	my $self    = shift;
 	my $options = shift;
 
 	my $code = '';
@@ -75,7 +75,7 @@ sub generate_mouse_code {
 }
 
 sub generate_moosex_declare_code {
-	my $self             = shift;
+	my $self    = shift;
 	my $options = shift;
 
 	my $code = '';

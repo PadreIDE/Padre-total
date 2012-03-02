@@ -17,13 +17,14 @@ sub set_editor {
 	$self->SUPER::set_editor($editor);
 
 	# Load snippets once
-	unless(defined $self->{snippets}) {
-		eval { 	
+	unless ( defined $self->{snippets} ) {
+		eval {
 			require YAML;
 			require File::ShareDir;
 			require File::Spec;
 
-			my $filename = File::ShareDir::dist_file( 'Padre-Plugin-Moose', File::Spec->catfile( 'snippets', 'moose.yml' ) );
+			my $filename =
+				File::ShareDir::dist_file( 'Padre-Plugin-Moose', File::Spec->catfile( 'snippets', 'moose.yml' ) );
 			$self->{snippets} = YAML::LoadFile($filename);
 		};
 	}
@@ -74,7 +75,7 @@ sub on_key_down {
 		my $line           = $editor->GetTextRange( $start_position, $position );
 
 		my $cursor = '$0';
-		for my $e ( keys %{$self->{snippets}} ) {
+		for my $e ( keys %{ $self->{snippets} } ) {
 			my $v = $self->{snippets}->{$e};
 			if ( $line =~ /^\s*\Q$e\E$/ ) {
 				$editor->SetTargetStart( $position - length($e) );

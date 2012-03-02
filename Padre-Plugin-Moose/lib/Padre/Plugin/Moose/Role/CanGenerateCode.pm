@@ -6,9 +6,9 @@ use namespace::clean;
 our $VERSION = '0.16';
 
 sub generate_code {
-	my $self             = shift;
+	my $self    = shift;
 	my $options = shift;
-	my $type        = $options->{type};
+	my $type    = $options->{type};
 
 	return $self->generate_moose_code($options)          if $type eq 'Moose';
 	return $self->generate_mouse_code($options)          if $type eq 'Mouse';

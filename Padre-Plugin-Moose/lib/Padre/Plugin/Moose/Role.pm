@@ -14,7 +14,7 @@ has 'name' => ( is => 'rw', isa => 'Str' );
 has 'requires_list' => ( is => 'rw', isa => 'Str', default => '' );
 
 sub generate_moose_code {
-	my $self             = shift;
+	my $self    = shift;
 	my $options = shift;
 
 	my $role     = $self->name;
@@ -47,7 +47,7 @@ sub generate_moose_code {
 
 # Generate Mouse code!
 sub generate_mouse_code {
-	my $self             = shift;
+	my $self    = shift;
 	my $options = shift;
 
 	my $role     = $self->name;
@@ -79,7 +79,7 @@ sub generate_mouse_code {
 }
 
 sub generate_moosex_declare_code {
-	my $self             = shift;
+	my $self    = shift;
 	my $options = shift;
 
 	my $role     = $self->name;

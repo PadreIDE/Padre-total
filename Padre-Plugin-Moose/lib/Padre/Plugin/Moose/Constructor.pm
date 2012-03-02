@@ -14,9 +14,9 @@ with 'Padre::Plugin::Moose::Role::CanHandleInspector';
 has 'modifier' => ( is => 'rw', isa => 'Str' );
 
 sub generate_moose_code {
-	my $self             = shift;
-	my $options = shift;
-	my $comments         = $options->{comments};
+	my $self     = shift;
+	my $options  = shift;
+	my $comments = $options->{comments};
 
 	my $code;
 	my $name     = $self->name;
@@ -45,9 +45,9 @@ sub generate_mouse_code {
 }
 
 sub generate_moosex_declare_code {
-	my $self             = shift;
-	my $options = shift;
-	my $comments         = $options->{comments};
+	my $self     = shift;
+	my $options  = shift;
+	my $comments = $options->{comments};
 
 	my $code;
 	my $name     = $self->name;

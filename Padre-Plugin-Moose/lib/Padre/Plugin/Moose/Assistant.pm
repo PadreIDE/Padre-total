@@ -2,7 +2,7 @@ package Padre::Plugin::Moose::Assistant;
 
 use 5.008;
 use Moose;
-use Padre::Wx::Role::Dialog         ();
+use Padre::Wx::Role::Dialog              ();
 use Padre::Plugin::Moose::FBP::Assistant ();
 
 our $VERSION = '0.16';
@@ -12,12 +12,12 @@ our @ISA     = qw{
 };
 
 sub new {
-	my $class = shift;
-	my $plugin  = shift;
-	
+	my $class  = shift;
+	my $plugin = shift;
 
-	my $self = $class->SUPER::new($plugin->main);
-	
+
+	my $self = $class->SUPER::new( $plugin->main );
+
 	# Store the plugin object for future usage
 	$self->{plugin} = $plugin;
 
@@ -136,9 +136,8 @@ sub show_code_in_preview {
 
 		# Generate code
 		my $config = $self->{plugin}->{config};
-		my $code = $self->{program}->generate_code(
-			{   
-				type        => $config->{type},
+		my $code   = $self->{program}->generate_code(
+			{   type        => $config->{type},
 				comments    => $config->{comments},
 				sample_code => $config->{sample_code},
 			}
@@ -538,22 +537,21 @@ sub on_preferences_button_clicked {
 	# Create a new preferences dialog
 	require Padre::Plugin::Moose::Preferences;
 	my $prefs = Padre::Plugin::Moose::Preferences->new($self);
-	
+
 	# Update plugin variables from plugin's configuration hash
 	my $plugin = $self->{plugin};
 	my $config = $plugin->{config};
-	$prefs->{generated_code_combo}->SetValue($config->{type});
-	$prefs->{comments_checkbox}->SetValue($config->{comments});
-	$prefs->{sample_code_checkbox}->SetValue($config->{sample_code});
+	$prefs->{generated_code_combo}->SetValue( $config->{type} );
+	$prefs->{comments_checkbox}->SetValue( $config->{comments} );
+	$prefs->{sample_code_checkbox}->SetValue( $config->{sample_code} );
 
 	# Preferences: go modal!
-	if($prefs->ShowModal == Wx::wxID_OK) {
+	if ( $prefs->ShowModal == Wx::wxID_OK ) {
+
 		# Update configuration when the user hits the OK button
-		$config->{type} = $prefs->{generated_code_combo}->GetValue;
+		$config->{type}        = $prefs->{generated_code_combo}->GetValue;
 		$config->{comments}    = $prefs->{comments_checkbox}->IsChecked;
 		$config->{sample_code} = $prefs->{sample_code_checkbox}->IsChecked;
-
-		# Write the plugin's configuration
 		$plugin->config_write($config);
 
 		# Update tree and preview editor

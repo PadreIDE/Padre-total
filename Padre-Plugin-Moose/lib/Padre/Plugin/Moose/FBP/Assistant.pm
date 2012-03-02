@@ -12,7 +12,7 @@ use strict;
 use warnings;
 use Padre::Wx 'Grid';
 use Padre::Wx::Role::Main ();
-use Padre::Wx::Editor ();
+use Padre::Wx::Editor     ();
 
 our $VERSION = '0.16';
 our @ISA     = qw{
@@ -40,9 +40,7 @@ sub new {
 		-1,
 		Wx::gettext("Object Tree"),
 	);
-	$m_staticText2->SetFont(
-		Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" )
-	);
+	$m_staticText2->SetFont( Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" ) );
 
 	$self->{tree} = Wx::TreeCtrl->new(
 		$self,
@@ -55,7 +53,7 @@ sub new {
 	Wx::Event::EVT_KEY_UP(
 		$self->{tree},
 		sub {
-			$self->on_tree_key_up($_[1]);
+			$self->on_tree_key_up( $_[1] );
 		},
 	);
 
@@ -80,9 +78,7 @@ sub new {
 		-1,
 		Wx::gettext("Properties"),
 	);
-	$m_staticText3->SetFont(
-		Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" )
-	);
+	$m_staticText3->SetFont( Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" ) );
 
 	$self->{inspector} = Wx::Grid->new(
 		$self,
@@ -110,7 +106,7 @@ sub new {
 	Wx::Event::EVT_GRID_CELL_CHANGE(
 		$self->{inspector},
 		sub {
-			$self->on_grid_cell_change($_[1]);
+			$self->on_grid_cell_change( $_[1] );
 		},
 	);
 
@@ -123,18 +119,14 @@ sub new {
 		Wx::TE_MULTILINE | Wx::TE_NO_VSCROLL | Wx::TE_READONLY | Wx::NO_BORDER,
 	);
 	$self->{help}->SetMinSize( [ -1, 100 ] );
-	$self->{help}->SetBackgroundColour(
-		Wx::SystemSettings::GetColour( Wx::SYS_COLOUR_INFOBK )
-	);
+	$self->{help}->SetBackgroundColour( Wx::SystemSettings::GetColour(Wx::SYS_COLOUR_INFOBK) );
 
 	my $m_staticText4 = Wx::StaticText->new(
 		$self,
 		-1,
 		Wx::gettext("Palette"),
 	);
-	$m_staticText4->SetFont(
-		Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" )
-	);
+	$m_staticText4->SetFont( Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" ) );
 
 	$self->{palette} = Wx::Notebook->new(
 		$self,
@@ -314,9 +306,7 @@ sub new {
 		-1,
 		Wx::gettext("Preview"),
 	);
-	$m_staticText5->SetFont(
-		Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" )
-	);
+	$m_staticText5->SetFont( Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" ) );
 
 	$self->{preview} = Padre::Wx::Editor->new(
 		$self,
@@ -388,11 +378,11 @@ sub new {
 	);
 
 	my $left_sizer = Wx::BoxSizer->new(Wx::VERTICAL);
-	$left_sizer->Add( $m_staticText2, 0, Wx::EXPAND | Wx::LEFT | Wx::RIGHT | Wx::TOP, 5 );
-	$left_sizer->Add( $self->{tree}, 1, Wx::ALL | Wx::EXPAND, 5 );
-	$left_sizer->Add( $m_staticText3, 0, Wx::EXPAND | Wx::LEFT | Wx::RIGHT | Wx::TOP, 5 );
-	$left_sizer->Add( $self->{inspector}, 0, Wx::ALL | Wx::EXPAND, 5 );
-	$left_sizer->Add( $self->{help}, 0, Wx::BOTTOM | Wx::EXPAND | Wx::LEFT | Wx::RIGHT, 5 );
+	$left_sizer->Add( $m_staticText2,     0, Wx::EXPAND | Wx::LEFT | Wx::RIGHT | Wx::TOP,    5 );
+	$left_sizer->Add( $self->{tree},      1, Wx::ALL | Wx::EXPAND,                           5 );
+	$left_sizer->Add( $m_staticText3,     0, Wx::EXPAND | Wx::LEFT | Wx::RIGHT | Wx::TOP,    5 );
+	$left_sizer->Add( $self->{inspector}, 0, Wx::ALL | Wx::EXPAND,                           5 );
+	$left_sizer->Add( $self->{help},      0, Wx::BOTTOM | Wx::EXPAND | Wx::LEFT | Wx::RIGHT, 5 );
 
 	my $container_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
 	$container_sizer->Add( $self->{add_class_button}, 0, Wx::ALIGN_CENTER_HORIZONTAL | Wx::ALL, 2 );
@@ -402,44 +392,44 @@ sub new {
 	$self->{containers}->Layout;
 
 	my $members_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
-	$members_sizer->Add( $self->{add_attribute_button}, 0, Wx::ALL, 2 );
-	$members_sizer->Add( $self->{add_method_button}, 0, Wx::ALL, 2 );
-	$members_sizer->Add( $self->{add_subtype_button}, 0, Wx::ALL, 2 );
+	$members_sizer->Add( $self->{add_attribute_button},   0, Wx::ALL, 2 );
+	$members_sizer->Add( $self->{add_method_button},      0, Wx::ALL, 2 );
+	$members_sizer->Add( $self->{add_subtype_button},     0, Wx::ALL, 2 );
 	$members_sizer->Add( $self->{add_constructor_button}, 0, Wx::ALL, 2 );
-	$members_sizer->Add( $self->{add_destructor_button}, 0, Wx::ALL, 2 );
+	$members_sizer->Add( $self->{add_destructor_button},  0, Wx::ALL, 2 );
 
 	$self->{members}->SetSizerAndFit($members_sizer);
 	$self->{members}->Layout;
 
 	my $online_refs_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
-	$online_refs_sizer->Add( $self->{moose_manual_hyperlink}, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALL, 5 );
+	$online_refs_sizer->Add( $self->{moose_manual_hyperlink},   0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALL, 5 );
 	$online_refs_sizer->Add( $self->{moose_cookbook_hyperlink}, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALL, 5 );
-	$online_refs_sizer->Add( $self->{moose_website_hyperlink}, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALL, 5 );
+	$online_refs_sizer->Add( $self->{moose_website_hyperlink},  0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALL, 5 );
 
 	$self->{online_refs}->SetSizerAndFit($online_refs_sizer);
 	$self->{online_refs}->Layout;
 
-	$self->{palette}->AddPage( $self->{containers}, Wx::gettext("Containers"), 1 );
-	$self->{palette}->AddPage( $self->{members}, Wx::gettext("Members"), 0 );
+	$self->{palette}->AddPage( $self->{containers},  Wx::gettext("Containers"),        1 );
+	$self->{palette}->AddPage( $self->{members},     Wx::gettext("Members"),           0 );
 	$self->{palette}->AddPage( $self->{online_refs}, Wx::gettext("Online References"), 0 );
 
 	my $button_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
-	$button_sizer->Add( $self->{generate_code_button}, 0, Wx::ALIGN_BOTTOM | Wx::ALL, 5 );
-	$button_sizer->Add( $self->{reset_button}, 0, Wx::ALIGN_BOTTOM | Wx::BOTTOM | Wx::RIGHT | Wx::TOP, 5 );
-	$button_sizer->Add( $self->{preferences_button}, 0, Wx::ALL, 5 );
+	$button_sizer->Add( $self->{generate_code_button}, 0, Wx::ALIGN_BOTTOM | Wx::ALL,                          5 );
+	$button_sizer->Add( $self->{reset_button},         0, Wx::ALIGN_BOTTOM | Wx::BOTTOM | Wx::RIGHT | Wx::TOP, 5 );
+	$button_sizer->Add( $self->{preferences_button},   0, Wx::ALL,                                             5 );
 	$button_sizer->Add( 0, 0, 1, Wx::EXPAND, 5 );
 	$button_sizer->Add( $self->{close_button}, 0, Wx::ALIGN_BOTTOM | Wx::ALL, 5 );
 
 	my $right_sizer = Wx::BoxSizer->new(Wx::VERTICAL);
-	$right_sizer->Add( $m_staticText4, 0, Wx::EXPAND | Wx::LEFT | Wx::RIGHT | Wx::TOP, 5 );
-	$right_sizer->Add( $self->{palette}, 0, Wx::EXPAND | Wx::ALL, 5 );
-	$right_sizer->Add( $m_staticText5, 0, Wx::EXPAND | Wx::LEFT | Wx::RIGHT | Wx::TOP, 5 );
-	$right_sizer->Add( $self->{preview}, 1, Wx::ALL | Wx::EXPAND, 5 );
-	$right_sizer->Add( $m_staticline2, 0, Wx::EXPAND | Wx::LEFT | Wx::RIGHT, 5 );
-	$right_sizer->Add( $button_sizer, 0, Wx::EXPAND, 5 );
+	$right_sizer->Add( $m_staticText4,   0, Wx::EXPAND | Wx::LEFT | Wx::RIGHT | Wx::TOP, 5 );
+	$right_sizer->Add( $self->{palette}, 0, Wx::EXPAND | Wx::ALL,                        5 );
+	$right_sizer->Add( $m_staticText5,   0, Wx::EXPAND | Wx::LEFT | Wx::RIGHT | Wx::TOP, 5 );
+	$right_sizer->Add( $self->{preview}, 1, Wx::ALL | Wx::EXPAND,                        5 );
+	$right_sizer->Add( $m_staticline2,   0, Wx::EXPAND | Wx::LEFT | Wx::RIGHT,           5 );
+	$right_sizer->Add( $button_sizer,    0, Wx::EXPAND,                                  5 );
 
 	my $top_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
-	$top_sizer->Add( $left_sizer, 0, Wx::EXPAND, 5 );
+	$top_sizer->Add( $left_sizer,  0, Wx::EXPAND, 5 );
 	$top_sizer->Add( $right_sizer, 1, Wx::EXPAND, 5 );
 
 	my $main_sizer = Wx::BoxSizer->new(Wx::VERTICAL);
@@ -476,7 +466,8 @@ sub on_add_role_button {
 }
 
 sub on_add_attribute_button {
-	$_[0]->main->error('Handler method on_add_attribute_button for event add_attribute_button.OnButtonClick not implemented');
+	$_[0]->main->error(
+		'Handler method on_add_attribute_button for event add_attribute_button.OnButtonClick not implemented');
 }
 
 sub on_add_method_button {
@@ -484,19 +475,23 @@ sub on_add_method_button {
 }
 
 sub on_add_subtype_button {
-	$_[0]->main->error('Handler method on_add_subtype_button for event add_subtype_button.OnButtonClick not implemented');
+	$_[0]->main->error(
+		'Handler method on_add_subtype_button for event add_subtype_button.OnButtonClick not implemented');
 }
 
 sub on_add_constructor_button {
-	$_[0]->main->error('Handler method on_add_constructor_button for event add_constructor_button.OnButtonClick not implemented');
+	$_[0]->main->error(
+		'Handler method on_add_constructor_button for event add_constructor_button.OnButtonClick not implemented');
 }
 
 sub on_add_destructor_button {
-	$_[0]->main->error('Handler method on_add_destructor_button for event add_destructor_button.OnButtonClick not implemented');
+	$_[0]->main->error(
+		'Handler method on_add_destructor_button for event add_destructor_button.OnButtonClick not implemented');
 }
 
 sub on_generate_code_button_clicked {
-	$_[0]->main->error('Handler method on_generate_code_button_clicked for event generate_code_button.OnButtonClick not implemented');
+	$_[0]->main->error(
+		'Handler method on_generate_code_button_clicked for event generate_code_button.OnButtonClick not implemented');
 }
 
 sub on_reset_button_clicked {
@@ -504,7 +499,8 @@ sub on_reset_button_clicked {
 }
 
 sub on_preferences_button_clicked {
-	$_[0]->main->error('Handler method on_preferences_button_clicked for event preferences_button.OnButtonClick not implemented');
+	$_[0]->main->error(
+		'Handler method on_preferences_button_clicked for event preferences_button.OnButtonClick not implemented');
 }
 
 1;

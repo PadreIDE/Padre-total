@@ -58,7 +58,7 @@ sub plugin_name {
 sub plugin_enable {
 	my $self = shift;
 
-	# Read the plugin configuration, and 
+	# Read the plugin configuration, and
 	my $config = $self->config_read;
 	unless ( defined $config ) {
 
@@ -67,13 +67,13 @@ sub plugin_enable {
 	}
 
 	# Make sure defaults are respected if they are undefined.
-	unless( defined $config->{type} ) {
+	unless ( defined $config->{type} ) {
 		$config->{type} = 'Moose';
 	}
-	unless( defined $config->{comments} ) {
+	unless ( defined $config->{comments} ) {
 		$config->{comments} = 1;
 	}
-	unless( defined $config->{sample_code} ) {
+	unless ( defined $config->{sample_code} ) {
 		$config->{sample_code} = 1;
 	}
 
@@ -128,7 +128,7 @@ sub show_assistant {
 		unless ( defined $self->{assistant} )
 		{
 			require Padre::Plugin::Moose::Assistant;
-			$self->{assistant} = Padre::Plugin::Moose::Assistant->new( $self );
+			$self->{assistant} = Padre::Plugin::Moose::Assistant->new($self);
 		}
 	};
 	if ($@) {
