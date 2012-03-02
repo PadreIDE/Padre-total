@@ -23,7 +23,7 @@ sub add_moose_keywords_highlighting {
 					. "requires excludes"
 					;
 				if($type eq 'MooseX::Declare') {
-					$keyword_list .= ' class role method';
+					$keyword_list .= ' class role method dirty clean mutable';
 				}
 			}
 			$editor->Wx::Scintilla::TextCtrl::SetKeyWords( $i, $keyword_list );
