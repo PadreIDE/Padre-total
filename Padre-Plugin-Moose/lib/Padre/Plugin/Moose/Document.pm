@@ -16,6 +16,18 @@ sub set_editor {
 
 	$self->SUPER::set_editor($editor);
 
+	# Load snippets once
+	unless(defined $self->{snippets}) {
+		eval { 	
+			require YAML;
+			require File::ShareDir;
+			require File::Spec;
+
+			my $filename = File::ShareDir::dist_file( 'Padre-Plugin-Moose', File::Spec->catfile( 'snippets', 'moose.yml' ) );
+			$self->{snippets} = YAML::LoadFile($filename);
+		};
+	}
+
 	# TODO Padre should fire event_key_down instead of this hack :)
 	# Register keyboard event handler for the current editor
 	Wx::Event::EVT_KEY_DOWN( $editor, undef );
@@ -46,16 +58,6 @@ sub on_key_down {
 	my $editor = shift;
 	my $event  = shift;
 
-	# Load snippets everytime
-	my $snippets;
-	eval {
-		require YAML::Tiny;
-		require File::ShareDir;
-		require File::Spec;
-		$snippets =
-			YAML::Tiny::LoadFile(
-			File::ShareDir::dist_file( 'Padre-Plugin-Moose', File::Spec->catfile( 'snippets', 'moose.yml' ) ) );
-	};
 
 	# If it is tab key down event, we cycle through snippets
 	# to find a ^match.
@@ -66,14 +68,14 @@ sub on_key_down {
 	#TODO TAB to other variables
 	#TODO draw a box around values
 	my $snippet_added = 0;
-	if ( defined $snippets && $event->GetKeyCode == Wx::WXK_TAB ) {
+	if ( defined $self->{snippets} && $event->GetKeyCode == Wx::WXK_TAB ) {
 		my $position       = $editor->GetCurrentPos;
 		my $start_position = $editor->PositionFromLine( $editor->LineFromPosition($position) );
 		my $line           = $editor->GetTextRange( $start_position, $position );
 
 		my $cursor = '$0';
-		for my $e ( keys %$snippets ) {
-			my $v = $snippets->{$e};
+		for my $e ( keys %{$self->{snippets}} ) {
+			my $v = $self->{snippets}->{$e};
 			if ( $line =~ /^\s*\Q$e\E$/ ) {
 				$editor->SetTargetStart( $position - length($e) );
 				$editor->SetTargetEnd($position);
