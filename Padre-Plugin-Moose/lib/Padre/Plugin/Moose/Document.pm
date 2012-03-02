@@ -70,10 +70,15 @@ sub _load_snippets {
 sub get_indentation_style {
 	my $self = shift;
 
+	# Workaround to get moose plugin configuration... :)
+	require Padre::Plugin::Moose;
+	my $config = Padre::Plugin::Moose::_plugin_config();
+
 	# Syntax highlight Moose keywords after get_indentation_style is called :)
 	# TODO remove hack once Padre supports a better way
 	require Padre::Plugin::Moose::Util;
-	Padre::Plugin::Moose::Util::add_moose_keywords_highlighting($self);
+	Padre::Plugin::Moose::Util::add_moose_keywords_highlighting(
+		$self, $config->{type});
 
 	return $self->SUPER::get_indentation_style;
 }
@@ -98,6 +103,12 @@ sub on_key_down {
 
 	# Load snippets everything since it be changed by the user at runtime
 	$self->_load_snippets($config);
+
+	# Syntax highlight Moose keywords here also :)
+	# TODO remove hack once Padre supports a better way
+	require Padre::Plugin::Moose::Util;
+	Padre::Plugin::Moose::Util::add_moose_keywords_highlighting(
+		$self, $config->{type});
 
 	# If it is tab key down event, we cycle through snippets
 	# to find a ^match.

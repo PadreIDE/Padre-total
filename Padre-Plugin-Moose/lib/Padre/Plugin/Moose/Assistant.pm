@@ -45,7 +45,8 @@ sub new {
 	# Syntax highlight Moose keywords after get_indentation_style is called :)
 	# TODO remove hack once Padre supports a better way
 	require Padre::Plugin::Moose::Util;
-	Padre::Plugin::Moose::Util::add_moose_keywords_highlighting( $preview->{Document} );
+	Padre::Plugin::Moose::Util::add_moose_keywords_highlighting( 
+		$preview->{Document}, $plugin->{config}->{type} );
 
 	$preview->Show(1);
 
@@ -550,7 +551,8 @@ sub on_preferences_button_clicked {
 	if ( $prefs->ShowModal == Wx::wxID_OK ) {
 
 		# Update configuration when the user hits the OK button
-		$config->{type}        = $prefs->{generated_code_combo}->GetValue;
+		my $type               = $prefs->{generated_code_combo}->GetValue;
+		$config->{type}        = $type;
 		$config->{comments}    = $prefs->{comments_checkbox}->IsChecked;
 		$config->{sample_code} = $prefs->{sample_code_checkbox}->IsChecked;
 		$config->{snippets}    = $prefs->{snippets_checkbox}->IsChecked;
@@ -558,6 +560,19 @@ sub on_preferences_button_clicked {
 
 		# Update tree and preview editor
 		$self->show_code_in_preview(1);
+
+		# Add moose et all keywords highlight to preview editor
+		require Padre::Plugin::Moose::Util;
+		Padre::Plugin::Moose::Util::add_moose_keywords_highlighting( 
+			$self->{preview}->{Document}, $type );
+
+		# Add moose et all keywords highlight to current editor
+		my $doc = $self->current->document or return;
+		if($doc->isa('Padre::Plugin::Moose::Document')) {
+			Padre::Plugin::Moose::Util::add_moose_keywords_highlighting(
+				$doc, $type);
+		}
+
 	}
 
 	return;
