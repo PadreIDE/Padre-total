@@ -63,7 +63,7 @@ sub plugin_enable {
 	unless ( defined $config ) {
 
 		# No configuration, let us create it
-		$self->{config} = $config = {};
+		$config = {};
 	}
 
 	# Make sure defaults are respected if they are undefined.
@@ -81,7 +81,7 @@ sub plugin_enable {
 	$self->config_write($config);
 
 	# Update configuration attribute
-	$self->config($config);
+	$self->{config} = $config;
 
 	return;
 }
