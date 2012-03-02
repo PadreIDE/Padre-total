@@ -17,12 +17,11 @@ BEGIN {
 
 # Checks for UNIX end of lines (aka newlines)
 use File::Find::Rule;
-use t::lib::Padre;
 use Padre::Util ();
 
 my @files =
 	File::Find::Rule->file->name( '*.pm', '*.pod', '*.pl', '*.p6', '*.t', '*.yml', '*.txt' )->in( 'lib', 't', 'share' );
-@files = ( @files, 'Artistic', 'COPYING', 'Makefile.PL', 'Changes', 'padre.yml' );
+@files = ( @files, 'Makefile.PL', 'Changes', 'padre.yml' );
 
 plan( tests => scalar @files );
 foreach my $file (@files) {
