@@ -47,10 +47,14 @@ sub on_key_down {
 	my $event  = shift;
 
 	# Load snippets everytime
-	require YAML::Tiny;
-	require File::ShareDir;
-	my $snippets = YAML::Tiny::LoadFile( File::ShareDir::dist_file( 'Padre-Plugin-Moose', 'snippets.yml' ) );
-
+	my $snippets;
+	eval {
+		require YAML::Tiny;
+		require File::ShareDir;
+		require File::Spec;
+		$snippets = YAML::Tiny::LoadFile( File::ShareDir::dist_file( 'Padre-Plugin-Moose', File::Spec->catfile('snippets', 'moose.yml') ) );
+	};
+	
 	# If it is tab key down event, we cycle through snippets
 	# to find a ^match.
 	# If there is a match, we paste the snippet and position the cursor to
@@ -60,7 +64,7 @@ sub on_key_down {
 	#TODO TAB to other variables
 	#TODO draw a box around values
 	my $snippet_added = 0;
-	if ( $event->GetKeyCode == Wx::WXK_TAB ) {
+	if ( defined $snippets && $event->GetKeyCode == Wx::WXK_TAB ) {
 		my $position       = $editor->GetCurrentPos;
 		my $start_position = $editor->PositionFromLine( $editor->LineFromPosition($position) );
 		my $line           = $editor->GetTextRange( $start_position, $position );
