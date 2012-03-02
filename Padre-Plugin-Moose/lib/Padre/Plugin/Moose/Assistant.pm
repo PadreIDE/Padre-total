@@ -544,6 +544,7 @@ sub on_preferences_button_clicked {
 	$prefs->{generated_code_combo}->SetValue( $config->{type} );
 	$prefs->{comments_checkbox}->SetValue( $config->{comments} );
 	$prefs->{sample_code_checkbox}->SetValue( $config->{sample_code} );
+	$prefs->{snippets_checkbox}->SetValue( $config->{snippets} );
 
 	# Preferences: go modal!
 	if ( $prefs->ShowModal == Wx::wxID_OK ) {
@@ -552,6 +553,7 @@ sub on_preferences_button_clicked {
 		$config->{type}        = $prefs->{generated_code_combo}->GetValue;
 		$config->{comments}    = $prefs->{comments_checkbox}->IsChecked;
 		$config->{sample_code} = $prefs->{sample_code_checkbox}->IsChecked;
+		$config->{snippets}    = $prefs->{snippets_checkbox}->IsChecked;
 		$plugin->config_write($config);
 
 		# Update tree and preview editor

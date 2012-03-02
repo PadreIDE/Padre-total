@@ -26,18 +26,18 @@ sub new {
 	my $self = $class->SUPER::new(
 		$parent,
 		-1,
-		Wx::gettext("Moose Preferences"),
+		Wx::gettext("Moose Assistant Preferences"),
 		Wx::DefaultPosition,
-		[ 354, 154 ],
+		[ 359, 190 ],
 		Wx::DEFAULT_DIALOG_STYLE,
 	);
 
-	my $m_staticText6 = Wx::StaticText->new(
+	my $options_labels = Wx::StaticText->new(
 		$self,
 		-1,
-		Wx::gettext("Code Generator Options"),
+		Wx::gettext("Code Generation Options:"),
 	);
-	$m_staticText6->SetFont( Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" ) );
+	$options_labels->SetFont( Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" ) );
 
 	$self->{generated_code_label} = Wx::StaticText->new(
 		$self,
@@ -56,6 +56,14 @@ sub new {
 		Wx::CB_READONLY,
 	);
 
+	$self->{comments_checkbox} = Wx::CheckBox->new(
+		$self,
+		-1,
+		Wx::gettext("Generate Comments?"),
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+	);
+
 	$self->{sample_code_checkbox} = Wx::CheckBox->new(
 		$self,
 		-1,
@@ -64,10 +72,18 @@ sub new {
 		Wx::DefaultSize,
 	);
 
-	$self->{comments_checkbox} = Wx::CheckBox->new(
+	$self->{static_line} = Wx::StaticLine->new(
 		$self,
 		-1,
-		Wx::gettext("Generate Comments?"),
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+		Wx::LI_HORIZONTAL,
+	);
+
+	$self->{snippets_checkbox} = Wx::CheckBox->new(
+		$self,
+		-1,
+		Wx::gettext("Enable Snippets?"),
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
 	);
@@ -92,20 +108,19 @@ sub new {
 	$generated_code_sizer->Add( $self->{generated_code_label}, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALL, 5 );
 	$generated_code_sizer->Add( $self->{generated_code_combo}, 0, Wx::ALL, 5 );
 
-	my $bSizer13 = Wx::BoxSizer->new(Wx::VERTICAL);
-	$bSizer13->Add( $self->{sample_code_checkbox}, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALL | Wx::EXPAND, 5 );
-	$bSizer13->Add( $self->{comments_checkbox},    0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALL | Wx::EXPAND, 5 );
-
 	my $button_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
 	$button_sizer->Add( 0, 0, 1, Wx::EXPAND, 5 );
 	$button_sizer->Add( $self->{ok_button},     0, Wx::ALL, 5 );
 	$button_sizer->Add( $self->{cancel_button}, 0, Wx::ALL, 5 );
 
 	my $sizer = Wx::BoxSizer->new(Wx::VERTICAL);
-	$sizer->Add( $m_staticText6,        0, Wx::EXPAND | Wx::LEFT | Wx::RIGHT | Wx::TOP, 5 );
-	$sizer->Add( $generated_code_sizer, 0, Wx::EXPAND,                                  5 );
-	$sizer->Add( $bSizer13,             1, Wx::EXPAND,                                  5 );
-	$sizer->Add( $button_sizer,         0, Wx::EXPAND,                                  5 );
+	$sizer->Add( $options_labels,               0, Wx::EXPAND | Wx::LEFT | Wx::RIGHT | Wx::TOP,      5 );
+	$sizer->Add( $generated_code_sizer,         0, Wx::EXPAND,                                       5 );
+	$sizer->Add( $self->{comments_checkbox},    0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALL | Wx::EXPAND, 5 );
+	$sizer->Add( $self->{sample_code_checkbox}, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALL | Wx::EXPAND, 5 );
+	$sizer->Add( $self->{static_line},          0, Wx::EXPAND | Wx::ALL,                             5 );
+	$sizer->Add( $self->{snippets_checkbox},    0, Wx::ALL,                                          5 );
+	$sizer->Add( $button_sizer,                 0, Wx::EXPAND,                                       5 );
 
 	$self->SetSizer($sizer);
 	$self->Layout;

@@ -76,6 +76,9 @@ sub plugin_enable {
 	unless ( defined $config->{sample_code} ) {
 		$config->{sample_code} = 1;
 	}
+	unless ( defined $config->{snippets} ) {
+		$config->{snippets} = 1;
+	}
 
 	# Write the plugin's configuration
 	$self->config_write($config);
