@@ -1,4 +1,4 @@
-package Padre::Plugin::Moose::Main;
+package Padre::Plugin::Moose::Assistant;
 
 use 5.008;
 use Moose;
@@ -18,7 +18,7 @@ sub new {
 	my $self = $class->SUPER::new($main);
 	$self->CenterOnParent;
 	$self->SetTitle(
-		sprintf( Wx::gettext('Padre::Plugin::Moose %s - Written for fun by Ahmad M. Zawawi (azawawi)'), $VERSION ) );
+		sprintf( Wx::gettext('Moose Assistant %s - Written for fun by Ahmad M. Zawawi (azawawi)'), $VERSION ) );
 
 	$self->restore_defaults;
 

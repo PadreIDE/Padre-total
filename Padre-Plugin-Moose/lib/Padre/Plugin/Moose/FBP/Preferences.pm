@@ -10,7 +10,7 @@ use 5.008005;
 use utf8;
 use strict;
 use warnings;
-use Padre::Wx             ();
+use Padre::Wx ();
 use Padre::Wx::Role::Main ();
 
 our $VERSION = '0.16';
@@ -37,7 +37,9 @@ sub new {
 		-1,
 		Wx::gettext("Code Generator Options"),
 	);
-	$m_staticText6->SetFont( Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" ) );
+	$m_staticText6->SetFont(
+		Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" )
+	);
 
 	$self->{generated_code_label} = Wx::StaticText->new(
 		$self,
@@ -46,10 +48,13 @@ sub new {
 	);
 
 	$self->{generated_code_combo} = Wx::ComboBox->new(
-		$self, -1, "Moose",
+		$self,
+		-1,
+		"Moose",
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
-		[   "Moose",
+		[
+			"Moose",
 			"Mouse",
 			"MooseX::Declare",
 		],
@@ -118,18 +123,18 @@ sub new {
 
 	my $bSizer13 = Wx::BoxSizer->new(Wx::VERTICAL);
 	$bSizer13->Add( $self->{sample_code_checkbox}, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALL | Wx::EXPAND, 5 );
-	$bSizer13->Add( $self->{comments_checkbox},    0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALL | Wx::EXPAND, 5 );
+	$bSizer13->Add( $self->{comments_checkbox}, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALL | Wx::EXPAND, 5 );
 
 	my $button_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
 	$button_sizer->Add( 0, 0, 1, Wx::EXPAND, 5 );
-	$button_sizer->Add( $self->{ok_button},     0, Wx::ALL, 5 );
+	$button_sizer->Add( $self->{ok_button}, 0, Wx::ALL, 5 );
 	$button_sizer->Add( $self->{cancel_button}, 0, Wx::ALL, 5 );
 
 	my $sizer = Wx::BoxSizer->new(Wx::VERTICAL);
-	$sizer->Add( $m_staticText6,        0, Wx::EXPAND | Wx::LEFT | Wx::RIGHT | Wx::TOP, 5 );
-	$sizer->Add( $generated_code_sizer, 0, Wx::EXPAND,                                  5 );
-	$sizer->Add( $bSizer13,             1, Wx::EXPAND,                                  5 );
-	$sizer->Add( $button_sizer,         0, Wx::EXPAND,                                  5 );
+	$sizer->Add( $m_staticText6, 0, Wx::EXPAND | Wx::LEFT | Wx::RIGHT | Wx::TOP, 5 );
+	$sizer->Add( $generated_code_sizer, 0, Wx::EXPAND, 5 );
+	$sizer->Add( $bSizer13, 1, Wx::EXPAND, 5 );
+	$sizer->Add( $button_sizer, 0, Wx::EXPAND, 5 );
 
 	$self->SetSizer($sizer);
 	$self->Layout;
@@ -138,13 +143,11 @@ sub new {
 }
 
 sub on_generated_code_combo {
-	$_[0]->main->error(
-		'Handler method on_generated_code_combo for event generated_code_combo.OnCombobox not implemented');
+	$_[0]->main->error('Handler method on_generated_code_combo for event generated_code_combo.OnCombobox not implemented');
 }
 
-sub on_sample_code_checkbox {
-	$_[0]->main->error(
 		'Handler method on_sample_code_checkbox for event sample_code_checkbox.OnCheckBox not implemented');
+	$_[0]->main->error('Handler method on_sample_code_checkbox for event sample_code_checkbox.OnCheckBox not implemented');
 }
 
 sub on_comments_checkbox {

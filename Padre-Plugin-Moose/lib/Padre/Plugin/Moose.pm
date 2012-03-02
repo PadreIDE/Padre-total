@@ -25,9 +25,9 @@ use constant CHILDREN => qw{
 	Padre::Plugin::Moose::Role
 	Padre::Plugin::Moose::Subtype
 	Padre::Plugin::Moose::Util
-	Padre::Plugin::Moose::Main
+	Padre::Plugin::Moose::Assistant
 	Padre::Plugin::Moose::Preferences
-	Padre::Plugin::Moose::FBP::Main
+	Padre::Plugin::Moose::FBP::Assistant
 	Padre::Plugin::Moose::FBP::Preferences
 };
 
@@ -64,9 +64,9 @@ sub plugin_disable {
 	my $self = shift;
 
 	# Destroy resident dialog
-	if ( defined $self->{dialog} ) {
-		$self->{dialog}->Destroy;
-		$self->{dialog} = undef;
+	if ( defined $self->{assistant} ) {
+		$self->{assistant}->Destroy;
+		$self->{assistant} = undef;
 	}
 
 	# TODO: Switch to Padre::Unload once Padre 0.96 is released
@@ -85,7 +85,7 @@ sub menu_plugins_simple {
 sub menu_plugins {
 	my $self      = shift;
 	my $main      = $self->main;
-	my $menu_item = Wx::MenuItem->new( undef, -1, $self->plugin_name . "...\tF8", );
+	my $menu_item = Wx::MenuItem->new( undef, -1, Wx::gettext('Moose Assistant') . "...\tF8", );
 	Wx::Event::EVT_MENU(
 		$main,
 		$menu_item,
@@ -101,11 +101,11 @@ sub show_assistant {
 	my $self = shift;
 
 	eval {
-		unless ( defined $self->{dialog} )
+		unless ( defined $self->{assistant} )
 		{
-			require Padre::Plugin::Moose::Main;
-			$self->{dialog} = Padre::Plugin::Moose::Main->new( $self->main );
-			$self->{dialog}->run;
+			require Padre::Plugin::Moose::Assistant;
+			$self->{assistant} = Padre::Plugin::Moose::Assistant->new( $self->main );
+			$self->{assistant}->run;
 		}
 	};
 	if ($@) {
@@ -135,7 +135,7 @@ Then use it via L<Padre>, The Perl IDE. Press F8.
 
 Once you enable this Plugin under Padre, you'll get a brand new menu with the following options:
 
-=head2 Moose Designer
+=head2 Moose Assistant
 
 Opens up a user-friendly dialog where you can add classes, roles, attributes, subtypes and methods.
 The dialog contains a tree of class/role elements that are created while it is open and a preview of

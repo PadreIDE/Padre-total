@@ -35,12 +35,12 @@
             <property name="id">wxID_ANY</property>
             <property name="maximum_size"></property>
             <property name="minimum_size">750,480</property>
-            <property name="name">Padre::Plugin::Moose::FBP::Main</property>
+            <property name="name">Padre::Plugin::Moose::FBP::Assistant</property>
             <property name="pos"></property>
             <property name="size">750,480</property>
             <property name="style">wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</property>
             <property name="subclass"></property>
-            <property name="title">Moose!</property>
+            <property name="title">Moose Assistant</property>
             <property name="tooltip"></property>
             <property name="validator_data_type"></property>
             <property name="validator_style">wxFILTER_NONE</property>
