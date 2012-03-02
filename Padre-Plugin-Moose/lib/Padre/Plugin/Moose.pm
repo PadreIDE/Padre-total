@@ -73,8 +73,8 @@ sub plugin_disable {
 	}
 
 	# TODO: Switch to Padre::Unload once Padre 0.96 is released
-	require Padre::Unload;
 	for my $package ( CHILDREN ) {
+		require Padre::Unload;
 		Padre::Unload->unload($package);
 	}
 }
