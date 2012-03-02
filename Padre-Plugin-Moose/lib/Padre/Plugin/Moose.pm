@@ -67,14 +67,14 @@ sub plugin_enable {
 	}
 
 	# Make sure defaults are respected if they are undefined.
-	unless( defined $config->{code_gen_type} ) {
-		$config->{code_gen_type} = 'Moose';
+	unless( defined $config->{type} ) {
+		$config->{type} = 'Moose';
 	}
-	unless( defined $config->{comments_enabled} ) {
-		$config->{comments_enabled} = 1;
+	unless( defined $config->{comments} ) {
+		$config->{comments} = 1;
 	}
-	unless( defined $config->{sample_code_enabled} ) {
-		$config->{sample_code_enabled} = 1;
+	unless( defined $config->{sample_code} ) {
+		$config->{sample_code} = 1;
 	}
 
 	# Write the plugin's configuration
@@ -83,7 +83,7 @@ sub plugin_enable {
 	# Update configuration attribute
 	$self->{config} = $config;
 
-	return;
+	return 1;
 }
 
 # Called when the plugin is disabled by Padre
@@ -128,7 +128,7 @@ sub show_assistant {
 		unless ( defined $self->{assistant} )
 		{
 			require Padre::Plugin::Moose::Assistant;
-			$self->{assistant} = Padre::Plugin::Moose::Assistant->new( $self->main );
+			$self->{assistant} = Padre::Plugin::Moose::Assistant->new( $self );
 		}
 	};
 	if ($@) {

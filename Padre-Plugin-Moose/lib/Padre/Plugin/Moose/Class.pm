@@ -19,8 +19,8 @@ has 'singleton'           => ( is => 'rw', isa => 'Bool' );
 
 sub generate_moose_code {
 	my $self             = shift;
-	my $code_gen_options = shift;
-	my $comments         = $code_gen_options->{comments};
+	my $options = shift;
+	my $comments         = $options->{comments};
 
 	my $class               = $self->name;
 	my $superclasses        = $self->superclasses;
@@ -74,7 +74,7 @@ sub generate_moose_code {
 	}
 
 	# Generate class members
-	$code .= $self->to_class_members_code($code_gen_options);
+	$code .= $self->to_class_members_code($options);
 
 	if ($make_immutable) {
 		$code .= "\n__PACKAGE__->meta->make_immutable;";
@@ -91,8 +91,8 @@ sub generate_moose_code {
 # Generate Mouse code!
 sub generate_mouse_code {
 	my $self             = shift;
-	my $code_gen_options = shift;
-	my $comments         = $code_gen_options->{comments};
+	my $options = shift;
+	my $comments         = $options->{comments};
 
 	my $class               = $self->name;
 	my $superclasses        = $self->superclasses;
@@ -135,7 +135,7 @@ sub generate_mouse_code {
 	}
 
 	# Generate class members
-	$code .= $self->to_class_members_code($code_gen_options);
+	$code .= $self->to_class_members_code($options);
 
 	if ($make_immutable) {
 		$code .= "\n__PACKAGE__->meta->make_immutable;";
@@ -151,8 +151,8 @@ sub generate_mouse_code {
 
 sub generate_moosex_declare_code {
 	my $self             = shift;
-	my $code_gen_options = shift;
-	my $comments         = $code_gen_options->{comments};
+	my $options = shift;
+	my $comments         = $options->{comments};
 
 	my $class               = $self->name;
 	my $superclasses        = $self->superclasses;
@@ -173,7 +173,7 @@ sub generate_moosex_declare_code {
 	}
 
 	# Generate class members
-	$class_body .= $self->to_class_members_code($code_gen_options);
+	$class_body .= $self->to_class_members_code($options);
 
 	my @lines = split /\n/, $class_body;
 	for my $line (@lines) {

@@ -13,13 +13,20 @@ our @ISA     = qw{
 
 sub new {
 	my $class = shift;
-	my $main  = shift;
+	my $plugin  = shift;
+	
 
-	my $self = $class->SUPER::new($main);
+	my $self = $class->SUPER::new($plugin->main);
+	
+	# Store the plugin object for future usage
+	$self->{plugin} = $plugin;
+
+	# Center & title
 	$self->CenterOnParent;
 	$self->SetTitle(
 		sprintf( Wx::gettext('Moose Assistant %s - Written for fun by Ahmad M. Zawawi (azawawi)'), $VERSION ) );
 
+	# Restore defaults
 	$self->restore_defaults;
 
 	# TODO Bug Alias to fix the wxFormBuilder bug regarding this one
@@ -128,11 +135,12 @@ sub show_code_in_preview {
 	eval {
 
 		# Generate code
+		my $config = $self->{plugin}->{config};
 		my $code = $self->{program}->generate_code(
 			{   
-				code_type   => $self->{code_type},
-				comments    => $self->{comments},
-				sample_code => $self->{sample_code},
+				type        => $config->{type},
+				comments    => $config->{comments},
+				sample_code => $config->{sample_code},
 			}
 		);
 
@@ -415,14 +423,6 @@ sub on_add_destructor_button {
 	return;
 }
 
-sub on_sample_code_checkbox {
-	$_[0]->show_code_in_preview(1);
-}
-
-sub on_comments_checkbox {
-	$_[0]->show_code_in_preview(1);
-}
-
 sub on_reset_button_clicked {
 	my $self = shift;
 
@@ -465,11 +465,6 @@ sub restore_defaults {
 	$self->{program}         = Padre::Plugin::Moose::Program->new;
 	$self->{current_element} = $self->{program};
 	$self->{current_parent}  = $self->{program};
-
-	#TODO load from config
-	$self->{code_type} = 'Moose';
-	$self->{comments} = 1;
-	$self->{sample_code} = 1;
 
 	return;
 }
@@ -540,19 +535,32 @@ sub delete_element {
 sub on_preferences_button_clicked {
 	my $self = shift;
 
+	# Create a new preferences dialog
 	require Padre::Plugin::Moose::Preferences;
-	my $dialog = Padre::Plugin::Moose::Preferences->new($self);
-	# TODO load from Config
-	$dialog->{generated_code_combo}->SetValue($self->{comments});
-	$dialog->{comments_checkbox}->SetValue($self->{comments});
-	$dialog->{sample_code_checkbox}->SetValue($self->{sample_code});
-	if($dialog->ShowModal == Wx::wxID_OK) {
-		$self->{code_type} = $dialog->{generated_code_combo}->GetValue;
-		$self->{comments}    = $dialog->{comments_checkbox}->IsChecked;
-		$self->{sample_code} = $dialog->{sample_code_checkbox}->IsChecked;
+	my $prefs = Padre::Plugin::Moose::Preferences->new($self);
+	
+	# Update plugin variables from plugin's configuration hash
+	my $plugin = $self->{plugin};
+	my $config = $plugin->{config};
+	$prefs->{generated_code_combo}->SetValue($config->{type});
+	$prefs->{comments_checkbox}->SetValue($config->{comments});
+	$prefs->{sample_code_checkbox}->SetValue($config->{sample_code});
 
+	# Preferences: go modal!
+	if($prefs->ShowModal == Wx::wxID_OK) {
+		# Update configuration when the user hits the OK button
+		$config->{type} = $prefs->{generated_code_combo}->GetValue;
+		$config->{comments}    = $prefs->{comments_checkbox}->IsChecked;
+		$config->{sample_code} = $prefs->{sample_code_checkbox}->IsChecked;
+
+		# Write the plugin's configuration
+		$plugin->config_write($config);
+
+		# Update tree and preview editor
 		$self->show_code_in_preview(1);
 	}
+
+	return;
 }
 
 1;

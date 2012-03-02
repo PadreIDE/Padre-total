@@ -11,26 +11,26 @@ has 'methods'    => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
 
 sub to_class_members_code {
 	my $self             = shift;
-	my $code_gen_options = shift;
+	my $options = shift;
 
 	my $code = '';
 
 	# Generate attributes
 	$code .= "\n" if scalar @{ $self->attributes };
 	for my $attribute ( @{ $self->attributes } ) {
-		$code .= $attribute->generate_code($code_gen_options);
+		$code .= $attribute->generate_code($options);
 	}
 
 	# Generate subtypes
 	$code .= "\n" if scalar @{ $self->subtypes };
 	for my $subtype ( @{ $self->subtypes } ) {
-		$code .= $subtype->generate_code($code_gen_options);
+		$code .= $subtype->generate_code($options);
 	}
 
 	# Generate methods
 	$code .= "\n" if scalar @{ $self->methods };
 	for my $method ( @{ $self->methods } ) {
-		$code .= $method->generate_code($code_gen_options);
+		$code .= $method->generate_code($options);
 	}
 
 	return $code;
