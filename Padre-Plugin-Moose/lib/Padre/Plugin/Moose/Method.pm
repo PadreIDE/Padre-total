@@ -53,7 +53,7 @@ sub generate_moosex_declare_code {
 	my $name     = $self->name;
 	my $modifier = $self->modifier;
 	if ( defined $modifier && $modifier eq 'around' ) {
-		$code = "around '$name' => sub {\n";
+		$code = "around '$name' {\n";
 		$code .= "\tmy \$orig = shift;\n";
 		$code .= "\tmy \$self = shift;\n";
 		$code .= "\n";
@@ -62,7 +62,7 @@ sub generate_moosex_declare_code {
 		$code .= "\t# after calling $name\n" if $comments;
 		$code .= "};\n";
 	} elsif ( defined $modifier && $modifier =~ /^(before|after)$/ ) {
-		$code = $self->modifier . " '$name' => sub {\n\tmy \$self = shift;\n};\n";
+		$code = $self->modifier . " '$name' {\n};\n";
 	} else {
 		$code = "method $name {\n" . ( $comments ? "\t# \$self is predeclared by MooseX::Declare" : q{} ) . "\n}\n";
 	}
