@@ -21,7 +21,7 @@ around: around '$0' => sub { $1 };
 augment: augment '$0' => sub { $1 }; 
 
 # Override method modifier
-override: override '$0' => sub { $2 }; 
+override: override '$0' => sub { $1 }; 
 
 # Define class type
 classtype: class_type '$0';
@@ -96,6 +96,7 @@ class: |
   package $0;
   use Mouse;
   
+  $1
   no Mouse;
   1;
 
@@ -103,5 +104,5 @@ class: |
 meth: |
   sub $0 {
       my $self = shift;
-      $2
+      $1
   }

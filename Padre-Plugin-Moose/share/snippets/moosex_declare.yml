@@ -5,8 +5,8 @@
 # This program is free software; you can redistribute it and/or
 # modify it under the same terms as Perl 5 itself.
 
-# Adapted from 'TextMate Bundle for Moose' by Chris Prather (perigrin)
-# https://github.com/perigrin/perl-moose.tmbundle/Snippets
+# MooseX::Declare snippets bundle for Padre::Plugin::Moose
+# By Ahmad M. Zawawi (azawawi)
 
 # after method modifier
 after: after '$0' => sub { $1 }; 
@@ -21,7 +21,7 @@ around: around '$0' => sub { $1 };
 augment: augment '$0' => sub { $1 }; 
 
 # Override method modifier
-override: override '$0' => sub { $1 }; 
+override: override '$0' => sub { $2 }; 
 
 # Define class type
 classtype: class_type '$0';
@@ -34,15 +34,13 @@ coerce: |
 
 # Desctrutor
 DEMOLISH: |
-  sub DEMOLISH {
-      my $self = shift;
+  method DEMOLISH {
       $0
   }
 
 # Constructor
 BUILD: |
-  sub BUILD {
-      my $self = shift;
+  method BUILD {
       $0
   }
 
@@ -57,12 +55,6 @@ type: |
 # Subtype
 subtype: subtype '$0' => as '$1' => where { $2 }};
 
-# Does a list of roles
-with: with qw($0);
-# Extend a list of parents
-
-ext: extends qw($0);
-
 # Exclude
 excludes: excludes '$1';
 
@@ -74,38 +66,18 @@ hasl: |
       lazy_build => 1,
   );
   
-  sub _build_$0 {
-      my $self = shift;
-  
+  method _build_$0 {
      $3
   }
 
-# MooseX::Getopt Script
-script: |
-  #!/usr/bin/perl
-  
-  use strict;
-  use warnings;
-  
-  {
-      package $0;
-      use Moose;
-  
-      with 'MooseX::Getopt';
-  
-      sub run {
-          $1
-      }
-  }
-  
-  $0->new_with_options->run;
-
 # Role definition
 role: |
-  package $0;
-  use Moose::Role;
-  $1
-  no Moose::Role; 
+  use MooseX::Declare;
+
+  role $0 with ($1) {
+  $2
+  };
+
   1;
 
 # Require a method definition
@@ -113,16 +85,16 @@ requires: requires '$0';
 
 # Class declaration
 class: |
-  package $0;
-  use Moose;
-  
-  $1
-  no Moose;
+  use MooseX::Declare;
+
+  class $0 extends ($1) with ($2) {
+    $3
+  }
+
   1;
 
 # Method declaration
 meth: |
-  sub $0 {
-      my $self = shift;
-      $1
+  method $0($1) {
+      $2
   }
