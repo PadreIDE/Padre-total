@@ -16,28 +16,53 @@ sub set_editor {
 
 	$self->SUPER::set_editor($editor);
 
-	# Load snippets once
-	unless ( defined $self->{snippets} ) {
-		eval {
-			require YAML;
-			require File::ShareDir;
-			require File::Spec;
-
-			my $filename =
-				File::ShareDir::dist_file( 'Padre-Plugin-Moose', File::Spec->catfile( 'snippets', 'moose.yml' ) );
-			$self->{snippets} = YAML::LoadFile($filename);
-		};
-	}
-
 	# TODO Padre should fire event_key_down instead of this hack :)
 	# Register keyboard event handler for the current editor
 	Wx::Event::EVT_KEY_DOWN( $editor, undef );
-	Wx::Event::EVT_KEY_DOWN(
-		$editor,
-		sub {
-			$self->on_key_down(@_);
+	Wx::Event::EVT_KEY_DOWN( $editor, sub { $self->on_key_down(@_); } );
+
+	return;
+}
+
+# Load snippets from file according to code generation type
+sub _load_snippets {
+	my $self   = shift;
+	my $config = shift;
+
+	eval {
+		require YAML;
+		require File::ShareDir;
+		require File::Spec;
+
+		# Determine the snippets filename
+		my $file;
+		my $type = $config->{type};
+		if ( $type eq 'Mouse' ) {
+
+			# Mouse snippets
+			$file = 'mouse.yml';
+		} elsif ( $type eq 'MooseX::Declare' ) {
+
+			# MooseX::Declare snippets
+			$file = 'moosex_declare.yml';
+		} else {
+
+			# Moose by default
+			$file = 'moose.yml';
 		}
-	);
+
+		# Shortcut if that snippet type is already loaded in memory
+		return if defined( $self->{_snippets_type} ) and ( $type eq $self->{_snippets_type} );
+
+		# Determine the full share/${snippets_filename}
+		my $filename = File::ShareDir::dist_file( 'Padre-Plugin-Moose', File::Spec->catfile( 'snippets', $file ) );
+
+		# Read it via standard YAML
+		$self->{_snippets} = YAML::LoadFile($filename);
+
+		# Record loaded snippet type
+		$self->{_snippets_type} = $type;
+	};
 
 	return;
 }
@@ -59,6 +84,20 @@ sub on_key_down {
 	my $editor = shift;
 	my $event  = shift;
 
+	# Workaround to get moose plugin configuration... :)
+	require Padre::Plugin::Moose;
+	my $config = Padre::Plugin::Moose::_plugin_config();
+
+	# Shortcut if snippets feature is disabled
+	unless ( $config->{snippets} ) {
+
+		# Keep processing and exit
+		$event->Skip(1);
+		return;
+	}
+
+	# Load snippets everything since it be changed by the user at runtime
+	$self->_load_snippets($config);
 
 	# If it is tab key down event, we cycle through snippets
 	# to find a ^match.
@@ -69,14 +108,14 @@ sub on_key_down {
 	#TODO TAB to other variables
 	#TODO draw a box around values
 	my $snippet_added = 0;
-	if ( defined $self->{snippets} && $event->GetKeyCode == Wx::WXK_TAB ) {
+	if ( defined $self->{_snippets} && $event->GetKeyCode == Wx::WXK_TAB ) {
 		my $position       = $editor->GetCurrentPos;
 		my $start_position = $editor->PositionFromLine( $editor->LineFromPosition($position) );
 		my $line           = $editor->GetTextRange( $start_position, $position );
 
 		my $cursor = '$0';
-		for my $e ( keys %{ $self->{snippets} } ) {
-			my $v = $self->{snippets}->{$e};
+		for my $e ( keys %{ $self->{_snippets} } ) {
+			my $v = $self->{_snippets}->{$e};
 			if ( $line =~ /^\s*\Q$e\E$/ ) {
 				$editor->SetTargetStart( $position - length($e) );
 				$editor->SetTargetEnd($position);

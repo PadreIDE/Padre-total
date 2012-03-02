@@ -31,6 +31,9 @@ use constant CHILDREN => qw{
 	Padre::Plugin::Moose::FBP::Preferences
 };
 
+# Store the current configuration object for _plugin_config consumers
+my $config;
+
 # Called when Padre wants to check what package versions this
 # plugin needs
 sub padre_interfaces {
@@ -54,12 +57,17 @@ sub plugin_name {
 	Wx::gettext('Moose');
 }
 
+# Called by Padre::Plugin::Moose::Document to retrieve configuration
+sub _plugin_config {
+	return $config;
+}
+
 # Called when the plugin is enabled by Padre
 sub plugin_enable {
 	my $self = shift;
 
 	# Read the plugin configuration, and
-	my $config = $self->config_read;
+	$config = $self->config_read;
 	unless ( defined $config ) {
 
 		# No configuration, let us create it
