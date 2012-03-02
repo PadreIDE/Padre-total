@@ -469,9 +469,9 @@ sub restore_defaults {
 	$self->{current_element} = $self->{program};
 	$self->{current_parent}  = $self->{program};
 
-#	# Defaults
-#	$self->{comments_checkbox}->SetValue(1);
-#	$self->{sample_code_checkbox}->SetValue(1);
+	#	# Defaults
+	#	$self->{comments_checkbox}->SetValue(1);
+	#	$self->{sample_code_checkbox}->SetValue(1);
 
 	return;
 }
