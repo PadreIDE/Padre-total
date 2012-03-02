@@ -26,7 +26,9 @@ use constant CHILDREN => qw{
 	Padre::Plugin::Moose::Subtype
 	Padre::Plugin::Moose::Util
 	Padre::Plugin::Moose::Main
+	Padre::Plugin::Moose::Preferences
 	Padre::Plugin::Moose::FBP::Main
+	Padre::Plugin::Moose::FBP::Preferences
 };
 
 
@@ -99,8 +101,16 @@ sub menu_plugins {
 	return $menu_item;
 }
 
+# Plugin preferences
+sub plugin_preferences {
+	my $self = shift;
 
+	require Padre::Plugin::Moose::Preferences;
+	my $dialog = Padre::Plugin::Moose::Preferences->new($self);
+	$dialog->ShowModal;
 
+	return;
+}
 
 
 ######################################################################
