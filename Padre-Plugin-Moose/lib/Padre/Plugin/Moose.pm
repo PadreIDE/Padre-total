@@ -39,13 +39,14 @@ use constant CHILDREN => qw{
 # Padre Integration
 
 sub padre_interfaces {
-	'Padre::Plugin'           => 0.94,
-	'Padre::Document'         => 0.94,
-	'Padre::Wx::Main'         => 0.94,
-	'Padre::Wx::Theme'        => 0.94,
-	'Padre::Wx::Editor'       => 0.94,
-	'Padre::Wx::Role::Main'   => 0.94,
-	'Padre::Wx::Role::Dialog' => 0.94,
+	'Padre::Plugin'               => 0.94,
+		'Padre::Document'         => 0.94,
+		'Padre::Wx::Main'         => 0.94,
+		'Padre::Wx::Theme'        => 0.94,
+		'Padre::Wx::Editor'       => 0.94,
+		'Padre::Wx::Role::Main'   => 0.94,
+		'Padre::Wx::Role::Dialog' => 0.94,
+		;
 }
 
 sub registered_documents {
@@ -73,32 +74,18 @@ sub plugin_disable {
 	}
 
 	# TODO: Switch to Padre::Unload once Padre 0.96 is released
-	for my $package ( CHILDREN ) {
+	for my $package (CHILDREN) {
 		require Padre::Unload;
 		Padre::Unload->unload($package);
 	}
 }
 
-# The command structure to show in the Plugins menu
-sub menu_plugins {
-	my $self      = shift;
-	my $main      = $self->main;
-	my $menu_item = Wx::MenuItem->new( undef, -1, $self->plugin_name . "...\tF8", );
-	Wx::Event::EVT_MENU(
-		$main,
-		$menu_item,
-		sub {
-			eval {
-				$self->dialog->run;
-			};
-			return unless $@;
-			$main->error(
-				sprintf( Wx::gettext('Error: %s'), $@ )
-			);
-		},
-	);
-
-	return $menu_item;
+sub menu_plugins_simple {
+	my $self = shift;
+	return Wx::gettext('Moose') => [
+		Wx::gettext("Designer\tF8") => sub { print "before\n"; $self->show_designer; print "after\n";},
+		Wx::gettext('Preferences')  => sub { $self->plugin_preferences; },
+	];
 }
 
 # Plugin preferences
@@ -106,7 +93,7 @@ sub plugin_preferences {
 	my $self = shift;
 
 	require Padre::Plugin::Moose::Preferences;
-	my $dialog = Padre::Plugin::Moose::Preferences->new($self);
+	my $dialog = Padre::Plugin::Moose::Preferences->new( $self->main );
 	$dialog->ShowModal;
 
 	return;
@@ -116,13 +103,21 @@ sub plugin_preferences {
 ######################################################################
 # Support Methods
 
-sub dialog {
+sub show_designer {
 	my $self = shift;
-	unless ( defined $self->{dialog} ) {
-		require Padre::Plugin::Moose::Main;
-		$self->{dialog} = Padre::Plugin::Moose::Main->new($self->main);
+
+	eval {
+		unless (defined $self->{dialog}) {
+			require Padre::Plugin::Moose::Main;
+			$self->{dialog} = Padre::Plugin::Moose::Main->new( $self->main );
+			$self->{dialog}->run;
+		}
+	};
+	if ($@) {
+		$self->main->error( sprintf( Wx::gettext('Error: %s'), $@ ) );
 	}
-	return $self->{dialog};
+
+	return;
 }
 
 1;
@@ -145,11 +140,15 @@ Then use it via L<Padre>, The Perl IDE. Press F8.
 
 Once you enable this Plugin under Padre, you'll get a brand new menu with the following options:
 
-=head2 Moose...
+=head2 Moose Designer
 
 Opens up a user-friendly dialog where you can add classes, roles, attributes, subtypes and methods.
 The dialog contains a tree of class/role elements that are created while it is open and a preview of
 generated Perl code. It also contains links to Moose manual, cookbook and website.
+
+=head2 Moose Preferences
+
+TODO describe Moose Preferences
 
 =head2 TextMate-style TAB triggered snippets
 
