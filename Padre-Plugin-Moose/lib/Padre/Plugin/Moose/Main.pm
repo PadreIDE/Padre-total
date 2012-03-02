@@ -38,7 +38,7 @@ sub new {
 	# Syntax highlight Moose keywords after get_indentation_style is called :)
 	# TODO remove hack once Padre supports a better way
 	require Padre::Plugin::Moose::Util;
-	Padre::Plugin::Moose::Util::add_moose_keywords_highlighting($preview->{Document});
+	Padre::Plugin::Moose::Util::add_moose_keywords_highlighting( $preview->{Document} );
 
 	$preview->Show(1);
 
@@ -129,9 +129,9 @@ sub show_code_in_preview {
 
 		# Generate code
 		my $code = $self->{program}->generate_code(
-			{   code_type   => $self->{generated_code_combo}->GetValue,
-				comments    => $self->{comments_checkbox}->IsChecked,
-				sample_code => $self->{sample_code_checkbox}->IsChecked,
+			{   code_type   => 'Moose', #$self->{generated_code_combo}->GetValue,
+				comments    => 1,       # $self->{comments_checkbox}->IsChecked,
+				sample_code => 1,       #$self->{sample_code_checkbox}->IsChecked,
 			}
 		);
 
@@ -144,7 +144,7 @@ sub show_code_in_preview {
 		# Update tree
 		$self->update_tree($should_select_item);
 	};
-	if ( $@ ) {
+	if ($@) {
 		$self->error( sprintf( Wx::gettext('Error:%s'), $@ ) );
 	}
 
@@ -469,9 +469,9 @@ sub restore_defaults {
 	$self->{current_element} = $self->{program};
 	$self->{current_parent}  = $self->{program};
 
-	# Defaults
-	$self->{comments_checkbox}->SetValue(1);
-	$self->{sample_code_checkbox}->SetValue(1);
+#	# Defaults
+#	$self->{comments_checkbox}->SetValue(1);
+#	$self->{sample_code_checkbox}->SetValue(1);
 
 	return;
 }
@@ -539,8 +539,14 @@ sub delete_element {
 	return;
 }
 
-sub on_generated_code_combo {
-	$_[0]->show_code_in_preview(1);
+sub on_preferences_button_clicked {
+	my $self = shift;
+
+	require Padre::Plugin::Moose::Preferences;
+	my $dialog = Padre::Plugin::Moose::Preferences->new($self);
+
+	#$dialog->run;
+	$dialog->ShowModal;
 }
 
 1;

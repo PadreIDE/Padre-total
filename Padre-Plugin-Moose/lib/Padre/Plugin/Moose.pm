@@ -31,10 +31,6 @@ use constant CHILDREN => qw{
 	Padre::Plugin::Moose::FBP::Preferences
 };
 
-
-
-
-
 ######################################################################
 # Padre Integration
 
@@ -82,32 +78,31 @@ sub plugin_disable {
 
 sub menu_plugins_simple {
 	my $self = shift;
-	return Wx::gettext('Moose') => [
-		Wx::gettext("Designer\tF8") => sub { print "before\n"; $self->show_designer; print "after\n";},
-		Wx::gettext('Preferences')  => sub { $self->plugin_preferences; },
-	];
+	return Wx::gettext('Designer\tF8') => [];
 }
 
-# Plugin preferences
-sub plugin_preferences {
-	my $self = shift;
+# The command structure to show in the Plugins menu
+sub menu_plugins {
+	my $self      = shift;
+	my $main      = $self->main;
+	my $menu_item = Wx::MenuItem->new( undef, -1, $self->plugin_name . "...\tF8", );
+	Wx::Event::EVT_MENU(
+		$main,
+		$menu_item,
+		sub {
+			$self->show_assistant;
+		},
+	);
+	return $menu_item;
 
-	require Padre::Plugin::Moose::Preferences;
-	my $dialog = Padre::Plugin::Moose::Preferences->new( $self->main );
-	$dialog->ShowModal;
-
-	return;
 }
 
-
-######################################################################
-# Support Methods
-
-sub show_designer {
+sub show_assistant {
 	my $self = shift;
 
 	eval {
-		unless (defined $self->{dialog}) {
+		unless ( defined $self->{dialog} )
+		{
 			require Padre::Plugin::Moose::Main;
 			$self->{dialog} = Padre::Plugin::Moose::Main->new( $self->main );
 			$self->{dialog}->run;

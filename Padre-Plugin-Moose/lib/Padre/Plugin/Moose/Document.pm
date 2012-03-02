@@ -35,7 +35,7 @@ sub get_indentation_style {
 	# Syntax highlight Moose keywords after get_indentation_style is called :)
 	# TODO remove hack once Padre supports a better way
 	require Padre::Plugin::Moose::Util;
-	Padre::Plugin::Moose::Util::add_moose_keywords_highlighting( $self );
+	Padre::Plugin::Moose::Util::add_moose_keywords_highlighting($self);
 
 	return $self->SUPER::get_indentation_style;
 }
@@ -52,9 +52,11 @@ sub on_key_down {
 		require YAML::Tiny;
 		require File::ShareDir;
 		require File::Spec;
-		$snippets = YAML::Tiny::LoadFile( File::ShareDir::dist_file( 'Padre-Plugin-Moose', File::Spec->catfile('snippets', 'moose.yml') ) );
+		$snippets =
+			YAML::Tiny::LoadFile(
+			File::ShareDir::dist_file( 'Padre-Plugin-Moose', File::Spec->catfile( 'snippets', 'moose.yml' ) ) );
 	};
-	
+
 	# If it is tab key down event, we cycle through snippets
 	# to find a ^match.
 	# If there is a match, we paste the snippet and position the cursor to
