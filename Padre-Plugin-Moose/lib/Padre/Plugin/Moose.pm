@@ -133,13 +133,13 @@ __END__
 
 =head1 NAME
 
-Padre::Plugin::Moose - Moose support for Padre
+Padre::Plugin::Moose - Moose, Mouse and MooseX::Declare support for Padre
 
 =head1 SYNOPSIS
 
     cpan Padre::Plugin::Moose;
 
-Then use it via L<Padre>, The Perl IDE.
+Then use it via L<Padre>, The Perl IDE. Press F8.
 
 =head1 DESCRIPTION
 
@@ -151,12 +151,19 @@ Opens up a user-friendly dialog where you can add classes, roles, attributes, su
 The dialog contains a tree of class/role elements that are created while it is open and a preview of
 generated Perl code. It also contains links to Moose manual, cookbook and website.
 
+=head2 TextMate-style TAB triggered snippets
+
+TODO describe TextMate-style TAB triggered snippets
+
+=head2 Keyword Syntax Highlighting
+
+TODO describe Keyword Syntax Highlighting
+
 =head1 BUGS
 
-Please report any bugs or feature requests to C<bug-padre-plugin-Moose at rt.cpan.org>, or through
+Please report any bugs or feature requests to C<bug-padre-plugin-moose at rt.cpan.org>, or through
 the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Padre-Plugin-Moose>.  I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
-
 
 =head1 SUPPORT
 
@@ -199,6 +206,17 @@ L<Moose>, L<Padre>
 Ahmad M. Zawawi <ahmad.zawawi@gmail.com>
 
 =back
+
+=head1 CONTRIBUTORS
+
+=over 4
+
+=item *
+
+Adam Kennedy <adamk@cpan.org>
+
+=back
+
 
 =head1 COPYRIGHT AND LICENSE
 
