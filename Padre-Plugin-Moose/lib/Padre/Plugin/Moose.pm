@@ -105,11 +105,12 @@ sub show_assistant {
 		{
 			require Padre::Plugin::Moose::Assistant;
 			$self->{assistant} = Padre::Plugin::Moose::Assistant->new( $self->main );
-			$self->{assistant}->run;
 		}
 	};
 	if ($@) {
 		$self->main->error( sprintf( Wx::gettext('Error: %s'), $@ ) );
+	} else {
+		$self->{assistant}->run;
 	}
 
 	return;
