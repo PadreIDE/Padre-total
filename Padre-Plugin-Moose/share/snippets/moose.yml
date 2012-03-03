@@ -74,7 +74,7 @@ hasl: |
       lazy_build => 1,
   );
   
-  sub _build_$1 {
+  sub _build_${1:property} {
       my $self = shift;
   
       ${4:# TODO implement _build_$1}

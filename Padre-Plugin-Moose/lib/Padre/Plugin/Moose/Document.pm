@@ -123,11 +123,11 @@ sub on_key_down {
 		my $line  = $editor->GetTextRange( $start, $pos );
 
 		my $cursor   = '$0';
-		my %snippets = $self->{_snippets};
+		my %snippets = %{$self->{_snippets}};
 		for my $trigger ( keys %snippets ) {
 
 			# Short when the TAB trigger is not there
-			next if ( $line =~ /^\s*\Q$trigger\E$/ );
+			next if $line !~ /^\s*\Q$trigger\E$/;
 
 			my $snippet = $snippets{$trigger};
 			my $len     = length($trigger);
