@@ -68,16 +68,16 @@ excludes: excludes '$1';
 
 # has lazy property builder
 hasl: |
-  has $0 => (
-      isa => '$1',
-      is  => '$2',
+  has ${1:property} => (
+      isa => '${2:Str}',
+      is  => '${3:ro}',
       lazy_build => 1,
   );
   
-  sub _build_$0 {
+  sub _build_$1 {
       my $self = shift;
   
-     $3
+      ${4:# TODO implement _build_$1}
   }
 
 # MooseX::Getopt Script
