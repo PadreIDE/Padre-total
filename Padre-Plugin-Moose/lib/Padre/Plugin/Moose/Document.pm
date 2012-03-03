@@ -108,12 +108,6 @@ sub on_key_down {
 	require Padre::Plugin::Moose::Util;
 	Padre::Plugin::Moose::Util::add_moose_keywords_highlighting( $self, $config->{type} );
 
-	# If it is tab key down event, we cycle through snippets
-	# to find a ^match.
-	# If there is a match, we paste the snippet and position the cursor to
-	# the first variable
-	# in this case $0
-
 	#TODO TAB to other variables
 	#TODO draw a box around values
 	my $snippet_added = 0;
@@ -122,13 +116,16 @@ sub on_key_down {
 		my $start = $editor->PositionFromLine( $editor->LineFromPosition($pos) );
 		my $line  = $editor->GetTextRange( $start, $pos );
 
+		# If it is tab key down event, we cycle through snippets
+		# to find a ^match.
 		my $cursor   = '${1:property}';
 		my %snippets = %{$self->{_snippets}};
 		for my $trigger ( keys %snippets ) {
 
 			# Short when the TAB trigger is not there
 			next if $line !~ /^\s*\Q$trigger\E$/;
-
+			
+			# The snippet is here
 			my $snippet = $snippets{$trigger};
 
 			# Collect and highlight all variables in the snippet
@@ -141,12 +138,16 @@ sub on_key_down {
 				};
 				push @{$self->{variables}}, $var;
 				if($var->{index} eq '1') {
-					$self->{_index} = $var->{index};
+					# Found the first cursor
+					$self->{_cursor} = $var;
 				}
-
 			}
+			
+			# Find the first cursor
+			my $cursor = $self->{_cursor} or return;
 
 
+			# Prepare to replace variables
 			my $len     = length($trigger);
 			my $text    = $snippet;
 
@@ -156,6 +157,8 @@ sub on_key_down {
 				$text =~ s/\${$index\:(.+?)}/$value/;
 			}
 
+			# We paste the snippet and position the cursor to
+			# the first variable (e.g ${1:xyz})
 			$editor->SetTargetStart( $pos - $len );
 			$editor->SetTargetEnd($pos);
 			$editor->ReplaceTarget($text);
