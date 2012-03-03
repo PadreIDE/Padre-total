@@ -130,9 +130,31 @@ sub on_key_down {
 			next if $line !~ /^\s*\Q$trigger\E$/;
 
 			my $snippet = $snippets{$trigger};
+
+			# Collect and highlight all variables in the snippet
+			$self->{variables} = [];
+			while($snippet =~ /(\${(\d+)\:(.+?)})/g) {
+				my $var = {
+					index     => $2,
+					value     => $3,
+					start     => pos($snippet),
+				};
+				push @{$self->{variables}}, $var;
+				if($var->{index} eq '1') {
+					$self->{_index} = $var->{index};
+				}
+
+			}
+
+
 			my $len     = length($trigger);
 			my $text    = $snippet;
-			$text =~ s/\$\d//g;
+
+			for my $var (@{$self->{variables}}) {
+				my $index = $var->{index};
+				my $value = $var->{value};
+				$text =~ s/\${$index\:(.+?)}/$value/;
+			}
 
 			$editor->SetTargetStart( $pos - $len );
 			$editor->SetTargetEnd($pos);
@@ -140,6 +162,11 @@ sub on_key_down {
 
 			if ( $snippet =~ /(\Q$cursor\E)/g ) {
 				$editor->GotoPos( $pos - $len + pos($snippet) - length($cursor) );
+			}
+
+			for my $var (@{$self->{variables}}) {
+				$editor->SetIndicatorCurrent(Padre::Constant::INDICATOR_SMART_HIGHLIGHT);
+				$editor->IndicatorFillRange( $pos + $var->{start} - length($var->{value}) , length $var->{value} );
 			}
 
 			$snippet_added = 1;
