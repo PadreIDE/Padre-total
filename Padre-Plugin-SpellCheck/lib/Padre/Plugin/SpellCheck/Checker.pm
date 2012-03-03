@@ -8,22 +8,15 @@ use Class::XSAccessor {
 	accessors => {
 		_autoreplace => '_autoreplace', # list of automatic replaces
 		_engine      => '_engine',      # pps:engine object
-		                                # _error       => '_errorpos',    # first error spotted [ $word, $pos ]
 		_label       => '_label',       # label hosting the misspelled word
 		_list        => '_list',        # listbox listing the suggestions
 		_offset      => '_offset',      # offset of _text within the editor
-		                                # _plugin      => '_plugin',      # reference to spellcheck plugin
 		_parent      => '_parent',      # reference to spellcheck plugin
 		_sizer       => '_sizer',       # window sizer
 		_text        => '_text',        # text being spellchecked
 		                                # _iso_name    => '_iso_name',    # our stored dictonary lanaguage
 	},
 };
-
-# use Data::Printer {
-	# caller_info => 1,
-	# colored     => 1,
-# };
 
 use Encode;
 use Padre::Logger;
@@ -65,8 +58,6 @@ sub _set_up {
 	my $self    = shift;
 	my $main    = $self->main;
 	my $current = $main->current;
-
-	# p $self->{_parent}->config_read;
 
 	my $text_spell = $self->{_parent}->config_read->{Engine};
 	my $iso_name   = $self->{_parent}->config_read->{$text_spell};
@@ -362,7 +353,7 @@ __END__
 
 =head1 NAME
 
-Padre::Plugin::SpellCheck::Dialog - Check spelling in Padre The Perl IDE
+Padre::Plugin::SpellCheck::Checker - Check spelling in Padre, The Perl IDE.
 
 =head1 VERSION
 
@@ -370,45 +361,22 @@ version 1.25
 
 =head1 DESCRIPTION
 
-This module implements the dialog window that will be used to interact
-with the user when mistakes have been spotted.
+This module implements the Checker dialogue window that will be used to interact
+with the user when spelling mistakes have been spotted.
 
-=head1 PUBLIC METHODS
+=head1 METHODS
 
-=head2 Constructor
+=over 2
 
-=over 4
+=item * new
 
-=item my $dialog = PPS::Dialog->new( %params );
+	$self->{dialog} = Padre::Plugin::SpellCheck::Checker->new( $self );
 
-Create and return a new dialog window. The following params are needed:
+Create and return a new dialogue window. 
 
-=over 4
+=item * padre_locale_label
 
-=item text => $text
-
-The text being spell checked.
-
-=item offset => $offset
-
-The offset of C<$text> within the editor. 0 if spell checking the whole file.
-
-=item error => [ $word, $pos ]
-
-The first spotted error, on C<$word> (at position C<$pos>), with some
-associated C<$suggestions> (a list reference).
-
-=item engine => $engine
-
-The $engine being used (a C<Padre::Plugin::SpellCheck::Engine> object).
-
-=back
-
-=back
-
-=head2 Instance methods
-
-=over 4
+uses Padre::Local to convert language iso693_iso3166 to utf8text strings
 
 =back
 
@@ -418,7 +386,7 @@ Text::Hunspell hard coded for /usr/share/hunspell/
 
 =head1 DEPENDENCIES
 
-Padre, Class::XSAccessor, Padre::Plugin::SpellCheck::FBP::Checker, 
+Padre, Padre::Locale, Class::XSAccessor, Padre::Plugin::SpellCheck::FBP::Checker, 
 and either or ( Text::Hunspell or Text::Aspell )
 
 =head1 SEE ALSO

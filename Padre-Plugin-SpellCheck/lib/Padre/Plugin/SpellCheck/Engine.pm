@@ -12,7 +12,6 @@ use Class::XSAccessor {
 	replace   => 1,
 	accessors => {
 		_ignore    => '_ignore',    # list of words to ignore
-		                            # _plugin    => '_plugin',    # ref to spellecheck plugin
 		_speller   => '_speller',   # real text::aspell object
 		_utf_chars => '_utf_chars', # FIXME: as soon as wxWidgets/wxPerl supports
 		                            # newer version of STC:

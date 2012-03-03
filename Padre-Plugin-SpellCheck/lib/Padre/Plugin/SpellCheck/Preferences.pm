@@ -13,10 +13,7 @@ our $VERSION = '1.25';
 our @ISA     = qw{
 	Padre::Plugin::SpellCheck::FBP::Preferences
 };
-# use Data::Printer {
-	# caller_info => 1,
-	# colored     => 1,
-# };
+
 
 #######
 # Method new
@@ -44,11 +41,9 @@ sub new {
 #######
 sub _set_up {
 	my $self = shift;
-
-	# $self->{dictionary} = 'Aspell';
+	
+	# set prefered dictionary from config
 	$self->{dictionary} = $self->{_parent}->config_read->{Engine};
-
-	# print " dictionary/engine = $self->{dictionary}\n";
 
 	if ( $self->{dictionary} eq 'Aspell' ) {
 
@@ -61,7 +56,7 @@ sub _set_up {
 	}
 
 	# update dialog with locally install dictionaries;
-	$self->display_dictionaries;
+	$self->_display_dictionaries;
 
 	return;
 }
@@ -87,7 +82,6 @@ sub _local_aspell_dictionaries {
 		TRACE("locally installed dictionaries found = @local_dictionaries") if DEBUG;
 		TRACE("iso to dictionary names = $self->{dictionary_names}")        if DEBUG;
 
-		#TODO compose method local iso to padre names
 		for (@local_dictionaries) {
 			push( @local_dictionaries_names, $self->padre_locale_label($_) );
 			$self->{dictionary_names}{$_} = $self->padre_locale_label($_);
@@ -156,9 +150,9 @@ sub _local_hunspell_dictionaries {
 }
 
 #######
-# Method display_dictionaries
+# Method _display_dictionaries
 #######
-sub display_dictionaries {
+sub _display_dictionaries {
 	my $self = shift;
 	my $main = $self->main;
 
@@ -213,11 +207,6 @@ sub _on_button_save_clicked {
 	$config->{Engine} = $self->{dictionary};
 	$self->{_parent}->config_write($config);
 
-	#this is naff
-	# TRACE("Saved P-P-SpellCheck config DB = $self->{_parent}->config_read ") if DEBUG;
-
-	# p $self->{_parent}->config_read;
-
 	$self->{_parent}->clean_dialog;
 	return;
 }
@@ -236,7 +225,7 @@ sub on_dictionary_chosen {
 		$self->_local_hunspell_dictionaries;
 	}
 
-	$self->display_dictionaries;
+	$self->_display_dictionaries;
 
 	return;
 }
@@ -250,8 +239,6 @@ sub padre_locale_label {
 	my $local_dictionary = shift;
 
 	my $lc_local_dictionary = lc( $local_dictionary ? $local_dictionary : 'en_GB' );
-
-	# my $lc_local_dictionary = lc $local_dictionary;
 	$lc_local_dictionary =~ s/_/-/;
 	require Padre::Locale;
 	my $label = Padre::Locale::label($lc_local_dictionary);
@@ -267,7 +254,7 @@ __END__
 
 =head1 NAME
 
-Padre::Plugin::SpellCheck::Preferences - Check spelling in Padre The Perl IDE
+Padre::Plugin::SpellCheck::Preferences - Check spelling in Padre, The Perl IDE
 
 =head1 VERSION
 
@@ -275,24 +262,32 @@ version 1.25
 
 =head1 DESCRIPTION
 
-This module handels the Preferences dialog window that is used to set the
-spell check preferences.
+This module handles the Preferences dialogue window that is used to set your 
+chosen dictionary and preferred language.
 
-=head1 PUBLIC METHODS
 
-=head2 Constructor
+=head1 METHODS
 
-=over 4
+=over 2
 
-=item my $dialog = PPS::Preferences->new( %params );
+=item * new
 
-Create and return a new dialog window.
+	$self->{dialog} = Padre::Plugin::SpellCheck::Preferences->new( $self );
+
+Create and return a new dialogue window. 
+
+=item * on_dictionary_chosen
+event handler
+
+=item * padre_locale_label
+
+uses Padre::Local to convert language iso693_iso3166 to utf8text strings
 
 =back
 
 =head1 BUGS AND LIMITATIONS
 
-Text::Hunspell hard coded for /usr/share/hunspell/
+Throws an info on the status bar if you try to select a language if dictionary not installed
 
 =head1 DEPENDENCIES
 
