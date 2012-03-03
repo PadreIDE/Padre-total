@@ -14,7 +14,7 @@ use Padre::Wx 'Grid';
 use Padre::Wx::Role::Main ();
 use Padre::Wx::Editor     ();
 
-our $VERSION = '0.17';
+our $VERSION = '0.18';
 our @ISA     = qw{
 	Padre::Wx::Role::Main
 	Wx::Dialog

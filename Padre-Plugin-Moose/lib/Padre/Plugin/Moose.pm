@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Padre::Plugin ();
 
-our $VERSION = '0.17';
+our $VERSION = '0.18';
 our @ISA     = 'Padre::Plugin';
 
 # Child modules we need to unload when disabled
