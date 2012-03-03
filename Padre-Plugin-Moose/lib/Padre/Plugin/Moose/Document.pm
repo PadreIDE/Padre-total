@@ -118,25 +118,32 @@ sub on_key_down {
 	#TODO draw a box around values
 	my $snippet_added = 0;
 	if ( defined $self->{_snippets} && $event->GetKeyCode == Wx::WXK_TAB ) {
-		my $position       = $editor->GetCurrentPos;
-		my $start_position = $editor->PositionFromLine( $editor->LineFromPosition($position) );
-		my $line           = $editor->GetTextRange( $start_position, $position );
+		my $pos   = $editor->GetCurrentPos;
+		my $start = $editor->PositionFromLine( $editor->LineFromPosition($pos) );
+		my $line  = $editor->GetTextRange( $start, $pos );
 
-		my $cursor = '$0';
-		for my $e ( keys %{ $self->{_snippets} } ) {
-			my $v = $self->{_snippets}->{$e};
-			if ( $line =~ /^\s*\Q$e\E$/ ) {
-				$editor->SetTargetStart( $position - length($e) );
-				$editor->SetTargetEnd($position);
-				my $m = $v;
-				$m =~ s/\$\d//g;
-				$editor->ReplaceTarget($m);
-				if ( $v =~ /(\Q$cursor\E)/g ) {
-					$editor->GotoPos( $position - length($e) + pos($v) - length($cursor) );
-				}
-				$snippet_added = 1;
-				last;
+		my $cursor   = '$0';
+		my %snippets = $self->{_snippets};
+		for my $trigger ( keys %snippets ) {
+
+			# Short when the TAB trigger is not there
+			next if ( $line =~ /^\s*\Q$trigger\E$/ );
+
+			my $snippet = $snippets{$trigger};
+			my $len     = length($trigger);
+			my $text    = $snippet;
+			$text =~ s/\$\d//g;
+
+			$editor->SetTargetStart( $pos - $len );
+			$editor->SetTargetEnd($pos);
+			$editor->ReplaceTarget($text);
+
+			if ( $snippet =~ /(\Q$cursor\E)/g ) {
+				$editor->GotoPos( $pos - $len + pos($snippet) - length($cursor) );
 			}
+
+			$snippet_added = 1;
+			last;
 		}
 
 
