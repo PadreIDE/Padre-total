@@ -3,7 +3,7 @@ package Padre::Plugin::Moose::Role::CanProvideHelp;
 use Moose::Role;
 use namespace::clean;
 
-our $VERSION = '0.16';
+our $VERSION = '0.17';
 
 requires 'provide_help';
 

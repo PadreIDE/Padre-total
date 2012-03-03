@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Padre::Document::Perl ();
 
-our $VERSION = '0.16';
+our $VERSION = '0.17';
 
 our @ISA = 'Padre::Document::Perl';
 
@@ -77,8 +77,7 @@ sub get_indentation_style {
 	# Syntax highlight Moose keywords after get_indentation_style is called :)
 	# TODO remove hack once Padre supports a better way
 	require Padre::Plugin::Moose::Util;
-	Padre::Plugin::Moose::Util::add_moose_keywords_highlighting(
-		$self, $config->{type});
+	Padre::Plugin::Moose::Util::add_moose_keywords_highlighting( $self, $config->{type} );
 
 	return $self->SUPER::get_indentation_style;
 }
@@ -107,8 +106,7 @@ sub on_key_down {
 	# Syntax highlight Moose keywords here also :)
 	# TODO remove hack once Padre supports a better way
 	require Padre::Plugin::Moose::Util;
-	Padre::Plugin::Moose::Util::add_moose_keywords_highlighting(
-		$self, $config->{type});
+	Padre::Plugin::Moose::Util::add_moose_keywords_highlighting( $self, $config->{type} );
 
 	# If it is tab key down event, we cycle through snippets
 	# to find a ^match.

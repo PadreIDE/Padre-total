@@ -4,7 +4,7 @@ use 5.008;
 use strict;
 use warnings;
 
-our $VERSION = '0.16';
+our $VERSION = '0.17';
 
 sub add_moose_keywords_highlighting {
 	my $document = shift;
@@ -15,14 +15,13 @@ sub add_moose_keywords_highlighting {
 	if ( Params::Util::_ARRAY($keywords) ) {
 		foreach my $i ( 0 .. $#$keywords ) {
 			my $keyword_list = $keywords->[$i];
-			if($i == 0) {
+			if ( $i == 0 ) {
 				$keyword_list
 					.= " has with extends before around after "
 					. "override super augment inner type subtype "
 					. "enum class_type as where coerce via from "
-					. "requires excludes"
-					;
-				if($type eq 'MooseX::Declare') {
+					. "requires excludes";
+				if ( $type eq 'MooseX::Declare' ) {
 					$keyword_list .= ' class role method dirty clean mutable';
 				}
 			}

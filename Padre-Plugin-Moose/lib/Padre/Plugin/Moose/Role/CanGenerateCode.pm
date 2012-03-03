@@ -3,7 +3,7 @@ package Padre::Plugin::Moose::Role::CanGenerateCode;
 use Moose::Role;
 use namespace::clean;
 
-our $VERSION = '0.16';
+our $VERSION = '0.17';
 
 sub generate_code {
 	my $self    = shift;

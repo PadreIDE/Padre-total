@@ -3,7 +3,7 @@ package Padre::Plugin::Moose::ClassMember;
 use Moose;
 use namespace::clean;
 
-our $VERSION = '0.16';
+our $VERSION = '0.17';
 
 has 'name' => ( is => 'rw', isa => 'Str' );
 
