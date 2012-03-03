@@ -119,6 +119,7 @@ sub new {
 		Wx::TE_MULTILINE | Wx::TE_NO_VSCROLL | Wx::TE_READONLY | Wx::NO_BORDER,
 	);
 	$self->{help}->SetMinSize( [ -1, 100 ] );
+	$self->{help}->SetForegroundColour( Wx::SystemSettings::GetColour(Wx::SYS_COLOUR_INFOBK) );
 	$self->{help}->SetBackgroundColour( Wx::SystemSettings::GetColour(Wx::SYS_COLOUR_INFOBK) );
 
 	my $m_staticText4 = Wx::StaticText->new(
