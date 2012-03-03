@@ -11,10 +11,17 @@ use File::Which   ();
 our $VERSION = '1.25';
 our @ISA     = 'Padre::Plugin';
 
-# use Data::Printer {
-# caller_info => 1,
-# colored     => 1,
-# };
+# Child modules we need to unload when disabled
+use constant CHILDREN => qw{
+	Padre::Plugin::SpellCheck
+	Padre::Plugin::SpellCheck::Checker
+	Padre::Plugin::SpellCheck::FBP::Checker
+	Padre::Plugin::SpellCheck::Engine
+	Padre::Plugin::SpellCheck::Preferences
+	Padre::Plugin::SpellCheck::FBP::Preferences
+	Text::Aspell
+	Text::Hunspell
+};
 
 #######
 # Define Plugin Name Spell Checker
@@ -48,16 +55,16 @@ sub menu_plugins {
 	my $main = $self->main;
 
 	# Create a manual menu item
-	my $item = Wx::MenuItem->new( undef, -1, $self->plugin_name . "...\tF7 ", );
+	my $menu_item = Wx::MenuItem->new( undef, -1, $self->plugin_name . "...\tF7 ", );
 	Wx::Event::EVT_MENU(
-		$main, $item,
+		$main,
+		$menu_item,
 		sub {
-			local $@;
-			eval { $self->spell_check($main); };
+			$self->spell_check;
 		},
 	);
 
-	return $item;
+	return $menu_item;
 }
 
 #########
@@ -152,19 +159,11 @@ sub plugin_disable {
 	$self->clean_dialog;
 
 	# Unload all our child classes
-
-	require Padre::Unload;
-	Padre::Unload->unload(
-		qw{
-			Padre::Plugin::SpellCheck
-			Padre::Plugin::SpellCheck::Checker
-			Padre::Plugin::SpellCheck::FBP::Checker
-			Padre::Plugin::SpellCheck::Engine
-			Padre::Plugin::SpellCheck::Preferences
-			Padre::Plugin::SpellCheck::FBP::Preferences
-			Text::Aspell
-			}
-	);
+	# TODO: Switch to Padre::Unload once Padre 0.96 is released
+	for my $package (CHILDREN) {
+		require Padre::Unload;
+		Padre::Unload->unload($package);
+	}
 
 	$self->SUPER::plugin_disable(@_);
 
@@ -197,10 +196,15 @@ sub plugin_preferences {
 	# Clean up any previous existing dialog
 	$self->clean_dialog;
 
-	require Padre::Plugin::SpellCheck::Preferences;
-	$self->{dialog} = Padre::Plugin::SpellCheck::Preferences->new($self);
-	$self->{dialog}->ShowModal;
-
+	eval {
+		require Padre::Plugin::SpellCheck::Preferences;
+		$self->{dialog} = Padre::Plugin::SpellCheck::Preferences->new($self);
+	};
+	if ($@) {
+		$self->main->error( sprintf( Wx::gettext('Error: %s'), $@ ) );
+	} else {
+		$self->{dialog}->ShowModal;
+	}
 	return;
 }
 
@@ -213,10 +217,15 @@ sub spell_check {
 	# Clean up any previous existing dialog
 	$self->clean_dialog;
 
-	require Padre::Plugin::SpellCheck::Checker;
-	$self->{dialog} = Padre::Plugin::SpellCheck::Checker->new($self);
-	$self->{dialog}->Show;
-
+	eval {
+		require Padre::Plugin::SpellCheck::Checker;
+		$self->{dialog} = Padre::Plugin::SpellCheck::Checker->new($self);
+	};
+	if ($@) {
+		$self->main->error( sprintf( Wx::gettext('Error: %s'), $@ ) );
+	} else {
+		$self->{dialog}->Show;
+	}
 	return;
 }
 
