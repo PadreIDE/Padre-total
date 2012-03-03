@@ -122,7 +122,7 @@ sub on_key_down {
 		my $start = $editor->PositionFromLine( $editor->LineFromPosition($pos) );
 		my $line  = $editor->GetTextRange( $start, $pos );
 
-		my $cursor   = '$0';
+		my $cursor   = '${1:property}';
 		my %snippets = %{$self->{_snippets}};
 		for my $trigger ( keys %snippets ) {
 
@@ -161,7 +161,9 @@ sub on_key_down {
 			$editor->ReplaceTarget($text);
 
 			if ( $snippet =~ /(\Q$cursor\E)/g ) {
-				$editor->GotoPos( $pos - $len + pos($snippet) - length($cursor) );
+				my $start = $pos - $len + pos($snippet) - length($cursor);
+				$editor->GotoPos( $start );
+				$editor->SetSelection( $start, $start + length 'property' );
 			}
 
 			for my $var (@{$self->{variables}}) {
