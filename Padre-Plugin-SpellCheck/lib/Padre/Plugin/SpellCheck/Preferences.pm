@@ -72,7 +72,7 @@ sub _local_aspell_dictionaries {
 	eval { require Text::Aspell; };
 	if ($@) {
 		$self->{local_dictionaries_names} = \@local_dictionaries_names;
-		$self->message( Wx::gettext('Text::Aspell is not installed') );
+		$self->main->info( Wx::gettext('Text::Aspell is not installed') );
 		return;
 	} else {
 		my $speller = Text::Aspell->new;
@@ -107,7 +107,7 @@ sub _local_hunspell_dictionaries {
 	eval { require Text::Hunspell; };
 	if ($@) {
 		$self->{local_dictionaries_names} = \@local_dictionaries_names;
-		$self->message( Wx::gettext('Text::Hunspell is not installed') );
+		$self->main->info( Wx::gettext('Text::Hunspell is not installed') );
 		return;
 	} else {
 
