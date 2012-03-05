@@ -232,31 +232,40 @@ sub _insert_snippet {
 		$self->{last_index} = $last_index;
 	}
 
-	# Find the next cursor
-	my $cursor;
-	for my $v (@$vars) {
-		my $index = $v->{index};
-		if ( $index == $self->{selected_index} && defined $v->{value} ) {
-			$cursor = $v;
-		}
-	}
 
 	# Prepare to replace variables
 	my $len  = length($trigger);
 	my $text = $snippet;
 
+	# Find the next cursor
+	my $cursor;
+	my $count = 0;
 	for my $var (@$vars) {
 		unless ( defined $var->{value} ) {
 			my $index = $var->{index};
 			for my $v (@$vars) {
 				my $value = $v->{value};
 				if ( ( $v->{index} == $index ) && defined $value ) {
-					#$text =~ s/\$$index/$value/;
+					my $before_length = length $text;
+					$v->{start} += $count;
+					substr($text, $v->{start}, length $v->{text}) = $value;
+					my $after_length = length $text;
+					$count += $after_length - $before_length;
 					last;
 				}
 			}
-
+		} else {
+			my $before_length = length $text;
+			$var->{start} += $count;
+			substr($text, $var->{start}, length $var->{text}) = $var->{value};
+			my $after_length = length $text;
+			$count += $after_length - $before_length;
+			
+			if ( $var->{index} == $self->{selected_index} ) {
+				$cursor = $var;
+			}
 		}
+
 	}
 
 	# We paste the snippet and position the cursor to
@@ -268,7 +277,7 @@ sub _insert_snippet {
 		
 		my $start = $pos - $len + $cursor->{start};
 		$editor->GotoPos($start);
-		$editor->SetSelection( $start, $start + length $cursor->{text} );
+		$editor->SetSelection( $start, $start + length $cursor->{value} );
 	} else {
 		if($last_time) {
 			$editor->GotoPos($pos - $len + length $text);
@@ -279,7 +288,7 @@ sub _insert_snippet {
 
 			my $start = $pos - $len + $cursor->{start};	
 			$editor->GotoPos($start);
-			$editor->SetSelection( $start, $start + length $cursor->{text} );
+			$editor->SetSelection( $start, $start + length $cursor->{value} );
 		}
 	}
 
