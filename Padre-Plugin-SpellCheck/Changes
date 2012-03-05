@@ -3,6 +3,7 @@ Revision history for Padre-Plugin-SpellCheck
     - dynamic Dialogue Titles (BOWTIE)
     - Update POD, remove test code (BOWTIE)
     - implement new plugin_disable (BOWTIE)
+    - use Try::Tiny implement (BOWTIE)
 
 1.24    2012.02.26
     - remove unwanted test for Text::Aspell installed (BOWTIE)
