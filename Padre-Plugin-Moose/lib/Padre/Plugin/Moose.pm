@@ -229,21 +229,13 @@ L<Moose>, L<Padre>
 
 =head1 AUTHORS
 
-=over 4
-
-=item *
-
 Ahmad M. Zawawi <ahmad.zawawi@gmail.com>
-
-=back
 
 =head1 CONTRIBUTORS
 
-=over 4
-
-=item *
-
 Adam Kennedy <adamk@cpan.org>
+
+Kevin Dawson E<lt>bowtie@cpan.orgE<gt>
 
 =back
 
