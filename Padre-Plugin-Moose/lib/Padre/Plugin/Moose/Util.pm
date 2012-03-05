@@ -17,10 +17,10 @@ sub add_moose_keywords_highlighting {
 			my $keyword_list = $keywords->[$i];
 			if ( $i == 0 ) {
 				$keyword_list
-					.= " has with extends before around after "
-					. "override super augment inner type subtype "
-					. "enum class_type as where coerce via from "
-					. "requires excludes";
+					.= ' has with extends before around after'
+					. ' override super augment inner type subtype'
+					. ' enum class_type as where coerce via from'
+					. ' requires excludes';
 				if ( $type eq 'MooseX::Declare' ) {
 					$keyword_list .= ' class role method dirty clean mutable';
 				}
