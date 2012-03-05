@@ -285,9 +285,11 @@ sub _insert_snippet {
 			$editor->SetTargetEnd( $pos + length $text);
 			$editor->ReplaceTarget($text);
 
-			my $start = $pos - $len + $cursor->{start};
-			print "Goto $start... In snippet mode\n";
+			my $start = $pos - $len + $cursor->{start};	
 			$editor->GotoPos($start);
+			$editor->SetSelection( $start, $start + length $cursor->{text} );
+
+			print "Goto $start... In snippet mode\n";
 		}
 	}
 
