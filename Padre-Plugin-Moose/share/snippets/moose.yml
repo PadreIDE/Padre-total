@@ -1,7 +1,12 @@
 
 ---
+#
+# Moose snippets bundle for Padre::Plugin::Moose
+# Written by Ahmad M. Zawawi (azawawi)
+#
 # Adapted from 'TextMate Bundle for Moose' by Chris Prather (perigrin)
 # https://github.com/perigrin/perl-moose.tmbundle/Snippets
+# 
 
 # after method modifier
 after: |
@@ -20,7 +25,6 @@ around: |
   around '${1:method_name}' => sub {
       ${2:# body...}
   }; 
-
 
 # Augment method modifier
 augment: |
@@ -85,7 +89,7 @@ hasl: |
       lazy_build => 1,
   );
   
-  sub _build_${1:property} {
+  sub _build_$1 {
       my $self = shift;
   
       ${4:# TODO implement _build_$1}
