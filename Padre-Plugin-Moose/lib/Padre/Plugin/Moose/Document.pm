@@ -145,14 +145,13 @@ sub _insert_snippet {
 	# Collect and highlight all variables in the snippet
 	$self->{variables} = [];
 	my $snippet_pattern = qr/
-		(
 		\${(\d+)(\:(.+?))?}  # ${1:property name} or ${1}
 		| (\$\d+)            # $1
-		)/x;
+	/x;
 	while ( $snippet =~ /$snippet_pattern/g ) {
 		my $var = {
-			index => $2,
-			value => $3,
+			index => $1,
+			value => $2,
 			start => pos($snippet),
 		};
 		push @{ $self->{variables} }, $var;
@@ -200,7 +199,7 @@ sub _find_snippet {
 
 	my %snippets = %{ $self->{_snippets} };
 	for my $trigger ( keys %snippets ) {
-		if($line =~ /^\b\Q$trigger\E$/) {
+		if($line =~ /\b\Q$trigger\E$/) {
 			return {
 				trigger  => $trigger, 
 				snippet  => $snippets{$trigger},
