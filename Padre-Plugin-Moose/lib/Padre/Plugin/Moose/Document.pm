@@ -63,6 +63,10 @@ sub _load_snippets {
 		# Record loaded snippet type
 		$self->{_snippets_type} = $type;
 	};
+	if($@) {
+		# TODO what to do here to make it useful
+		warn $@ . "\n";
+	}
 
 	return;
 }
@@ -110,8 +114,9 @@ sub on_key_down {
 
 	#TODO TAB to other variables
 	#TODO draw a box around values
+
 	if ( defined $self->{_snippets} && $event->GetKeyCode == Wx::WXK_TAB ) {
-		if ( $self->_insert_snippet($editor) ) {
+		if ( $self->_insert_snippet($editor, $event->ShiftDown) ) {
 
 			# consume the <TAB>-triggerred snippet event
 			return;
@@ -125,8 +130,9 @@ sub on_key_down {
 }
 
 sub _insert_snippet {
-	my $self   = shift;
-	my $editor = shift;
+	my $self       = shift;
+	my $editor     = shift;
+	my $shift_down = shift;
 
 	my $pos  = $editor->GetCurrentPos;
 	my $line = $editor->GetTextRange(
@@ -134,15 +140,14 @@ sub _insert_snippet {
 		$pos
 	);
 
+#unless(defined $self->{snippet_mode}) {
+#	$self->_enter_snippet_mode;
+#}
 	my $snippet_obj = $self->_find_snippet($line);
 	return unless defined $snippet_obj;
 
 	my $trigger = $snippet_obj->{trigger};
 	my $snippet = $snippet_obj->{snippet};
-
-	# If it is tab key down event, we cycle through snippets
-	# to find a ^match.
-	my $cursor = '${1:property}';
 
 	# Collect and highlight all variables in the snippet
 	$self->{variables} = [];
@@ -153,20 +158,23 @@ sub _insert_snippet {
 	while ( $snippet =~ /$snippet_pattern/g ) {
 		my $var = {
 			index => $1,
-			value => $2,
+			value => $3,
 			start => pos($snippet),
 		};
 		push @{ $self->{variables} }, $var;
-		if ( $var->{index} eq '1' ) {
+	}
 
-			# Found the first cursor
-			$self->{_cursor} = $var;
+	for my $variable (@{$self->{variables}}) {
+		if($variable->{index} eq '1') {
+			$self->{_cursor} = $variable->{value};
 		}
 	}
 
 	# Find the first cursor
-	#my $cursor = $self->{_cursor} or return;
+	my $cursor = '${1:property}';
 
+	# If it is tab key down event, we cycle through snippets
+	# to find a ^match.
 
 	# Prepare to replace variables
 	my $len  = length($trigger);
