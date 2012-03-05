@@ -28,7 +28,7 @@ sub new {
 		-1,
 		Wx::gettext("Moose Assistant Preferences"),
 		Wx::DefaultPosition,
-		[ 359, 190 ],
+		[ 362, 211 ],
 		Wx::DEFAULT_DIALOG_STYLE,
 	);
 

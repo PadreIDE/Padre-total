@@ -110,8 +110,9 @@ sub on_key_down {
 
 	#TODO TAB to other variables
 	#TODO draw a box around values
-	if(defined $self->{_snippets} && $event->GetKeyCode == Wx::WXK_TAB) {
-		if($self->_insert_snippet($editor)) {
+	if ( defined $self->{_snippets} && $event->GetKeyCode == Wx::WXK_TAB ) {
+		if ( $self->_insert_snippet($editor) ) {
+
 			# consume the <TAB>-triggerred snippet event
 			return;
 		}
@@ -124,23 +125,24 @@ sub on_key_down {
 }
 
 sub _insert_snippet {
-	my $self = shift;
+	my $self   = shift;
 	my $editor = shift;
 
-	my $pos   = $editor->GetCurrentPos;
-	my $line  = $editor->GetTextRange( 
-		$editor->PositionFromLine( $editor->LineFromPosition($pos) ), 
-		$pos );
+	my $pos  = $editor->GetCurrentPos;
+	my $line = $editor->GetTextRange(
+		$editor->PositionFromLine( $editor->LineFromPosition($pos) ),
+		$pos
+	);
 
 	my $snippet_obj = $self->_find_snippet($line);
 	return unless defined $snippet_obj;
 
 	my $trigger = $snippet_obj->{trigger};
 	my $snippet = $snippet_obj->{snippet};
-	
+
 	# If it is tab key down event, we cycle through snippets
 	# to find a ^match.
-	my $cursor   = '${1:property}';
+	my $cursor = '${1:property}';
 
 	# Collect and highlight all variables in the snippet
 	$self->{variables} = [];
@@ -199,14 +201,14 @@ sub _find_snippet {
 
 	my %snippets = %{ $self->{_snippets} };
 	for my $trigger ( keys %snippets ) {
-		if($line =~ /\b\Q$trigger\E$/) {
+		if ( $line =~ /\b\Q$trigger\E$/ ) {
 			return {
-				trigger  => $trigger, 
-				snippet  => $snippets{$trigger},
+				trigger => $trigger,
+				snippet => $snippets{$trigger},
 			};
 		}
 	}
-	
+
 	return;
 }
 

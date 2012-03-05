@@ -1784,7 +1784,7 @@
             <property name="minimum_size"></property>
             <property name="name">Padre::Plugin::Moose::FBP::Preferences</property>
             <property name="pos"></property>
-            <property name="size">359,190</property>
+            <property name="size">362,211</property>
             <property name="style">wxDEFAULT_DIALOG_STYLE</property>
             <property name="subclass"></property>
             <property name="title">Moose Assistant Preferences</property>
@@ -2019,7 +2019,7 @@
                     <property name="proportion">0</property>
                     <object class="wxCheckBox" expanded="0">
                         <property name="bg"></property>
-                        <property name="checked">0</property>
+                        <property name="checked">1</property>
                         <property name="context_help"></property>
                         <property name="context_menu">1</property>
                         <property name="enabled">1</property>
