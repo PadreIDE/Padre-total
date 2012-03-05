@@ -189,11 +189,19 @@ sub _insert_snippet {
 	if(defined $self->{variables}) {
 		# Already in snippet mode
 		$vars = $self->{variables};
-		$self->{selected_index}++;
+		if($shift_down) {
+			$self->{selected_index}--;
+		} else {
+			$self->{selected_index}++;
+		}
+		
 		if($self->{selected_index} > $self->{last_index}) {
 			# exit snippet mode and position at end
 			$self->{variables} = undef;
 			$last_time = 1;
+		} elsif($self->{selected_index} < 1) {
+			# Shift-tabbing to traverse them in circular fashion
+			$self->{selected_index} = $self->{last_index};
 		}
 
 	} else {
