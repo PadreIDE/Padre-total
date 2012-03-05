@@ -7,6 +7,7 @@ use warnings;
 use Padre::Plugin ();
 use Padre::Unload ();
 use File::Which   ();
+use Try::Tiny;
 
 our $VERSION = '1.25';
 our @ISA     = 'Padre::Plugin';
@@ -76,12 +77,16 @@ sub plugin_enable {
 	my $local_dictionary_bin_exists = 0;
 
 	# Tests for externals used by Preference's
-	if ( eval { require Text::Aspell } ) {
-		$local_dictionary_bin_exists = 1;
-	}
-	if ( File::Which::which('hunspell') ) {
-		$local_dictionary_bin_exists = 1;
-	}
+	try {
+		if ( require Text::Aspell ) {
+			$local_dictionary_bin_exists = 1;
+		}
+	};
+	try {
+		if ( File::Which::which('hunspell') ) {
+			$local_dictionary_bin_exists = 1;
+		}
+	};
 
 	#Set/ReSet Config data
 	$self->_config if $local_dictionary_bin_exists;
@@ -196,15 +201,15 @@ sub plugin_preferences {
 	# Clean up any previous existing dialog
 	$self->clean_dialog;
 
-	eval {
+	try {
 		require Padre::Plugin::SpellCheck::Preferences;
 		$self->{dialog} = Padre::Plugin::SpellCheck::Preferences->new($self);
-	};
-	if ($@) {
-		$self->main->error( sprintf( Wx::gettext('Error: %s'), $@ ) );
-	} else {
 		$self->{dialog}->ShowModal;
 	}
+	catch {
+		$self->main->error( sprintf( Wx::gettext('Error: %s'), $_ ) );
+	};
+
 	return;
 }
 
@@ -217,15 +222,15 @@ sub spell_check {
 	# Clean up any previous existing dialog
 	$self->clean_dialog;
 
-	eval {
+	try {
 		require Padre::Plugin::SpellCheck::Checker;
 		$self->{dialog} = Padre::Plugin::SpellCheck::Checker->new($self);
-	};
-	if ($@) {
-		$self->main->error( sprintf( Wx::gettext('Error: %s'), $@ ) );
-	} else {
 		$self->{dialog}->Show;
 	}
+	catch {
+		$self->main->error( sprintf( Wx::gettext('Error: %s'), $_ ) );
+	};
+
 	return;
 }
 

@@ -3,6 +3,7 @@ package Padre::Plugin::SpellCheck::Preferences;
 use warnings;
 use strict;
 
+use Try::Tiny;
 use Padre::Logger;
 use Padre::Util                                 ();
 use Padre::Locale                               ();
@@ -13,6 +14,10 @@ our $VERSION = '1.25';
 our @ISA     = qw{
 	Padre::Plugin::SpellCheck::FBP::Preferences
 };
+
+#Todo enable after 0.96 released
+# Padre::Plugin
+# };
 
 
 #######
@@ -41,7 +46,7 @@ sub new {
 #######
 sub _set_up {
 	my $self = shift;
-	
+
 	# set prefered dictionary from config
 	$self->{dictionary} = $self->{_parent}->config_read->{Engine};
 
@@ -69,12 +74,8 @@ sub _local_aspell_dictionaries {
 
 	my @local_dictionaries_names = ();
 
-	eval { require Text::Aspell; };
-	if ($@) {
-		$self->{local_dictionaries_names} = \@local_dictionaries_names;
-		$self->main->info( Wx::gettext('Text::Aspell is not installed') );
-		return;
-	} else {
+	try {
+		require Text::Aspell;
 		my $speller = Text::Aspell->new;
 
 		my @local_dictionaries = grep { $_ =~ /^\w+$/ } map { $_->{name} } $speller->dictionary_info;
@@ -93,6 +94,12 @@ sub _local_aspell_dictionaries {
 		TRACE("local dictionaries names = $self->{local_dictionaries_names}") if DEBUG;
 		return;
 	}
+	catch {
+		$self->{local_dictionaries_names} = \@local_dictionaries_names;
+		$self->main->info( Wx::gettext('Text::Aspell is not installed') );
+		return;
+	};
+
 }
 
 
@@ -104,13 +111,9 @@ sub _local_hunspell_dictionaries {
 
 	my @local_dictionaries_names;
 	my @local_dictionaries;
-	eval { require Text::Hunspell; };
-	if ($@) {
-		$self->{local_dictionaries_names} = \@local_dictionaries_names;
-		$self->main->info( Wx::gettext('Text::Hunspell is not installed') );
-		return;
-	} else {
 
+	try {
+		require Text::Hunspell;
 		require Padre::Util;
 		my $speller = Padre::Util::run_in_directory_two('hunspell -D </dev/null');
 		chomp $speller;
@@ -147,6 +150,12 @@ sub _local_hunspell_dictionaries {
 		TRACE("local dictionaries names = $self->{local_dictionaries_names}") if DEBUG;
 		return;
 	}
+	catch {
+		$self->{local_dictionaries_names} = \@local_dictionaries_names;
+		$self->main->info( Wx::gettext('Text::Hunspell is not installed') );
+		return;
+	};
+
 }
 
 #######
@@ -158,6 +167,11 @@ sub _display_dictionaries {
 
 	my $prefered_dictionary = $self->{_parent}->config_read->{ $self->{dictionary} };
 
+	#Todo enable after 0.96 released
+	# eval {
+	# # require Padre::Plugin;
+	# print $self->config_read->{Engine};
+	# };
 	TRACE("iso prefered_dictionary = $prefered_dictionary ") if DEBUG;
 
 	# set local_dictionaries_index to zero in case prefered_dictionary not found
