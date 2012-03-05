@@ -117,9 +117,9 @@ sub on_key_down {
 	#TODO draw a box around values
 
 	my $key_code = $event->GetKeyCode;
-	
-	if ( $key_code == Wx::WXK_UP
-		|| $key_code == Wx::WXK_DOWN 
+
+	if (   $key_code == Wx::WXK_UP
+		|| $key_code == Wx::WXK_DOWN
 		|| $key_code == Wx::WXK_RIGHT
 		|| $key_code == Wx::WXK_LEFT
 		|| $key_code == Wx::WXK_HOME
@@ -135,10 +135,11 @@ sub on_key_down {
 		|| $key_code == Wx::WXK_NUMPAD_END
 		|| $key_code == Wx::WXK_NUMPAD_DELETE
 		|| $key_code == Wx::WXK_NUMPAD_PAGEUP
-		|| $key_code == Wx::WXK_NUMPAD_PAGEDOWN)
+		|| $key_code == Wx::WXK_NUMPAD_PAGEDOWN )
 	{
-		print "TODO exit snippet mode\n";
-	} elsif ( defined $self->{_snippets} && ($key_code == Wx::WXK_TAB || $key_code == Wx::WXK_NUMPAD_TAB) ) {
+
+		#		print "TODO exit snippet mode\n";
+	} elsif ( defined $self->{_snippets} && ( $key_code == Wx::WXK_TAB || $key_code == Wx::WXK_NUMPAD_TAB ) ) {
 		if ( $self->_insert_snippet( $editor, $event->ShiftDown ) ) {
 
 			# consume the <TAB>-triggerred snippet event
@@ -173,28 +174,36 @@ sub _insert_snippet {
 	my $snippet = $snippet_obj->{snippet};
 
 	# Collect and highlight all variables in the snippet
-	$self->{variables} = [];
+	my $vars = $self->{variables} = [];
 	my $snippet_pattern = qr/
-		\${(\d+)(\:(.+?))?}  # ${1:property name} or ${1}
-		| (\$\d+)            # $1
+		(			# int is integer
+		\${(\d+)(\:(.*?))?}      # ${int:property name} or ${int}
+		|  \$(\d+)              # $int
+		)
 	/x;
 	while ( $snippet =~ /$snippet_pattern/g ) {
+		my $index = defined $5 ? int($5) : int($2);
 		my $var = {
-			index => $1,
-			value => $3,
-			start => pos($snippet),
+			text  => $1,
+			index => $index,
+			value => $4,
+			start => pos($snippet) - length($1),
 		};
-		push @{ $self->{variables} }, $var;
+		push @$vars, $var;
 	}
 
-	for my $variable ( @{ $self->{variables} } ) {
-		if ( $variable->{index} eq '1' ) {
-			$self->{_cursor} = $variable->{value};
+	use Data::Printer;
+	p(@$vars);
+
+	# Find the first cursor
+	my $cursor;
+	for my $v (@$vars) {
+		if ( $v->{index} == 1 && defined $v->{value} ) {
+			$cursor = $self->{_cursor} = $v->{text};
 		}
 	}
 
-	# Find the first cursor
-	my $cursor = '${1:property}';
+	print "cursor: $cursor\n";
 
 	# If it is tab key down event, we cycle through snippets
 	# to find a ^match.
@@ -203,10 +212,19 @@ sub _insert_snippet {
 	my $len  = length($trigger);
 	my $text = $snippet;
 
-	for my $var ( @{ $self->{variables} } ) {
-		my $index = $var->{index};
-		my $value = $var->{value};
-		$text =~ s/\${$index\:(.+?)}/$value/;
+	for my $var (@$vars) {
+		unless ( defined $var->{value} ) {
+			my $index = $var->{index};
+			for my $v (@$vars) {
+				my $value = $v->{value};
+				if ( ( $v->{index} == $index ) && defined $value ) {
+					print "match!\n";
+					$text =~ s/\$$index/$value/;
+					last;
+				}
+			}
+
+		}
 	}
 
 	# We paste the snippet and position the cursor to
@@ -215,10 +233,13 @@ sub _insert_snippet {
 	$editor->SetTargetEnd($pos);
 	$editor->ReplaceTarget($text);
 
-	if ( $snippet =~ /(\Q$cursor\E)/g ) {
+	if ( defined $cursor && $snippet =~ /(\Q$cursor\E)/g ) {
 		my $start = $pos - $len + pos($snippet) - length($cursor);
 		$editor->GotoPos($start);
-		$editor->SetSelection( $start, $start + length 'property' );
+		$editor->SetSelection( $start, $start + length $cursor );
+	} else {
+
+		#$editor->GotoPos($start);
 	}
 
 	# Snippet inserted
