@@ -57,7 +57,7 @@ BUILD: |
   }
 
 # Property
-has: has '${1:property}' => ( isa => '${2:Str}', is  => '${3:ro}', );
+has: has '${1:property}' => ( is => '${2:rw}', isa  => '${3:Str}', );
 
 # Type
 type: |
@@ -73,8 +73,8 @@ excludes: excludes '${1:OtherRole}';
 # has lazy property builder
 hasl: |
   has ${1:property} => (
-      isa => '${2:Str}',
-      is  => '${3:ro}',
+      is  => '${2:rw}',
+      isa => '${3:Str}',
       lazy_build => 1,
   );
   
