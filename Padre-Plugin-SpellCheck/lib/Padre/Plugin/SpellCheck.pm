@@ -115,41 +115,45 @@ sub _config {
 	#	Info P-P-SpellCheck    >= 1.23
 	#	+ $config->{Engine}     = 'Aspell'
 	###
-	if ( eval { $config->{Version} >= 1.23; } ) {
-		return;
-	} elsif (
-		eval {
-			$config->{Version} < 1.23;
+
+	try {
+		if ( $config->{Version} >= 1.23 ) {
+			return;
 		}
-		)
-	{
-		$config->{Version} = $VERSION;
-		$config->{Engine}  = 'Aspell';
-		$self->config_write($config);
-		return;
-	} elsif (
-		eval {
-			$config->{dictionary};
+	};
+
+	try {
+		if ( $config->{Version} < 1.23 ) {
+
+			$config->{Version} = $VERSION;
+			$config->{Engine}  = 'Aspell';
+			$self->config_write($config);
+			return;
 		}
-		)
-	{
-		my $tmp_iso = $config->{dictionary};
-		$self->config_write( {} );
-		$config             = $self->config_read;
-		$config->{Aspell}   = $tmp_iso;
-		$config->{Hunspell} = $tmp_iso;
-		$config->{Version}  = $VERSION;
-		$config->{Engine}   = 'Aspell';
-		$self->config_write($config);
-		return;
-	} else {
+	};
+
+	try {
+		if ( $config->{dictionary} ) {
+			my $tmp_iso = $config->{dictionary};
+			$self->config_write( {} );
+			$config             = $self->config_read;
+			$config->{Aspell}   = $tmp_iso;
+			$config->{Hunspell} = $tmp_iso;
+			$config->{Version}  = $VERSION;
+			$config->{Engine}   = 'Aspell';
+			$self->config_write($config);
+			return;
+		}
+	}
+	catch {
 		$self->config_write( {} );
 		$config->{Aspell}   = 'en_GB';
 		$config->{Hunspell} = 'en_GB';
 		$config->{Version}  = $VERSION;
 		$config->{Engine}   = 'Aspell';
 		$self->config_write($config);
-	}
+		return;
+	};
 
 	return;
 }

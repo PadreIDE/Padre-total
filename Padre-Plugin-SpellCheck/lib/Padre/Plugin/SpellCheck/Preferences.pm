@@ -48,7 +48,12 @@ sub _set_up {
 	my $self = shift;
 
 	# set prefered dictionary from config
-	$self->{dictionary} = $self->{_parent}->config_read->{Engine};
+	try {
+		$self->{dictionary} = $self->{_parent}->config_read->{Engine};
+	}
+	catch {
+		$self->{dictionary} = 'Aspell';
+	};
 
 	if ( $self->{dictionary} eq 'Aspell' ) {
 
@@ -163,9 +168,16 @@ sub _local_hunspell_dictionaries {
 #######
 sub _display_dictionaries {
 	my $self = shift;
-	my $main = $self->main;
 
-	my $prefered_dictionary = $self->{_parent}->config_read->{ $self->{dictionary} };
+	# my $main = $self->main;
+
+	my $prefered_dictionary;
+	try {
+		$prefered_dictionary = $self->{_parent}->config_read->{ $self->{dictionary} };
+	}
+	catch {
+		$prefered_dictionary = 'Aspell';
+	};
 
 	#Todo enable after 0.96 released
 	# eval {
