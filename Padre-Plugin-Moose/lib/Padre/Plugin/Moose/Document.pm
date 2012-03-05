@@ -135,11 +135,8 @@ sub on_key_down {
 		|| $key_code == Wx::WXK_NUMPAD_PAGEDOWN )
 	{
 
-		#		print "TODO exit snippet mode\n";
 		if(defined $self->{variables}) {
 			$self->{variables} = undef;
-
-			print "exit snippet mode... movement detected\n";
 		}
 	} elsif ( defined $self->{_snippets} && ( $key_code == Wx::WXK_TAB || $key_code == Wx::WXK_NUMPAD_TAB ) ) {
 		if ( $self->_insert_snippet( $editor, $event->ShiftDown ) ) {
@@ -243,8 +240,6 @@ sub _insert_snippet {
 			$cursor = $v;
 		}
 	}
-	print "last_index: " . $self->{last_index} . "\n";
-	use Data::Printer; p($cursor);
 
 	# Prepare to replace variables
 	my $len  = length($trigger);
@@ -256,7 +251,6 @@ sub _insert_snippet {
 			for my $v (@$vars) {
 				my $value = $v->{value};
 				if ( ( $v->{index} == $index ) && defined $value ) {
-					#print "match!\n";
 					#$text =~ s/\$$index/$value/;
 					last;
 				}
@@ -275,11 +269,8 @@ sub _insert_snippet {
 		my $start = $pos - $len + $cursor->{start};
 		$editor->GotoPos($start);
 		$editor->SetSelection( $start, $start + length $cursor->{text} );
-		
-		print "In selection $start... In snippet mode\n";
 	} else {
 		if($last_time) {
-			print "Exiting snippet mode... TAB OUT\n";
 			$editor->GotoPos($pos - $len + length $text);
 		} else {
 			$editor->SetTargetStart( $pos - $len );
@@ -289,8 +280,6 @@ sub _insert_snippet {
 			my $start = $pos - $len + $cursor->{start};	
 			$editor->GotoPos($start);
 			$editor->SetSelection( $start, $start + length $cursor->{text} );
-
-			print "Goto $start... In snippet mode\n";
 		}
 	}
 
