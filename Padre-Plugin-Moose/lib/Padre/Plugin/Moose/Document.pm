@@ -139,6 +139,7 @@ sub on_key_down {
 	{
 
 		#		print "TODO exit snippet mode\n";
+		$self->{variables} = undef;
 	} elsif ( defined $self->{_snippets} && ( $key_code == Wx::WXK_TAB || $key_code == Wx::WXK_NUMPAD_TAB ) ) {
 		if ( $self->_insert_snippet( $editor, $event->ShiftDown ) ) {
 
@@ -158,55 +159,83 @@ sub _insert_snippet {
 	my $editor     = shift;
 	my $shift_down = shift;
 
-	my $pos  = $editor->GetCurrentPos;
-	my $line = $editor->GetTextRange(
-		$editor->PositionFromLine( $editor->LineFromPosition($pos) ),
-		$pos
-	);
+	my $pos;
+	my $snippet;
+	my $trigger;
+	if(defined $self->{variables}) {
+		$pos     = $self->{_pos};
+		$snippet = $self->{_snippet};
+		$trigger = $self->{_trigger};
+	} else {
+		$pos  = $editor->GetCurrentPos;
+		my $line = $editor->GetTextRange(
+			$editor->PositionFromLine( $editor->LineFromPosition($pos) ),
+			$pos
+		);
 
-	#unless(defined $self->{snippet_mode}) {
-	#	$self->_enter_snippet_mode;
-	#}
-	my $snippet_obj = $self->_find_snippet($line);
-	return unless defined $snippet_obj;
+		my $snippet_obj = $self->_find_snippet($line);
+		return unless defined $snippet_obj;
+		
+		$self->{_pos} = $pos;
+		$snippet = $self->{_snippet} = $snippet_obj->{snippet};
+		$trigger = $self->{_trigger} = $snippet_obj->{trigger};
+	}
 
-	my $trigger = $snippet_obj->{trigger};
-	my $snippet = $snippet_obj->{snippet};
 
 	# Collect and highlight all variables in the snippet
-	my $vars = $self->{variables} = [];
-	my $snippet_pattern = qr/
-		(			# int is integer
-		\${(\d+)(\:(.*?))?}      # ${int:property name} or ${int}
-		|  \$(\d+)              # $int
-		)
-	/x;
-	while ( $snippet =~ /$snippet_pattern/g ) {
-		my $index = defined $5 ? int($5) : int($2);
-		my $var = {
-			text  => $1,
-			index => $index,
-			value => $4,
-			start => pos($snippet) - length($1),
-		};
-		push @$vars, $var;
+	my $vars;
+	my $first_time;
+	my $last_time;
+	if(defined $self->{variables}) {
+		# Already in snippet mode
+		$vars = $self->{variables};
+		$self->{selected_index}++;
+		if($self->{selected_index} > $self->{last_index}) {
+			# exit snippet mode and position at end
+			$self->{variables} = undef;
+			$last_time = 1;
+		}
+
+	} else {
+		# Not defined, create an empty one
+		$vars = $self->{variables} = [];
+		$self->{selected_index}    = 1;
+		$first_time = 1;
+
+		# Build snippet variables array
+		my $last_index = 0;
+		my $snippet_pattern = qr/
+			(			# int is integer
+			\${(\d+)(\:(.*?))?}     # ${int:default value} or ${int}
+			|  \$(\d+)              # $int
+			)
+		/x;
+		while ( $snippet =~ /$snippet_pattern/g ) {
+			my $index = defined $5 ? int($5) : int($2);
+			if($last_index < $index) {
+				$last_index = $index;
+			}
+			my $var = {
+				index => $index,
+				text  => $1,
+				value => $4,
+				start => pos($snippet) - length($1),
+			};
+			push @$vars, $var;
+		}
+		$self->{last_index} = $last_index;
 	}
 
-	use Data::Printer;
-	p(@$vars);
-
-	# Find the first cursor
+	# Find the next cursor
 	my $cursor;
 	for my $v (@$vars) {
-		if ( $v->{index} == 1 && defined $v->{value} ) {
-			$cursor = $self->{_cursor} = $v->{text};
+		my $index = $v->{index};
+		if ( $index == $self->{selected_index} && defined $v->{value} ) {
+			$cursor = $v;
 		}
 	}
-
-	print "cursor: $cursor\n";
-
-	# If it is tab key down event, we cycle through snippets
-	# to find a ^match.
+	print "last_index: " . $self->{last_index} . "\n";
+	use Data::Printer; p($cursor);
 
 	# Prepare to replace variables
 	my $len  = length($trigger);
@@ -218,8 +247,8 @@ sub _insert_snippet {
 			for my $v (@$vars) {
 				my $value = $v->{value};
 				if ( ( $v->{index} == $index ) && defined $value ) {
-					print "match!\n";
-					$text =~ s/\$$index/$value/;
+					#print "match!\n";
+					#$text =~ s/\$$index/$value/;
 					last;
 				}
 			}
@@ -229,17 +258,29 @@ sub _insert_snippet {
 
 	# We paste the snippet and position the cursor to
 	# the first variable (e.g ${1:xyz})
-	$editor->SetTargetStart( $pos - $len );
-	$editor->SetTargetEnd($pos);
-	$editor->ReplaceTarget($text);
-
-	if ( defined $cursor && $snippet =~ /(\Q$cursor\E)/g ) {
-		my $start = $pos - $len + pos($snippet) - length($cursor);
+	if($first_time) {
+		$editor->SetTargetStart( $pos - $len );
+		$editor->SetTargetEnd($pos);
+		$editor->ReplaceTarget($text);
+		
+		my $start = $pos - $len + $cursor->{start};
 		$editor->GotoPos($start);
-		$editor->SetSelection( $start, $start + length $cursor );
+		$editor->SetSelection( $start, $start + length $cursor->{text} );
+		
+		print "In selection $start... In snippet mode\n";
 	} else {
+		if($last_time) {
+			print "Exiting snippet mode... TAB OUT\n";
+			$editor->GotoPos($pos - $len + length $text);
+		} else {
+			$editor->SetTargetStart( $pos - $len );
+			$editor->SetTargetEnd( $pos + length $text);
+			$editor->ReplaceTarget($text);
 
-		#$editor->GotoPos($start);
+			my $start = $pos - $len + $cursor->{start};
+			print "Goto $start... In snippet mode\n";
+			$editor->GotoPos($start);
+		}
 	}
 
 	# Snippet inserted
