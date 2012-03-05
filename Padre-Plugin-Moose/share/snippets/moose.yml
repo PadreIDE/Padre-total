@@ -4,19 +4,35 @@
 # https://github.com/perigrin/perl-moose.tmbundle/Snippets
 
 # after method modifier
-after: after '${1:method_name}' => sub { ${2:# body...} }; 
+after: |
+  after '${1:method_name}' => sub {
+      ${2:# body...}
+  }; 
 
 # before method modifier
-before: before '${1:method_name}' => sub { ${2:# body...} }; 
+before: |
+  before '${1:method_name}' => sub {
+      ${2:# body...}
+  }; 
 
 # around method modifier
-around: around '${1:method_name}' => sub { ${2:# body...} }; 
+around: |
+  around '${1:method_name}' => sub {
+      ${2:# body...}
+  }; 
+
 
 # Augment method modifier
-augment: augment '${1:method_name}' => sub { ${2:# body...} }; 
+augment: |
+  augment '${1:method_name}' => sub {
+      ${2:# body...}
+  }; 
 
 # Override method modifier
-override: override '${1:method_name}' => sub { ${2:# body...} }; 
+override: |
+  override '${1:method_name}' => sub {
+      ${2:# body...}
+  }; 
 
 # Define class type
 classtype: class_type '${1:ClassName}';
