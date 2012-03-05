@@ -113,9 +113,6 @@ sub on_key_down {
 	require Padre::Plugin::Moose::Util;
 	Padre::Plugin::Moose::Util::add_moose_keywords_highlighting( $self, $config->{type} );
 
-	#TODO TAB to other variables
-	#TODO draw a box around values
-
 	my $key_code = $event->GetKeyCode;
 
 	if (   $key_code == Wx::WXK_UP
@@ -139,7 +136,11 @@ sub on_key_down {
 	{
 
 		#		print "TODO exit snippet mode\n";
-		$self->{variables} = undef;
+		if(defined $self->{variables}) {
+			$self->{variables} = undef;
+
+			print "exit snippet mode... movement detected\n";
+		}
 	} elsif ( defined $self->{_snippets} && ( $key_code == Wx::WXK_TAB || $key_code == Wx::WXK_NUMPAD_TAB ) ) {
 		if ( $self->_insert_snippet( $editor, $event->ShiftDown ) ) {
 
@@ -282,7 +283,7 @@ sub _insert_snippet {
 			$editor->GotoPos($pos - $len + length $text);
 		} else {
 			$editor->SetTargetStart( $pos - $len );
-			$editor->SetTargetEnd( $pos + length $text);
+			$editor->SetTargetEnd( $pos - $len + length $text );
 			$editor->ReplaceTarget($text);
 
 			my $start = $pos - $len + $cursor->{start};	
