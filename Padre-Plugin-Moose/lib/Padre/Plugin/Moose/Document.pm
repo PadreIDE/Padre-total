@@ -63,7 +63,8 @@ sub _load_snippets {
 		# Record loaded snippet type
 		$self->{_snippets_type} = $type;
 	};
-	if($@) {
+	if ($@) {
+
 		# TODO what to do here to make it useful
 		warn $@ . "\n";
 	}
@@ -115,8 +116,30 @@ sub on_key_down {
 	#TODO TAB to other variables
 	#TODO draw a box around values
 
-	if ( defined $self->{_snippets} && $event->GetKeyCode == Wx::WXK_TAB ) {
-		if ( $self->_insert_snippet($editor, $event->ShiftDown) ) {
+	my $key_code = $event->GetKeyCode;
+	
+	if ( $key_code == Wx::WXK_UP
+		|| $key_code == Wx::WXK_DOWN 
+		|| $key_code == Wx::WXK_RIGHT
+		|| $key_code == Wx::WXK_LEFT
+		|| $key_code == Wx::WXK_HOME
+		|| $key_code == Wx::WXK_END
+		|| $key_code == Wx::WXK_DELETE
+		|| $key_code == Wx::WXK_PAGEUP
+		|| $key_code == Wx::WXK_PAGEDOWN
+		|| $key_code == Wx::WXK_NUMPAD_UP
+		|| $key_code == Wx::WXK_NUMPAD_DOWN
+		|| $key_code == Wx::WXK_NUMPAD_RIGHT
+		|| $key_code == Wx::WXK_NUMPAD_LEFT
+		|| $key_code == Wx::WXK_NUMPAD_HOME
+		|| $key_code == Wx::WXK_NUMPAD_END
+		|| $key_code == Wx::WXK_NUMPAD_DELETE
+		|| $key_code == Wx::WXK_NUMPAD_PAGEUP
+		|| $key_code == Wx::WXK_NUMPAD_PAGEDOWN)
+	{
+		print "TODO exit snippet mode\n";
+	} elsif ( defined $self->{_snippets} && ($key_code == Wx::WXK_TAB || $key_code == Wx::WXK_NUMPAD_TAB) ) {
+		if ( $self->_insert_snippet( $editor, $event->ShiftDown ) ) {
 
 			# consume the <TAB>-triggerred snippet event
 			return;
@@ -140,9 +163,9 @@ sub _insert_snippet {
 		$pos
 	);
 
-#unless(defined $self->{snippet_mode}) {
-#	$self->_enter_snippet_mode;
-#}
+	#unless(defined $self->{snippet_mode}) {
+	#	$self->_enter_snippet_mode;
+	#}
 	my $snippet_obj = $self->_find_snippet($line);
 	return unless defined $snippet_obj;
 
@@ -164,8 +187,8 @@ sub _insert_snippet {
 		push @{ $self->{variables} }, $var;
 	}
 
-	for my $variable (@{$self->{variables}}) {
-		if($variable->{index} eq '1') {
+	for my $variable ( @{ $self->{variables} } ) {
+		if ( $variable->{index} eq '1' ) {
 			$self->{_cursor} = $variable->{value};
 		}
 	}
