@@ -115,7 +115,7 @@ sub on_key_down {
 
 	my $key_code = $event->GetKeyCode;
 
-	if ( $self->_can_end_snippet_mode($key_code) ) {
+	if ( $self->_can_end_snippet_mode($event) ) {
 
 		if ( defined $self->{variables} ) {
 			$self->{variables} = undef;
@@ -141,10 +141,13 @@ sub on_key_down {
 # Returns whether the key can end snippet mode or not
 sub _can_end_snippet_mode {
 	my $self     = shift;
-	my $key_code = shift;
+	my $event    = shift;
 
+	my $key_code = $event->GetKeyCode;
 	return
-		   $key_code == Wx::WXK_UP
+		$event->ControlDown ||
+		$event->AltDown ||
+		   ($key_code == Wx::WXK_UP
 		|| $key_code == Wx::WXK_DOWN
 		|| $key_code == Wx::WXK_RIGHT
 		|| $key_code == Wx::WXK_LEFT
@@ -161,7 +164,7 @@ sub _can_end_snippet_mode {
 		|| $key_code == Wx::WXK_NUMPAD_END
 		|| $key_code == Wx::WXK_NUMPAD_DELETE
 		|| $key_code == Wx::WXK_NUMPAD_PAGEUP
-		|| $key_code == Wx::WXK_NUMPAD_PAGEDOWN;
+		|| $key_code == Wx::WXK_NUMPAD_PAGEDOWN);
 }
 
 # Adds Moose/Mouse/MooseX::Declare keywords highlighting
