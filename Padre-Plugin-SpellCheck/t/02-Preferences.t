@@ -11,7 +11,7 @@ use_ok( 'Padre::Logger', '0.94' );
 ######
 
 my @subs = qw( _local_aspell_dictionaries _local_hunspell_dictionaries
-	_on_button_save_clicked display_dictionaries
+	_on_button_save_clicked _display_dictionaries
 	new on_dictionary_chosen padre_locale_label _set_up
 );
 

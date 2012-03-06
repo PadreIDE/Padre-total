@@ -1,5 +1,7 @@
 package Padre::Plugin::SpellCheck;
 
+#TODO release 1.25 after Padre 0.96
+
 use 5.008005;
 use strict;
 use warnings;
@@ -34,6 +36,7 @@ sub plugin_name {
 #######
 # Define Padre Interfaces required
 #######
+#ToDo change to 0.96
 sub padre_interfaces {
 	return (
 		'Padre::Plugin' => '0.94',
@@ -201,13 +204,14 @@ sub clean_dialog {
 #######
 sub plugin_preferences {
 	my $self = shift;
+	my $main = $self->main;
 
 	# Clean up any previous existing dialog
 	$self->clean_dialog;
 
 	try {
 		require Padre::Plugin::SpellCheck::Preferences;
-		$self->{dialog} = Padre::Plugin::SpellCheck::Preferences->new($self);
+		$self->{dialog} = Padre::Plugin::SpellCheck::Preferences->new($main);
 		$self->{dialog}->ShowModal;
 	}
 	catch {

@@ -13,25 +13,19 @@ use Padre::Plugin::SpellCheck::FBP::Preferences ();
 our $VERSION = '1.25';
 our @ISA     = qw{
 	Padre::Plugin::SpellCheck::FBP::Preferences
+	Padre::Plugin
 };
-
-#Todo enable after 0.96 released
-# Padre::Plugin
-# };
 
 
 #######
 # Method new
 #######
 sub new {
-	my $class   = shift;
-	my $_parent = shift; # parent $self
+	my $class = shift;
+	my $main  = shift;
 
 	# Create the dialog
-	my $self = $class->SUPER::new( $_parent->main );
-
-	# for access to P-P-SpellCheck DB config
-	$self->{_parent} = $_parent;
+	my $self = $class->SUPER::new($main);
 
 	# define where to display main dialog
 	$self->CenterOnParent;
@@ -49,7 +43,7 @@ sub _set_up {
 
 	# set prefered dictionary from config
 	try {
-		$self->{dictionary} = $self->{_parent}->config_read->{Engine};
+		$self->{dictionary} = $self->config_read->{Engine};
 	}
 	catch {
 		$self->{dictionary} = 'Aspell';
@@ -173,7 +167,7 @@ sub _display_dictionaries {
 
 	my $prefered_dictionary;
 	try {
-		$prefered_dictionary = $self->{_parent}->config_read->{ $self->{dictionary} };
+		$prefered_dictionary = $self->config_read->{ $self->{dictionary} };
 	}
 	catch {
 		$prefered_dictionary = 'Aspell';
@@ -228,12 +222,12 @@ sub _on_button_save_clicked {
 	TRACE("selected dictionary iso = $select_dictionary_iso ") if DEBUG;
 
 	# save config info
-	my $config = $self->{_parent}->config_read;
+	my $config = $self->config_read;
 	$config->{ $self->{dictionary} } = $select_dictionary_iso;
 	$config->{Engine} = $self->{dictionary};
-	$self->{_parent}->config_write($config);
+	$self->config_write($config);
 
-	$self->{_parent}->clean_dialog;
+	$self->Hide;
 	return;
 }
 
