@@ -45,7 +45,7 @@ classtype: class_type '${1:ClassName}';
 coerce: |
   coerce '${1:type}' 
       => from '${2:parent_type}' 
-         via { $3 };
+         via { ${3} };
 
 # Desctrutor
 DEMOLISH: |

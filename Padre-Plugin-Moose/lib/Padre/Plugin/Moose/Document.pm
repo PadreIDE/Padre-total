@@ -10,7 +10,7 @@ our $VERSION = '0.18';
 
 our @ISA = 'Padre::Document::Perl';
 
-# Override SUPER::set_editor to hook up the key down event
+# Override SUPER::set_editor to hook up the key down and char events
 sub set_editor {
 	my $self   = shift;
 	my $editor = shift;
@@ -113,18 +113,16 @@ sub on_key_down {
 	# Highlight Moose keywords
 	$self->_highlight_moose_keywords( $config->{type} );
 
-	my $key_code = $event->GetKeyCode;
-
 	if ( $self->_can_end_snippet_mode($event) ) {
 
 		if ( defined $self->{variables} ) {
 			$self->{variables} = undef;
 		}
-	} elsif ( defined $self->{_snippets} && $key_code == Wx::WXK_TAB ) {
+	} elsif ( defined $self->{_snippets} && $event->GetKeyCode == Wx::WXK_TAB ) {
 		my $result =
 			  $event->ShiftDown()
 			? $self->_previous_variable($editor)
-			: $self->_insert_snippet($editor);
+			: $self->_start_snippet_mode($editor);
 		if ( defined $result ) {
 
 			# Consume the <TAB>-triggerred snippet event
@@ -143,44 +141,40 @@ sub _can_end_snippet_mode {
 	my $self     = shift;
 	my $event    = shift;
 
-	my $key_code = $event->GetKeyCode;
+	my $key = $event->GetKeyCode;
 	return
-		$event->ControlDown && $key_code != Wx::WXK_TAB ||
+		$event->ControlDown && $key != Wx::WXK_TAB ||
 		$event->AltDown ||
 		   (
-		   $key_code == Wx::WXK_ESCAPE
-		|| $key_code == Wx::WXK_UP
-		|| $key_code == Wx::WXK_DOWN
-		|| $key_code == Wx::WXK_RIGHT
-		|| $key_code == Wx::WXK_LEFT
-		|| $key_code == Wx::WXK_HOME
-		|| $key_code == Wx::WXK_END
-		|| $key_code == Wx::WXK_DELETE
-		|| $key_code == Wx::WXK_PAGEUP
-		|| $key_code == Wx::WXK_PAGEDOWN
-		|| $key_code == Wx::WXK_NUMPAD_UP
-		|| $key_code == Wx::WXK_NUMPAD_DOWN
-		|| $key_code == Wx::WXK_NUMPAD_RIGHT
-		|| $key_code == Wx::WXK_NUMPAD_LEFT
-		|| $key_code == Wx::WXK_NUMPAD_HOME
-		|| $key_code == Wx::WXK_NUMPAD_END
-		|| $key_code == Wx::WXK_NUMPAD_DELETE
-		|| $key_code == Wx::WXK_NUMPAD_PAGEUP
-		|| $key_code == Wx::WXK_NUMPAD_PAGEDOWN);
+		   $key == Wx::WXK_ESCAPE
+		|| $key == Wx::WXK_UP
+		|| $key == Wx::WXK_DOWN
+		|| $key == Wx::WXK_RIGHT
+		|| $key == Wx::WXK_LEFT
+		|| $key == Wx::WXK_HOME
+		|| $key == Wx::WXK_END
+		|| $key == Wx::WXK_DELETE
+		|| $key == Wx::WXK_PAGEUP
+		|| $key == Wx::WXK_PAGEDOWN
+		|| $key == Wx::WXK_NUMPAD_UP
+		|| $key == Wx::WXK_NUMPAD_DOWN
+		|| $key == Wx::WXK_NUMPAD_RIGHT
+		|| $key == Wx::WXK_NUMPAD_LEFT
+		|| $key == Wx::WXK_NUMPAD_HOME
+		|| $key == Wx::WXK_NUMPAD_END
+		|| $key == Wx::WXK_NUMPAD_DELETE
+		|| $key == Wx::WXK_NUMPAD_PAGEUP
+		|| $key == Wx::WXK_NUMPAD_PAGEDOWN);
 }
 
 # Adds Moose/Mouse/MooseX::Declare keywords highlighting
 sub _highlight_moose_keywords {
-	my $self = shift;
-	my $type = shift;
-
 	# TODO remove hack once Padre supports a better way
 	require Padre::Plugin::Moose::Util;
-	Padre::Plugin::Moose::Util::add_moose_keywords_highlighting( $self, $type );
-
-	return;
+	Padre::Plugin::Moose::Util::add_moose_keywords_highlighting( $_[0], $_[1] );
 }
 
+# Called when a printable character is typed
 sub on_char {
 	my $self   = shift;
 	my $editor = shift;
@@ -247,10 +241,12 @@ sub on_char {
 	return;
 }
 
+# Called when SHIFT-TAB is pressed
 sub _previous_variable {
 	my $self   = shift;
 	my $editor = shift;
 
+	# Only in snippet mode
 	return unless defined $self->{variables};
 
 	# Already in snippet mode
@@ -277,7 +273,8 @@ sub _previous_variable {
 	return 1;
 }
 
-sub _insert_snippet {
+# Starts snippet mode when TAB is pressed
+sub _start_snippet_mode {
 	my $self   = shift;
 	my $editor = shift;
 
