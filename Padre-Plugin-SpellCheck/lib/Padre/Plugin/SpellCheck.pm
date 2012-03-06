@@ -226,13 +226,14 @@ sub plugin_preferences {
 #######
 sub spell_check {
 	my $self = shift;
+	my $main = $self->main;
 
 	# Clean up any previous existing dialog
 	$self->clean_dialog;
 
 	try {
 		require Padre::Plugin::SpellCheck::Checker;
-		$self->{dialog} = Padre::Plugin::SpellCheck::Checker->new($self);
+		$self->{dialog} = Padre::Plugin::SpellCheck::Checker->new($main);
 		$self->{dialog}->Show;
 	}
 	catch {

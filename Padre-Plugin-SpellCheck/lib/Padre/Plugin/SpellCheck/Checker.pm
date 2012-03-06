@@ -11,7 +11,6 @@ use Class::XSAccessor {
 		_label       => '_label',       # label hosting the misspelled word
 		_list        => '_list',        # listbox listing the suggestions
 		_offset      => '_offset',      # offset of _text within the editor
-		_parent      => '_parent',      # reference to spellcheck plugin
 		_sizer       => '_sizer',       # window sizer
 		_text        => '_text',        # text being spellchecked
 		                                # _iso_name    => '_iso_name',    # our stored dictonary lanaguage
@@ -27,6 +26,7 @@ use Padre::Plugin::SpellCheck::FBP::Checker ();
 our $VERSION = '1.25';
 our @ISA     = qw{
 	Padre::Plugin::SpellCheck::FBP::Checker
+	Padre::Plugin
 };
 
 
@@ -34,14 +34,11 @@ our @ISA     = qw{
 # Method new
 #######
 sub new {
-	my $class   = shift;
-	my $_parent = shift; # parent $self
+	my $class = shift;
+	my $main  = shift;
 
 	# Create the dialog
-	my $self = $class->SUPER::new( $_parent->main );
-
-	# for access to P-P-SpellCheck DB config
-	$self->{_parent} = $_parent;
+	my $self = $class->SUPER::new($main);
 
 	# define where to display main dialog
 	$self->CenterOnParent;
@@ -59,8 +56,8 @@ sub _set_up {
 	my $main    = $self->main;
 	my $current = $main->current;
 
-	my $text_spell = $self->{_parent}->config_read->{Engine};
-	my $iso_name   = $self->{_parent}->config_read->{$text_spell};
+	my $text_spell = $self->config_read->{Engine};
+	my $iso_name   = $self->config_read->{$text_spell};
 
 	#Thanks alias
 	my $status_info = "$text_spell => " . $self->padre_locale_label($iso_name);
@@ -155,7 +152,7 @@ sub _update {
 	my $item = $self->list->GetItem(0);
 	$item->SetState(Wx::wxLIST_STATE_SELECTED);
 	$self->list->SetItem($item);
-	
+
 	return;
 }
 
@@ -239,7 +236,7 @@ sub _replace {
 	$self->_text($text);
 	$offset += $posnew;
 	$self->_offset($offset);
-	
+
 	return;
 }
 
@@ -257,7 +254,7 @@ sub _on_ignore_all_clicked {
 	my ( $word, $pos ) = @$error;
 	$self->_engine->set_ignore_word($word);
 	$self->_on_ignore_clicked;
-	
+
 	return;
 }
 
