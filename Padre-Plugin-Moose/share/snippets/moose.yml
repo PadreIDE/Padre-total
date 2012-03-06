@@ -70,7 +70,7 @@ type: |
       => where { $2 };
 
 # Subtype
-subtype: subtype '${1:type}' => as '${2:parent_type}' => ${3:where \{ ${4} \}};
+subtype: subtype '${1:type}' => as '${2:parent_type}' => ${3:where \{ \}};
 
 # Does a list of roles
 with: with qw(${1:MyRole});
@@ -92,7 +92,7 @@ hasl: |
   sub _build_$1 {
       my $self = shift;
   
-      ${4:# TODO implement _build_$1}
+      ${4:# body...}
   }
 
 # MooseX::Getopt Script
