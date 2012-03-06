@@ -4,6 +4,7 @@ use 5.008;
 use strict;
 use warnings;
 use Padre::Document::Perl ();
+use Padre::Logger;
 
 our $VERSION = '0.18';
 
@@ -65,15 +66,15 @@ sub _load_snippets {
 		# Record loaded snippet type
 		$self->{_snippets_type} = $type;
 	};
-	if ($@) {
 
-		# TODO what to do here to make it useful
-		warn $@ . "\n";
-	}
+	# Report error to padre logger
+	TRACE("Unable to load snippet. Reason: $@\n")
+		if $@ && DEBUG;
 
 	return;
 }
 
+# Override get_indentation_style to
 sub get_indentation_style {
 	my $self = shift;
 
@@ -81,11 +82,10 @@ sub get_indentation_style {
 	require Padre::Plugin::Moose;
 	my $config = Padre::Plugin::Moose::_plugin_config();
 
-	# Syntax highlight Moose keywords after get_indentation_style is called :)
-	# TODO remove hack once Padre supports a better way
-	require Padre::Plugin::Moose::Util;
-	Padre::Plugin::Moose::Util::add_moose_keywords_highlighting( $self, $config->{type} );
+	# Highlight Moose keywords after get_indentation_style is called :)
+	$self->_highlight_moose_keywords( $config->{type} );
 
+	# continue as normal
 	return $self->SUPER::get_indentation_style;
 }
 
@@ -110,14 +110,41 @@ sub on_key_down {
 	# Load snippets everything since it be changed by the user at runtime
 	$self->_load_snippets($config);
 
-	# Syntax highlight Moose keywords here also :)
-	# TODO remove hack once Padre supports a better way
-	require Padre::Plugin::Moose::Util;
-	Padre::Plugin::Moose::Util::add_moose_keywords_highlighting( $self, $config->{type} );
+	# Highlight Moose keywords
+	$self->_highlight_moose_keywords( $config->{type} );
 
 	my $key_code = $event->GetKeyCode;
 
-	if (   $key_code == Wx::WXK_UP
+	if ( $self->_can_end_snippet_mode($key_code) ) {
+
+		if ( defined $self->{variables} ) {
+			$self->{variables} = undef;
+		}
+	} elsif ( defined $self->{_snippets} && $key_code == Wx::WXK_TAB ) {
+		my $result =
+			  $event->ShiftDown()
+			? $self->_previous_variable($editor)
+			: $self->_insert_snippet($editor);
+		if ( defined $result ) {
+
+			# Consume the <TAB>-triggerred snippet event
+			return;
+		}
+	}
+
+	# Keep processing events
+	$event->Skip(1);
+
+	return;
+}
+
+# Returns whether the key can end snippet mode or not
+sub _can_end_snippet_mode {
+	my $self     = shift;
+	my $key_code = shift;
+
+	return
+		   $key_code == Wx::WXK_UP
 		|| $key_code == Wx::WXK_DOWN
 		|| $key_code == Wx::WXK_RIGHT
 		|| $key_code == Wx::WXK_LEFT
@@ -134,28 +161,17 @@ sub on_key_down {
 		|| $key_code == Wx::WXK_NUMPAD_END
 		|| $key_code == Wx::WXK_NUMPAD_DELETE
 		|| $key_code == Wx::WXK_NUMPAD_PAGEUP
-		|| $key_code == Wx::WXK_NUMPAD_PAGEDOWN )
-	{
+		|| $key_code == Wx::WXK_NUMPAD_PAGEDOWN;
+}
 
-		if ( defined $self->{variables} ) {
-			$self->{variables} = undef;
-		}
-	} elsif ( defined $self->{_snippets} && $key_code == Wx::WXK_TAB ) {
-		my $result;
-		if ( $event->ShiftDown() ) {
-			$result = $self->_previous_variable($editor);
-		} else {
-			$result = $self->_insert_snippet($editor);
-		}
-		if ( defined $result ) {
+# Adds Moose/Mouse/MooseX::Declare keywords highlighting
+sub _highlight_moose_keywords {
+	my $self = shift;
+	my $type = shift;
 
-			# Consume the <TAB>-triggerred snippet event
-			return;
-		}
-	}
-
-	# Keep processing events
-	$event->Skip(1);
+	# TODO remove hack once Padre supports a better way
+	require Padre::Plugin::Moose::Util;
+	Padre::Plugin::Moose::Util::add_moose_keywords_highlighting( $self, $type );
 
 	return;
 }
@@ -245,7 +261,7 @@ sub _previous_variable {
 
 	for my $var ( @{ $self->{variables} } ) {
 		if ( $var->{index} == $self->{selected_index} ) {
-			my $start = $self->{_pos} - length($self->{_trigger}) + $var->{start};
+			my $start = $self->{_pos} - length( $self->{_trigger} ) + $var->{start};
 			$editor->GotoPos($start);
 			$editor->SetSelection( $start, $start + length( $var->{value} ) );
 
@@ -310,14 +326,15 @@ sub _insert_snippet {
 		$first_time             = 1;
 
 		# Build snippet variables array
-		my $last_index      = 0;
-		my $snippet_pattern = qr/
-			(			# int is integer
+		my $last_index = 0;
+		while (
+			$snippet =~ /
+			(		# int is integer
 			\${(\d+)(\:(.*?))?}     # ${int:default value} or ${int}
 			|  \$(\d+)              # $int
+		)/gx
 			)
-		/x;
-		while ( $snippet =~ /$snippet_pattern/g ) {
+		{
 			my $index = defined $5 ? int($5) : int($2);
 			if ( $last_index < $index ) {
 				$last_index = $index;
