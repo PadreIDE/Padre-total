@@ -137,13 +137,19 @@ sub on_key_down {
 		|| $key_code == Wx::WXK_NUMPAD_PAGEDOWN )
 	{
 
-		if(defined $self->{variables}) {
+		if ( defined $self->{variables} ) {
 			$self->{variables} = undef;
 		}
-	} elsif ( defined $self->{_snippets} && ( $key_code == Wx::WXK_TAB || $key_code == Wx::WXK_NUMPAD_TAB ) ) {
-		if ( $self->_insert_snippet( $editor, $event->ShiftDown ) ) {
+	} elsif ( defined $self->{_snippets} && $key_code == Wx::WXK_TAB ) {
+		my $result;
+		if ( $event->ShiftDown() ) {
+			$result = $self->_previous_variable($editor);
+		} else {
+			$result = $self->_insert_snippet($editor);
+		}
+		if ( defined $result ) {
 
-			# consume the <TAB>-triggerred snippet event
+			# Consume the <TAB>-triggerred snippet event
 			return;
 		}
 	}
@@ -155,34 +161,35 @@ sub on_key_down {
 }
 
 sub on_char {
-	my $self = shift;
+	my $self   = shift;
 	my $editor = shift;
-	my $event = shift;
+	my $event  = shift;
 
-	unless(defined $self->{variables}) {
+	unless ( defined $self->{variables} ) {
+
 		# Keep processing
 		$event->Skip(1);
 		return;
 	}
-	
-	my $vars = $self->{variables};
-	my $old_pos  = $editor->GetCurrentPos;
+
+	my $vars    = $self->{variables};
+	my $old_pos = $editor->GetCurrentPos;
 	my $new_pos = $old_pos;
 	for my $var (@$vars) {
-		if($self->{selected_index} == $var->{index}) {
-			if(defined $self->{pristine}) {
+		if ( $self->{selected_index} == $var->{index} ) {
+			if ( defined $self->{pristine} ) {
 				$old_pos -= length $var->{value};
-				$var->{value} = chr($event->GetKeyCode);
+				$var->{value}     = chr( $event->GetKeyCode );
 				$self->{pristine} = undef;
 			} else {
-				$var->{value} .= chr($event->GetKeyCode);
+				$var->{value} .= chr( $event->GetKeyCode );
 			}
 			$new_pos += length $var->{value};
 			last;
 		}
 	}
-	
-	my $text = $self->{_snippet};
+
+	my $text  = $self->{_snippet};
 	my $count = 0;
 	for my $var (@$vars) {
 		unless ( defined $var->{value} ) {
@@ -192,7 +199,7 @@ sub on_char {
 				if ( ( $v->{index} == $index ) && defined $value ) {
 					my $before_length = length $text;
 					$v->{start} = $v->{orig_start} + $count;
-					substr($text, $v->{start}, length $v->{text}) = $value;
+					substr( $text, $v->{start}, length $v->{text} ) = $value;
 					$count += length($text) - $before_length;
 					last;
 				}
@@ -200,40 +207,68 @@ sub on_char {
 		} else {
 			my $before_length = length $text;
 			$var->{start} = $var->{orig_start} + $count;
-			substr($text, $var->{start}, length $var->{text}) = $var->{value};
+			substr( $text, $var->{start}, length $var->{text} ) = $var->{value};
 			$count += length($text) - $before_length;
 		}
 
 	}
 
-	
+
 	#my $pos = $self->{_pos};
 	#my $len = length $self->{_trigger};
 	#$editor->SetTargetStart( $pos - $len );
 	#$editor->SetTargetEnd( $pos - $len + length $text );
-#	$editor->ReplaceTarget($text);
+	#	$editor->ReplaceTarget($text);
 	#$editor->GotoPos($new_pos);
 
 	# Keep processing
-$event->Skip(1);
+	$event->Skip(1);
 	return;
 }
 
+sub _previous_variable {
+	my $self   = shift;
+	my $editor = shift;
+
+	return unless defined $self->{variables};
+
+	# Already in snippet mode
+	$self->{selected_index}--;
+
+	if ( $self->{selected_index} < 1 ) {
+
+		# Shift-tabbing to traverse them in circular fashion
+		$self->{selected_index} = $self->{last_index};
+	}
+
+	$self->{pristine} = 1;
+
+	for my $var ( @{ $self->{variables} } ) {
+		if ( $var->{index} == $self->{selected_index} ) {
+			my $start = $self->{_pos} - length $self->{_trigger} + $var->{start};
+			$editor->GotoPos($start);
+			$editor->SetSelection( $start, $start + length( $var->{value} ) );
+
+			last;
+		}
+	}
+
+	return 1;
+}
 
 sub _insert_snippet {
-	my $self       = shift;
-	my $editor     = shift;
-	my $shift_down = shift;
+	my $self   = shift;
+	my $editor = shift;
 
 	my $pos;
 	my $snippet;
 	my $trigger;
-	if(defined $self->{variables}) {
+	if ( defined $self->{variables} ) {
 		$pos     = $self->{_pos};
 		$snippet = $self->{_snippet};
 		$trigger = $self->{_trigger};
 	} else {
-		$pos  = $editor->GetCurrentPos;
+		$pos = $editor->GetCurrentPos;
 		my $line = $editor->GetTextRange(
 			$editor->PositionFromLine( $editor->LineFromPosition($pos) ),
 			$pos
@@ -241,7 +276,7 @@ sub _insert_snippet {
 
 		my $snippet_obj = $self->_find_snippet($line);
 		return unless defined $snippet_obj;
-		
+
 		$self->{_pos} = $pos;
 		$snippet = $self->{_snippet} = $snippet_obj->{snippet};
 		$trigger = $self->{_trigger} = $snippet_obj->{trigger};
@@ -252,34 +287,30 @@ sub _insert_snippet {
 	my $vars;
 	my $first_time;
 	my $last_time;
-	if(defined $self->{variables}) {
+	if ( defined $self->{variables} ) {
+
 		# Already in snippet mode
 		$vars = $self->{variables};
-		if($shift_down) {
-			$self->{selected_index}--;
-		} else {
-			$self->{selected_index}++;
-		}
-		
-		if($self->{selected_index} > $self->{last_index}) {
+		$self->{selected_index}++;
+
+		if ( $self->{selected_index} > $self->{last_index} ) {
+
 			# exit snippet mode and position at end
 			$self->{variables} = undef;
 			$last_time = 1;
-		} elsif($self->{selected_index} < 1) {
-			# Shift-tabbing to traverse them in circular fashion
-			$self->{selected_index} = $self->{last_index};
 		}
 		$self->{pristine} = 1;
 
 	} else {
+
 		# Not defined, create an empty one
 		$vars = $self->{variables} = [];
-		$self->{selected_index}    = 1;
-		$self->{pristine} = 1;
-		$first_time = 1;
+		$self->{selected_index} = 1;
+		$self->{pristine}       = 1;
+		$first_time             = 1;
 
 		# Build snippet variables array
-		my $last_index = 0;
+		my $last_index      = 0;
 		my $snippet_pattern = qr/
 			(			# int is integer
 			\${(\d+)(\:(.*?))?}     # ${int:default value} or ${int}
@@ -288,15 +319,15 @@ sub _insert_snippet {
 		/x;
 		while ( $snippet =~ /$snippet_pattern/g ) {
 			my $index = defined $5 ? int($5) : int($2);
-			if($last_index < $index) {
+			if ( $last_index < $index ) {
 				$last_index = $index;
 			}
 			my $var = {
-				index => $index,
-				text  => $1,
-				value => $4,
+				index      => $index,
+				text       => $1,
+				value      => $4,
 				orig_start => pos($snippet) - length($1),
-				start => pos($snippet) - length($1),
+				start      => pos($snippet) - length($1),
 			};
 			push @$vars, $var;
 		}
@@ -319,7 +350,7 @@ sub _insert_snippet {
 				if ( ( $v->{index} == $index ) && defined $value ) {
 					my $before_length = length $text;
 					$v->{start} = $v->{orig_start} + $count;
-					substr($text, $v->{start}, length $v->{text}) = $value;
+					substr( $text, $v->{start}, length $v->{text} ) = $value;
 					$count += length($text) - $before_length;
 					last;
 				}
@@ -327,9 +358,9 @@ sub _insert_snippet {
 		} else {
 			my $before_length = length $text;
 			$var->{start} = $var->{orig_start} + $count;
-			substr($text, $var->{start}, length $var->{text}) = $var->{value};
+			substr( $text, $var->{start}, length $var->{text} ) = $var->{value};
 			$count += length($text) - $before_length;
-			
+
 			if ( $var->{index} == $self->{selected_index} ) {
 				$cursor = $var;
 			}
@@ -339,23 +370,23 @@ sub _insert_snippet {
 
 	# We paste the snippet and position the cursor to
 	# the first variable (e.g ${1:xyz})
-	if($first_time) {
+	if ($first_time) {
 		$editor->SetTargetStart( $pos - $len );
 		$editor->SetTargetEnd($pos);
 		$editor->ReplaceTarget($text);
-		
+
 		my $start = $pos - $len + $cursor->{start};
 		$editor->GotoPos($start);
 		$editor->SetSelection( $start, $start + length $cursor->{value} );
 	} else {
-		if($last_time) {
-			$editor->GotoPos($pos - $len + length $text);
+		if ($last_time) {
+			$editor->GotoPos( $pos - $len + length $text );
 		} else {
 			$editor->SetTargetStart( $pos - $len );
 			$editor->SetTargetEnd( $pos - $len + length $text );
 			$editor->ReplaceTarget($text);
 
-			my $start = $pos - $len + $cursor->{start};	
+			my $start = $pos - $len + $cursor->{start};
 			$editor->GotoPos($start);
 			$editor->SetSelection( $start, $start + length $cursor->{value} );
 		}
