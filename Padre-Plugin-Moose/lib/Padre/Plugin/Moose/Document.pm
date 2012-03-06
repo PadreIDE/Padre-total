@@ -145,9 +145,11 @@ sub _can_end_snippet_mode {
 
 	my $key_code = $event->GetKeyCode;
 	return
-		$event->ControlDown ||
+		$event->ControlDown && $key_code != Wx::WXK_TAB ||
 		$event->AltDown ||
-		   ($key_code == Wx::WXK_UP
+		   (
+		   $key_code == Wx::WXK_ESCAPE
+		|| $key_code == Wx::WXK_UP
 		|| $key_code == Wx::WXK_DOWN
 		|| $key_code == Wx::WXK_RIGHT
 		|| $key_code == Wx::WXK_LEFT
@@ -333,19 +335,24 @@ sub _insert_snippet {
 		while (
 			$snippet =~ /
 			(		# int is integer
-			\${(\d+)(\:(.*?))?}     # ${int:default value} or ${int}
+			\${(\d+)(?: \:((?:[^\\]|\\.)*?))?}     # ${int:default value} or ${int}
 			|  \$(\d+)              # $int
 		)/gx
 			)
 		{
-			my $index = defined $5 ? int($5) : int($2);
+			my $index = defined $4 ? int($4) : int($2);
 			if ( $last_index < $index ) {
 				$last_index = $index;
+			}
+			my $value = $3;
+			if(defined $value) {
+				# expand escaped text
+				$value =~ s/\\(.)/$1/g;
 			}
 			my $var = {
 				index      => $index,
 				text       => $1,
-				value      => $4,
+				value      => $value,
 				orig_start => pos($snippet) - length($1),
 				start      => pos($snippet) - length($1),
 			};
