@@ -245,7 +245,7 @@ sub _previous_variable {
 
 	for my $var ( @{ $self->{variables} } ) {
 		if ( $var->{index} == $self->{selected_index} ) {
-			my $start = $self->{_pos} - length $self->{_trigger} + $var->{start};
+			my $start = $self->{_pos} - length($self->{_trigger}) + $var->{start};
 			$editor->GotoPos($start);
 			$editor->SetSelection( $start, $start + length( $var->{value} ) );
 
