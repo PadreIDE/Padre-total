@@ -72,7 +72,7 @@ sub generate_moosex_declare_code {
 
 sub provide_help {
 	require Wx;
-	return Wx::gettext('A method is a subroutine within a class that defines behavior at runtime');
+	return Wx::gettext('A special type of subroutine called at the creation of an object');
 }
 
 sub read_from_inspector {
