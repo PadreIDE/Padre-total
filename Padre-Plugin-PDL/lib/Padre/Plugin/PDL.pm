@@ -156,13 +156,6 @@ Ahmad M. Zawawi <ahmad.zawawi@gmail.com>
 
 =head1 CONTRIBUTORS
 
-Adam Kennedy <adamk@cpan.org>
-
-Kevin Dawson E<lt>bowtie@cpan.orgE<gt>
-
-=back
-
-
 =head1 COPYRIGHT AND LICENSE
 
 This software is copyright (c) 2012 by Ahmad M. Zawawi
