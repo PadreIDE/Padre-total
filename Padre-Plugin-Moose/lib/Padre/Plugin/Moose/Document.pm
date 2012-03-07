@@ -70,7 +70,12 @@ sub on_key_down {
 	if ( $self->_can_end_snippet_mode($event) ) {
 
 		if ( defined $self->{variables} ) {
+			# Stop snippet mode
 			$self->{variables} = undef;
+
+			# Clear the selected text
+			my $current_pos = $editor->GetCurrentPos;
+			$editor->SetSelection($current_pos, $current_pos);
 		}
 	} elsif ( defined $self->{_snippets} && $event->GetKeyCode == Wx::WXK_TAB ) {
 		my $result =
