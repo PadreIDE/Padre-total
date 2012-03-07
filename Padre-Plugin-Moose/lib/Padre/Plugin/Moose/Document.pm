@@ -469,12 +469,13 @@ sub _expand_snippet {
 
 	my $m          = '';
 	my $first_time = 1;
+	my $eol = $self->newline;
 	for my $line ( split /\n/, $text ) {
 		if ($first_time) {
-			$m .= $line . "\n";
+			$m .= $line . $eol;
 			$first_time = 0;
 		} else {
-			$m .= $indent . $line . "\n";
+			$m .= $indent . $line . $eol;
 		}
 	}
 	$text = $m;
