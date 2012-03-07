@@ -407,12 +407,13 @@ sub _build_variables_info {
 				# expand escaped text
 				$value =~ s/\\(.)/$1/g;
 			}
+			my $start = pos($snippet) - length($1);
 			my $var = {
 				index      => $index,
 				text       => $1,
 				value      => $value,
-				orig_start => pos($snippet) - length($1),
-				start      => pos($snippet) - length($1),
+				orig_start => $start,
+				start      => $start,
 			};
 			push @$vars, $var;
 		}
