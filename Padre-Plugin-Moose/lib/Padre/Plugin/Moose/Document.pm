@@ -454,18 +454,12 @@ sub _expand_snippet {
 			for my $v (@$vars) {
 				my $value = $v->{value};
 				if ( ( $v->{index} == $index ) && defined $value ) {
-					my $before_length = length $text;
-					$var->{start} = $var->{orig_start} + $count;
-					substr( $text, $var->{start}, length $var->{text} ) = $value;
-					$count += length($text) - $before_length;
+					($text, $count) = $self->_replace_value($text, $var, $value, $count);
 					last;
 				}
 			}
 		} else {
-			my $before_length = length $text;
-			$var->{start} = $var->{orig_start} + $count;
-			substr( $text, $var->{start}, length $var->{text} ) = $var->{value};
-			$count += length($text) - $before_length;
+			($text, $count) = $self->_replace_value($text, $var, $var->{value}, $count);
 
 			if ( $var->{index} == $self->{selected_index} ) {
 				$cursor = $var;
@@ -475,6 +469,21 @@ sub _expand_snippet {
 	}
 
 	return ( $text, $cursor );
+}
+
+sub _replace_value {
+	my $self = shift;
+	my $text = shift;
+	my $var  = shift;
+	my $value = shift;
+	my $count = shift;
+
+	my $length0 = length $text;
+	$var->{start} = $var->{orig_start} + $count;
+	substr( $text, $var->{start}, length $var->{text} ) = $value;
+	$count += length($text) - $length0;
+
+	return ($text, $count);
 }
 
 sub _insert_snippet {
