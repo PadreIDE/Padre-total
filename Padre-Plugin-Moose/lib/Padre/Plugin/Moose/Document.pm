@@ -68,15 +68,7 @@ sub on_key_down {
 	$self->_highlight_moose_keywords( $config->{type} );
 
 	if ( $self->_can_end_snippet_mode($event) ) {
-
-		if ( defined $self->{variables} ) {
-			# Stop snippet mode
-			$self->{variables} = undef;
-
-			# Clear the selected text
-			my $current_pos = $editor->GetCurrentPos;
-			$editor->SetSelection($current_pos, $current_pos);
-		}
+		$self->_end_snippet_mode($editor);
 	} elsif ( defined $self->{_snippets} && $event->GetKeyCode == Wx::WXK_TAB ) {
 		my $result =
 			  $event->ShiftDown()
@@ -140,6 +132,24 @@ sub on_char {
 	return;
 }
 
+# Called by the Padre editor when a mouse up event occurs
+sub event_on_left_up {
+	$_[0]->_end_snippet_mode($_[1]);
+}
+
+sub _end_snippet_mode {
+	my $self = shift;
+	my $editor = shift;
+
+		if ( defined $self->{variables} ) {
+			# Stop snippet mode
+			$self->{variables} = undef;
+
+			# Clear the selected text
+			my $current_pos = $editor->GetCurrentPos;
+			$editor->SetSelection($current_pos, $current_pos);
+		}
+}
 
 # Load snippets from file according to code generation type
 sub _load_snippets {
