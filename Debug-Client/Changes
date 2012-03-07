@@ -1,5 +1,5 @@
 0.18    2012.03.07
-    - bumpeed to 0.18 (BOWTIE)
+    - bumped to 0.18 (BOWTIE)
     - tweaks to POD (BOWTIE)
 
 0.17_06 2012.02.09
@@ -115,9 +115,9 @@ v0.11 2009.12.22
     Eliminate most of the list/scalar context separation from methods.
 
 v0.10 2009.12.20
-    Add some code to debuge certain test failures
+    Add some code to debug certain test failures
     Turn _prompt and _process_line into method calls
-    Keep the current filename and row number in the debugger object
+    Keep the current file-name and row number in the debugger object
 
 v0.09 2009.12.18
     Add case when content of the line is shown on a separate line
