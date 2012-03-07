@@ -101,7 +101,7 @@ requires: requires '${1:my_method}';
 class: |
   use MooseX::Declare;
   
-  class ${1:ClassName} extends (${2:MyParent}) with (${3:MyParent}) {
+  class ${1:ClassName} extends (${2:MyParent}) with (${3:MyRole}) {
       ${4: # body...}
   }
 
