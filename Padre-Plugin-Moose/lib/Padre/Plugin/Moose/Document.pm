@@ -17,12 +17,50 @@ sub set_editor {
 
 	$self->SUPER::set_editor($editor);
 
-	# TODO Padre should fire event_key_down instead of this hack :)
+	# TODO Padre should fire these events instead of this weird hack :)
+	# Register those editor events :)
+	$self->_register_events($editor);
+
+	return;
+}
+
+# Register key down and character typed events
+sub _register_events {
+	my $self   = shift;
+	my $editor = shift;
+
+
 	# Register keyboard event handler for the current editor
 	Wx::Event::EVT_KEY_DOWN( $editor, undef );
-	Wx::Event::EVT_KEY_DOWN( $editor, sub { $self->on_key_down(@_); } );
+	Wx::Event::EVT_KEY_DOWN(
+		$editor,
+		sub {
+			if ( $self->can('on_key_down') ) {
+				$self->on_key_down(@_);
+			} else {
+
+				# Method not found, document mimetype change
+				# so that padre does not crash :)
+				$_[1]->Skip(1);
+				Wx::Event::EVT_KEY_DOWN( $editor, undef );
+			}
+		}
+	);
 	Wx::Event::EVT_CHAR( $editor, undef );
-	Wx::Event::EVT_CHAR( $editor, sub { $self->on_char(@_); } );
+	Wx::Event::EVT_CHAR(
+		$editor,
+		sub {
+			if ( $self->can('on_char') ) {
+				$self->on_char(@_);
+			} else {
+
+				# Method not found, document mimetype change
+				# so that padre does not crash :)
+				$_[1]->Skip(1);
+				Wx::Event::EVT_CHAR( $editor, undef );
+			}
+		}
+	);
 
 	return;
 }
