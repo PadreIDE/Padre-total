@@ -4,7 +4,6 @@ use 5.008;
 use strict;
 use warnings;
 use Padre::Document::Perl ();
-use Padre::Logger;
 
 our $VERSION = '0.18';
 
@@ -244,16 +243,33 @@ sub _load_snippets {
 			File::Spec->catfile( 'snippets', $file )
 		);
 
-		# Read it via standard YAML
-		$self->{_snippets} = YAML::LoadFile($filename);
+		# Read the dialect snippet file
+		my $dialect_snippets = YAML::LoadFile($filename);
+
+		# Workaround: Load perl snippets :)
+		# TODO add automatic parent snippet support
+		my $perl_filename = File::ShareDir::dist_file(
+			'Padre-Plugin-Moose',
+			File::Spec->catfile( 'snippets', 'perl.yml' )
+		);
+		my $snippets = YAML::LoadFile($perl_filename);
+		for my $trigger (keys %{$dialect_snippets}) {
+			if(defined $snippets->{$trigger}) {
+				warn "Trigger: $trigger is already in parent snippet file\n";
+			}
+			$snippets->{$trigger} = $dialect_snippets->{$trigger};
+		}
+
+		# The final merged snippet file
+		$self->{_snippets} = $snippets;
 
 		# Record loaded snippet type
 		$self->{_snippets_type} = $type;
 	};
 
 	# Report error to padre logger
-	TRACE("Unable to load snippet. Reason: $@\n")
-		if $@ && DEBUG;
+	warn "Unable to load snippet. Reason: $@\n"
+		if $@;
 
 	return;
 }
