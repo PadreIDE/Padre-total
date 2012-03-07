@@ -173,7 +173,7 @@ sub on_char {
 	}
 
 	# Expand the snippet
-	my ( $text, $cursor ) = $self->_expand_snippet( $self->{_snippet} );
+	my ( $text, $cursor ) = $self->_expand_snippet( $self->{_snippet}, $self->{_indent} );
 
 
 	$editor->SetTargetStart($start_position);
@@ -333,12 +333,12 @@ sub _start_snippet_mode {
 	my $self   = shift;
 	my $editor = shift;
 
-	my ( $pos, $snippet, $trigger ) = $self->_prepare_snippet_info($editor) or return;
+	my ( $pos, $snippet, $trigger, $indent ) = $self->_prepare_snippet_info($editor) or return;
 	my ( $first_time, $last_time ) = $self->_build_variables_info($snippet);
 
 	# Prepare to replace variables
 	# Find the next cursor
-	my ( $text, $cursor ) = $self->_expand_snippet($snippet);
+	my ( $text, $cursor ) = $self->_expand_snippet( $snippet, $indent );
 
 	# We paste the snippet and position the cursor to
 	$self->_insert_snippet( $editor, $cursor, $text, $first_time, $last_time );
@@ -351,11 +351,12 @@ sub _prepare_snippet_info {
 	my $self   = shift;
 	my $editor = shift;
 
-	my ( $pos, $snippet, $trigger );
+	my ( $pos, $snippet, $trigger, $indent );
 	if ( defined $self->{variables} ) {
 		$pos     = $self->{_pos};
 		$snippet = $self->{_snippet};
 		$trigger = $self->{_trigger};
+		$indent  = $self->{_indent};
 	} else {
 		$pos = $editor->GetCurrentPos;
 		my $line = $editor->GetTextRange(
@@ -363,15 +364,16 @@ sub _prepare_snippet_info {
 			$pos
 		);
 
-		my $snippet_obj = $self->_find_snippet($line);
-		return unless defined $snippet_obj;
+		my $o = $self->_find_snippet($line);
+		return unless defined $o;
 
 		$self->{_pos} = $pos;
-		$snippet = $self->{_snippet} = $snippet_obj->{snippet};
-		$trigger = $self->{_trigger} = $snippet_obj->{trigger};
+		$snippet = $self->{_snippet} = $o->{snippet};
+		$trigger = $self->{_trigger} = $o->{trigger};
+		$indent  = $self->{_indent}  = $o->{indent};
 	}
 
-	return ( $pos, $snippet, $trigger );
+	return ( $pos, $snippet, $trigger, $indent );
 }
 
 # Collect and highlight all variables in the snippet
@@ -444,12 +446,14 @@ sub _find_snippet {
 	my $self = shift;
 	my $line = shift;
 
+	my $indent = $line =~ /^(\s*)/ ? $1 : '';
 	my %snippets = %{ $self->{_snippets} };
 	for my $trigger ( keys %snippets ) {
 		if ( $line =~ /\b\Q$trigger\E$/ ) {
 			return {
 				trigger => $trigger,
 				snippet => $snippets{$trigger},
+				indent  => $indent,
 			};
 		}
 	}
@@ -459,8 +463,22 @@ sub _find_snippet {
 
 # Returns an expanded snippet with all the variables filled in
 sub _expand_snippet {
-	my $self = shift;
-	my $text = shift;
+	my $self   = shift;
+	my $text   = shift;
+	my $indent = shift;
+
+	my $m          = '';
+	my $first_time = 1;
+	for my $line ( split /\n/, $text ) {
+		if ($first_time) {
+			$m .= $line . "\n";
+			$first_time = 0;
+		} else {
+			$m .= $indent . $line . "\n";
+		}
+	}
+	$text = $m;
+
 	my $cursor;
 	my $count = 0;
 	my $vars  = $self->{variables};
