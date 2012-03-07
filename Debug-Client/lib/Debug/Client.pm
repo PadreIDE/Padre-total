@@ -4,7 +4,7 @@ use 5.008006;
 use strict;
 use warnings;
 
-our $VERSION = '0.17_06';
+our $VERSION = '0.18';
 
 use utf8;
 use IO::Socket;
