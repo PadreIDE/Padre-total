@@ -24,3 +24,8 @@ script
 subtype
 type
 with
+{
+	script
+	hasl
+	meth
+}
