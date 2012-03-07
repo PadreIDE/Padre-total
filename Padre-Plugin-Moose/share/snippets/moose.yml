@@ -67,7 +67,7 @@ has: has '${1:property}' => ( is => '${2:rw}', isa  => '${3:Str}', );
 # Type
 type: |
   type '${1:type}' 
-      => where { $2 };
+      => where { ${2} };
 
 # Subtype
 subtype: subtype '${1:type}' => as '${2:parent_type}' => ${3:where \{ \}};
