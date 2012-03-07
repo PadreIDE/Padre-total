@@ -138,19 +138,18 @@ sub on_char {
 		return;
 	}
 
-	my $vars    = $self->{variables};
-	my $old_pos = $editor->GetCurrentPos;
-	my $new_pos = $old_pos;
-	for my $var (@$vars) {
+	my $pos = $self->{_pos};
+	my $start_position = $pos - length($self->{_trigger});
+	my $new_pos;
+	for my $var (@{$self->{variables}}) {
 		if ( $self->{selected_index} == $var->{index} ) {
 			if ( defined $self->{pristine} ) {
-				$old_pos -= length $var->{value};
 				$var->{value}     = chr( $event->GetKeyCode );
 				$self->{pristine} = undef;
 			} else {
 				$var->{value} .= chr( $event->GetKeyCode );
 			}
-			$new_pos += length $var->{value};
+			$new_pos = $start_position + $var->{start} + length($var->{value});
 			last;
 		}
 	}
@@ -158,15 +157,14 @@ sub on_char {
 	# Expand the snippet
 	my ( $text, $cursor ) = $self->_expand_snippet( $self->{_snippet} );
 
-	my $pos = $self->{_pos};
-	my $len = length $self->{_trigger};
-	$editor->SetTargetStart( $pos - $len );
-	$editor->SetTargetEnd( $pos - $len + length $text );
+
+	$editor->SetTargetStart( $start_position );
+	$editor->SetTargetEnd( $start_position + length($self->{_text}) );
 	$editor->ReplaceTarget($text);
 	$editor->GotoPos($new_pos);
 
-	# Keep processing
-	$event->Skip(1);
+	$self->{_text} = $text;
+
 	return;
 }
 
@@ -517,6 +515,8 @@ sub _insert_snippet {
 			$editor->SetSelection( $start, $start + length $cursor->{value} );
 		}
 	}
+	
+	$self->{_text} = $text;
 }
 
 
