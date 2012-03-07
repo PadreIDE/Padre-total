@@ -27,52 +27,6 @@ sub set_editor {
 	return;
 }
 
-# Load snippets from file according to code generation type
-sub _load_snippets {
-	my $self   = shift;
-	my $config = shift;
-
-	eval {
-		require YAML;
-		require File::ShareDir;
-		require File::Spec;
-
-		# Determine the snippets filename
-		my $file;
-		my $type = $config->{type};
-		if ( $type eq 'Mouse' ) {
-
-			# Mouse snippets
-			$file = 'mouse.yml';
-		} elsif ( $type eq 'MooseX::Declare' ) {
-
-			# MooseX::Declare snippets
-			$file = 'moosex_declare.yml';
-		} else {
-
-			# Moose by default
-			$file = 'moose.yml';
-		}
-
-		# Shortcut if that snippet type is already loaded in memory
-		return if defined( $self->{_snippets_type} ) and ( $type eq $self->{_snippets_type} );
-
-		# Determine the full share/${snippets_filename}
-		my $filename = File::ShareDir::dist_file( 'Padre-Plugin-Moose', File::Spec->catfile( 'snippets', $file ) );
-
-		# Read it via standard YAML
-		$self->{_snippets} = YAML::LoadFile($filename);
-
-		# Record loaded snippet type
-		$self->{_snippets_type} = $type;
-	};
-
-	# Report error to padre logger
-	TRACE("Unable to load snippet. Reason: $@\n")
-		if $@ && DEBUG;
-
-	return;
-}
 
 # Override get_indentation_style to
 sub get_indentation_style {
@@ -136,44 +90,6 @@ sub on_key_down {
 	return;
 }
 
-# Returns whether the key can end snippet mode or not
-sub _can_end_snippet_mode {
-	my $self     = shift;
-	my $event    = shift;
-
-	my $key = $event->GetKeyCode;
-	return
-		$event->ControlDown && $key != Wx::WXK_TAB ||
-		$event->AltDown ||
-		   (
-		   $key == Wx::WXK_ESCAPE
-		|| $key == Wx::WXK_UP
-		|| $key == Wx::WXK_DOWN
-		|| $key == Wx::WXK_RIGHT
-		|| $key == Wx::WXK_LEFT
-		|| $key == Wx::WXK_HOME
-		|| $key == Wx::WXK_END
-		|| $key == Wx::WXK_DELETE
-		|| $key == Wx::WXK_PAGEUP
-		|| $key == Wx::WXK_PAGEDOWN
-		|| $key == Wx::WXK_NUMPAD_UP
-		|| $key == Wx::WXK_NUMPAD_DOWN
-		|| $key == Wx::WXK_NUMPAD_RIGHT
-		|| $key == Wx::WXK_NUMPAD_LEFT
-		|| $key == Wx::WXK_NUMPAD_HOME
-		|| $key == Wx::WXK_NUMPAD_END
-		|| $key == Wx::WXK_NUMPAD_DELETE
-		|| $key == Wx::WXK_NUMPAD_PAGEUP
-		|| $key == Wx::WXK_NUMPAD_PAGEDOWN);
-}
-
-# Adds Moose/Mouse/MooseX::Declare keywords highlighting
-sub _highlight_moose_keywords {
-	# TODO remove hack once Padre supports a better way
-	require Padre::Plugin::Moose::Util;
-	Padre::Plugin::Moose::Util::add_moose_keywords_highlighting( $_[0], $_[1] );
-}
-
 # Called when a printable character is typed
 sub on_char {
 	my $self   = shift;
@@ -204,30 +120,8 @@ sub on_char {
 		}
 	}
 
-	my $text  = $self->{_snippet};
-	my $count = 0;
-	for my $var (@$vars) {
-		unless ( defined $var->{value} ) {
-			my $index = $var->{index};
-			for my $v (@$vars) {
-				my $value = $v->{value};
-				if ( ( $v->{index} == $index ) && defined $value ) {
-					my $before_length = length $text;
-					$v->{start} = $v->{orig_start} + $count;
-					substr( $text, $v->{start}, length $v->{text} ) = $value;
-					$count += length($text) - $before_length;
-					last;
-				}
-			}
-		} else {
-			my $before_length = length $text;
-			$var->{start} = $var->{orig_start} + $count;
-			substr( $text, $var->{start}, length $var->{text} ) = $var->{value};
-			$count += length($text) - $before_length;
-		}
-
-	}
-
+	# Expand the snippet
+	my ( $text, $cursor ) = $self->_expand_snippet( $self->{_snippet} );
 
 	#my $pos = $self->{_pos};
 	#my $len = length $self->{_trigger};
@@ -239,6 +133,97 @@ sub on_char {
 	# Keep processing
 	$event->Skip(1);
 	return;
+}
+
+
+# Load snippets from file according to code generation type
+sub _load_snippets {
+	my $self   = shift;
+	my $config = shift;
+
+	eval {
+		require YAML;
+		require File::ShareDir;
+		require File::Spec;
+
+		# Determine the snippets filename
+		my $file;
+		my $type = $config->{type};
+		if ( $type eq 'Mouse' ) {
+
+			# Mouse snippets
+			$file = 'mouse.yml';
+		} elsif ( $type eq 'MooseX::Declare' ) {
+
+			# MooseX::Declare snippets
+			$file = 'moosex_declare.yml';
+		} else {
+
+			# Moose by default
+			$file = 'moose.yml';
+		}
+
+		# Shortcut if that snippet type is already loaded in memory
+		return
+			if defined( $self->{_snippets_type} )
+				and ( $type eq $self->{_snippets_type} );
+
+		# Determine the full share/${snippets_filename}
+		my $filename = File::ShareDir::dist_file(
+			'Padre-Plugin-Moose',
+			File::Spec->catfile( 'snippets', $file )
+		);
+
+		# Read it via standard YAML
+		$self->{_snippets} = YAML::LoadFile($filename);
+
+		# Record loaded snippet type
+		$self->{_snippets_type} = $type;
+	};
+
+	# Report error to padre logger
+	TRACE("Unable to load snippet. Reason: $@\n")
+		if $@ && DEBUG;
+
+	return;
+}
+
+# Returns whether the key can end snippet mode or not
+sub _can_end_snippet_mode {
+	my $self  = shift;
+	my $event = shift;
+
+	my $key = $event->GetKeyCode;
+	return
+		   $event->ControlDown && $key != Wx::WXK_TAB
+		|| $event->AltDown
+		|| ( $key == Wx::WXK_ESCAPE
+		|| $key == Wx::WXK_UP
+		|| $key == Wx::WXK_DOWN
+		|| $key == Wx::WXK_RIGHT
+		|| $key == Wx::WXK_LEFT
+		|| $key == Wx::WXK_HOME
+		|| $key == Wx::WXK_END
+		|| $key == Wx::WXK_DELETE
+		|| $key == Wx::WXK_PAGEUP
+		|| $key == Wx::WXK_PAGEDOWN
+		|| $key == Wx::WXK_NUMPAD_UP
+		|| $key == Wx::WXK_NUMPAD_DOWN
+		|| $key == Wx::WXK_NUMPAD_RIGHT
+		|| $key == Wx::WXK_NUMPAD_LEFT
+		|| $key == Wx::WXK_NUMPAD_HOME
+		|| $key == Wx::WXK_NUMPAD_END
+		|| $key == Wx::WXK_NUMPAD_DELETE
+		|| $key == Wx::WXK_NUMPAD_PAGEUP
+		|| $key == Wx::WXK_NUMPAD_PAGEDOWN );
+}
+
+# Adds Moose/Mouse/MooseX::Declare keywords highlighting
+sub _highlight_moose_keywords {
+
+	# TODO remove hack once Padre supports a better way
+	require Padre::Plugin::Moose::Util;
+	Padre::Plugin::Moose::Util::add_moose_keywords_highlighting( $_[0], $_[1] );
 }
 
 # Called when SHIFT-TAB is pressed
@@ -278,9 +263,47 @@ sub _start_snippet_mode {
 	my $self   = shift;
 	my $editor = shift;
 
-	my $pos;
-	my $snippet;
-	my $trigger;
+	my ( $pos, $snippet, $trigger ) = $self->_prepare_snippet_info($editor) or return;
+	my ( $first_time, $last_time ) = $self->_build_variables_info($snippet);
+
+	# Prepare to replace variables
+	# Find the next cursor
+	my ( $text, $cursor ) = $self->_expand_snippet($snippet);
+
+	# We paste the snippet and position the cursor to
+	# the first variable (e.g ${1:xyz})
+	my $len = length($trigger);
+	if ($first_time) {
+		$editor->SetTargetStart( $pos - $len );
+		$editor->SetTargetEnd($pos);
+		$editor->ReplaceTarget($text);
+
+		my $start = $pos - $len + $cursor->{start};
+		$editor->GotoPos($start);
+		$editor->SetSelection( $start, $start + length $cursor->{value} );
+	} else {
+		if ($last_time) {
+			$editor->GotoPos( $pos - $len + length $text );
+		} else {
+			$editor->SetTargetStart( $pos - $len );
+			$editor->SetTargetEnd( $pos - $len + length $text );
+			$editor->ReplaceTarget($text);
+
+			my $start = $pos - $len + $cursor->{start};
+			$editor->GotoPos($start);
+			$editor->SetSelection( $start, $start + length $cursor->{value} );
+		}
+	}
+
+	# Snippet inserted
+	return 1;
+}
+
+sub _prepare_snippet_info {
+	my $self   = shift;
+	my $editor = shift;
+
+	my ( $pos, $snippet, $trigger );
 	if ( defined $self->{variables} ) {
 		$pos     = $self->{_pos};
 		$snippet = $self->{_snippet};
@@ -300,8 +323,13 @@ sub _start_snippet_mode {
 		$trigger = $self->{_trigger} = $snippet_obj->{trigger};
 	}
 
+	return ( $pos, $snippet, $trigger );
+}
 
-	# Collect and highlight all variables in the snippet
+# Collect and highlight all variables in the snippet
+sub _build_variables_info {
+	my $self    = shift;
+	my $snippet = shift;
 	my $vars;
 	my $first_time;
 	my $last_time;
@@ -342,7 +370,8 @@ sub _start_snippet_mode {
 				$last_index = $index;
 			}
 			my $value = $3;
-			if(defined $value) {
+			if ( defined $value ) {
+
 				# expand escaped text
 				$value =~ s/\\(.)/$1/g;
 			}
@@ -358,14 +387,34 @@ sub _start_snippet_mode {
 		$self->{last_index} = $last_index;
 	}
 
+	return ( $first_time, $last_time );
+}
 
-	# Prepare to replace variables
-	my $len  = length($trigger);
-	my $text = $snippet;
+# Returns the snippet template or undef
+sub _find_snippet {
+	my $self = shift;
+	my $line = shift;
 
-	# Find the next cursor
+	my %snippets = %{ $self->{_snippets} };
+	for my $trigger ( keys %snippets ) {
+		if ( $line =~ /\b\Q$trigger\E$/ ) {
+			return {
+				trigger => $trigger,
+				snippet => $snippets{$trigger},
+			};
+		}
+	}
+
+	return;
+}
+
+# Returns an expanded snippet with all the variables filled in
+sub _expand_snippet {
+	my $self = shift;
+	my $text = shift;
 	my $cursor;
 	my $count = 0;
+	my $vars  = $self->{variables};
 	for my $var (@$vars) {
 		unless ( defined $var->{value} ) {
 			my $index = $var->{index};
@@ -392,52 +441,8 @@ sub _start_snippet_mode {
 
 	}
 
-	# We paste the snippet and position the cursor to
-	# the first variable (e.g ${1:xyz})
-	if ($first_time) {
-		$editor->SetTargetStart( $pos - $len );
-		$editor->SetTargetEnd($pos);
-		$editor->ReplaceTarget($text);
-
-		my $start = $pos - $len + $cursor->{start};
-		$editor->GotoPos($start);
-		$editor->SetSelection( $start, $start + length $cursor->{value} );
-	} else {
-		if ($last_time) {
-			$editor->GotoPos( $pos - $len + length $text );
-		} else {
-			$editor->SetTargetStart( $pos - $len );
-			$editor->SetTargetEnd( $pos - $len + length $text );
-			$editor->ReplaceTarget($text);
-
-			my $start = $pos - $len + $cursor->{start};
-			$editor->GotoPos($start);
-			$editor->SetSelection( $start, $start + length $cursor->{value} );
-		}
-	}
-
-	# Snippet inserted
-	return 1;
+	return ( $text, $cursor );
 }
-
-# Returns the snippet template or undef
-sub _find_snippet {
-	my $self = shift;
-	my $line = shift;
-
-	my %snippets = %{ $self->{_snippets} };
-	for my $trigger ( keys %snippets ) {
-		if ( $line =~ /\b\Q$trigger\E$/ ) {
-			return {
-				trigger => $trigger,
-				snippet => $snippets{$trigger},
-			};
-		}
-	}
-
-	return;
-}
-
 
 1;
 
@@ -447,6 +452,6 @@ __END__
 
 =head1 NAME
 
-Padre::Plugin::Moose::Document - Padre Perl document with Moose highlighting
+Padre::Plugin::Moose::Document - A Perl document that understands Moose
 
 =cut
