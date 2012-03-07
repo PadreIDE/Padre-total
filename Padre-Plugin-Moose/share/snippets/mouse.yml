@@ -114,6 +114,6 @@ class: |
 # Method declaration
 meth: |
   sub ${1:method_name} {
-      my \$self = shift;
+      my $self = shift;
       ${2:# body...}
   }

@@ -28,4 +28,5 @@ with
 	script
 	hasl
 	meth
+	has
 }
