@@ -462,6 +462,9 @@ sub _find_snippet {
 				}
 			}
 
+			# chomp it from that last line!
+			chomp $snippet;
+
 			return {
 				trigger => $trigger,
 				snippet => $snippet,
