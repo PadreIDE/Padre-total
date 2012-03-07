@@ -237,8 +237,6 @@ Adam Kennedy <adamk@cpan.org>
 
 Kevin Dawson E<lt>bowtie@cpan.orgE<gt>
 
-=back
-
 
 =head1 COPYRIGHT AND LICENSE
 
