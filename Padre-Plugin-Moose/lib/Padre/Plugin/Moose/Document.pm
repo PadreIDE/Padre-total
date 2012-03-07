@@ -287,29 +287,7 @@ sub _start_snippet_mode {
 	my ( $text, $cursor ) = $self->_expand_snippet($snippet);
 
 	# We paste the snippet and position the cursor to
-	# the first variable (e.g ${1:xyz})
-	my $len = length($trigger);
-	if ($first_time) {
-		$editor->SetTargetStart( $pos - $len );
-		$editor->SetTargetEnd($pos);
-		$editor->ReplaceTarget($text);
-
-		my $start = $pos - $len + $cursor->{start};
-		$editor->GotoPos($start);
-		$editor->SetSelection( $start, $start + length $cursor->{value} );
-	} else {
-		if ($last_time) {
-			$editor->GotoPos( $pos - $len + length $text );
-		} else {
-			$editor->SetTargetStart( $pos - $len );
-			$editor->SetTargetEnd( $pos - $len + length $text );
-			$editor->ReplaceTarget($text);
-
-			my $start = $pos - $len + $cursor->{start};
-			$editor->GotoPos($start);
-			$editor->SetSelection( $start, $start + length $cursor->{value} );
-		}
-	}
+	$self->_insert_snippet( $editor, $cursor, $text, $first_time, $last_time );
 
 	# Snippet inserted
 	return 1;
@@ -459,6 +437,40 @@ sub _expand_snippet {
 
 	return ( $text, $cursor );
 }
+
+sub _insert_snippet {
+	my $self       = shift;
+	my $editor     = shift;
+	my $cursor     = shift;
+	my $text       = shift;
+	my $first_time = shift;
+	my $last_time  = shift;
+
+	my $pos            = $self->{_pos};
+	my $start_position = $pos - length( $self->{_trigger} );
+	if ($first_time) {
+		$editor->SetTargetStart($start_position);
+		$editor->SetTargetEnd($pos);
+		$editor->ReplaceTarget($text);
+
+		my $start = $start_position + $cursor->{start};
+		$editor->GotoPos($start);
+		$editor->SetSelection( $start, $start + length $cursor->{value} );
+	} else {
+		if ($last_time) {
+			$editor->GotoPos( $start_position + length $text );
+		} else {
+			$editor->SetTargetStart($start_position);
+			$editor->SetTargetEnd( $start_position + length $text );
+			$editor->ReplaceTarget($text);
+
+			my $start = $start_position + $cursor->{start};
+			$editor->GotoPos($start);
+			$editor->SetSelection( $start, $start + length $cursor->{value} );
+		}
+	}
+}
+
 
 1;
 
