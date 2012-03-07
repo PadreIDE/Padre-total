@@ -1,5 +1,6 @@
 0.18    2012.03.07
     - bumpeed to 0.18 (BOWTIE)
+    - tweaks to POD (BOWTIE)
 
 0.17_06 2012.02.09
     - remove is for cmp_ok where values are numeric

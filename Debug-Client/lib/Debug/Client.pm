@@ -18,11 +18,10 @@ use constant {
 
 Debug::Client - debugger client side code for Padre the Perl IDE
 
-development version 0.17_06 for testing only!
+=head1 VERSION
 
-thanks cpan testers :)
+This document describes Debug::Client version 0.18
 
-Warning if you use List request you may get spourios results
 
 =head1 SYNOPIS
 
@@ -1136,6 +1135,8 @@ __END__
 
 =head1 BUGS AND LIMITATIONS
 
+Warning if you use List request you may get spourios results.
+
 When using against perl5db.pl v1.35 list mode gives an undef response, also leading single quote now correct. 
 Tests are skiped for list mode against v1.35 now.
 
@@ -1211,3 +1212,4 @@ L<Devel::ebug>
 L<Devel::Trepan>
 
 =cut
+
