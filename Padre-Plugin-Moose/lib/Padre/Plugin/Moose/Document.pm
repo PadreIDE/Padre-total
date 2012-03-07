@@ -455,8 +455,8 @@ sub _expand_snippet {
 				my $value = $v->{value};
 				if ( ( $v->{index} == $index ) && defined $value ) {
 					my $before_length = length $text;
-					$v->{start} = $v->{orig_start} + $count;
-					substr( $text, $v->{start}, length $v->{text} ) = $value;
+					$var->{start} = $var->{orig_start} + $count;
+					substr( $text, $var->{start}, length $var->{text} ) = $value;
 					$count += length($text) - $before_length;
 					last;
 				}
