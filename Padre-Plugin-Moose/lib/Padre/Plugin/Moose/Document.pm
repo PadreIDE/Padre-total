@@ -117,6 +117,12 @@ sub on_key_down {
 			# Consume the <TAB>-triggerred snippet event
 			return;
 		}
+	} elsif ( defined $self->{variables}
+		&& $event->GetKeyCode == Wx::WXK_BACK
+		&& $self->can('on_char') )
+	{
+		$self->on_char( $editor, $event );
+		return;
 	}
 
 	# Keep processing events
@@ -138,18 +144,30 @@ sub on_char {
 		return;
 	}
 
-	my $pos = $self->{_pos};
-	my $start_position = $pos - length($self->{_trigger});
+	my $pos            = $self->{_pos};
+	my $start_position = $pos - length( $self->{_trigger} );
 	my $new_pos;
-	for my $var (@{$self->{variables}}) {
+	for my $var ( @{ $self->{variables} } ) {
 		if ( $self->{selected_index} == $var->{index} ) {
-			if ( defined $self->{pristine} ) {
-				$var->{value}     = chr( $event->GetKeyCode );
-				$self->{pristine} = undef;
-			} else {
-				$var->{value} .= chr( $event->GetKeyCode );
+			my $key = $event->GetKeyCode;
+			if ( $key == Wx::WXK_BACK && length( $var->{value} ) == 1 ) {
+				$self->_end_snippet_mode($editor);
+				$event->Skip(1);
+				return;
 			}
-			$new_pos = $start_position + $var->{start} + length($var->{value});
+			if ( defined $self->{pristine} ) {
+
+				$var->{value}     = chr($key);
+				$self->{pristine} = undef;
+
+			} else {
+				if ( $key == Wx::WXK_BACK ) {
+					$var->{value} = substr( $var->{value}, 0, -1 );
+				} else {
+					$var->{value} .= chr($key);
+				}
+			}
+			$new_pos = $start_position + $var->{start} + length( $var->{value} );
 			last;
 		}
 	}
@@ -158,8 +176,8 @@ sub on_char {
 	my ( $text, $cursor ) = $self->_expand_snippet( $self->{_snippet} );
 
 
-	$editor->SetTargetStart( $start_position );
-	$editor->SetTargetEnd( $start_position + length($self->{_text}) );
+	$editor->SetTargetStart($start_position);
+	$editor->SetTargetEnd( $start_position + length( $self->{_text} ) );
 	$editor->ReplaceTarget($text);
 	$editor->GotoPos($new_pos);
 
@@ -406,7 +424,7 @@ sub _build_variables_info {
 				$value =~ s/\\(.)/$1/g;
 			}
 			my $start = pos($snippet) - length($1);
-			my $var = {
+			my $var   = {
 				index      => $index,
 				text       => $1,
 				value      => $value,
@@ -452,12 +470,12 @@ sub _expand_snippet {
 			for my $v (@$vars) {
 				my $value = $v->{value};
 				if ( ( $v->{index} == $index ) && defined $value ) {
-					($text, $count) = $self->_replace_value($text, $var, $value, $count);
+					( $text, $count ) = $self->_replace_value( $text, $var, $value, $count );
 					last;
 				}
 			}
 		} else {
-			($text, $count) = $self->_replace_value($text, $var, $var->{value}, $count);
+			( $text, $count ) = $self->_replace_value( $text, $var, $var->{value}, $count );
 
 			if ( $var->{index} == $self->{selected_index} ) {
 				$cursor = $var;
@@ -470,9 +488,9 @@ sub _expand_snippet {
 }
 
 sub _replace_value {
-	my $self = shift;
-	my $text = shift;
-	my $var  = shift;
+	my $self  = shift;
+	my $text  = shift;
+	my $var   = shift;
 	my $value = shift;
 	my $count = shift;
 
@@ -481,7 +499,7 @@ sub _replace_value {
 	substr( $text, $var->{start}, length $var->{text} ) = $value;
 	$count += length($text) - $length0;
 
-	return ($text, $count);
+	return ( $text, $count );
 }
 
 sub _insert_snippet {
@@ -515,7 +533,7 @@ sub _insert_snippet {
 			$editor->SetSelection( $start, $start + length $cursor->{value} );
 		}
 	}
-	
+
 	$self->{_text} = $text;
 }
 
