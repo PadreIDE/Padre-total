@@ -22,7 +22,6 @@ Debug::Client - debugger client side code for Padre the Perl IDE
 
 This document describes Debug::Client version 0.18
 
-
 =head1 SYNOPSIS
 
   use Debug::Client;
@@ -115,6 +114,10 @@ Other planned methods:
   # ...
 
 =head1 DESCRIPTION
+
+The prime use of this module is to provide debugger functionality for Padre 0.94+, 
+
+This should be Perl 5.16.0 ready.
 
 =cut
 
