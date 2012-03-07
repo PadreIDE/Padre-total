@@ -1,0 +1,21 @@
+use strict;
+use warnings;
+use inc::Module::Install;
+
+name 'Padre-Plugin-PDL';
+license 'perl';
+author 'Ahmad M. Zawawi <ahmad.zawawi@gmail.com>';
+all_from 'lib/Padre/Plugin/PDL.pm';
+
+requires 'Padre'            => '0.94';
+requires 'PDL'            => '2.4.10';
+test_requires 'Test::More'  => '0.47';
+
+no_index 'directory' => qw{ t xt eg share inc};
+homepage 'http://padre.perlide.org/trac/wiki/PadrePluginPDL';
+bugtracker 'http://padre.perlide.org/';
+repository 'http://svn.perlide.org/padre/trunk/Padre-Plugin-PDL';
+
+install_share_with_mofiles;
+
+WriteAll;
