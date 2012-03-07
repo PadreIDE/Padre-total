@@ -134,21 +134,22 @@ sub on_char {
 
 # Called by the Padre editor when a mouse up event occurs
 sub event_on_left_up {
-	$_[0]->_end_snippet_mode($_[1]);
+	$_[0]->_end_snippet_mode( $_[1] );
 }
 
 sub _end_snippet_mode {
-	my $self = shift;
+	my $self   = shift;
 	my $editor = shift;
 
-		if ( defined $self->{variables} ) {
-			# Stop snippet mode
-			$self->{variables} = undef;
+	if ( defined $self->{variables} ) {
 
-			# Clear the selected text
-			my $current_pos = $editor->GetCurrentPos;
-			$editor->SetSelection($current_pos, $current_pos);
-		}
+		# Stop snippet mode
+		$self->{variables} = undef;
+
+		# Clear the selected text
+		my $current_pos = $editor->GetCurrentPos;
+		$editor->SetSelection( $current_pos, $current_pos );
+	}
 }
 
 # Load snippets from file according to code generation type
