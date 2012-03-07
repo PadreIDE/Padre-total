@@ -8,31 +8,31 @@
 # after method modifier
 after: |
   after ${1:method_name} {
-      {$2: # body...}
+      ${2: # body...}
   }; 
 
 # before method modifier
 before: |
   before ${1:method_name} {
-      {$2: # body...}
+      ${2: # body...}
   }; 
 
 # around method modifier
 around: |
   around ${1:method_name} {
-      {$2: # body...}
+      ${2: # body...}
   }; 
 
 # Augment method modifier
 augment: |
   augment ${1:method_name} {
-      {$2: # body...}
+      ${2: # body...}
   }; 
 
 # Override method modifier
 override: |
   override ${1:method_name} {
-      {$2: # body...}
+      ${2: # body...}
   }; 
 
 # Define class type
@@ -65,7 +65,7 @@ type: |
       => where { ${2} };
 
 # Subtype
-subtype: subtype '${1:type}' => as '${2:parent_type}' => ${3:where \{ ${4} \}};
+subtype: subtype '${1:type}' => as '${2:parent_type}' => ${3:where \{ \}};
 
 # Exclude
 excludes: excludes '${1:OtherRole}';
@@ -88,7 +88,7 @@ hasl: |
 role: |
   use MooseX::Declare;
   
-  role ${1:RoleName} with ($2:MyRole) {
+  role ${1:RoleName} with (${2:MyRole}) {
       ${3: # body...}
   };
 
@@ -109,6 +109,6 @@ class: |
 
 # Method declaration
 meth: |
-  method ${1:method_name}($2) {
+  method ${1:method_name}(${2}) {
       ${3: # body...}
   }
