@@ -140,10 +140,3 @@ meth: |
       my $self = shift;
       ${2:# body...}
   }
-
-# TODO move to perl.yml
-cfor: |
-  for (my $${2:var} = 0; $$2 < ${1:count}; $$2${3:++}) {
-      ${4:# body...}
-  }
-
