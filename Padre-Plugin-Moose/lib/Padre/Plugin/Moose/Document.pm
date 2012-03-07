@@ -158,12 +158,12 @@ sub on_char {
 	# Expand the snippet
 	my ( $text, $cursor ) = $self->_expand_snippet( $self->{_snippet} );
 
-	#my $pos = $self->{_pos};
-	#my $len = length $self->{_trigger};
-	#$editor->SetTargetStart( $pos - $len );
-	#$editor->SetTargetEnd( $pos - $len + length $text );
-	#	$editor->ReplaceTarget($text);
-	#$editor->GotoPos($new_pos);
+	my $pos = $self->{_pos};
+	my $len = length $self->{_trigger};
+	$editor->SetTargetStart( $pos - $len );
+	$editor->SetTargetEnd( $pos - $len + length $text );
+	$editor->ReplaceTarget($text);
+	$editor->GotoPos($new_pos);
 
 	# Keep processing
 	$event->Skip(1);
