@@ -13,7 +13,7 @@ use Getopt::Long;
 GetOptions (
 	'verbose'  => \(my $verbose = 0),
 	'cleanup!' => \(my $cleanup = 1),
-	'no-version-check' => \(my $no_version_check = 1),
+	'no-version-check' => \(my $no_version_check = 0),
 ) or die "Error while parsing command-line parameters.\n";
 
 my $cwd = cwd;
@@ -48,7 +48,7 @@ close $fh;
 unlink $pot_file;
 my ($gettext) = grep { $_ =~ /^xgettext/ } qx{xgettext -V};
 chomp $gettext;
-if ( not $no_version_check && $gettext ne 'xgettext (GNU gettext-tools) 0.17' ) {
+if ( (not $no_version_check) && $gettext ne 'xgettext (GNU gettext-tools) 0.17' ) {
 	die "Due to bug #1132 we only allow the use of v0.17 of xgettext\n";
 }
 
