@@ -422,6 +422,11 @@ sub _build_variables_info {
 
 				# expand escaped text
 				$value =~ s/\\(.)/$1/g;
+			} else {
+				# Handle ${1}, ${2}... etc
+				unless(defined $4) {
+					$value = '';
+				}
 			}
 			my $start = pos($snippet) - length($1);
 			my $var   = {
