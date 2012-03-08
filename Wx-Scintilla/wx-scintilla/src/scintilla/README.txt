@@ -2,7 +2,7 @@ This folder contains copies of the scintilla/src, scintilla/lexers and
 scintilla/include folders from the Scintilla source distribution. 
 
 The source distribution is located in 
-http://prdownloads.sourceforge.net/scintilla/scite302.zip?download
+http://prdownloads.sourceforge.net/scintilla/scite304.zip?download
 
 Please note that 'scintilla/lexers' is currently copied into the
 scintilla/src folder.
