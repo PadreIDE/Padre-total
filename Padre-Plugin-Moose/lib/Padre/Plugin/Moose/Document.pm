@@ -1,41 +1,58 @@
 package Padre::Plugin::Moose::Document;
 
 use 5.008;
-use strict;
-use warnings;
-use Padre::Document::Perl ();
+use Moose;
+use Padre::Wx ();
 
 our $VERSION = '0.18';
 
-our @ISA = 'Padre::Document::Perl';
+use Moose::Util::TypeConstraints;
 
-# Override SUPER::set_editor to hook up the key down and char events
-sub set_editor {
-	my $self   = shift;
-	my $editor = shift;
+class_type 'PerlDocument', { class => 'Padre::Document::Perl' };
+class_type 'Editor',       { class => 'Padre::Wx::Editor' };
 
-	$self->SUPER::set_editor($editor);
+has 'config'   => ( is => 'rw', isa => 'HashRef',      required => 1 );
+has 'document' => ( is => 'rw', isa => 'PerlDocument', required => 1 );
+has 'editor'   => ( is => 'rw', isa => 'Editor',       required => 1 );
+
+# Called when the document is created
+sub BUILD {
+	my $self = shift;
+
+	# Highlight Moose keywords after get_indentation_style is called :)
+	$self->_highlight_moose_keywords;
 
 	# TODO Padre should fire these events instead of this weird hack :)
 	# Register those editor events :)
-	$self->_register_events($editor);
+	my $editor = $self->editor;
+
+	# Register events for the editor
+	$self->_register_events;
 
 	return;
 }
 
-# Register key down and character typed events
+# Called when the document is destroyed
+sub DEMOLISH {
+	my $self   = shift;
+	my $editor = $self->editor;
+	Wx::Event::EVT_KEYDOWN( $editor, undef );
+	Wx::Event::EVT_CHAR( $editor, undef );
+	Wx::Event::EVT_LEFT_UP( $editor, undef );
+
+	return;
+}
+
+# Register key down and character typed and mouse up events
 sub _register_events {
 	my $self   = shift;
-	my $editor = shift;
+	my $editor = $self->editor;
 
-
-	# Register keyboard event handler for the current editor
-	Wx::Event::EVT_KEY_DOWN( $editor, undef );
 	Wx::Event::EVT_KEY_DOWN(
 		$editor,
 		sub {
-			if ( $self->can('on_key_down') ) {
-				$self->on_key_down(@_);
+			if ( $self->can('_on_key_down') ) {
+				$self->_on_key_down(@_);
 			} else {
 
 				# Method not found, document mimetype change
@@ -45,12 +62,11 @@ sub _register_events {
 			}
 		}
 	);
-	Wx::Event::EVT_CHAR( $editor, undef );
 	Wx::Event::EVT_CHAR(
 		$editor,
 		sub {
-			if ( $self->can('on_char') ) {
-				$self->on_char(@_);
+			if ( $self->can('_on_char') ) {
+				$self->_on_char(@_);
 			} else {
 
 				# Method not found, document mimetype change
@@ -61,27 +77,22 @@ sub _register_events {
 		}
 	);
 
+	# Called by when a mouse up event occurs
+	Wx::Event::EVT_LEFT_UP(
+		$editor,
+		sub {
+			$self->_end_snippet_mode($editor);
+
+			# Keep processing
+			$_[1]->Skip(1);
+		},
+	);
+
 	return;
 }
 
-
-# Override get_indentation_style to
-sub get_indentation_style {
-	my $self = shift;
-
-	# Workaround to get moose plugin configuration... :)
-	require Padre::Plugin::Moose;
-	my $config = Padre::Plugin::Moose::_plugin_config();
-
-	# Highlight Moose keywords after get_indentation_style is called :)
-	$self->_highlight_moose_keywords( $config->{type} );
-
-	# continue as normal
-	return $self->SUPER::get_indentation_style;
-}
-
 # Called when the a key is pressed
-sub on_key_down {
+sub _on_key_down {
 	my $self   = shift;
 	my $editor = shift;
 	my $event  = shift;
@@ -102,7 +113,7 @@ sub on_key_down {
 	$self->_load_snippets($config);
 
 	# Highlight Moose keywords
-	$self->_highlight_moose_keywords( $config->{type} );
+	$self->_highlight_moose_keywords;
 
 	if ( $self->_can_end_snippet_mode($event) ) {
 		$self->_end_snippet_mode($editor);
@@ -118,9 +129,9 @@ sub on_key_down {
 		}
 	} elsif ( defined $self->{variables}
 		&& $event->GetKeyCode == Wx::WXK_BACK
-		&& $self->can('on_char') )
+		&& $self->can('_on_char') )
 	{
-		$self->on_char( $editor, $event );
+		$self->_on_char( $editor, $event );
 		return;
 	}
 
@@ -131,7 +142,7 @@ sub on_key_down {
 }
 
 # Called when a printable character is typed
-sub on_char {
+sub _on_char {
 	my $self   = shift;
 	my $editor = shift;
 	my $event  = shift;
@@ -174,7 +185,6 @@ sub on_char {
 	# Expand the snippet
 	my ( $text, $cursor ) = $self->_expand_snippet( $self->{_snippet} );
 
-
 	$editor->SetTargetStart($start_position);
 	$editor->SetTargetEnd( $start_position + length( $self->{_text} ) );
 	$editor->ReplaceTarget($text);
@@ -183,11 +193,6 @@ sub on_char {
 	$self->{_text} = $text;
 
 	return;
-}
-
-# Called by the Padre editor when a mouse up event occurs
-sub event_on_left_up {
-	$_[0]->_end_snippet_mode( $_[1] );
 }
 
 sub _end_snippet_mode {
@@ -253,8 +258,8 @@ sub _load_snippets {
 			File::Spec->catfile( 'snippets', 'perl.yml' )
 		);
 		my $snippets = YAML::LoadFile($perl_filename);
-		for my $trigger (keys %{$dialect_snippets}) {
-			if(defined $snippets->{$trigger}) {
+		for my $trigger ( keys %{$dialect_snippets} ) {
+			if ( defined $snippets->{$trigger} ) {
 				warn "Trigger: $trigger is already in parent snippet file\n";
 			}
 			$snippets->{$trigger} = $dialect_snippets->{$trigger};
@@ -306,10 +311,11 @@ sub _can_end_snippet_mode {
 
 # Adds Moose/Mouse/MooseX::Declare keywords highlighting
 sub _highlight_moose_keywords {
+	my $self = shift;
 
-	# TODO remove hack once Padre supports a better way
 	require Padre::Plugin::Moose::Util;
-	Padre::Plugin::Moose::Util::add_moose_keywords_highlighting( $_[0], $_[1] );
+	Padre::Plugin::Moose::Util::add_moose_keywords_highlighting( $self->config->{type}, $self->document,
+		$self->editor );
 }
 
 # Called when SHIFT-TAB is pressed
@@ -349,7 +355,8 @@ sub _start_snippet_mode {
 	my $self   = shift;
 	my $editor = shift;
 
-	my ( $pos, $snippet, $trigger ) = $self->_prepare_snippet_info($editor) or return;
+	my ( $pos, $snippet, $trigger ) = $self->_prepare_snippet_info($editor)
+		or return;
 	my ( $first_time, $last_time ) = $self->_build_variables_info($snippet);
 
 	# Prepare to replace variables
@@ -439,8 +446,9 @@ sub _build_variables_info {
 				# expand escaped text
 				$value =~ s/\\(.)/$1/g;
 			} else {
+
 				# Handle ${1}, ${2}... etc
-				unless(defined $4) {
+				unless ( defined $4 ) {
 					$value = '';
 				}
 			}
@@ -473,7 +481,7 @@ sub _find_snippet {
 			# Add indentation after the first line
 			my $snippet    = '';
 			my $first_time = 1;
-			my $eol        = $self->newline;
+			my $eol        = $self->document->newline;
 			for my $line ( split /\n/, $snippets{$trigger} ) {
 				if ($first_time) {
 					$snippet .= $line . $eol;
@@ -577,6 +585,8 @@ sub _insert_snippet {
 	$self->{_text} = $text;
 }
 
+no Moose::Util::TypeConstraints;
+no Moose;
 
 1;
 

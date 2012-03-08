@@ -47,11 +47,6 @@ sub padre_interfaces {
 		;
 }
 
-# Called when Padre wants to knows what documents this Plugin supports
-sub registered_documents {
-	'application/x-perl' => 'Padre::Plugin::Moose::Document',;
-}
-
 # Called when Padre wants a name for the plugin
 sub plugin_name {
 	Wx::gettext('Moose');
@@ -147,6 +142,54 @@ sub show_assistant {
 	} else {
 		$self->{assistant}->run;
 	}
+
+	return;
+}
+
+# Called by Padre when an editor is closed after user confirmation
+sub editor_disable {
+	my $self     = shift;
+	my $editor   = shift;
+	my $document = shift;
+
+	return unless $document->isa('Padre::Document::Perl');
+
+	# Make sure we destroy our created object
+	if ( defined $self->{document} ) {
+		$self->{document} = undef;
+	}
+
+	return;
+}
+
+# Called by Padre when an editor is opened for the first time
+sub editor_enable {
+	my $self     = shift;
+	my $editor   = shift;
+	my $document = shift;
+
+	return;
+}
+
+sub editor_changed {
+	my $self     = shift;
+	my $document = $self->current->document or return;
+	my $editor   = $self->current->editor or return;
+
+	# Always cleanup current document
+	if ( defined $self->{document} ) {
+		$self->{document} = undef;
+	}
+
+	return unless $document->isa('Padre::Document::Perl');
+
+	# Create a new moose document
+	require Padre::Plugin::Moose::Document;
+	$self->{document} = Padre::Plugin::Moose::Document->new(
+		editor   => $editor,
+		document => $document,
+		config   => $self->{config},
+	);
 
 	return;
 }

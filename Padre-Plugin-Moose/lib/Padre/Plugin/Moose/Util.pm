@@ -7,9 +7,9 @@ use warnings;
 our $VERSION = '0.18';
 
 sub add_moose_keywords_highlighting {
-	my $document = shift;
 	my $type     = shift or return;
-	my $editor   = $document->editor or return;
+	my $document = shift or return;
+	my $editor   = shift or return;
 
 	my $keywords = Padre::Wx::Scintilla->keywords($document);
 	if ( Params::Util::_ARRAY($keywords) ) {
