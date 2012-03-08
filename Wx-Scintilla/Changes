@@ -1,5 +1,28 @@
 Revision history for Wx-Scintilla
 
+0.37_05 2012.3.8
+	- Updated to Scintilla 3.0.4 (AZAWAWI):
+		- ECL lexer added. Feature #3488209.
+		- CPP lexer fixes styling after document comment keywords. Bug #3495445.
+		- Pascal folder improves handling of some constructs. Feature #3486385.
+		- XML lexer avoids entering a bad mode due to complex preprocessor instructions. Bug #3488060.
+		- Duplicate command is always remembered as a distinct command for undo. Bug #3495836.
+		- Fix bug where setting an indicator for the whole document would fail. Bug #3487440.
+		- Crash fixed for SCI_MOVESELECTEDLINESDOWN with empty vertical selection. Bug #3496403.
+		- Fractional widths used for line numbers, character markers and other situations. Bug #3494492.
+		- RGBA markers are drawn centred when taller than line. Bug #3494184.
+		- Image marker drawing problem fixed for markers taller than line. Bug #3493503.
+		- Markers are drawn horizontally off-centre based on margin type instead of dimensions. Bug #3488696.
+		- Fold tail markers drawn vertically centred. Feature #3488289.
+		- Fixed problems with multiple clicks in margin and with mouse actions combined with virtual space. Bug #3484370.
+		- Fixed bug with using page up and down and not returning to original line. Bug #3485669.
+		- Down arrow with wrapped text no longer skips lines. Bug #1776560.
+		- Fix problem with dwell ending immediately due to word wrap. Bug #3484416.
+		- Wrapped lines are rewrapped more consistently while resizing window. Bug #3484179.
+		- Selected line ends are highlighted more consistently. Bug #3484330.
+		- Redrawing reduced for some marker calls. Feature #3493530.
+	- No more indexing of inc (AZAWAWI)
+
 0.37_04 2012.2.6
 	- Fixed linking issue with 0.37_03 (AZAWAWI)
 
