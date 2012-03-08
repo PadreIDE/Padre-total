@@ -50,7 +50,7 @@ ifee: |
 
 # Conditional One-line
 xif: |
-  ${1:expression} if ${2:condition};${3}
+  ${1:expression} if ${2:condition};
 
 # Unless conditional
 unless: |
@@ -60,7 +60,7 @@ unless: |
 
 # Unless conditional One-line
 xunless: |
-  ${1:expression} unless ${2:condition};${3}
+  ${1:expression} unless ${2:condition};
 
 # Try/Except
 eval: |
@@ -79,7 +79,7 @@ wh: |
 
 # While Loop One-line
 xwh: |
-  ${1:expression} while ${2:condition};${3}
+  ${1:expression} while ${2:condition};
 
 # C-style For Loop
 cfor: |
@@ -89,7 +89,7 @@ cfor: |
 
 # For loop one-line
 xfor: |
-  ${1:expression} for @${2:array};${3}
+  ${1:expression} for @${2:array};
 
 # Foreach Loop
 for: |
@@ -99,7 +99,7 @@ for: |
 
 # Foreach Loop One-line
 fore: |
-  ${1:expression} foreach @${2:array};${3}
+  ${1:expression} foreach @${2:array};
 
 # Package
 cl: |
@@ -114,9 +114,9 @@ cl: |
     $self;
   }
   
-  1;${3}
+  1;
 
 # Read File
 slurp: |
   my $${1:var};
-  { local $/ = undef; local *FILE; open FILE, "<${2:file}"; $$1 = <FILE>; close FILE }${3}
+  { local $/ = undef; local *FILE; open FILE, "<${2:file}"; $$1 = <FILE>; close FILE }
