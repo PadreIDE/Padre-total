@@ -5,6 +5,8 @@ Revision history for Wx-Scintilla
 	- Released 0.37_05 as stable 0.38 (AZAWAWI)
 
 0.37_05 2012.3.8
+	- Wrap STC specific implementations of LineUp / LineDown. This should move the caret
+	  one line up or down (MARKD).
 	- Updated to Scintilla 3.0.4 (AZAWAWI):
 		- ECL lexer added. Feature #3488209.
 		- CPP lexer fixes styling after document comment keywords. Bug #3495445.
