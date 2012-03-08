@@ -375,6 +375,7 @@ our @EXPORT  = qw(
 	SCLEX_COFFEESCRIPT
 	SCLEX_TCMD
 	SCLEX_AVS
+	SCLEX_ECL
 	SCLEX_AUTOMATIC
 	SCE_P_DEFAULT
 	SCE_P_COMMENTLINE
@@ -1791,6 +1792,34 @@ our @EXPORT  = qw(
 	SCE_AVS_FUNCTION
 	SCE_AVS_CLIPPROP
 	SCE_AVS_USERDFN
+	SCE_ECL_DEFAULT
+	SCE_ECL_COMMENT
+	SCE_ECL_COMMENTLINE
+	SCE_ECL_NUMBER
+	SCE_ECL_STRING
+	SCE_ECL_WORD0
+	SCE_ECL_OPERATOR
+	SCE_ECL_CHARACTER
+	SCE_ECL_UUID
+	SCE_ECL_PREPROCESSOR
+	SCE_ECL_UNKNOWN
+	SCE_ECL_IDENTIFIER
+	SCE_ECL_STRINGEOL
+	SCE_ECL_VERBATIM
+	SCE_ECL_REGEX
+	SCE_ECL_COMMENTLINEDOC
+	SCE_ECL_WORD1
+	SCE_ECL_COMMENTDOCKEYWORD
+	SCE_ECL_COMMENTDOCKEYWORDERROR
+	SCE_ECL_WORD2
+	SCE_ECL_WORD3
+	SCE_ECL_WORD4
+	SCE_ECL_WORD5
+	SCE_ECL_COMMENTDOC
+	SCE_ECL_ADDED
+	SCE_ECL_DELETED
+	SCE_ECL_CHANGED
+	SCE_ECL_MOVED
 	SC_CP_DBCS
 );
 
@@ -2336,6 +2365,7 @@ use constant {
 	SCLEX_COFFEESCRIPT => 102,
 	SCLEX_TCMD         => 103,
 	SCLEX_AVS          => 104,
+	SCLEX_ECL          => 105,
 
 	# When a lexer specifies its language as SCLEX_AUTOMATIC it receives a
 	# value assigned in sequence from SCLEX_AUTOMATIC+1.
@@ -3947,6 +3977,36 @@ use constant {
 	SCE_AVS_CLIPPROP      => 13,
 	SCE_AVS_USERDFN       => 14,
 
+	# Lexical states for SCLEX_ECL
+	SCE_ECL_DEFAULT                => 0,
+	SCE_ECL_COMMENT                => 1,
+	SCE_ECL_COMMENTLINE            => 2,
+	SCE_ECL_NUMBER                 => 3,
+	SCE_ECL_STRING                 => 4,
+	SCE_ECL_WORD0                  => 5,
+	SCE_ECL_OPERATOR               => 6,
+	SCE_ECL_CHARACTER              => 7,
+	SCE_ECL_UUID                   => 8,
+	SCE_ECL_PREPROCESSOR           => 9,
+	SCE_ECL_UNKNOWN                => 10,
+	SCE_ECL_IDENTIFIER             => 11,
+	SCE_ECL_STRINGEOL              => 12,
+	SCE_ECL_VERBATIM               => 13,
+	SCE_ECL_REGEX                  => 14,
+	SCE_ECL_COMMENTLINEDOC         => 15,
+	SCE_ECL_WORD1                  => 16,
+	SCE_ECL_COMMENTDOCKEYWORD      => 17,
+	SCE_ECL_COMMENTDOCKEYWORDERROR => 18,
+	SCE_ECL_WORD2                  => 19,
+	SCE_ECL_WORD3                  => 20,
+	SCE_ECL_WORD4                  => 21,
+	SCE_ECL_WORD5                  => 22,
+	SCE_ECL_COMMENTDOC             => 23,
+	SCE_ECL_ADDED                  => 24,
+	SCE_ECL_DELETED                => 25,
+	SCE_ECL_CHANGED                => 26,
+	SCE_ECL_MOVED                  => 27,
+
 
 	# Deprecated in 2.21
 	# The SC_CP_DBCS value can be used to indicate a DBCS mode for GTK+.
@@ -4489,6 +4549,7 @@ For compatibility, these go through the COMMAND notification rather than NOTIFYa
 	SCLEX_COFFEESCRIPT             (102)
 	SCLEX_TCMD                     (103)
 	SCLEX_AVS                      (104)
+	SCLEX_ECL                      (105)
 
 When a lexer specifies its language as SCLEX_AUTOMATIC it receives avalue assigned in sequence from SCLEX_AUTOMATIC+1.
 
@@ -6193,6 +6254,37 @@ Lexical states of SCLEX_TADS3
 	SCE_AVS_FUNCTION               (12)
 	SCE_AVS_CLIPPROP               (13)
 	SCE_AVS_USERDFN                (14)
+
+=head2 Lexical states for SCLEX_ECL
+
+	SCE_ECL_DEFAULT                (0)
+	SCE_ECL_COMMENT                (1)
+	SCE_ECL_COMMENTLINE            (2)
+	SCE_ECL_NUMBER                 (3)
+	SCE_ECL_STRING                 (4)
+	SCE_ECL_WORD0                  (5)
+	SCE_ECL_OPERATOR               (6)
+	SCE_ECL_CHARACTER              (7)
+	SCE_ECL_UUID                   (8)
+	SCE_ECL_PREPROCESSOR           (9)
+	SCE_ECL_UNKNOWN                (10)
+	SCE_ECL_IDENTIFIER             (11)
+	SCE_ECL_STRINGEOL              (12)
+	SCE_ECL_VERBATIM               (13)
+	SCE_ECL_REGEX                  (14)
+	SCE_ECL_COMMENTLINEDOC         (15)
+	SCE_ECL_WORD1                  (16)
+	SCE_ECL_COMMENTDOCKEYWORD      (17)
+	SCE_ECL_COMMENTDOCKEYWORDERROR (18)
+	SCE_ECL_WORD2                  (19)
+	SCE_ECL_WORD3                  (20)
+	SCE_ECL_WORD4                  (21)
+	SCE_ECL_WORD5                  (22)
+	SCE_ECL_COMMENTDOC             (23)
+	SCE_ECL_ADDED                  (24)
+	SCE_ECL_DELETED                (25)
+	SCE_ECL_CHANGED                (26)
+	SCE_ECL_MOVED                  (27)
 
 Deprecated in 2.21The SC_CP_DBCS value can be used to indicate a DBCS mode for GTK+.
 

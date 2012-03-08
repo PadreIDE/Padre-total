@@ -1,5 +1,9 @@
 Revision history for Wx-Scintilla
 
+0.38 To be released
+	- Updated Wx::Scintilla::Constant
+	- Released 0.37_05 as stable 0.38 (AZAWAWI)
+
 0.37_05 2012.3.8
 	- Updated to Scintilla 3.0.4 (AZAWAWI):
 		- ECL lexer added. Feature #3488209.
