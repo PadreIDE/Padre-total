@@ -120,3 +120,7 @@ cl: |
 slurp: |
   my $${1:var};
   { local $/ = undef; local *FILE; open FILE, "<${2:file}"; $$1 = <FILE>; close FILE }
+
+# Create a new instance of a class
+new: my $${1:instance} = ${2:ClassName}->new;
+
