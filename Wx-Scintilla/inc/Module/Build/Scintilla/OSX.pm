@@ -75,12 +75,17 @@ sub stc_build_scintilla_object {
 sub stc_link_scintilla_objects {
 	my ( $self, $shared_lib, $objects ) = @_;
 
+    # fix missing symbols when compiled against cocoa
+    my $baseflags = '-headerpad_max_install_names -shared';
+    if( Alien::wxWidgets->version >= 2.009 ) {
+        $baseflags .= ' -framework CoreFoundation';
+    }
+    
 	my @cmd = (
 		$self->stc_linker,
 		$self->stc_get_architecture_string,
 		$self->stc_ldflags,
-		'-headerpad_max_install_names',
-		'-shared',
+		$baseflags,
 		' -o ' . $shared_lib,
 		join( ' ', @$objects ),
 		Alien::wxWidgets->libraries(qw(core base)),
@@ -159,6 +164,18 @@ sub _run_command {
 			$cmd =~ s/-arch $arch //g;
 		}
 	}
+	
+	# fix for Lion users who built wxWidgets with Xcode 4.1
+	# but later upgraded to Xcode 4.3 +
+	{
+		my $xcodeold = '/Developer/SDKs/MacOSX10.6.sdk';
+		my $xcodenew = '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk';
+		
+		if( -d $xcodenew  && $cmd !~ /\Q$xcodenew\E/ ) {
+		    $cmd =~ s/\Q$xcodeold\E/$xcodenew/g;
+		}
+	}
+	
 
 	$self->log_info("$cmd\n");
 	my $rc = system($cmd);
@@ -191,6 +208,16 @@ sub stc_get_architectures {
 			$config{$arch} = 0;
 		}
 	}
+	
+	# actual architectures used to build wxWidgets will be in
+	# c_flags
+	my $c_flags = Alien::wxWidgets->c_flags . ' ';
+	foreach my $arch ( sort keys( %config ) ) {
+	    if( $c_flags !~ /-arch $arch /i ) {
+	        $config{$arch} = 0;
+	    }
+	}
+	
 	return \%config;
 }
 
