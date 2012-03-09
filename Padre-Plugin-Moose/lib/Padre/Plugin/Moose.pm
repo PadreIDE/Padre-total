@@ -78,9 +78,6 @@ sub plugin_enable {
 	unless ( defined $config->{sample_code} ) {
 		$config->{sample_code} = 1;
 	}
-	unless ( defined $config->{snippets} ) {
-		$config->{snippets} = 1;
-	}
 
 	# Write the plugin's configuration
 	$self->config_write($config);
@@ -146,25 +143,21 @@ sub show_assistant {
 }
 
 sub editor_enable {
-	my $self = shift;
-	my $editor = shift;
+	my $self     = shift;
+	my $editor   = shift;
 	my $document = shift;
-	
+
 	require Padre::Plugin::Moose::Util;
-	Padre::Plugin::Moose::Util::add_moose_keywords_highlighting(
-		$self->{config}->{type}, $document, $editor
-	);
+	Padre::Plugin::Moose::Util::add_moose_keywords_highlighting( $self->{config}->{type}, $document, $editor );
 }
 
 sub editor_changed {
-	my $self = shift;
-	my $editor = shift;
+	my $self     = shift;
+	my $editor   = shift;
 	my $document = shift;
-	
+
 	require Padre::Plugin::Moose::Util;
-	Padre::Plugin::Moose::Util::add_moose_keywords_highlighting(
-		$self->{config}->{type}, $document, $editor
-	);
+	Padre::Plugin::Moose::Util::add_moose_keywords_highlighting( $self->{config}->{type}, $document, $editor );
 }
 
 1;

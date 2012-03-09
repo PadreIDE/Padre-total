@@ -28,7 +28,7 @@ sub new {
 		-1,
 		Wx::gettext("Moose Assistant Preferences"),
 		Wx::DefaultPosition,
-		[ 362, 211 ],
+		[ 240, 172 ],
 		Wx::DEFAULT_DIALOG_STYLE,
 	);
 
@@ -80,14 +80,6 @@ sub new {
 		Wx::LI_HORIZONTAL,
 	);
 
-	$self->{snippets_checkbox} = Wx::CheckBox->new(
-		$self,
-		-1,
-		Wx::gettext("Enable Snippets?"),
-		Wx::DefaultPosition,
-		Wx::DefaultSize,
-	);
-
 	$self->{ok_button} = Wx::Button->new(
 		$self,
 		Wx::ID_OK,
@@ -119,7 +111,6 @@ sub new {
 	$sizer->Add( $self->{comments_checkbox},    0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALL | Wx::EXPAND, 5 );
 	$sizer->Add( $self->{sample_code_checkbox}, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALL | Wx::EXPAND, 5 );
 	$sizer->Add( $self->{static_line},          0, Wx::EXPAND | Wx::ALL,                             5 );
-	$sizer->Add( $self->{snippets_checkbox},    0, Wx::ALL,                                          5 );
 	$sizer->Add( $button_sizer,                 0, Wx::EXPAND,                                       5 );
 
 	$self->SetSizer($sizer);
