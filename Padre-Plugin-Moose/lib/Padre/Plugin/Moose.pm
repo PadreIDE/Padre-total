@@ -14,6 +14,7 @@ use constant CHILDREN => qw{
 	Padre::Plugin::Moose::Role::CanHandleInspector
 	Padre::Plugin::Moose::Role::CanProvideHelp
 	Padre::Plugin::Moose::Role::HasClassMembers
+	Padre::Plugin::Moose::Role::NeedsSaveAsEvent
 	Padre::Plugin::Moose::Attribute
 	Padre::Plugin::Moose::Class
 	Padre::Plugin::Moose::ClassMember
@@ -89,6 +90,10 @@ sub plugin_enable {
 	# Update configuration attribute
 	$self->{config} = $config;
 
+	# Hook up to save as event
+	require Padre::Plugin::Moose::Role::NeedsSaveAsEvent;
+	Padre::Plugin::Moose::Role::NeedsSaveAsEvent->meta->apply( $self->main );
+
 	return 1;
 }
 
@@ -101,6 +106,12 @@ sub plugin_disable {
 		$self->{assistant}->Destroy;
 		$self->{assistant} = undef;
 	}
+
+	# # Make sure we destroy our created object
+	# if ( defined $self->{document} ) {
+	# $self->{document}->cleanup;
+	# $self->{document} = undef;
+	# }
 
 	# TODO: Switch to Padre::Unload once Padre 0.96 is released
 	for my $package (CHILDREN) {
@@ -146,31 +157,6 @@ sub show_assistant {
 	return;
 }
 
-# Called by Padre when an editor is closed after user confirmation
-sub editor_disable {
-	my $self     = shift;
-	my $editor   = shift;
-	my $document = shift;
-
-	return unless $document->isa('Padre::Document::Perl');
-
-	# Make sure we destroy our created object
-	if ( defined $self->{document} ) {
-		$self->{document} = undef;
-	}
-
-	return;
-}
-
-# Called by Padre when an editor is opened for the first time
-sub editor_enable {
-	my $self     = shift;
-	my $editor   = shift;
-	my $document = shift;
-
-	return;
-}
-
 sub editor_changed {
 	my $self     = shift;
 	my $document = $self->current->document or return;
@@ -178,6 +164,7 @@ sub editor_changed {
 
 	# Always cleanup current document
 	if ( defined $self->{document} ) {
+		$self->{document}->cleanup;
 		$self->{document} = undef;
 	}
 

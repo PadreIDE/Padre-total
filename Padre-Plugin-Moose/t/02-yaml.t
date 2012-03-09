@@ -18,4 +18,4 @@ BEGIN {
 use Test::YAML::Valid;
 plan( tests => 1 );
 
-yaml_files_ok('share/snippets/*.yml',  'All YAML files are valid');
+yaml_files_ok( 'share/snippets/*.yml', 'All YAML files are valid' );

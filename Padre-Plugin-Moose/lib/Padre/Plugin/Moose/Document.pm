@@ -33,10 +33,11 @@ sub BUILD {
 }
 
 # Called when the document is destroyed
-sub DEMOLISH {
+sub cleanup {
 	my $self   = shift;
 	my $editor = $self->editor;
-	Wx::Event::EVT_KEYDOWN( $editor, undef );
+
+	Wx::Event::EVT_KEY_DOWN( $editor, undef );
 	Wx::Event::EVT_CHAR( $editor, undef );
 	Wx::Event::EVT_LEFT_UP( $editor, undef );
 
@@ -314,8 +315,10 @@ sub _highlight_moose_keywords {
 	my $self = shift;
 
 	require Padre::Plugin::Moose::Util;
-	Padre::Plugin::Moose::Util::add_moose_keywords_highlighting( $self->config->{type}, $self->document,
-		$self->editor );
+	Padre::Plugin::Moose::Util::add_moose_keywords_highlighting(
+		$self->config->{type}, $self->document,
+		$self->editor
+	);
 }
 
 # Called when SHIFT-TAB is pressed

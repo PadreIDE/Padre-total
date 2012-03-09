@@ -44,8 +44,10 @@ sub new {
 
 	# Syntax highlight Moose keywords
 	require Padre::Plugin::Moose::Util;
-	Padre::Plugin::Moose::Util::add_moose_keywords_highlighting( $plugin->{config}->{type}, $preview->{Document},
-		$preview );
+	Padre::Plugin::Moose::Util::add_moose_keywords_highlighting(
+		$plugin->{config}->{type}, $preview->{Document},
+		$preview
+	);
 
 	$preview->Show(1);
 
