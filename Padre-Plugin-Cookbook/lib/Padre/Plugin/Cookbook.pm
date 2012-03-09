@@ -8,8 +8,24 @@ use Padre::Plugin;
 use Padre::Util;
 use Padre::Wx;
 
-our $VERSION = '0.141';
+our $VERSION = '0.15';
 use parent qw(Padre::Plugin);
+
+# Child modules we need to unload when disabled
+use constant CHILDREN => qw{
+	Padre::Plugin::Cookbook::Recipe01::Main
+	Padre::Plugin::Cookbook::Recipe01::FBP::MainFB
+	Padre::Plugin::Cookbook::Recipe02::Main
+	Padre::Plugin::Cookbook::Recipe02::FBP::MainFB
+	Padre::Plugin::Cookbook::Recipe03::Main
+	Padre::Plugin::Cookbook::Recipe03::FBP::MainFB
+	Padre::Plugin::Cookbook::Recipe03::About
+	Padre::Plugin::Cookbook::Recipe03::FBP::AboutFB
+	Padre::Plugin::Cookbook::Recipe04::Main
+	Padre::Plugin::Cookbook::Recipe04::FBP::MainFB
+	Padre::Plugin::Cookbook::Recipe04::About
+	Padre::Plugin::Cookbook::Recipe04::FBP::AboutFB
+};
 
 #######
 # Define Padre Interfaces required
@@ -76,27 +92,15 @@ sub plugin_icon {
 #######
 sub plugin_disable {
 	my $self = shift;
-		
+
 	# Close the dialog if it is hanging around
 	$self->clean_dialog;
-	
+
 	# Unload all our child classes
-	$self->unload(
-		qw{
-			Padre::Plugin::Cookbook::Recipe01::Main
-			Padre::Plugin::Cookbook::Recipe01::FBP::MainFB
-			Padre::Plugin::Cookbook::Recipe02::Main
-			Padre::Plugin::Cookbook::Recipe02::FBP::MainFB
-			Padre::Plugin::Cookbook::Recipe03::Main
-			Padre::Plugin::Cookbook::Recipe03::FBP::MainFB
-			Padre::Plugin::Cookbook::Recipe03::About
-			Padre::Plugin::Cookbook::Recipe03::FBP::AboutFB
-			Padre::Plugin::Cookbook::Recipe04::Main
-			Padre::Plugin::Cookbook::Recipe04::FBP::MainFB
-			Padre::Plugin::Cookbook::Recipe04::About
-			Padre::Plugin::Cookbook::Recipe04::FBP::AboutFB
-			}
-	);
+	for my $package (CHILDREN) {
+		require Padre::Unload;
+		Padre::Unload->unload($package);
+	}
 
 	$self->SUPER::plugin_disable(@_);
 
@@ -113,7 +117,7 @@ sub load_dialog_recipe01_main {
 
 	# Padre main window integration
 	my $main = $self->main;
-	
+
 	# Close the dialog if it is hanging around
 	$self->clean_dialog;
 
@@ -134,7 +138,7 @@ sub load_dialog_recipe02_main {
 
 	# Padre main window integration
 	my $main = $self->main;
-	
+
 	# Close the dialog if it is hanging around
 	$self->clean_dialog;
 
@@ -155,7 +159,7 @@ sub load_dialog_recipe03_main {
 
 	# Padre main window integration
 	my $main = $self->main;
-	
+
 	# Close the dialog if it is hanging around
 	$self->clean_dialog;
 
@@ -176,7 +180,7 @@ sub load_dialog_recipe04_main {
 
 	# Padre main window integration
 	my $main = $self->main;
-	
+
 	# Close the dialog if it is hanging around
 	$self->clean_dialog;
 
