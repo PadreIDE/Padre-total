@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Padre::Plugin ();
 
-our $VERSION = '0.18';
+our $VERSION = '0.19';
 our @ISA     = 'Padre::Plugin';
 
 # Child modules we need to unload when disabled
@@ -14,13 +14,11 @@ use constant CHILDREN => qw{
 	Padre::Plugin::Moose::Role::CanHandleInspector
 	Padre::Plugin::Moose::Role::CanProvideHelp
 	Padre::Plugin::Moose::Role::HasClassMembers
-	Padre::Plugin::Moose::Role::NeedsSaveAsEvent
 	Padre::Plugin::Moose::Attribute
 	Padre::Plugin::Moose::Class
 	Padre::Plugin::Moose::ClassMember
 	Padre::Plugin::Moose::Constructor
 	Padre::Plugin::Moose::Destructor
-	Padre::Plugin::Moose::Document
 	Padre::Plugin::Moose::Method
 	Padre::Plugin::Moose::Program
 	Padre::Plugin::Moose::Role
@@ -90,10 +88,6 @@ sub plugin_enable {
 	# Update configuration attribute
 	$self->{config} = $config;
 
-	# Hook up to save as event
-	require Padre::Plugin::Moose::Role::NeedsSaveAsEvent;
-	Padre::Plugin::Moose::Role::NeedsSaveAsEvent->meta->apply( $self->main );
-
 	return 1;
 }
 
@@ -151,28 +145,26 @@ sub show_assistant {
 	return;
 }
 
-sub editor_changed {
-	my $self     = shift;
-	my $document = $self->current->document or return;
-	my $editor   = $self->current->editor or return;
-
-	# Always cleanup current document
-	if ( defined $self->{document} ) {
-		$self->{document}->cleanup;
-		$self->{document} = undef;
-	}
-
-	return unless $document->isa('Padre::Document::Perl');
-
-	# Create a new moose document
-	require Padre::Plugin::Moose::Document;
-	$self->{document} = Padre::Plugin::Moose::Document->new(
-		editor   => $editor,
-		document => $document,
-		config   => $self->{config},
+sub editor_enable {
+	my $self = shift;
+	my $editor = shift;
+	my $document = shift;
+	
+	require Padre::Plugin::Moose::Util;
+	Padre::Plugin::Moose::Util::add_moose_keywords_highlighting(
+		$self->{config}->{type}, $document, $editor
 	);
+}
 
-	return;
+sub editor_changed {
+	my $self = shift;
+	my $editor = shift;
+	my $document = shift;
+	
+	require Padre::Plugin::Moose::Util;
+	Padre::Plugin::Moose::Util::add_moose_keywords_highlighting(
+		$self->{config}->{type}, $document, $editor
+	);
 }
 
 1;
@@ -204,10 +196,6 @@ generated Perl code. It also contains links to Moose manual, cookbook and websit
 =head2 Moose Preferences
 
 TODO describe Moose Preferences
-
-=head2 TextMate-style TAB triggered snippets
-
-TODO describe TextMate-style TAB triggered snippets
 
 =head2 Keyword Syntax Highlighting
 

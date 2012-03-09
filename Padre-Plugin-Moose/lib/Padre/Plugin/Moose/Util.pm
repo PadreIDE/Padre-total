@@ -4,7 +4,7 @@ use 5.008;
 use strict;
 use warnings;
 
-our $VERSION = '0.18';
+our $VERSION = '0.19';
 
 sub add_moose_keywords_highlighting {
 	my $type     = shift or return;

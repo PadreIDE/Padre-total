@@ -1,10 +1,13 @@
 Changes for Padre-Plugin-Moose
 
+0.19  2012.3.9 (AZAWAWI)
+    - Moved TextMate-style TAB-completion feature into Padre::Plugin::Snippet
+
 0.18  2012.3.7 (AZAWAWI)
-    - Perfected TextMate/snipMate-style TAB-completion feature.
+    - Perfected TextMate-style TAB-completion feature.
       Thanks for BOWTIE++ for throughly testing it.
     - Added perl snippets that are on by default regardless of current
-      code generator type (AZAWAWI)
+      code generator type
 
 0.17  2012.3.3
     - Perl tidy and fix missing updated Changes.

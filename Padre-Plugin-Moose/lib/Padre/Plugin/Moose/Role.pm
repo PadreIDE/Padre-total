@@ -3,7 +3,7 @@ package Padre::Plugin::Moose::Role;
 use Moose;
 use namespace::clean;
 
-our $VERSION = '0.18';
+our $VERSION = '0.19';
 
 with 'Padre::Plugin::Moose::Role::CanGenerateCode';
 with 'Padre::Plugin::Moose::Role::HasClassMembers';
