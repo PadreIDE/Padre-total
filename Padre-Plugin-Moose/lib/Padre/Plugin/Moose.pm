@@ -107,12 +107,6 @@ sub plugin_disable {
 		$self->{assistant} = undef;
 	}
 
-	# # Make sure we destroy our created object
-	# if ( defined $self->{document} ) {
-	# $self->{document}->cleanup;
-	# $self->{document} = undef;
-	# }
-
 	# TODO: Switch to Padre::Unload once Padre 0.96 is released
 	for my $package (CHILDREN) {
 		require Padre::Unload;
