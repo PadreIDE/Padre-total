@@ -8,12 +8,12 @@ our $VERSION = '0.18';
 
 use Moose::Util::TypeConstraints;
 
-class_type 'PerlDocument', { class => 'Padre::Document::Perl' };
-class_type 'Editor',       { class => 'Padre::Wx::Editor' };
+class_type 'SnippetPerlDocument', { class => 'Padre::Document::Perl' };
+class_type 'SnippetEditor',       { class => 'Padre::Wx::Editor' };
 
 has 'config'   => ( is => 'rw', isa => 'HashRef',      required => 1 );
-has 'document' => ( is => 'rw', isa => 'PerlDocument', required => 1 );
-has 'editor'   => ( is => 'rw', isa => 'Editor',       required => 1 );
+has 'document' => ( is => 'rw', isa => 'SnippetPerlDocument', required => 1 );
+has 'editor'   => ( is => 'rw', isa => 'SnippetEditor',       required => 1 );
 
 # Called when the document is created
 sub BUILD {

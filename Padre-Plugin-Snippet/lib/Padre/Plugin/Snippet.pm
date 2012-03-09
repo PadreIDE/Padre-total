@@ -10,25 +10,9 @@ our @ISA     = 'Padre::Plugin';
 
 # Child modules we need to unload when disabled
 use constant CHILDREN => qw{
-	Padre::Plugin::Snippet::Role::CanGenerateCode
-	Padre::Plugin::Snippet::Role::CanHandleInspector
-	Padre::Plugin::Snippet::Role::CanProvideHelp
-	Padre::Plugin::Snippet::Role::HasClassMembers
 	Padre::Plugin::Snippet::Role::NeedsSaveAsEvent
-	Padre::Plugin::Snippet::Attribute
-	Padre::Plugin::Snippet::Class
-	Padre::Plugin::Snippet::ClassMember
-	Padre::Plugin::Snippet::Constructor
-	Padre::Plugin::Snippet::Destructor
 	Padre::Plugin::Snippet::Document
-	Padre::Plugin::Snippet::Method
-	Padre::Plugin::Snippet::Program
-	Padre::Plugin::Snippet::Role
-	Padre::Plugin::Snippet::Subtype
-	Padre::Plugin::Snippet::Util
-	Padre::Plugin::Snippet::Assistant
 	Padre::Plugin::Snippet::Preferences
-	Padre::Plugin::Snippet::FBP::Assistant
 	Padre::Plugin::Snippet::FBP::Preferences
 };
 
@@ -94,12 +78,6 @@ sub plugin_enable {
 # Called when the plugin is disabled by Padre
 sub plugin_disable {
 	my $self = shift;
-
-	# Destroy resident dialog
-	if ( defined $self->{assistant} ) {
-		$self->{assistant}->Destroy;
-		$self->{assistant} = undef;
-	}
 
 	# TODO: Switch to Padre::Unload once Padre 0.96 is released
 	for my $package (CHILDREN) {
