@@ -14,6 +14,7 @@ use constant CHILDREN => qw{
 	Padre::Plugin::Moose::Role::CanHandleInspector
 	Padre::Plugin::Moose::Role::CanProvideHelp
 	Padre::Plugin::Moose::Role::HasClassMembers
+	Padre::Plugin::Moose::Role::NeedsSaveAsEvent
 	Padre::Plugin::Moose::Attribute
 	Padre::Plugin::Moose::Class
 	Padre::Plugin::Moose::ClassMember
@@ -85,6 +86,11 @@ sub plugin_enable {
 	# Update configuration attribute
 	$self->{config} = $config;
 
+	# Hook up to Padre's save-as event
+	# TODO remove once Padre 0.96 is released
+	require Padre::Plugin::Moose::Role::NeedsSaveAsEvent;
+	Padre::Plugin::Moose::Role::NeedsSaveAsEvent->meta->apply( $self->main );
+
 	return 1;
 }
 
@@ -142,19 +148,27 @@ sub show_assistant {
 	return;
 }
 
+# Called when an editor is opened
 sub editor_enable {
 	my $self     = shift;
 	my $editor   = shift;
 	my $document = shift;
 
+	# Only on Perl documents
+	return unless $document->isa('Padre::Document::Perl');
+
 	require Padre::Plugin::Moose::Util;
 	Padre::Plugin::Moose::Util::add_moose_keywords_highlighting( $self->{config}->{type}, $document, $editor );
 }
 
+# Called when an editor is changed
 sub editor_changed {
 	my $self     = shift;
-	my $editor   = shift;
-	my $document = shift;
+	my $document = $self->current->document or return;
+	my $editor   = $self->current->editor or return;
+
+	# Only on Perl documents
+	return unless $document->isa('Padre::Document::Perl');
 
 	require Padre::Plugin::Moose::Util;
 	Padre::Plugin::Moose::Util::add_moose_keywords_highlighting( $self->{config}->{type}, $document, $editor );
@@ -178,21 +192,25 @@ Then use it via L<Padre>, The Perl IDE. Press F8.
 
 =head1 DESCRIPTION
 
-Once you enable this Plugin under Padre, you'll get a brand new menu with the following options:
+Once you enable this Plugin under Padre, you'll get a brand new menu with the
+following options:
 
 =head2 Moose Assistant
 
-Opens up a user-friendly dialog where you can add classes, roles, attributes, subtypes and methods.
-The dialog contains a tree of class/role elements that are created while it is open and a preview of
-generated Perl code. It also contains links to Moose manual, cookbook and website.
+Opens up a user-friendly dialog where you can add classes, roles and their
+members. The dialog contains a tree view of created class and role elements and
+a preview of the generated Perl code. It also contains links to Moose online
+references.
 
 =head2 Moose Preferences
 
-TODO describe Moose Preferences
+Provides the ability to change the operation type (Moose, Mouse or 
+MooseX::Declare) and toggle comments/sample usage code generation.
 
 =head2 Keyword Syntax Highlighting
 
-TODO describe Keyword Syntax Highlighting
+Moose/Mouse and MooseX::Declare keywords are highlighted automatically in any
+Perl document. The operation type determines what to highlight.
 
 =head1 BUGS
 
