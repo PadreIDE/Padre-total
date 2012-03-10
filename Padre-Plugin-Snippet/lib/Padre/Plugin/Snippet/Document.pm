@@ -4,7 +4,7 @@ use 5.008;
 use Moose;
 use Padre::Wx ();
 
-our $VERSION = '0.18';
+our $VERSION = '0.01';
 
 use Moose::Util::TypeConstraints;
 

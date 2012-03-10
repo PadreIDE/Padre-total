@@ -3,7 +3,7 @@ package Padre::Plugin::Snippet::Preferences;
 use 5.008;
 use Padre::Plugin::Snippet::FBP::Preferences ();
 
-our $VERSION = '0.18';
+our $VERSION = '0.01';
 our @ISA     = qw{
 	Padre::Plugin::Snippet::FBP::Preferences
 };

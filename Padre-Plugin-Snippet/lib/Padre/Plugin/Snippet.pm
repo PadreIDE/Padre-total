@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Padre::Plugin ();
 
-our $VERSION = '0.18';
+our $VERSION = '0.01';
 our @ISA     = 'Padre::Plugin';
 
 # Child modules we need to unload when disabled
@@ -68,9 +68,14 @@ sub plugin_enable {
 	# Update configuration attribute
 	$self->{config} = $config;
 
-	# Hook up to save as event
-	require Padre::Plugin::Snippet::Role::NeedsSaveAsEvent;
-	Padre::Plugin::Snippet::Role::NeedsSaveAsEvent->meta->apply( $self->main );
+	# Generate missing Padre's events
+	# TODO remove once Padre 0.96 is released
+	require Padre::Plugin::Snippet::Role::NeedsPluginEvent;
+	Padre::Plugin::Moose::Snippet::NeedsPluginEvent->meta->apply( $self->main );
+
+	# Highlight the current editor. This is needed when a plugin is enabled
+	# for the first time
+	$self->editor_changed;
 
 	return 1;
 }
@@ -113,6 +118,7 @@ sub editor_changed {
 		$self->{document} = undef;
 	}
 
+	# Only on Perl documents
 	return unless $document->isa('Padre::Document::Perl');
 
 	# Create a new snippet document
