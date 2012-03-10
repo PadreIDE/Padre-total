@@ -2,7 +2,7 @@ package Padre::Plugin::Moose::Method;
 
 use Moose;
 
-our $VERSION = '0.19';
+our $VERSION = '0.20';
 
 extends 'Padre::Plugin::Moose::ClassMember';
 

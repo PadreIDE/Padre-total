@@ -2,7 +2,7 @@ package Padre::Plugin::Moose::Class;
 
 use Moose;
 
-our $VERSION = '0.19';
+our $VERSION = '0.20';
 
 with 'Padre::Plugin::Moose::Role::CanGenerateCode';
 with 'Padre::Plugin::Moose::Role::HasClassMembers';

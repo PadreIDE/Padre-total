@@ -3,7 +3,7 @@ package Padre::Plugin::Moose::Preferences;
 use 5.008;
 use Padre::Plugin::Moose::FBP::Preferences ();
 
-our $VERSION = '0.19';
+our $VERSION = '0.20';
 our @ISA     = qw{
 	Padre::Plugin::Moose::FBP::Preferences
 };
