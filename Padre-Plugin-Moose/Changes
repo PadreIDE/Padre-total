@@ -1,5 +1,11 @@
 Changes for Padre-Plugin-Moose
 
+0.20  2012.3.10 (AZAWAWI)
+    - Added missing README
+    - Highlight the current editor. This is needed when a plugin is enabled for the first time
+    - Added more button accelerator + Perl tidy
+    - Rename NeedsSaveAsEvent to NeedsPluginEvent
+
 0.19  2012.3.10 (AZAWAWI)
     - Moved TextMate-style TAB-completion feature into Padre::Plugin::Snippet.
     - No need to provide a Perl document subclass to Padre therefore no problems
