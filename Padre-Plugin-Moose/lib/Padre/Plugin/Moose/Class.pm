@@ -163,14 +163,13 @@ sub generate_mouse_code {
 }
 
 sub generate_moosex_declare_code {
-	my $self                = shift;
-	my $options             = shift;
-	my $comments            = $options->{comments};
-	my $namespace_autoclean = $options->{namespace_autoclean};
-	my $class               = $self->name;
-	my $superclasses        = $self->superclasses;
-	my $roles               = $self->roles;
-	my $make_immutable      = $self->immutable;
+	my $self           = shift;
+	my $options        = shift;
+	my $comments       = $options->{comments};
+	my $class          = $self->name;
+	my $superclasses   = $self->superclasses;
+	my $roles          = $self->roles;
+	my $make_immutable = $self->immutable;
 
 	$class        =~ s/^\s+|\s+$//g;
 	$superclasses =~ s/^\s+|\s+$//g;
@@ -178,14 +177,6 @@ sub generate_moosex_declare_code {
 	my @roles = split /,/, $roles;
 
 	my $class_body = '';
-	my $code       = '';
-	if ($namespace_autoclean) {
-		$code .= "use namespace::clean;";
-		$code .=
-			$comments
-			? " # Keep imports out of your namespace\n"
-			: "\n";
-	}
 
 	# If there is at least one subtype, we need to add this import
 	if ( scalar @{ $self->subtypes } ) {
@@ -205,17 +196,8 @@ sub generate_moosex_declare_code {
 	my $with    = ( scalar @roles )       ? "with ($roles) "           : q{};
 	my $mutable = $make_immutable         ? q{}                        : "is mutable ";
 
-	$code .= "class $class $extends$with$mutable\{\n$class_body\n}\n";
-	if ($namespace_autoclean) {
-		$code .= "\n1;\n\n";
-	} else {
-		if ( scalar @{ $self->subtypes } ) {
-			$code .= "\nno Moose::Util::TypeConstraints;\n";
-		}
-		$code .= "\nno MooseX::Declare;\n1;\n\n";
-	}
-
-	return $code;
+	# namespace::autoclean is implicit in { }
+	return "use MooseX::Declare;\nclass $class $extends$with$mutable\{\n$class_body\n}\n";
 }
 
 sub provide_help {

@@ -69,9 +69,8 @@ sub generate_mouse_code {
 	my $self                = shift;
 	my $options             = shift;
 	my $namespace_autoclean = $options->{namespace_autoclean};
-
-	my $role     = $self->name;
-	my $requires = $self->requires_list;
+	my $role                = $self->name;
+	my $requires            = $self->requires_list;
 
 	$role     =~ s/^\s+|\s+$//g;
 	$requires =~ s/^\s+|\s+$//g;
@@ -110,9 +109,9 @@ sub generate_mouse_code {
 }
 
 sub generate_moosex_declare_code {
-	my $self    = shift;
-	my $options = shift;
-
+	my $self     = shift;
+	my $options  = shift;
+	my $comments = $options->{comments};
 	my $role     = $self->name;
 	my $requires = $self->requires_list;
 
@@ -142,6 +141,7 @@ sub generate_moosex_declare_code {
 	}
 	$role_body = join "\n", @lines;
 
+	# namespace::autoclean is implicit in { }
 	return "use MooseX::Declare;\nrole $role {\n$role_body\n}\n\n";
 }
 
