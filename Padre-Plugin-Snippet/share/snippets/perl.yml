@@ -123,3 +123,24 @@ slurp: |
 
 # Create a new instance of a class
 new: my $${1:instance} = ${2:ClassName}->new;
+
+# POD
+pod: |
+  =pod
+
+  =head1 NAME
+ 
+  ${1:One line description of module's purpose here}
+ 
+ 
+  =head1 VERSION
+ 
+  This document describes ${2:MODULE NAME} version $VERSION
+  
+  
+  =head1 AUTHOR
+ 
+  ${3:AUTHOR}  E<lt>${4:e-mail address}E<gt>
+  
+  =cut
+  
