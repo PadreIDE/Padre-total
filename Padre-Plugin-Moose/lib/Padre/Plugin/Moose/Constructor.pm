@@ -52,9 +52,7 @@ sub generate_moosex_declare_code {
 	my $name     = $self->name;
 	my $modifier = $self->modifier;
 	if ( defined $modifier && $modifier eq 'around' ) {
-		$code = "around '$name' => sub {\n";
-		$code .= "\tmy \$orig = shift;\n";
-		$code .= "\tmy \$self = shift;\n";
+		$code = "around $name {\n";
 		$code .= "\n";
 		$code .= "\t# before calling $name\n" if $comments;
 		$code .= "\t\$self->\$orig(\@_)\n";
