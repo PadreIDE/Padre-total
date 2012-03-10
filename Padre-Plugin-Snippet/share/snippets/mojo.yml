@@ -1,0 +1,39 @@
+
+---
+#
+# Mojolicious snippets bundle for Padre::Plugin::Snippet
+# Written by Ahmad M. Zawawi (azawawi)
+#
+# Adapted from Mojolicious Bundle for TextMate by Sebastian Riedel (kriah)
+# https://github.com/kraih/mojo-tmbundle/tree/master/Snippets
+# Licensed under the Artistic License version 2.0
+# 
+
+any:
+  any '${1:/}' => sub {
+      my \$self = shift;
+      $2
+  };
+
+get:
+  get '${1:/}' => sub {
+      my \$self = shift;
+      $2
+  };
+
+post:
+  post '${1:/}' => sub {
+      my \$self = shift;
+      $2
+  };
+
+app:
+  #!/usr/bin/env perl
+  use Mojolicious::Lite;
+
+  $1
+
+  app->start;
+  __DATA__
+
+render: $self->render(${1:text} => '${2:Hello Mojo!}');
