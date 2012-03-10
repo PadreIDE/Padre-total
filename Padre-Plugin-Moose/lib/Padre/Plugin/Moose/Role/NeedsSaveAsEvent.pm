@@ -9,7 +9,7 @@ sub fire_plugin_event {
 	my $self = shift;
 
 	# Save the return value
-	my $result = $self->$orig();
+	my $result = $self->$orig(@_);
 
 	# Fire event that Padre does not implement at the moment
 	$self->{ide}->plugin_manager->plugin_event('editor_changed');
