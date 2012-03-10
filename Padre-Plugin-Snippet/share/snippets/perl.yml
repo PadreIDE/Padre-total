@@ -135,12 +135,12 @@ pod: |
  
   =head1 VERSION
  
-  This document describes ${2:MODULE NAME} version $VERSION
+  This document describes ${2:__PACKAGE__} version "$VERSION"
   
   
   =head1 AUTHOR
  
-  ${3:AUTHOR}  E<lt>${4:e-mail address}E<gt>
+  ${3:your name}  E<lt>${4:your e-mail address}E<gt>
   
   =cut
-  
+
