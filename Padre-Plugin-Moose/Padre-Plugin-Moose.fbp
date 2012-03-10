@@ -1593,7 +1593,7 @@
                                                 <property name="font"></property>
                                                 <property name="hidden">0</property>
                                                 <property name="id">wxID_ANY</property>
-                                                <property name="label">Reset</property>
+                                                <property name="label">Rese&amp;t</property>
                                                 <property name="maximum_size"></property>
                                                 <property name="minimum_size"></property>
                                                 <property name="name">reset_button</property>
@@ -1717,7 +1717,7 @@
                                                 <property name="font"></property>
                                                 <property name="hidden">0</property>
                                                 <property name="id">wxID_CANCEL</property>
-                                                <property name="label">Close</property>
+                                                <property name="label">Cl&amp;ose</property>
                                                 <property name="maximum_size"></property>
                                                 <property name="minimum_size"></property>
                                                 <property name="name">close_button</property>
@@ -2271,7 +2271,7 @@
                                 <property name="font"></property>
                                 <property name="hidden">0</property>
                                 <property name="id">wxID_OK</property>
-                                <property name="label">OK</property>
+                                <property name="label">&amp;OK</property>
                                 <property name="maximum_size"></property>
                                 <property name="minimum_size"></property>
                                 <property name="name">ok_button</property>
@@ -2328,7 +2328,7 @@
                                 <property name="font"></property>
                                 <property name="hidden">0</property>
                                 <property name="id">wxID_CANCEL</property>
-                                <property name="label">Cancel</property>
+                                <property name="label">&amp;Cancel</property>
                                 <property name="maximum_size"></property>
                                 <property name="minimum_size"></property>
                                 <property name="name">cancel_button</property>

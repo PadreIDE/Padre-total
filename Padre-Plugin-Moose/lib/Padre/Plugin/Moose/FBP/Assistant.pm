@@ -341,7 +341,7 @@ sub new {
 	$self->{reset_button} = Wx::Button->new(
 		$self,
 		-1,
-		Wx::gettext("Reset"),
+		Wx::gettext("Rese&t"),
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
 	);
@@ -373,7 +373,7 @@ sub new {
 	$self->{close_button} = Wx::Button->new(
 		$self,
 		Wx::ID_CANCEL,
-		Wx::gettext("Close"),
+		Wx::gettext("Cl&ose"),
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
 	);

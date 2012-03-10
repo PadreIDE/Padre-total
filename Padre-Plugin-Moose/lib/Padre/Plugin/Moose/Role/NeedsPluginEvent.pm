@@ -16,7 +16,7 @@ sub fire_plugin_event {
 
 	# And return the original result
 	return $result;
-};
+}
 
 # Hook up to new_document_from_string
 around 'new_document_from_string' => \&fire_plugin_event;
