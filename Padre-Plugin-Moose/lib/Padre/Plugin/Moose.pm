@@ -86,6 +86,10 @@ sub plugin_enable {
 	require Padre::Plugin::Moose::Role::NeedsPluginEvent;
 	Padre::Plugin::Moose::Role::NeedsPluginEvent->meta->apply( $self->main );
 
+	# Highlight the current editor. This is needed when a plugin is enabled
+	# for the first time
+	$self->editor_changed;
+
 	return 1;
 }
 
