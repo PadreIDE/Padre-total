@@ -185,7 +185,7 @@ Padre::Plugin::Moose - Moose, Mouse and MooseX::Declare support for Padre
 
 =head1 SYNOPSIS
 
-    cpan Padre::Plugin::Moose;
+    cpan Padre::Plugin::Moose
 
 Then use it via L<Padre>, The Perl IDE. Press F8.
 

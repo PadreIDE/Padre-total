@@ -132,7 +132,7 @@ Padre::Plugin::Snippet - TextMate-like snippets for Padre
 
 =head1 SYNOPSIS
 
-    cpan Padre::Plugin::Snippet;
+    cpan Padre::Plugin::Snippet
 
 Then use it via L<Padre>, The Perl IDE.
 
