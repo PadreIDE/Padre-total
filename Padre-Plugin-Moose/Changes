@@ -1,7 +1,14 @@
 Changes for Padre-Plugin-Moose
 
-0.19  2012.3.9 (AZAWAWI)
-    - Moved TextMate-style TAB-completion feature into Padre::Plugin::Snippet
+0.19  2012.3.10 (AZAWAWI)
+    - Moved TextMate-style TAB-completion feature into Padre::Plugin::Snippet.
+    - No need to provide a Perl document subclass to Padre therefore no problems
+      with other Perl document subclassing plugins.
+    - In MooseX::Declare, around modifier has $self and $orig predefined
+    - Documentation updates.
+    - No more "Enable Snippets" in preferences dialog.
+    - One can choose between the namespace::clean or the purist approach to
+      using Moose and Mouse.
 
 0.18  2012.3.7 (AZAWAWI)
     - Perfected TextMate-style TAB-completion feature.
