@@ -39,6 +39,10 @@ sub generate_moose_code {
 	# Generate class members
 	$code .= $self->to_class_members_code($options);
 
+	if ( scalar @{ $self->subtypes } ) {
+		$code .= "\nno Moose::Util::TypeConstraints;\n";
+	}
+	$code .= "\nno Moose::Role;\n";
 	$code .= "\n1;\n\n";
 
 	return $code;

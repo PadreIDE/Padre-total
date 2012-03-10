@@ -82,7 +82,15 @@ sub generate_moose_code {
 			? " # Makes it faster at the cost of startup time\n"
 			: "\n";
 	}
-	$code .= "\n1;\n\n";
+
+	if ($namespace_autoclean) {
+		$code .= "\n1;\n\n";
+	} else {
+		if ( scalar @{ $self->subtypes } ) {
+			$code .= "\nno Moose::Util::TypeConstraints;\n";
+		}
+		$code .= "\nno Moose\n1;\n\n";
+	}
 
 	return $code;
 }
@@ -143,7 +151,12 @@ sub generate_mouse_code {
 			? " # Makes it faster at the cost of startup time\n"
 			: "\n";
 	}
-	$code .= "\n1;\n\n";
+
+	if ($namespace_autoclean) {
+		$code .= "\n1;\n\n";
+	} else {
+		$code .= "\nno Mouse\n1;\n\n";
+	}
 
 	return $code;
 }
