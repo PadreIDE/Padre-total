@@ -2,12 +2,27 @@ package Padre::Plugin::Moose::Role::NeedsSaveAsEvent;
 use Moose::Role;
 
 requires 'on_save_as';
-after 'on_save_as' => sub {
+requires 'new_document_from_string';
+
+sub fire_plugin_event {
+	my $orig = shift;
 	my $self = shift;
-	return unless $self->isa('Padre::Wx::Main');
-	my $manager = $self->{ide}->plugin_manager;
-	$manager->plugin_event('editor_changed');
+
+	# Save the return value
+	my $result = $self->$orig();
+
+	# Fire event that Padre does not implement at the moment
+	$self->{ide}->plugin_manager->plugin_event('editor_changed');
+
+	# And return the original result
+	return $result;
 };
+
+# Hook up to new_document_from_string
+around 'new_document_from_string' => \&fire_plugin_event;
+
+# Hook up to on_save_as
+around 'on_save_as' => \&fire_plugin_event;
 
 no Moose::Role;
 1;
