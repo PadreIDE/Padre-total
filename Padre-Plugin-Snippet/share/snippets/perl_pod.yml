@@ -11,7 +11,6 @@
 
 #pod as in min pod, good habbit
 pod: |
-  
   =pod
   
   =head1 NAME
@@ -39,9 +38,8 @@ pod: |
   =cut
 
 
-#pod for CPAN
-podc: |
-  
+#podp for a Padre::Plugin
+podp: |
   =pod
   
   =head1 NAME
@@ -52,6 +50,31 @@ podc: |
   =head1 VERSION
  
   This document describes __PACKAGE__ version $VERSION
+  
+  
+  =head1 DEPENDENCIES
+  
+  ${2:for author to fill in:
+  
+    A list of all the other modules that this module relies upon,
+    including any restrictions on versions, and an indication whether
+    the module is part of the standard Perl distribution, part of the
+    module's distribution, or must be installed separately.}
+    
+    None.
+  
+  =head1 BUGS AND LIMITATIONS
+  
+  ${3:for author to fill in:
+    A list of known problems with the module, together with some
+    indication Whether they are likely to be fixed in an upcoming
+    release. Also a list of restrictions on the features the module
+    does provide: data types that cannot be handled, performance issues
+    and the circumstances in which they may arise, practical
+    limitations on the size of data sets, special cases that are not
+    (yet) handled, etc.}
+    
+    No bugs have been reported.
   
   
   =head1 SUPPORT
@@ -66,31 +89,31 @@ podc: |
   
   =item * RT: CPAN's request tracker
   
-  L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=${2:Foo-Bar}>
+  L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=${4:Foo-Bar}>
   
   =item * AnnoCPAN: Annotated CPAN documentation
   
-  L<http://annocpan.org/dist/$2>
+  L<http://annocpan.org/dist/$4>
   
   =item * CPAN Ratings
   
-  L<http://cpanratings.perl.org/d/$2>
+  L<http://cpanratings.perl.org/d/$4>
   
   =item * Search CPAN
   
-  L<http://search.cpan.org/dist/$2/>
+  L<http://search.cpan.org/dist/$4/>
   
   =back
   
   
   =head1 AUTHOR
  
-  ${3:your name}  E<lt>${4:your e-mail address}E<gt>
+  ${5:your name}  E<lt>${6:your e-mail address}E<gt>
   
   
   =head1 LICENCE AND COPYRIGHT
  
-  Copyright (c) $year, $3 E<lt>$4E<gt>. All rights reserved.
+  Copyright (c) $year, $5 E<lt>$6E<gt>. All rights reserved.
  
   This module is free software; you can redistribute it and/or
   modify it under the same terms as Perl itself. See L<perlartistic>.
@@ -98,7 +121,7 @@ podc: |
   =cut
 
 
-
+# un changed
 podsupport: |
   
   =head1 SUPPORT
@@ -126,4 +149,10 @@ podsupport: |
   =item * Search CPAN
   
   L<http://search.cpan.org/dist/$2/>
+
+
+
+
+
+
 
