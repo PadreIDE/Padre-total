@@ -81,7 +81,7 @@ sub plugin_enable {
 	# Update configuration attribute
 	$self->{config} = $config;
 
-	# Hook up to Padre's save-as event
+	# Generate missing Padre's events
 	# TODO remove once Padre 0.96 is released
 	require Padre::Plugin::Moose::Role::NeedsPluginEvent;
 	Padre::Plugin::Moose::Role::NeedsPluginEvent->meta->apply( $self->main );
