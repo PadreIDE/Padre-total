@@ -1,7 +1,6 @@
 package Padre::Plugin::Moose::Role::HasClassMembers;
 
 use Moose::Role;
-use namespace::clean;
 
 our $VERSION = '0.19';
 
@@ -36,6 +35,7 @@ sub to_class_members_code {
 	return $code;
 }
 
+no Moose::Role;
 1;
 
 __END__

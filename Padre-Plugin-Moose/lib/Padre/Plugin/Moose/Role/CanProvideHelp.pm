@@ -1,12 +1,12 @@
 package Padre::Plugin::Moose::Role::CanProvideHelp;
 
 use Moose::Role;
-use namespace::clean;
 
 our $VERSION = '0.19';
 
 requires 'provide_help';
 
+no Moose::Role;
 1;
 
 __END__

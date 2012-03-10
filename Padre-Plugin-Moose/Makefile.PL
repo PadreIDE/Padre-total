@@ -9,7 +9,6 @@ all_from 'lib/Padre/Plugin/Moose.pm';
 
 requires 'Padre'            => '0.94';
 requires 'Moose'            => '2.0402';
-requires 'namespace::clean' => '0.22';
 test_requires 'Test::More'  => '0.47';
 
 no_index 'directory' => qw{ t share inc};

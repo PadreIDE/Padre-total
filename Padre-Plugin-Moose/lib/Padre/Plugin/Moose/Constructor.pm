@@ -1,7 +1,6 @@
 package Padre::Plugin::Moose::Constructor;
 
 use Moose;
-use namespace::clean;
 
 our $VERSION = '0.19';
 
@@ -105,4 +104,5 @@ sub get_grid_data {
 
 __PACKAGE__->meta->make_immutable;
 
+no Moose;
 1;

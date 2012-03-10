@@ -1,7 +1,6 @@
 package Padre::Plugin::Moose::Role::CanHandleInspector;
 
 use Moose::Role;
-use namespace::clean;
 
 our $VERSION = '0.19';
 
@@ -9,6 +8,7 @@ requires 'read_from_inspector';
 requires 'write_to_inspector';
 requires 'get_grid_data';
 
+no Moose::Role;
 1;
 
 __END__
