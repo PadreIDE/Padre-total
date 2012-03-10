@@ -65,6 +65,9 @@ sub plugin_enable {
 	unless ( defined $config->{type} ) {
 		$config->{type} = 'Moose';
 	}
+	unless ( defined $config->{namespace_autoclean} ) {
+		$config->{namespace_autoclean} = 0;
+	}
 	unless ( defined $config->{comments} ) {
 		$config->{comments} = 1;
 	}
@@ -197,7 +200,8 @@ references.
 =head2 Moose Preferences
 
 Provides the ability to change the operation type (Moose, Mouse or 
-MooseX::Declare) and toggle comments/sample usage code generation.
+MooseX::Declare) and toggle the usage of namespace::clean, comments and sample 
+usage code generation.
 
 =head2 Keyword Syntax Highlighting
 

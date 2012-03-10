@@ -26,9 +26,9 @@ sub new {
 	my $self = $class->SUPER::new(
 		$parent,
 		-1,
-		Wx::gettext("Moose Assistant Preferences"),
+		Wx::gettext("Preferences"),
 		Wx::DefaultPosition,
-		[ 240, 172 ],
+		[ 247, 204 ],
 		Wx::DEFAULT_DIALOG_STYLE,
 	);
 
@@ -54,6 +54,14 @@ sub new {
 			"MooseX::Declare",
 		],
 		Wx::CB_READONLY,
+	);
+
+	$self->{namespace_autoclean_checkbox} = Wx::CheckBox->new(
+		$self,
+		-1,
+		Wx::gettext("Use namespace::autoclean?"),
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
 	);
 
 	$self->{comments_checkbox} = Wx::CheckBox->new(
@@ -106,12 +114,13 @@ sub new {
 	$button_sizer->Add( $self->{cancel_button}, 0, Wx::ALL, 5 );
 
 	my $sizer = Wx::BoxSizer->new(Wx::VERTICAL);
-	$sizer->Add( $options_labels,               0, Wx::EXPAND | Wx::LEFT | Wx::RIGHT | Wx::TOP,      5 );
-	$sizer->Add( $generated_code_sizer,         0, Wx::EXPAND,                                       5 );
-	$sizer->Add( $self->{comments_checkbox},    0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALL | Wx::EXPAND, 5 );
-	$sizer->Add( $self->{sample_code_checkbox}, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALL | Wx::EXPAND, 5 );
-	$sizer->Add( $self->{static_line},          0, Wx::EXPAND | Wx::ALL,                             5 );
-	$sizer->Add( $button_sizer,                 0, Wx::EXPAND,                                       5 );
+	$sizer->Add( $options_labels,                       0, Wx::EXPAND | Wx::LEFT | Wx::RIGHT | Wx::TOP,      5 );
+	$sizer->Add( $generated_code_sizer,                 0, Wx::EXPAND,                                       5 );
+	$sizer->Add( $self->{namespace_autoclean_checkbox}, 0, Wx::ALL,                                          5 );
+	$sizer->Add( $self->{comments_checkbox},            0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALL | Wx::EXPAND, 5 );
+	$sizer->Add( $self->{sample_code_checkbox},         0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALL | Wx::EXPAND, 5 );
+	$sizer->Add( $self->{static_line},                  0, Wx::EXPAND | Wx::ALL,                             5 );
+	$sizer->Add( $button_sizer,                         0, Wx::EXPAND,                                       5 );
 
 	$self->SetSizer($sizer);
 	$self->Layout;
