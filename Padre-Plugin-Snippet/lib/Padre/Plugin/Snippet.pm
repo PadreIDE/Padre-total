@@ -138,11 +138,18 @@ Then use it via L<Padre>, The Perl IDE.
 
 =head1 DESCRIPTION
 
-Once you enable this Plugin under Padre, you'll get a brand new menu with the following options:
+Once you enable this Plugin under Padre, you'll get TextMate-style TAB triggered
+snippets for the following:
 
-=head2 TextMate-style TAB triggered snippets
+=item Perl
 
-TODO describe TextMate-style TAB triggered snippets
+=item Moose
+
+=item Mouse
+
+=item MooseX::Declare
+
+=back
 
 =head1 BUGS
 
