@@ -11,7 +11,7 @@ use Moose::Util::TypeConstraints;
 class_type 'SnippetPerlDocument', { class => 'Padre::Document::Perl' };
 class_type 'SnippetEditor',       { class => 'Padre::Wx::Editor' };
 
-has 'config'   => ( is => 'rw', isa => 'HashRef',      required => 1 );
+has 'config'   => ( is => 'rw', isa => 'HashRef',             required => 1 );
 has 'document' => ( is => 'rw', isa => 'SnippetPerlDocument', required => 1 );
 has 'editor'   => ( is => 'rw', isa => 'SnippetEditor',       required => 1 );
 

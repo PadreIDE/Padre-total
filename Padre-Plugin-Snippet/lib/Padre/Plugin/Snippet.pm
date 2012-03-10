@@ -22,14 +22,7 @@ my $config;
 # Called when Padre wants to check what package versions this
 # plugin needs
 sub padre_interfaces {
-	'Padre::Plugin'               => 0.94,
-		'Padre::Document'         => 0.94,
-		'Padre::Wx::Main'         => 0.94,
-		'Padre::Wx::Theme'        => 0.94,
-		'Padre::Wx::Editor'       => 0.94,
-		'Padre::Wx::Role::Main'   => 0.94,
-		'Padre::Wx::Role::Dialog' => 0.94,
-		;
+	'Padre::Plugin' => 0.94, 'Padre::Wx::Editor' => 0.94, 'Padre::Wx::Role::Main' => 0.94;
 }
 
 # Called when Padre wants a name for the plugin
@@ -37,17 +30,12 @@ sub plugin_name {
 	Wx::gettext('Snippet');
 }
 
-# Called by Padre::Plugin::Snippet::Document to retrieve configuration
-sub _plugin_config {
-	return $config;
-}
-
 # Called when the plugin is enabled by Padre
 sub plugin_enable {
 	my $self = shift;
 
 	# Read the plugin configuration, and
-	$config = $self->config_read;
+	my $config = $self->config_read;
 	unless ( defined $config ) {
 
 		# No configuration, let us create it
@@ -71,7 +59,7 @@ sub plugin_enable {
 	# Generate missing Padre's events
 	# TODO remove once Padre 0.96 is released
 	require Padre::Plugin::Snippet::Role::NeedsPluginEvent;
-	Padre::Plugin::Moose::Snippet::NeedsPluginEvent->meta->apply( $self->main );
+	Padre::Plugin::Snippet::Role::NeedsPluginEvent->meta->apply( $self->main );
 
 	# Highlight the current editor. This is needed when a plugin is enabled
 	# for the first time
@@ -91,21 +79,21 @@ sub plugin_disable {
 	}
 }
 
-# Called when Padre wants to display plugin menu items
-sub menu_plugins {
-	my $self      = shift;
-	my $main      = $self->main;
-	my $menu_item = Wx::MenuItem->new( undef, -1, Wx::gettext('Snippet') . "...\tF9", );
+# # Called when Padre wants to display plugin menu items
+# sub menu_plugins {
+# my $self      = shift;
+# my $main      = $self->main;
+# my $menu_item = Wx::MenuItem->new( undef, -1, Wx::gettext('Snippet') . "...\tF9", );
 
-	Wx::Event::EVT_MENU(
-		$main,
-		$menu_item,
-		sub {
-		},
-	);
+# Wx::Event::EVT_MENU(
+# $main,
+# $menu_item,
+# sub {
+# },
+# );
 
-	return $menu_item;
-}
+# return $menu_item;
+# }
 
 sub editor_changed {
 	my $self     = shift;
@@ -146,7 +134,7 @@ Padre::Plugin::Snippet - TextMate-like snippets for Padre
 
     cpan Padre::Plugin::Snippet;
 
-Then use it via L<Padre>, The Perl IDE. Press F9.
+Then use it via L<Padre>, The Perl IDE.
 
 =head1 DESCRIPTION
 
