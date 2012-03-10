@@ -14,7 +14,7 @@ use constant CHILDREN => qw{
 	Padre::Plugin::Moose::Role::CanHandleInspector
 	Padre::Plugin::Moose::Role::CanProvideHelp
 	Padre::Plugin::Moose::Role::HasClassMembers
-	Padre::Plugin::Moose::Role::NeedsSaveAsEvent
+	Padre::Plugin::Moose::Role::NeedsPluginEvent
 	Padre::Plugin::Moose::Attribute
 	Padre::Plugin::Moose::Class
 	Padre::Plugin::Moose::ClassMember
@@ -83,8 +83,8 @@ sub plugin_enable {
 
 	# Hook up to Padre's save-as event
 	# TODO remove once Padre 0.96 is released
-	require Padre::Plugin::Moose::Role::NeedsSaveAsEvent;
-	Padre::Plugin::Moose::Role::NeedsSaveAsEvent->meta->apply( $self->main );
+	require Padre::Plugin::Moose::Role::NeedsPluginEvent;
+	Padre::Plugin::Moose::Role::NeedsPluginEvent->meta->apply( $self->main );
 
 	return 1;
 }

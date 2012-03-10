@@ -1,4 +1,4 @@
-package Padre::Plugin::Moose::Role::NeedsSaveAsEvent;
+package Padre::Plugin::Moose::Role::NeedsPluginEvent;
 use Moose::Role;
 
 requires 'on_save_as';
