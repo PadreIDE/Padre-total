@@ -5,6 +5,100 @@
 # Written by Ahmad M. Zawawi (azawawi)
 #
 
+# any chance of using __PACKAGE__ and $VERSION in perl_pod.yaml
+# any chance of my $year = 1900 + (localtime)[5];
+# then we could have basic pod
+
+#pod as in min pod, good habbit
+pod: |
+  
+  =pod
+  
+  =head1 NAME
+ 
+  __PACKAGE__ - ${1:One line description of module's purpose here, ie; Padare The Perl IDE}
+  
+  
+  =head1 VERSION
+ 
+  This document describes __PACKAGE__ version $VERSION
+  
+  
+  =head1 AUTHOR
+ 
+  ${2:your name}  E<lt>${3:your e-mail address}E<gt>
+  
+  
+  =head1 LICENCE AND COPYRIGHT
+ 
+  Copyright (c) $year, $2 E<lt>$3E<gt>. All rights reserved.
+ 
+  This module is free software; you can redistribute it and/or
+  modify it under the same terms as Perl itself. See L<perlartistic>.
+  
+  =cut
+
+
+#pod for CPAN
+podc: |
+  
+  =pod
+  
+  =head1 NAME
+ 
+  __PACKAGE__ - ${1:One line description of module's purpose here, ie; Padare The Perl IDE}
+ 
+ 
+  =head1 VERSION
+ 
+  This document describes __PACKAGE__ version $VERSION
+  
+  
+  =head1 SUPPORT
+  
+  You can find documentation for this module with the perldoc command.
+  
+    perldoc __PACKAGE__
+  
+  You can also look for information at:
+  
+  =over 4
+  
+  =item * RT: CPAN's request tracker
+  
+  L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=${2:Foo-Bar}>
+  
+  =item * AnnoCPAN: Annotated CPAN documentation
+  
+  L<http://annocpan.org/dist/$2>
+  
+  =item * CPAN Ratings
+  
+  L<http://cpanratings.perl.org/d/$2>
+  
+  =item * Search CPAN
+  
+  L<http://search.cpan.org/dist/$2/>
+  
+  =back
+  
+  
+  =head1 AUTHOR
+ 
+  ${3:your name}  E<lt>${4:your e-mail address}E<gt>
+  
+  
+  =head1 LICENCE AND COPYRIGHT
+ 
+  Copyright (c) $year, $3 E<lt>$4E<gt>. All rights reserved.
+ 
+  This module is free software; you can redistribute it and/or
+  modify it under the same terms as Perl itself. See L<perlartistic>.
+  
+  =cut
+
+
+
 podsupport: |
   
   =head1 SUPPORT
