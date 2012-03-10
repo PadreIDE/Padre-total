@@ -8,6 +8,7 @@
 # any chance of using __PACKAGE__ and $VERSION in perl_pod.yaml
 # any chance of my $year = 1900 + (localtime)[5];
 # then we could have basic pod
+# could we also use $config->identity_name and $config->identity_email
 
 #pod as in min pod, good habbit
 pod: |
@@ -25,7 +26,7 @@ pod: |
   
   =head1 AUTHOR
  
-  ${2:your name}  E<lt>${3:your e-mail address}E<gt>
+  ${2:your name|$config->identity_name}  E<lt>${3:your e-mail address|$config->identity_email}E<gt>
   
   
   =head1 LICENCE AND COPYRIGHT
