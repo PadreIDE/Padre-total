@@ -9,30 +9,30 @@
 # Licensed under the Artistic License version 2.0
 # 
 
-any:
+any: |
   any '${1:/}' => sub {
       my \$self = shift;
-      $2
+      ${2}
   };
 
-get:
+get: |
   get '${1:/}' => sub {
       my \$self = shift;
-      $2
+      ${2}
   };
 
-post:
+post: |
   post '${1:/}' => sub {
       my \$self = shift;
-      $2
+      ${2}
   };
 
-app:
+app: |
   #!/usr/bin/env perl
   use Mojolicious::Lite;
-
-  $1
-
+  
+  ${1}
+  
   app->start;
   __DATA__
 

@@ -10,7 +10,7 @@ use 5.008005;
 use utf8;
 use strict;
 use warnings;
-use Padre::Wx ();
+use Padre::Wx             ();
 use Padre::Wx::Role::Main ();
 
 our $VERSION = '0.01';
@@ -68,14 +68,14 @@ sub new {
 
 	my $button_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
 	$button_sizer->Add( 0, 0, 1, Wx::EXPAND, 5 );
-	$button_sizer->Add( $self->{ok_button}, 0, Wx::ALL, 5 );
+	$button_sizer->Add( $self->{ok_button},     0, Wx::ALL, 5 );
 	$button_sizer->Add( $self->{cancel_button}, 0, Wx::ALL, 5 );
 
 	my $sizer = Wx::BoxSizer->new(Wx::VERTICAL);
-	$sizer->Add( $generated_code_sizer, 0, Wx::EXPAND, 5 );
-	$sizer->Add( $self->{snippets_checkbox}, 0, Wx::ALL, 5 );
-	$sizer->Add( $self->{static_line}, 0, Wx::EXPAND | Wx::ALL, 5 );
-	$sizer->Add( $button_sizer, 0, Wx::EXPAND, 5 );
+	$sizer->Add( $generated_code_sizer,      0, Wx::EXPAND,           5 );
+	$sizer->Add( $self->{snippets_checkbox}, 0, Wx::ALL,              5 );
+	$sizer->Add( $self->{static_line},       0, Wx::EXPAND | Wx::ALL, 5 );
+	$sizer->Add( $button_sizer,              0, Wx::EXPAND,           5 );
 
 	$self->SetSizer($sizer);
 	$self->Layout;

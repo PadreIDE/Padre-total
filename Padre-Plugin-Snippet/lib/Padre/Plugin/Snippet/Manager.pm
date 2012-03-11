@@ -52,7 +52,7 @@ sub run {
 
 sub on_prefs_button_clicked {
 	my $self = shift;
-	
+
 	# Create a new preferences dialog
 	require Padre::Plugin::Snippet::Preferences;
 	my $prefs = Padre::Plugin::Snippet::Preferences->new($self);
@@ -66,7 +66,7 @@ sub on_prefs_button_clicked {
 	if ( $prefs->ShowModal == Wx::wxID_OK ) {
 
 		# Update configuration when the user hits the OK button
-		$config->{feature_snippets}            = $prefs->{snippets_checkbox}->IsChecked;
+		$config->{feature_snippets} = $prefs->{snippets_checkbox}->IsChecked;
 		$plugin->config_write($config);
 	}
 

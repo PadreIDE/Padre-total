@@ -10,9 +10,9 @@ use 5.008005;
 use utf8;
 use strict;
 use warnings;
-use Padre::Wx ();
+use Padre::Wx             ();
 use Padre::Wx::Role::Main ();
-use Padre::Wx::Editor ();
+use Padre::Wx::Editor     ();
 
 our $VERSION = '0.01';
 our @ISA     = qw{
@@ -46,9 +46,7 @@ sub new {
 		-1,
 		Wx::gettext("Trigger:"),
 	);
-	$self->{trigger_label}->SetFont(
-		Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" )
-	);
+	$self->{trigger_label}->SetFont( Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" ) );
 
 	$self->{trigger_text} = Wx::TextCtrl->new(
 		$self,
@@ -63,9 +61,7 @@ sub new {
 		-1,
 		Wx::gettext("Snippet:"),
 	);
-	$self->{snippet_label}->SetFont(
-		Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" )
-	);
+	$self->{snippet_label}->SetFont( Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" ) );
 
 	$self->{snippet_editor} = Padre::Wx::Editor->new(
 		$self,
@@ -106,12 +102,12 @@ sub new {
 	$fgSizer1->Add( $self->{trigger_text}, 0, Wx::ALL, 5 );
 
 	my $right_sizer = Wx::BoxSizer->new(Wx::VERTICAL);
-	$right_sizer->Add( $fgSizer1, 0, Wx::EXPAND, 5 );
-	$right_sizer->Add( $self->{snippet_label}, 0, Wx::ALL, 5 );
+	$right_sizer->Add( $fgSizer1,               0, Wx::EXPAND,           5 );
+	$right_sizer->Add( $self->{snippet_label},  0, Wx::ALL,              5 );
 	$right_sizer->Add( $self->{snippet_editor}, 1, Wx::ALL | Wx::EXPAND, 5 );
 
 	my $content_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
-	$content_sizer->Add( $left_sizer, 0, Wx::EXPAND, 5 );
+	$content_sizer->Add( $left_sizer,  0, Wx::EXPAND, 5 );
 	$content_sizer->Add( $right_sizer, 1, Wx::EXPAND, 5 );
 
 	my $button_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
@@ -121,7 +117,7 @@ sub new {
 
 	my $sizer = Wx::BoxSizer->new(Wx::VERTICAL);
 	$sizer->Add( $content_sizer, 1, Wx::EXPAND, 5 );
-	$sizer->Add( $button_sizer, 0, Wx::EXPAND, 5 );
+	$sizer->Add( $button_sizer,  0, Wx::EXPAND, 5 );
 
 	$self->SetSizer($sizer);
 	$self->Layout;

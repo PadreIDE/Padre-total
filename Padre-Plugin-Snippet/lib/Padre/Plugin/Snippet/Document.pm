@@ -14,10 +14,13 @@ class_type 'SnippetEditor',       { class => 'Padre::Wx::Editor' };
 has 'config'   => ( is => 'rw', isa => 'HashRef',             required => 1 );
 has 'document' => ( is => 'rw', isa => 'SnippetPerlDocument', required => 1 );
 has 'editor'   => ( is => 'rw', isa => 'SnippetEditor',       required => 1 );
+has 'snippets' => ( is => 'rw', isa => 'HashRef',             required => 1 );
 
 # Called when the document is created
 sub BUILD {
 	my $self = shift;
+
+	$self->{_snippets} = $self->snippets;
 
 	# Register events for the editor
 	$self->_register_events;
@@ -100,9 +103,6 @@ sub _on_key_down {
 		$event->Skip(1);
 		return;
 	}
-
-	# Load snippets everything since it be changed by the user at runtime
-	$self->_load_snippets($config);
 
 	if ( $self->_can_end_snippet_mode($event) ) {
 		$self->_end_snippet_mode($editor);
@@ -197,75 +197,6 @@ sub _end_snippet_mode {
 		my $current_pos = $editor->GetCurrentPos;
 		$editor->SetSelection( $current_pos, $current_pos );
 	}
-}
-
-# Load snippets from file according to code generation type
-sub _load_snippets {
-	my $self   = shift;
-	my $config = shift;
-
-	eval {
-		require YAML;
-		require File::ShareDir;
-		require File::Spec;
-
-		# Determine the snippets filename
-		my $file;
-		my $type = $config->{type};
-		if ( $type eq 'Mouse' ) {
-
-			# Mouse snippets
-			$file = 'mouse.yml';
-		} elsif ( $type eq 'MooseX::Declare' ) {
-
-			# MooseX::Declare snippets
-			$file = 'moosex_declare.yml';
-		} else {
-
-			# Moose by default
-			$file = 'moose.yml';
-		}
-
-		# Shortcut if that snippet type is already loaded in memory
-		return
-			if defined( $self->{_snippets_type} )
-				and ( $type eq $self->{_snippets_type} );
-
-		# Determine the full share/${snippets_filename}
-		my $filename = File::ShareDir::dist_file(
-			'Padre-Plugin-Snippet',
-			File::Spec->catfile( 'snippets', $file )
-		);
-
-		# Read the dialect snippet file
-		my $dialect_snippets = YAML::LoadFile($filename);
-
-		# Workaround: Load perl snippets :)
-		# TODO add automatic parent snippet support
-		my $perl_filename = File::ShareDir::dist_file(
-			'Padre-Plugin-Snippet',
-			File::Spec->catfile( 'snippets', 'perl.yml' )
-		);
-		my $snippets = YAML::LoadFile($perl_filename);
-		for my $trigger ( keys %{$dialect_snippets} ) {
-			if ( defined $snippets->{$trigger} ) {
-				warn "Trigger: $trigger is already in parent snippet file\n";
-			}
-			$snippets->{$trigger} = $dialect_snippets->{$trigger};
-		}
-
-		# The final merged snippet file
-		$self->{_snippets} = $snippets;
-
-		# Record loaded snippet type
-		$self->{_snippets_type} = $type;
-	};
-
-	# Report error to padre logger
-	warn "Unable to load snippet. Reason: $@\n"
-		if $@;
-
-	return;
 }
 
 # Returns whether the key can end snippet mode or not

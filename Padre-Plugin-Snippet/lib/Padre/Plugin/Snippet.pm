@@ -131,15 +131,53 @@ sub editor_changed {
 	# Only on Perl documents
 	return unless $document->isa('Padre::Document::Perl');
 
+	# Load all snippets here
+	my $snippets = $self->_load_snippets;
+
 	# Create a new snippet document
 	require Padre::Plugin::Snippet::Document;
 	$self->{document} = Padre::Plugin::Snippet::Document->new(
 		editor   => $editor,
 		document => $document,
 		config   => $self->{config},
+		snippets => $snippets,
 	);
 
 	return;
+}
+
+sub _load_snippets {
+
+	require File::ShareDir;
+	require File::Spec;
+	require File::Find::Rule;
+	require YAML;
+
+	my $snippets_dir = File::Spec->catfile(
+		File::ShareDir::dist_dir('Padre-Plugin-Snippet'),
+		'snippets'
+	);
+
+	# Find all the YAML files in share/snippets
+	my @files = File::Find::Rule->file()->name('*.yml')->in($snippets_dir);
+
+	my $snippets = {};
+	foreach my $file (@files) {
+		my $file_snippets;
+		eval { $file_snippets = YAML::LoadFile($file); };
+		if ($@) {
+			warn "Error while loading $file:\n$@\n";
+			next;
+		}
+		for my $trigger ( keys %{$file_snippets} ) {
+			if ( defined $snippets->{$trigger} ) {
+				warn "Trigger: $trigger is already found\n";
+			}
+			$snippets->{$trigger} = $file_snippets->{$trigger};
+		}
+	}
+
+	return $snippets;
 }
 
 1;
