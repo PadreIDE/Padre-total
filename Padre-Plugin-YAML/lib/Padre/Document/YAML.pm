@@ -1,12 +1,15 @@
 package Padre::Document::YAML;
 
 # ABSTRACT: YAML document support for Padre
-
+use 5.010001;
 use strict;
 use warnings;
+
 use Padre::Document ();
 
-our @ISA = 'Padre::Document';
+our $VERSION = '0.02';
+use parent qw(Padre::Document);
+
 
 sub task_functions {
 	return '';
@@ -17,7 +20,7 @@ sub task_outline {
 }
 
 sub task_syntax {
-	return '';
+	return 'Padre::Document::YAML::Syntax';
 }
 
 sub comment_lines_str {
@@ -25,3 +28,6 @@ sub comment_lines_str {
 }
 
 1;
+
+__END__
+

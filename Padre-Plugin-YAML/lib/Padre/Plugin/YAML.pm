@@ -9,9 +9,7 @@ use Padre::Plugin ();
 use Padre::Unload ();
 use Padre::Wx     ();
 use File::Spec::Functions qw{ catfile };
-
-# use File::Which   ();
-# use Try::Tiny;
+use Try::Tiny;
 
 our $VERSION = '0.02';
 use parent qw(Padre::Plugin);
@@ -19,6 +17,8 @@ use parent qw(Padre::Plugin);
 # Child modules we need to unload when disabled
 use constant CHILDREN => qw{
 	Padre::Plugin::YAML
+	Padre::Document::YAML
+	Padre::Document::YAML::Syntex
 };
 
 #######
@@ -53,9 +53,62 @@ sub registered_documents {
 sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
-		Wx::gettext('About') => sub { $self->show_about },
+		Wx::gettext('Check YAML') => sub { $self->check_yaml },
+		Wx::gettext('About')      => sub { $self->show_about },
 	];
 }
+
+#######
+# Method check_yaml
+#######
+sub check_yaml {
+	my $self     = shift;
+	my $main     = $self->main;
+	my $text     = $main->current->text;
+	my $document = $main->current->document;
+
+	unless ( $document and $document->isa('Padre::Document::YAML') ) {
+		$main->message( Wx::gettext('This is not an YAML document! ') . ref $document );
+		return;
+	}
+	say "here we are";
+	require YAML;
+	
+	try { Load ( $document ) }
+	
+	catch {
+		$self->main->error( sprintf( Wx::gettext('YAML Error: %s'), $_ ) );
+		}
+	# my $code = ($text) ? $text : $document->text_get;
+
+	# return unless ( defined $code and length($code) );
+
+	# require XML::Tidy;
+
+	# my $tidy_obj = '';
+	# my $string   = '';
+	# eval {
+	# $tidy_obj = XML::Tidy->new( xml => $code );
+	# $tidy_obj->tidy();
+
+	# $string = $tidy_obj->toString();
+	# };
+
+	# if ( !$@ ) {
+	# if ($text) {
+	# $string =~ s/\A<\?xml.+?\?>\r?\n?//o;
+	# my $editor = $main->current->editor;
+	# $editor->ReplaceSelection($string);
+	# } else {
+	# $document->text_set($string);
+	# }
+	# } else {
+	# $main->message( Wx::gettext("Tidying failed due to error(s):") . "\n\n" . $@ );
+	# }
+
+	return;
+}
+
 
 #######
 # Method show_about
