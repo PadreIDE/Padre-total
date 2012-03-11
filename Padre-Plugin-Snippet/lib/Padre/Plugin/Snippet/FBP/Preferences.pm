@@ -10,7 +10,7 @@ use 5.008005;
 use utf8;
 use strict;
 use warnings;
-use Padre::Wx             ();
+use Padre::Wx ();
 use Padre::Wx::Role::Main ();
 
 our $VERSION = '0.01';
@@ -28,7 +28,7 @@ sub new {
 		-1,
 		Wx::gettext("Snippet Preferences"),
 		Wx::DefaultPosition,
-		[ 245, 120 ],
+		[ 244, 105 ],
 		Wx::DEFAULT_DIALOG_STYLE,
 	);
 
@@ -51,7 +51,7 @@ sub new {
 	$self->{ok_button} = Wx::Button->new(
 		$self,
 		Wx::ID_OK,
-		Wx::gettext("OK"),
+		Wx::gettext("&OK"),
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
 	);
@@ -59,7 +59,7 @@ sub new {
 	$self->{cancel_button} = Wx::Button->new(
 		$self,
 		Wx::ID_CANCEL,
-		Wx::gettext("Cancel"),
+		Wx::gettext("&Cancel"),
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
 	);
@@ -68,14 +68,14 @@ sub new {
 
 	my $button_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
 	$button_sizer->Add( 0, 0, 1, Wx::EXPAND, 5 );
-	$button_sizer->Add( $self->{ok_button},     0, Wx::ALL, 5 );
+	$button_sizer->Add( $self->{ok_button}, 0, Wx::ALL, 5 );
 	$button_sizer->Add( $self->{cancel_button}, 0, Wx::ALL, 5 );
 
 	my $sizer = Wx::BoxSizer->new(Wx::VERTICAL);
-	$sizer->Add( $generated_code_sizer,      0, Wx::EXPAND,           5 );
-	$sizer->Add( $self->{snippets_checkbox}, 0, Wx::ALL,              5 );
-	$sizer->Add( $self->{static_line},       0, Wx::EXPAND | Wx::ALL, 5 );
-	$sizer->Add( $button_sizer,              0, Wx::EXPAND,           5 );
+	$sizer->Add( $generated_code_sizer, 0, Wx::EXPAND, 5 );
+	$sizer->Add( $self->{snippets_checkbox}, 0, Wx::ALL, 5 );
+	$sizer->Add( $self->{static_line}, 0, Wx::EXPAND | Wx::ALL, 5 );
+	$sizer->Add( $button_sizer, 0, Wx::EXPAND, 5 );
 
 	$self->SetSizer($sizer);
 	$self->Layout;

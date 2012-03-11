@@ -10,9 +10,9 @@ use 5.008005;
 use utf8;
 use strict;
 use warnings;
-use Padre::Wx             ();
+use Padre::Wx ();
 use Padre::Wx::Role::Main ();
-use Padre::Wx::Editor     ();
+use Padre::Wx::Editor ();
 
 our $VERSION = '0.01';
 our @ISA     = qw{
@@ -29,7 +29,7 @@ sub new {
 		-1,
 		Wx::gettext("Snippet Manager"),
 		Wx::DefaultPosition,
-		[ 441, 275 ],
+		[ 441, 385 ],
 		Wx::DEFAULT_DIALOG_STYLE,
 	);
 
@@ -46,7 +46,9 @@ sub new {
 		-1,
 		Wx::gettext("Trigger:"),
 	);
-	$self->{trigger_label}->SetFont( Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" ) );
+	$self->{trigger_label}->SetFont(
+		Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" )
+	);
 
 	$self->{trigger_text} = Wx::TextCtrl->new(
 		$self,
@@ -56,46 +58,40 @@ sub new {
 		Wx::DefaultSize,
 	);
 
-	$self->{scope_label} = Wx::StaticText->new(
-		$self,
-		-1,
-		Wx::gettext("Scope:"),
-	);
-	$self->{scope_label}->SetFont( Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" ) );
-
-	$self->{scope_combo} = Wx::ComboBox->new(
-		$self,
-		-1,
-		"Combo!",
-		Wx::DefaultPosition,
-		Wx::DefaultSize,
-		[],
-	);
-
 	$self->{snippet_label} = Wx::StaticText->new(
 		$self,
 		-1,
 		Wx::gettext("Snippet:"),
 	);
-	$self->{snippet_label}->SetFont( Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" ) );
+	$self->{snippet_label}->SetFont(
+		Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" )
+	);
 
 	$self->{snippet_editor} = Padre::Wx::Editor->new(
 		$self,
 		-1,
 	);
 
-	$self->{save_button} = Wx::Button->new(
+	$self->{prefs_button} = Wx::Button->new(
 		$self,
 		-1,
-		Wx::gettext("&OK"),
+		Wx::gettext("&Preferences"),
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
 	);
 
-	$self->{cancel_button} = Wx::Button->new(
+	Wx::Event::EVT_BUTTON(
+		$self,
+		$self->{prefs_button},
+		sub {
+			shift->on_prefs_button_clicked(@_);
+		},
+	);
+
+	$self->{close_button} = Wx::Button->new(
 		$self,
 		Wx::ID_CANCEL,
-		Wx::gettext("&Cancel"),
+		Wx::gettext("&Close"),
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
 	);
@@ -107,32 +103,34 @@ sub new {
 	$fgSizer1->SetFlexibleDirection(Wx::BOTH);
 	$fgSizer1->SetNonFlexibleGrowMode(Wx::FLEX_GROWMODE_SPECIFIED);
 	$fgSizer1->Add( $self->{trigger_label}, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALL, 5 );
-	$fgSizer1->Add( $self->{trigger_text},  0, Wx::ALL,                             5 );
-	$fgSizer1->Add( $self->{scope_label},   0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALL, 5 );
-	$fgSizer1->Add( $self->{scope_combo},   0, Wx::ALL,                             5 );
+	$fgSizer1->Add( $self->{trigger_text}, 0, Wx::ALL, 5 );
 
 	my $right_sizer = Wx::BoxSizer->new(Wx::VERTICAL);
-	$right_sizer->Add( $fgSizer1,               0, Wx::EXPAND,           5 );
-	$right_sizer->Add( $self->{snippet_label},  0, Wx::ALL,              5 );
+	$right_sizer->Add( $fgSizer1, 0, Wx::EXPAND, 5 );
+	$right_sizer->Add( $self->{snippet_label}, 0, Wx::ALL, 5 );
 	$right_sizer->Add( $self->{snippet_editor}, 1, Wx::ALL | Wx::EXPAND, 5 );
 
-	my $bSizer4 = Wx::BoxSizer->new(Wx::HORIZONTAL);
-	$bSizer4->Add( $left_sizer,  0, Wx::EXPAND, 5 );
-	$bSizer4->Add( $right_sizer, 1, Wx::EXPAND, 5 );
+	my $content_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
+	$content_sizer->Add( $left_sizer, 0, Wx::EXPAND, 5 );
+	$content_sizer->Add( $right_sizer, 1, Wx::EXPAND, 5 );
 
 	my $button_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
 	$button_sizer->Add( 0, 0, 1, Wx::EXPAND, 5 );
-	$button_sizer->Add( $self->{save_button},   0, Wx::ALL, 5 );
-	$button_sizer->Add( $self->{cancel_button}, 0, Wx::ALL, 5 );
+	$button_sizer->Add( $self->{prefs_button}, 0, Wx::ALL, 5 );
+	$button_sizer->Add( $self->{close_button}, 0, Wx::ALL, 5 );
 
-	my $bSizer7 = Wx::BoxSizer->new(Wx::VERTICAL);
-	$bSizer7->Add( $bSizer4,      1, Wx::EXPAND, 5 );
-	$bSizer7->Add( $button_sizer, 0, Wx::EXPAND, 5 );
+	my $sizer = Wx::BoxSizer->new(Wx::VERTICAL);
+	$sizer->Add( $content_sizer, 1, Wx::EXPAND, 5 );
+	$sizer->Add( $button_sizer, 0, Wx::EXPAND, 5 );
 
-	$self->SetSizer($bSizer7);
+	$self->SetSizer($sizer);
 	$self->Layout;
 
 	return $self;
+}
+
+sub on_prefs_button_clicked {
+	$_[0]->main->error('Handler method on_prefs_button_clicked for event prefs_button.OnButtonClick not implemented');
 }
 
 1;

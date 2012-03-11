@@ -24,7 +24,16 @@ sub new {
 	# Center & title
 	$self->CenterOnParent;
 	$self->SetTitle(
-		sprintf( Wx::gettext('Moose Assistant %s - Written for fun by Ahmad M. Zawawi (azawawi)'), $VERSION ) );
+		sprintf( Wx::gettext('Snippet Manager %s - Written for fun by Ahmad M. Zawawi (azawawi)'), $VERSION ) );
+
+	# Create snippet editor
+	my $snippet_editor = $self->{snippet_editor};
+	require Padre::Document;
+	my $mimetype = 'text/plain';
+	$snippet_editor->{Document} = Padre::Document->new( mimetype => $mimetype );
+	$snippet_editor->{Document}->set_editor($snippet_editor);
+	$snippet_editor->SetLexer($mimetype);
+	$snippet_editor->Show(1);
 
 	return $self;
 }
@@ -39,6 +48,29 @@ sub run {
 	# $theme->apply( $self->{preview} );
 
 	$self->ShowModal;
+}
+
+sub on_prefs_button_clicked {
+	my $self = shift;
+	
+	# Create a new preferences dialog
+	require Padre::Plugin::Snippet::Preferences;
+	my $prefs = Padre::Plugin::Snippet::Preferences->new($self);
+
+	# Update plugin variables from plugin's configuration hash
+	my $plugin = $self->{plugin};
+	my $config = $plugin->{config};
+	$prefs->{snippets_checkbox}->SetValue( $config->{feature_snippets} );
+
+	# Preferences: go modal!
+	if ( $prefs->ShowModal == Wx::wxID_OK ) {
+
+		# Update configuration when the user hits the OK button
+		$config->{feature_snippets}            = $prefs->{snippets_checkbox}->IsChecked;
+		$plugin->config_write($config);
+	}
+
+	return;
 }
 
 1;
