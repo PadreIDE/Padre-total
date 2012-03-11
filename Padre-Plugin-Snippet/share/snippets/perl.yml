@@ -9,12 +9,6 @@
 # snipMate is released under the MIT license
 # 
 
-# #!/usr/bin/perl
-\#!: #!/usr/bin/perl
-
-# Hash Pointer
-.: =>
-
 # Function
 sub: |
   sub ${1:function_name} {
