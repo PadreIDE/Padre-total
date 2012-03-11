@@ -79,21 +79,43 @@ sub plugin_disable {
 	}
 }
 
-# # Called when Padre wants to display plugin menu items
-# sub menu_plugins {
-# my $self      = shift;
-# my $main      = $self->main;
-# my $menu_item = Wx::MenuItem->new( undef, -1, Wx::gettext('Snippet') . "...\tF9", );
+# Called when Padre wants to display plugin menu items
+sub menu_plugins {
+	my $self      = shift;
+	my $main      = $self->main;
+	my $menu_item = Wx::MenuItem->new(
+		undef, -1, Wx::gettext('Snippet Manager') . "...\tF9",
+	);
 
-# Wx::Event::EVT_MENU(
-# $main,
-# $menu_item,
-# sub {
-# },
-# );
+	Wx::Event::EVT_MENU(
+		$main,
+		$menu_item,
+		sub {
+			$self->_show_manager;
+		},
+	);
 
-# return $menu_item;
-# }
+	return $menu_item;
+}
+
+sub _show_manager {
+	my $self = shift;
+
+	eval {
+		unless ( defined $self->{manager} )
+		{
+			require Padre::Plugin::Snippet::Manager;
+			$self->{manager} = Padre::Plugin::Snippet::Manager->new($self);
+		}
+	};
+	if ($@) {
+		$self->main->error( sprintf( Wx::gettext('Error: %s'), $@ ) );
+	} else {
+		$self->{manager}->run;
+	}
+
+	return;
+}
 
 sub editor_changed {
 	my $self     = shift;
