@@ -126,9 +126,9 @@ new: my $${1:instance} = ${2:ClassName}->new;
 
 # Here-doc string
 here: |
-  <<'${1:...}'${2:;}
-  ${3}
-  $1
+  <<${1:'}${2:...}$1${3:;}
+  ${4:content}
+  $2
 
 #pod here for testing only see perl_pod.yml
 # can we insert perl vars in perl_pod?
