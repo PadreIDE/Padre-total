@@ -121,8 +121,14 @@ slurp: |
   my $${1:var};
   { local $/ = undef; local *FILE; open FILE, "<${2:file}"; $$1 = <FILE>; close FILE }
 
-# Create a new instance of a class
+# A new instance of a class
 new: my $${1:instance} = ${2:ClassName}->new;
+
+# Here-doc string
+here: |
+  <<'${1:...}'${2:;}
+  ${3}
+  $1
 
 #pod here for testing only see perl_pod.yml
 # can we insert perl vars in perl_pod?
