@@ -80,7 +80,7 @@ sub plugin_disable {
 sub menu_plugins {
 	my $self      = shift;
 	my $main      = $self->main;
-	my $menu_item = Wx::MenuItem->new( undef, -1, Wx::gettext('PDL') . "...\tF9", );
+	my $menu_item = Wx::MenuItem->new( undef, -1, Wx::gettext('PDL') );
 
 	Wx::Event::EVT_MENU(
 		$main,
