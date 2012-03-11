@@ -30,7 +30,7 @@ use 5.008005;
 my $trac_channel = '#padre';
 my $trac_timeout = 5;
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 use base 'Exporter';
 
@@ -195,6 +195,15 @@ sub irc_public {
 		return if not enable_registration();
 		$_[KERNEL]->delay( disable_registration => 60 * $trac_timeout );
 
+	} elsif ( $text =~ /^\s*  $config->{nick} \s* [,:]? \s* tell \s+ (\w+) \s+ (.*)/x ) {
+			my ($to, $msg) = ($1, $2);
+			push @{ $config->{messages}{$to} }, {
+				who => $nick,
+				what => $msg,
+				when => time,
+			};
+			$irc->yield( privmsg => $channel, "$nick, I'll tell that $to when we see each other." );
+			save_config();
 	# word?
 	} elsif ( $text =~ /^\s*  (\S+)\?  \s*$/x ) {
 		my $word = $1;
@@ -272,18 +281,31 @@ sub irc_public {
 sub irc_msg {
 	my $nick = ( split /!/, $_[ARG0] )[0];
 
+	#print "Nick $nick said to me '$text'\n";
+
 	#my $channel = $_[ARG1];
 	# now unnecessary
 	#	my $irc = $_[SENDER]->get_heap();
 
 	my $text = $_[ARG2];
-
-	#print "Nick $nick said to me '$text'\n";
+	if ($text eq 'read') {
+		if ($config->{messages}{$nick}) {
+			foreach my $msg (@{ $config->{messages}{$nick} }) {
+				$irc->yield( privmsg => $nick, "$msg->{who} said $msg->{what}" );
+			}
+			delete $config->{messages}{$nick};
+			save_config();
+		} else {
+			$irc->yield( privmsg => $nick, "You don't have any messages." );
+		}
+	}
 }
 
 sub irc_join {
 	my $nick = ( split /!/, $_[ARG0] )[0];
 	my $channel = $_[ARG1];
+
+	#print "nick joined $nick\n";
 
 	# now unnecessary
 	#	my $irc = $_[SENDER]->get_heap();
@@ -299,6 +321,11 @@ sub irc_join {
 
 	if ( $config->{trusted}{$nick} ) {
 		set_op( $irc, $channel, $nick );
+	}
+	
+	# check if there were any messages and send private message if there were any
+	if ($config->{messages}{$nick}) {
+		$irc->yield( privmsg => $nick, "You have " . @{ $config->{messages}{$nick} } . " messages. Type 'read' to read them.");
 	}
 }
 
