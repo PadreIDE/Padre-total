@@ -1,10 +1,13 @@
+use Test::More tests => 1;
 
-use v5.8.7;
-use strict;
-use warnings;
+BEGIN {
+	use_ok('Padre::Plugin::YAML');
+}
 
-use Test::More;
+diag("Info: Testing Padre::Plugin::YAML $Padre::Plugin::YAML::VERSION");
 
-plan tests => 1;
+done_testing();
 
-use_ok('Padre::Plugin::YAML');
+1;
+
+__END__

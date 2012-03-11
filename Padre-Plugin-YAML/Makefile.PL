@@ -1,19 +1,14 @@
-use strict;
-use warnings;
-use inc::Module::Install;
+use inc::Module::Install::DSL 1.06;
 
-name           'Padre-Plugin-YAML';
-license        'perl';
-author         'Zeno Gantner <zenog@cpan.org>';
-all_from       'lib/Padre/Plugin/YAML.pm';
-requires       'Padre'                   => '0.86';
-requires       'File::Spec::Functions'   => 0;
-test_requires  'Test::More'              => '0.47';
-no_index       'directory'               => qw{ t xt eg share inc};
-homepage       'http://padre.perlide.org/';
-bugtracker     'http://padre.perlide.org/';
-repository     'http://svn.perlide.org/padre/trunk/Padre-Plugin-YAML';
+all_from      lib/Padre/Plugin/YAML.pm
+requires_from lib/Padre/Document/YAML.pm
 
-is_padre_plugin; # authors: Install Module::Install::PadrePlugin
+requires Padre					0.94
+requires File::Spec::Functions	3.33
 
-WriteAll;
+test_requires Test::More		0.98
+
+no_index directory	qw{ t xt eg share inc privinc }
+homepage		http://padre.perlide.org/trac/wiki/PadrePluginYAML
+bugtracker		http://padre.perlide.org/trac
+repository		http://svn.perlide.org/padre/trunk/Padre-Plugin-YAML/
