@@ -62,14 +62,14 @@ sub _populate_tree {
 
 	my $snippet_bundles = $self->{snippet_bundles};
 	my $tree            = $self->{tree};
-	my $root_node    = $tree->AddRoot(
+	my $root_node       = $tree->AddRoot(
 		Wx::gettext('...'),
 		-1,
 		-1,
 	);
 
 	foreach my $bundle_id ( sort keys %{$snippet_bundles} ) {
-		my $bundle           = $snippet_bundles->{$bundle_id};
+		my $bundle      = $snippet_bundles->{$bundle_id};
 		my $bundle_node = $tree->AppendItem(
 			$root_node,
 			$bundle->{name},
@@ -83,7 +83,11 @@ sub _populate_tree {
 				$trigger,
 				-1, -1,
 
-				Wx::TreeItemData->new($bundle->{snippets}->{$trigger})
+				Wx::TreeItemData->new(
+					{   trigger => $trigger,
+						snippet => $bundle->{snippets}->{$trigger},
+					}
+				)
 			);
 		}
 
@@ -116,6 +120,25 @@ sub on_prefs_button_clicked {
 
 	return;
 }
+
+sub on_tree_selection_change {
+	my $self    = shift;
+	my $event   = shift;
+	my $tree    = $self->{tree};
+	my $item    = $event->GetItem or return;
+	my $element = $tree->GetPlData($item) or return;
+
+	if ( defined $element->{trigger} ) {
+		$self->{trigger_text}->SetValue( $element->{trigger} );
+		$self->{snippet_editor}->SetText( $element->{snippet} );
+	} else {
+		$self->{trigger_text}->SetValue('');
+		$self->{snippet_editor}->SetText('');
+	}
+
+	return;
+}
+
 
 1;
 

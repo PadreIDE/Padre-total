@@ -38,7 +38,15 @@ sub new {
 		-1,
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
-		Wx::TR_DEFAULT_STYLE,
+		Wx::TR_DEFAULT_STYLE | Wx::TR_HIDE_ROOT,
+	);
+
+	Wx::Event::EVT_TREE_SEL_CHANGED(
+		$self,
+		$self->{tree},
+		sub {
+			shift->on_tree_selection_change(@_);
+		},
 	);
 
 	$self->{add_button} = Wx::BitmapButton->new(
@@ -50,7 +58,6 @@ sub new {
 		Wx::BU_AUTODRAW,
 	);
 	$self->{add_button}->SetToolTip( Wx::gettext("Add Snippet") );
-
 	$self->{delete_button} = Wx::BitmapButton->new(
 		$self,
 		-1,
@@ -59,6 +66,7 @@ sub new {
 		Wx::DefaultSize,
 		Wx::BU_AUTODRAW,
 	);
+	$self->{delete_button}->SetToolTip( Wx::gettext("Delete Snippet") );
 	$self->{delete_button}->SetToolTip( Wx::gettext("Delete Snippet") );
 
 	$self->{trigger_label} = Wx::StaticText->new(
@@ -150,6 +158,10 @@ sub new {
 	$self->Layout;
 
 	return $self;
+}
+
+sub on_tree_selection_change {
+	$_[0]->main->error('Handler method on_tree_selection_change for event tree.OnTreeSelChanged not implemented');
 }
 
 sub on_prefs_button_clicked {
