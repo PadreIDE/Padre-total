@@ -1,6 +1,5 @@
 package Padre::Plugin::YAML;
 
-# ABSTRACT: YAML support for Padre The Perl IDE.
 use 5.010001;
 use strict;
 use warnings;

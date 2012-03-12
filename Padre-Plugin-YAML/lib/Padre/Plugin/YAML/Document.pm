@@ -1,6 +1,5 @@
 package Padre::Plugin::YAML::Document;
 
-# ABSTRACT: YAML document support for Padre
 use 5.010001;
 use strict;
 use warnings;
