@@ -8,6 +8,7 @@ all_from 'lib/Padre/Plugin/YAML.pm';
 requires 'Padre'           => '0.94';
 requires 'YAML'            => '0.80';
 test_requires 'Test::More' => '0.88';
+test_requires 'File::Temp' => '0.22';
 
 no_index 'directory' => qw{ t eg share inc};
 homepage 'http://padre.perlide.org/trac/wiki/PadrePluginYAML';
