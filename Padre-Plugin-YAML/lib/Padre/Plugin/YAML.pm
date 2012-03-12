@@ -9,7 +9,6 @@ use Padre::Plugin ();
 use Padre::Unload ();
 use Padre::Wx     ();
 use File::Spec::Functions qw{ catfile };
-use Try::Tiny;
 
 our $VERSION = '0.02';
 use parent qw(Padre::Plugin);
@@ -17,8 +16,8 @@ use parent qw(Padre::Plugin);
 # Child modules we need to unload when disabled
 use constant CHILDREN => qw{
 	Padre::Plugin::YAML
-	Padre::Document::YAML
-	Padre::Document::YAML::Syntex
+	Padre::Plugin::YAML::Document
+	Padre::Plugin::YAML::Syntax
 };
 
 #######
@@ -43,7 +42,7 @@ sub padre_interfaces {
 #######
 sub registered_documents {
 	return (
-		'text/x-yaml' => 'Padre::Document::YAML',
+		'text/x-yaml' => 'Padre::Plugin::YAML::Document',
 	);
 }
 
@@ -71,41 +70,13 @@ sub check_yaml {
 		$main->message( Wx::gettext('This is not an YAML document! ') . ref $document );
 		return;
 	}
-	say "here we are";
-	require YAML;
-
-	try { Load($document) }
-
-	catch {
-		$self->main->error( sprintf( Wx::gettext('YAML Error: %s'), $_ ) );
+	eval {
+		require YAML;
+		Load($document);
+	};
+	if($@) {
+		$self->main->error( sprintf( Wx::gettext('YAML Error: %s'), $@ ) );
 	}
-
-	# my $code = ($text) ? $text : $document->text_get;
-
-	# return unless ( defined $code and length($code) );
-
-	# require XML::Tidy;
-
-	# my $tidy_obj = '';
-	# my $string   = '';
-	# eval {
-	# $tidy_obj = XML::Tidy->new( xml => $code );
-	# $tidy_obj->tidy();
-
-	# $string = $tidy_obj->toString();
-	# };
-
-	# if ( !$@ ) {
-	# if ($text) {
-	# $string =~ s/\A<\?xml.+?\?>\r?\n?//o;
-	# my $editor = $main->current->editor;
-	# $editor->ReplaceSelection($string);
-	# } else {
-	# $document->text_set($string);
-	# }
-	# } else {
-	# $main->message( Wx::gettext("Tidying failed due to error(s):") . "\n\n" . $@ );
-	# }
 
 	return;
 }
@@ -239,9 +210,11 @@ L<http://search.cpan.org/dist/Padre-Plugin-YAML/>
 
 =head1 AUTHOR
 
-Kevin Dawson  E<lt>bowtie@cpan.orgE<gt>
-
 Zeno Gantner E<lt>zenog@cpan.orgE<gt>
+
+=head1 CONTRIBUTORS
+
+Kevin Dawson  E<lt>bowtie@cpan.orgE<gt>
 
 =head1 LICENCE AND COPYRIGHT
 
@@ -250,18 +223,4 @@ Copyright (c) 2011-2012, Zeno Gantner E<lt>zenog@cpan.orgE<gt>. All rights reser
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlartistic>.
 
-
 =cut
-
-
-##### junk keep for now
-
-#sub plugin_icon {
-#	my $self = shift;
-
-# find resource path
-#my $iconpath = catfile( $self->plugin_directory_share, 'icons', 'file.png' );
-
-# create and return icon
-#return Wx::Bitmap->new( $iconpath, Wx::wxBITMAP_TYPE_PNG );
-#}
