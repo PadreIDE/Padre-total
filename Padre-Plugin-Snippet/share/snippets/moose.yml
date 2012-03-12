@@ -7,7 +7,7 @@
 # 
 ---
 id: Moose
-name: Moose Perl snippets
+name: Moose
 mimetypes:
   - application/x-perl
 snippets:

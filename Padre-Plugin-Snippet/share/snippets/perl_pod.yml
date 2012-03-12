@@ -9,7 +9,7 @@
 # could we also use $config->identity_name and $config->identity_email
 ---
 id: Pod
-name: Perl POD snippets
+name: POD
 mimetypes:
   - application/x-perl
 snippets:

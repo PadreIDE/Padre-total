@@ -4,7 +4,7 @@
 #
 ---
 id: Mouse
-name: Moose Perl snippets
+name: Mouse
 mimetypes:
   - application/x-perl
 snippets:

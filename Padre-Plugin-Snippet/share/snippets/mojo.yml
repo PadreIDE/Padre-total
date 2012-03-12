@@ -8,7 +8,7 @@
 # 
 ---
 id: Mojo
-name: Mojolicious Perl snippets
+name: Mojolicious
 mimetypes:
   - application/x-perl
 snippets:
