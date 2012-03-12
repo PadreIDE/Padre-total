@@ -27,6 +27,7 @@ sub padre_interfaces {
 	return (
 		'Padre::Plugin'   => 0.94,
 		'Padre::Document' => 0.94,
+		'Padre::Wx'       => 0.94,
 	);
 }
 
@@ -52,7 +53,7 @@ sub show_about {
 	# Generate the About dialog
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName( Wx::gettext('YAML Plug-in') );
-	my $authors     = 'Kevin Dawson, Zeno Gantner';
+	my $authors     = 'Zeno Gantner';
 	my $description = Wx::gettext( <<'END' );
 YAML support for Padre
 
@@ -117,6 +118,24 @@ None.
 
 No bugs have been reported.
 
+
+=head1 METHODS
+
+=over 6
+
+=item * menu_plugins_simple
+
+=item * padre_interfaces
+
+=item * plugin_disable
+
+=item * plugin_name
+
+=item * registered_documents
+
+=item * show_about
+
+=back
 
 =head1 SUPPORT
 

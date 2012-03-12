@@ -87,11 +87,18 @@ sub _parse_error {
 
 __END__
 
+
 =pod
 
 =head1 NAME
 
-Padre::Document::XML::Syntax - YAML document syntax-checking in the background
+Padre::Plugin::YAML::Syntax - YAML document syntax-checking in the background
+
+
+=head1 VERSION
+
+This document describes Padre::Plugin::YAML::Syntax version 0.02
+
 
 =head1 DESCRIPTION
 
@@ -99,8 +106,45 @@ This class implements syntax checking of YAML documents in
 the background. It inherits from L<Padre::Task::Syntax>.
 Please read its documentation.
 
-=head1 COPYRIGHT AND LICENSE
 
-Same as L<Padre::Plugin::YAML>
+=head1 DEPENDENCIES
+
+None.
+
+
+=head1 BUGS AND LIMITATIONS
+
+No bugs have been reported.
+
+
+=head1 METHODS
+
+=over 3
+
+=item * new
+
+=item * run
+
+=item * syntax
+
+=back
+
+
+=head1 AUTHOR
+
+Zeno Gantner E<lt>zenog@cpan.orgE<gt>
+
+=head1 CONTRIBUTORS
+
+Kevin Dawson  E<lt>bowtie@cpan.orgE<gt>
+
+Ahmad M. Zawawi E<lt>ahmad.zawawi@gmail.comE<gt>
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (c) 2011-2012, Zeno Gantner E<lt>zenog@cpan.orgE<gt>. All rights reserved.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See L<perlartistic>.
 
 =cut
