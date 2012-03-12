@@ -5,7 +5,7 @@ use Moose;
 use Padre::Wx::Role::Dialog              ();
 use Padre::Plugin::Snippet::FBP::Manager ();
 
-our $VERSION = '0.20';
+our $VERSION = '0.01';
 our @ISA     = qw{
 	Padre::Wx::Role::Dialog
 	Padre::Plugin::Snippet::FBP::Manager
@@ -27,13 +27,17 @@ sub new {
 		sprintf( Wx::gettext('Snippet Manager %s - Written for fun by Ahmad M. Zawawi (azawawi)'), $VERSION ) );
 
 	# Create snippet editor
-	my $snippet_editor = $self->{snippet_editor};
+	my $editor = $self->{snippet_editor};
 	require Padre::Document;
 	my $mimetype = 'text/plain';
-	$snippet_editor->{Document} = Padre::Document->new( mimetype => $mimetype );
-	$snippet_editor->{Document}->set_editor($snippet_editor);
-	$snippet_editor->SetLexer($mimetype);
-	$snippet_editor->Show(1);
+	$editor->{Document} = Padre::Document->new( mimetype => $mimetype );
+	$editor->{Document}->set_editor($editor);
+	$editor->SetLexer($mimetype);
+	$editor->Show(1);
+
+	# Add images to add/delete bitmap buttons
+	$self->{add_button}->SetBitmapLabel( Padre::Wx::Icon::find('actions/list-add') );
+	$self->{delete_button}->SetBitmapLabel( Padre::Wx::Icon::find('actions/list-remove') );
 
 	return $self;
 }
@@ -42,10 +46,10 @@ sub new {
 sub run {
 	my $self = shift;
 
-	# # Apply the current theme to the preview editor
-	# my $style = $self->main->config->editor_style;
-	# my $theme = Padre::Wx::Theme->find($style)->clone;
-	# $theme->apply( $self->{preview} );
+	# Apply the current theme to the snippet editor
+	my $style = $self->main->config->editor_style;
+	my $theme = Padre::Wx::Theme->find($style)->clone;
+	$theme->apply( $self->{snippet_editor} );
 
 	$self->ShowModal;
 }

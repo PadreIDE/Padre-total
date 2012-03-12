@@ -30,7 +30,7 @@ sub new {
 		Wx::gettext("Snippet Manager"),
 		Wx::DefaultPosition,
 		[ 441, 385 ],
-		Wx::DEFAULT_DIALOG_STYLE,
+		Wx::DEFAULT_DIALOG_STYLE | Wx::RESIZE_BORDER,
 	);
 
 	$self->{tree} = Wx::TreeCtrl->new(
@@ -41,10 +41,30 @@ sub new {
 		Wx::TR_DEFAULT_STYLE,
 	);
 
+	$self->{add_button} = Wx::BitmapButton->new(
+		$self,
+		-1,
+		Wx::NullBitmap,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+		Wx::BU_AUTODRAW,
+	);
+	$self->{add_button}->SetToolTip( Wx::gettext("Add Snippet") );
+
+	$self->{delete_button} = Wx::BitmapButton->new(
+		$self,
+		-1,
+		Wx::NullBitmap,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+		Wx::BU_AUTODRAW,
+	);
+	$self->{delete_button}->SetToolTip( Wx::gettext("Delete Snippet") );
+
 	$self->{trigger_label} = Wx::StaticText->new(
 		$self,
 		-1,
-		Wx::gettext("Trigger:"),
+		Wx::gettext("Tab Trigger:"),
 	);
 	$self->{trigger_label}->SetFont( Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" ) );
 
@@ -92,23 +112,30 @@ sub new {
 		Wx::DefaultSize,
 	);
 
-	my $left_sizer = Wx::BoxSizer->new(Wx::VERTICAL);
-	$left_sizer->Add( $self->{tree}, 1, Wx::ALL, 5 );
+	my $tree_button_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
+	$tree_button_sizer->Add( 0, 0, 1, Wx::EXPAND, 5 );
+	$tree_button_sizer->Add( $self->{add_button},    0, Wx::ALL, 0 );
+	$tree_button_sizer->Add( $self->{delete_button}, 0, Wx::ALL, 0 );
+	$tree_button_sizer->Add( 0, 0, 1, Wx::EXPAND, 5 );
 
-	my $fgSizer1 = Wx::FlexGridSizer->new( 2, 2, 0, 0 );
-	$fgSizer1->SetFlexibleDirection(Wx::BOTH);
-	$fgSizer1->SetNonFlexibleGrowMode(Wx::FLEX_GROWMODE_SPECIFIED);
-	$fgSizer1->Add( $self->{trigger_label}, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALL, 5 );
-	$fgSizer1->Add( $self->{trigger_text}, 0, Wx::ALL, 5 );
+	my $left_sizer = Wx::BoxSizer->new(Wx::VERTICAL);
+	$left_sizer->Add( $self->{tree},      1, Wx::ALL | Wx::EXPAND, 5 );
+	$left_sizer->Add( $tree_button_sizer, 0, Wx::EXPAND,           5 );
+
+	my $form_sizer = Wx::FlexGridSizer->new( 2, 2, 0, 0 );
+	$form_sizer->SetFlexibleDirection(Wx::BOTH);
+	$form_sizer->SetNonFlexibleGrowMode(Wx::FLEX_GROWMODE_SPECIFIED);
+	$form_sizer->Add( $self->{trigger_label}, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALL, 5 );
+	$form_sizer->Add( $self->{trigger_text}, 0, Wx::ALL, 5 );
 
 	my $right_sizer = Wx::BoxSizer->new(Wx::VERTICAL);
-	$right_sizer->Add( $fgSizer1,               0, Wx::EXPAND,           5 );
+	$right_sizer->Add( $form_sizer,             0, Wx::EXPAND,           5 );
 	$right_sizer->Add( $self->{snippet_label},  0, Wx::ALL,              5 );
 	$right_sizer->Add( $self->{snippet_editor}, 1, Wx::ALL | Wx::EXPAND, 5 );
 
 	my $content_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
-	$content_sizer->Add( $left_sizer,  0, Wx::EXPAND, 5 );
-	$content_sizer->Add( $right_sizer, 1, Wx::EXPAND, 5 );
+	$content_sizer->Add( $left_sizer,  1, Wx::EXPAND, 5 );
+	$content_sizer->Add( $right_sizer, 2, Wx::EXPAND, 5 );
 
 	my $button_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
 	$button_sizer->Add( 0, 0, 1, Wx::EXPAND, 5 );
