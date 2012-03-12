@@ -17,28 +17,37 @@ use constant CHILDREN => qw{
 	Padre::Plugin::YAML::Syntax
 };
 
+#######
 # Called by padre to know the plugin name
+#######
 sub plugin_name {
 	return Wx::gettext('YAML');
 }
 
+#######
 # Called by padre to check the required interface
+#######
 sub padre_interfaces {
 	return (
-		'Padre::Plugin'   => 0.94,
-		'Padre::Document' => 0.94,
-		'Padre::Wx'       => 0.94,
+		'Padre::Plugin'       => '0.94',
+		'Padre::Document'     => '0.94',
+		'Padre::Wx'           => '0.94',
+		'Padre::Task::Syntax' => '0.94',
 	);
 }
 
+#######
 # Called by padre to know which document to register for this plugin
+#######
 sub registered_documents {
 	return (
 		'text/x-yaml' => 'Padre::Plugin::YAML::Document',
 	);
 }
 
+#######
 # Called by padre to build the menu in a simple way
+#######
 sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
@@ -46,7 +55,9 @@ sub menu_plugins_simple {
 	];
 }
 
+#######
 # Shows the about dialog for this plugin
+#######
 sub show_about {
 	my $self = shift;
 
@@ -68,7 +79,9 @@ END
 	return;
 }
 
+#######
 # Called by Padre when this plugin is disabled
+#######
 sub plugin_disable {
 	my $self = shift;
 
