@@ -1,9 +1,11 @@
 Changes for Padre-Plugin-YAML
 
-0.02 TBA
-    - Switch to Module::Install
+0.02  2011.3.12
+    - Switch to Module::Install (SZABGAB)
     - Update to Plugin API 2.0 (BOWTIE)
+    - Add background YAML syntax checking (BOWTIE, AZAWAWI)
+    - Removed "Check YAML" option (AZAWAWI)
 
-0.01    2011.06.24
+0.01  2011.6.24
     - First version, released on an unsuspecting world.
     - Only feature: toggle comments
