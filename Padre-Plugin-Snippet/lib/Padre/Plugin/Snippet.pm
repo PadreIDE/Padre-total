@@ -10,8 +10,11 @@ our @ISA     = 'Padre::Plugin';
 
 # Child modules we need to unload when disabled
 use constant CHILDREN => qw{
-	Padre::Plugin::Snippet::Role::NeedsSaveAsEvent
+	Padre::Plugin::Snippet
+	Padre::Plugin::Snippet::Role::NeedsPluginEvent
 	Padre::Plugin::Snippet::Document
+	Padre::Plugin::Snippet::Manager
+	Padre::Plugin::Snippet::FBP::Manager
 	Padre::Plugin::Snippet::Preferences
 	Padre::Plugin::Snippet::FBP::Preferences
 };
