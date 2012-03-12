@@ -54,7 +54,7 @@ sub run {
 	my $theme = Padre::Wx::Theme->find($style)->clone;
 	$theme->apply( $self->{snippet_editor} );
 
-	$self->ShowModal;
+	$self->Show;
 }
 
 sub _populate_tree {

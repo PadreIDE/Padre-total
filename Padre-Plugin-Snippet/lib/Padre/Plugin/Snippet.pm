@@ -74,7 +74,10 @@ sub plugin_enable {
 # Called when the plugin is disabled by Padre
 sub plugin_disable {
 	my $self = shift;
-
+	
+	# Close the dialog if it is hanging around
+	$self->clean_manager;
+	
 	# TODO: Switch to Padre::Unload once Padre 0.96 is released
 	for my $package (CHILDREN) {
 		require Padre::Unload;
@@ -207,6 +210,22 @@ sub _load_snippet_bundles {
 	}
 
 	return $snippet_bundles;
+}
+
+########
+# Composed Method clean_dialog
+########
+sub clean_manager {
+	my $self = shift;
+
+	# Close the main dialog if it is hanging around
+	if ( $self->{manager} ) {
+		$self->{manager}->Hide;
+		$self->{manager}->Destroy;
+		delete $self->{manager};
+	}
+
+	return 1;
 }
 
 1;
