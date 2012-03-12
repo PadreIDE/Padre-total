@@ -1,14 +1,20 @@
-use inc::Module::Install::DSL 1.06;
+use strict;
+use warnings;
+use inc::Module::Install;
 
-all_from      lib/Padre/Plugin/YAML.pm
-requires_from lib/Padre/Document/YAML.pm
+name 'Padre-Plugin-YAML';
+all_from 'lib/Padre/Plugin/YAML.pm';
 
-requires Padre					0.94
-requires File::Spec::Functions	3.33
+requires 'Padre'                 => '0.94';
+requires 'YAML'                  => '0.80';
+requires 'File::Spec::Functions' => '3.33';
+test_requires 'Test::More'       => '0.88';
 
-test_requires Test::More		0.98
+no_index 'directory' => qw{ t eg share inc};
+homepage 'http://padre.perlide.org/trac/wiki/PadrePluginYAML';
+bugtracker 'http://padre.perlide.org/';
+repository 'http://svn.perlide.org/padre/trunk/Padre-Plugin-YAML';
 
-no_index directory	qw{ t xt eg share inc privinc }
-homepage		http://padre.perlide.org/trac/wiki/PadrePluginYAML
-bugtracker		http://padre.perlide.org/trac
-repository		http://svn.perlide.org/padre/trunk/Padre-Plugin-YAML/
+install_share_with_mofiles;
+
+WriteAll;
