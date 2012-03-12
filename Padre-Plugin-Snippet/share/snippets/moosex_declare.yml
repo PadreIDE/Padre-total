@@ -3,7 +3,7 @@
 # Written by Ahmad M. Zawawi (azawawi)
 #
 ---
-id: Perl
+id: MooseX::Declare
 name: Perl snippets
 mimetypes:
   - application/x-perl

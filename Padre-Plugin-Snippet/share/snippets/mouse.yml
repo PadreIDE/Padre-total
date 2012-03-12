@@ -3,8 +3,8 @@
 # Written by Ahmad M. Zawawi (azawawi)
 #
 ---
-id: Moose
-description: Moose Perl snippets
+id: Mouse
+name: Moose Perl snippets
 mimetypes:
   - application/x-perl
 snippets:

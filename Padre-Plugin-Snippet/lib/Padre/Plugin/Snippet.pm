@@ -140,7 +140,7 @@ sub editor_changed {
 		editor   => $editor,
 		document => $document,
 		config   => $self->{config},
-		snippets => $snippets,
+		snippets => $snippets->{Perl}->{snippets},
 	);
 
 	return;
@@ -153,28 +153,34 @@ sub _load_snippets {
 	require File::Find::Rule;
 	require YAML;
 
-	my $snippets_dir = File::Spec->catfile(
+	my $dir = File::Spec->catfile(
 		File::ShareDir::dist_dir('Padre-Plugin-Snippet'),
 		'snippets'
 	);
 
 	# Find all the YAML files in share/snippets
-	my @files = File::Find::Rule->file()->name('*.yml')->in($snippets_dir);
+	my @files = File::Find::Rule->file()->name('*.yml')->in($dir);
 
-	my $snippets = {};
-	foreach my $file (@files) {
+	my $snippets = ();
+	LOOP: foreach my $file (@files) {
 		my $file_snippets;
 		eval { $file_snippets = YAML::LoadFile($file); };
 		if ($@) {
 			warn "Error while loading $file:\n$@\n";
 			next;
 		}
-		for my $trigger ( keys %{$file_snippets} ) {
-			if ( defined $snippets->{$trigger} ) {
-				warn "Trigger: $trigger is already found\n";
+		for my $key (qw(id name mimetypes snippets)) {
+			unless(defined $file_snippets->{$key}) {
+				warn "'$key' key is missing from '$file'\n";
+				next LOOP;
 			}
-			$snippets->{$trigger} = $file_snippets->{$trigger};
 		}
+		my $id = $file_snippets->{id};
+		if(defined $snippets->{$id}) {
+			warn "Duplicate id: '$id' for '$file'\n";
+			next;
+		}
+		$snippets->{$id} = $file_snippets;
 	}
 
 	return $snippets;
