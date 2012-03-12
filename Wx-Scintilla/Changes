@@ -1,5 +1,8 @@
 Revision history for Wx-Scintilla
 
+0.38  2012.3.12
+    - Released 0.37_06 as stable 0.38 (AZAWAWI)
+
 0.37_06 2012.3.9
     - Updated Wx::Scintilla::Constant (AZAWAWI)
     - In MacOSX, include CoreFoundation when doing a cocoa build (MARKD)
