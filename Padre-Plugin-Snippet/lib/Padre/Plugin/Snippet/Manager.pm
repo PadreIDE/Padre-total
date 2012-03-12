@@ -62,39 +62,36 @@ sub _populate_tree {
 
 	my $snippet_bundles = $self->{snippet_bundles};
 	my $tree            = $self->{tree};
-	my $program_node    = $tree->AddRoot(
-		Wx::gettext('Program'),
+	my $root_node    = $tree->AddRoot(
+		Wx::gettext('...'),
 		-1,
 		-1,
-
-		#Wx::TreeItemData->new($program)
 	);
 
 	foreach my $bundle_id ( sort keys %{$snippet_bundles} ) {
 		my $bundle           = $snippet_bundles->{$bundle_id};
-		my $bundle_name      = $bundle->{name};
-		my $bundle_tree_item = $tree->AppendItem(
-			$program_node,
-			$bundle_name,
+		my $bundle_node = $tree->AppendItem(
+			$root_node,
+			$bundle->{name},
 			-1, -1,
-
-			#Wx::TreeItemData->new($class_item)
+			Wx::TreeItemData->new($bundle)
 		);
 
 		foreach my $trigger ( keys %{ $bundle->{snippets} } ) {
-			my $snippet_tree_item = $tree->AppendItem(
-				$bundle_tree_item,
+			my $snippet_item = $tree->AppendItem(
+				$bundle_node,
 				$trigger,
 				-1, -1,
 
-				#Wx::TreeItemData->new($class_item)
+				Wx::TreeItemData->new($bundle->{snippets}->{$trigger})
 			);
 		}
-		
-		$tree->Expand($bundle_tree_item);
-	}
-	$tree->ExpandAll;
 
+		$tree->Expand($bundle_node);
+	}
+	$tree->Expand($root_node);
+
+	return;
 }
 
 sub on_prefs_button_clicked {
