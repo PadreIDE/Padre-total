@@ -16,8 +16,8 @@ use parent qw(Padre::Task::Syntax);
 # new
 #######
 sub new {
-	my $class = shift;   # What class are we constructing?
-	my $self  = {};      # Allocate new memory
+	my $class = shift; # What class are we constructing?
+	my $self  = {};    # Allocate new memory
 	bless $self, $class; # Mark it of the right type
 	$self->_init(@_);    # Call _init with remaining args
 	return $self;
@@ -36,19 +36,19 @@ sub _init {
 # our @ISA = 'Padre::Document';
 
 # sub task_functions {
-	# return '';
+# return '';
 # }
 
 # sub task_outline {
-	# return '';
+# return '';
 # }
 
 # sub task_syntax {
-	# return '';
+# return '';
 # }
 
 # sub comment_lines_str {
-	# return '#';
+# return '#';
 # }
 
 1;

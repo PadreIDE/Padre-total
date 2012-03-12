@@ -73,12 +73,13 @@ sub check_yaml {
 	}
 	say "here we are";
 	require YAML;
-	
-	try { Load ( $document ) }
-	
+
+	try { Load($document) }
+
 	catch {
 		$self->main->error( sprintf( Wx::gettext('YAML Error: %s'), $_ ) );
-		}
+	}
+
 	# my $code = ($text) ? $text : $document->text_get;
 
 	# return unless ( defined $code and length($code) );
