@@ -51,7 +51,12 @@ sub _parse_error {
 	my $error = shift;
 
 	my @issues = ();
-	my ( $type, $message, $code, $line );
+	my ( $type, $message, $code, $line ) = (
+		'Error',
+		Wx::gettext('Unknown YAML error'),
+		undef,
+		1
+	);
 	for ( split '\n', $error ) {
 		if (/YAML (\w+)\: (.+)/) {
 			$type    = $1;
