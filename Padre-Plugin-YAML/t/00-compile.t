@@ -1,13 +1,55 @@
-use Test::More tests => 1;
+#!perl
+
+use strict;
+use warnings;
+
+use Test::More;
 
 BEGIN {
-	use_ok('Padre::Plugin::YAML');
+	if ( not $ENV{DISPLAY} and not $^O eq 'MSWin32' ) {
+		plan skip_all => 'Needs DISPLAY';
+		exit 0;
+	}
 }
 
-diag("Info: Testing Padre::Plugin::YAML $Padre::Plugin::YAML::VERSION");
 
-done_testing();
+use File::Find;
+use File::Temp qw{ tempdir };
 
-1;
+my @modules;
+find(
+	sub {
+		return if $File::Find::name !~ /\.pm\z/;
+		my $found = $File::Find::name;
+		$found =~ s{^lib/}{};
+		$found =~ s{[/\\]}{::}g;
+		$found =~ s/\.pm$//;
 
-__END__
+		# nothing to skip
+		push @modules, $found;
+	},
+	'lib',
+);
+
+my @scripts = glob "bin/*";
+
+my $plan = scalar(@modules) + scalar(@scripts);
+$plan ? ( plan tests => $plan ) : ( plan skip_all => "no tests to run" );
+
+{
+
+	# fake home for cpan-testers
+	# no fake requested ## local $ENV{HOME} = tempdir( CLEANUP => 1 );
+
+	like( qx{ $^X -Ilib -e "require $_; print '$_ ok'" }, qr/^\s*$_ ok/s, "$_ loaded ok" ) for sort @modules;
+
+	SKIP: {
+		eval "use Test::Script 1.05; 1;";
+		skip "Test::Script needed to test script compilation", scalar(@scripts) if $@;
+		foreach my $file (@scripts) {
+			my $script = $file;
+			$script =~ s!.*/!!;
+			script_compiles( $file, "$script script compiles" );
+		}
+	}
+}
