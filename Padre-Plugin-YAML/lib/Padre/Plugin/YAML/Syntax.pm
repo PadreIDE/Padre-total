@@ -38,43 +38,47 @@ sub syntax {
 		YAML::Load($text);
 	};
 	if ($@) {
-		$error = $@;
-	}
-
-	my $result;
-	if ( defined $error ) {
-		my @issues = ();
-		my ( $type, $message, $code, $line, $doc );
-		for ( split '\n', $error ) {
-			if (/YAML (\w+)\: (.+)/) {
-				$type    = $1;
-				$message = $2;
-			} elsif (/^\s+Code: (.+)/) {
-				$code = $1;
-			} elsif (/^\s+Line: (.+)/) {
-				$line = $1;
-			} elsif (/^\s+Document: (.+)/) {
-				$doc = $1;
-			}
-		}
-		push @issues,
-			{
-			message => $message . (defined $code ? " ( $code )" : q{}),
-			line    => $line,
-			type    => $type eq 'Error' ? 'F' : 'W',
-			file    => $self->{filename},
-			};
-
-		$result = {
-			issues => \@issues,
-			stderr => $error,
-		};
+		return $self->_parse_error($@);
 	} else {
-		$result = [];
-	}
 
-	return $result;
+		# No errors...
+		return [];
+	}
 }
+
+sub _parse_error {
+	my $self  = shift;
+	my $error = shift;
+
+	my @issues = ();
+	my ( $type, $message, $code, $line, $doc );
+	for ( split '\n', $error ) {
+		if (/YAML (\w+)\: (.+)/) {
+			$type    = $1;
+			$message = $2;
+		} elsif (/^\s+Code: (.+)/) {
+			$code = $1;
+		} elsif (/^\s+Line: (.+)/) {
+			$line = $1;
+		} elsif (/^\s+Document: (.+)/) {
+			$doc = $1;
+		}
+	}
+	push @issues,
+		{
+		message => $message . ( defined $code ? " ( $code )" : q{} ),
+		line => $line,
+		type => $type eq 'Error' ? 'F' : 'W',
+		file => $self->{filename},
+		};
+
+	return {
+		issues => \@issues,
+		stderr => $error,
+		}
+
+}
+
 
 1;
 
