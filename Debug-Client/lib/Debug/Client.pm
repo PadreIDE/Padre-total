@@ -4,7 +4,7 @@ use 5.008006;
 use strict;
 use warnings;
 
-our $VERSION = '0.18';
+our $VERSION = '0.18_01';
 
 use utf8;
 use IO::Socket;
@@ -20,7 +20,7 @@ Debug::Client - debugger client side code for Padre the Perl IDE
 
 =head1 VERSION
 
-This document describes Debug::Client version 0.18
+This document describes Debug::Client version 0.18_01
 
 =head1 SYNOPSIS
 
@@ -298,8 +298,9 @@ sub get_lineinfo {
 	$self->_send('.');
 	my $buf = $self->_get;
 
-	$self->{buffer} =~ m{^[\w:]* 	# module
-                  \( ([^\)]*):(\d+) \) 	# (file):(row)
+	$self->{buffer} =~ m{^[\w:]*				# module
+						.*						# catch CODE(0x9b434a8)
+						\( ([^\)]*):(\d+) \)	# (file):(row)
                                     }mx;
 
 	$self->{filename} = $1;
