@@ -3,8 +3,6 @@ use warnings;
 use inc::Module::Install;
 
 name 'Padre-Plugin-Snippet';
-license 'perl';
-author 'Ahmad M. Zawawi <ahmad.zawawi@gmail.com>';
 all_from 'lib/Padre/Plugin/Snippet.pm';
 
 requires 'Padre'           => '0.94';
