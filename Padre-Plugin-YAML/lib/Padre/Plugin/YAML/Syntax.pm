@@ -59,7 +59,7 @@ sub syntax {
 		}
 		push @issues,
 			{
-			message => $error,
+			message => $message . (defined $code ? " ( $code )" : q{}),
 			line    => $line,
 			type    => $type eq 'Error' ? 'F' : 'W',
 			file    => $self->{filename},
