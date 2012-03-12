@@ -42,7 +42,7 @@ sub registered_documents {
 sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
-		Wx::gettext('About')      => sub { $self->show_about },
+		Wx::gettext('About') => sub { $self->show_about },
 	];
 }
 

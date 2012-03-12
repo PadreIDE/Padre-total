@@ -32,9 +32,48 @@ sub syntax {
 	my $self = shift;
 	my $text = shift;
 
-	say "syntax check";
+	my $error;
+	eval {
+		require YAML;
+		YAML::Load($text);
+	};
+	if ($@) {
+		$error = $@;
+	}
 
-	return [];
+	my $result;
+	if ( defined $error ) {
+		my @issues = ();
+		my ( $type, $message, $code, $line, $doc );
+		for ( split '\n', $error ) {
+			if (/YAML (\w+)\: (.+)/) {
+				$type    = $1;
+				$message = $2;
+			} elsif (/^\s+Code: (.+)/) {
+				$code = $1;
+			} elsif (/^\s+Line: (.+)/) {
+				$line = $1;
+			} elsif (/^\s+Document: (.+)/) {
+				$doc = $1;
+			}
+		}
+		push @issues,
+			{
+			message => $error,
+			line    => $line,
+			type    => $type eq 'Error' ? 'F' : 'W',
+			file    => $self->{filename},
+			};
+
+		$result = {
+			issues => \@issues,
+			stderr => $error,
+		};
+	} else {
+		$result = [];
+	}
+
+	return $result;
 }
 
 1;
