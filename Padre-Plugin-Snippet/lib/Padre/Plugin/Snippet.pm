@@ -100,12 +100,14 @@ sub menu_plugins {
 
 sub _show_manager {
 	my $self = shift;
+	my $document = $self->current->document or return;
 
 	eval {
 		unless ( defined $self->{manager} )
 		{
 			require Padre::Plugin::Snippet::Manager;
-			$self->{manager} = Padre::Plugin::Snippet::Manager->new($self);
+			my $snippet_bundles = $self->_load_snippet_bundles( $document->mimetype );
+			$self->{manager} = Padre::Plugin::Snippet::Manager->new( $self, $snippet_bundles );
 		}
 	};
 	if ($@) {
@@ -129,10 +131,11 @@ sub editor_changed {
 	}
 
 	# Only on Perl documents
+	#TODO remove once we support other document types
 	return unless $document->isa('Padre::Document::Perl');
 
 	# Load all snippets here
-	my $snippets = $self->_load_snippets;
+	my $snippet_bundles = $self->_load_snippet_bundles( $document->mimetype );
 
 	# Create a new snippet document
 	require Padre::Plugin::Snippet::Document;
@@ -140,18 +143,21 @@ sub editor_changed {
 		editor   => $editor,
 		document => $document,
 		config   => $self->{config},
-		snippets => $snippets->{Perl}->{snippets},
+		snippets => $snippet_bundles->{Perl}->{snippets},
 	);
 
 	return;
 }
 
-sub _load_snippets {
+sub _load_snippet_bundles {
+	my $self         = shift;
+	my $doc_mimetype = shift;
 
 	require File::ShareDir;
 	require File::Spec;
 	require File::Find::Rule;
 	require YAML;
+	require Params::Util;
 
 	my $dir = File::Spec->catfile(
 		File::ShareDir::dist_dir('Padre-Plugin-Snippet'),
@@ -161,29 +167,43 @@ sub _load_snippets {
 	# Find all the YAML files in share/snippets
 	my @files = File::Find::Rule->file()->name('*.yml')->in($dir);
 
-	my $snippets = ();
+	my $snippet_bundles = ();
 	LOOP: foreach my $file (@files) {
-		my $file_snippets;
-		eval { $file_snippets = YAML::LoadFile($file); };
+		my $snippet_bundle;
+		eval { $snippet_bundle = YAML::LoadFile($file); };
 		if ($@) {
 			warn "Error while loading $file:\n$@\n";
 			next;
 		}
 		for my $key (qw(id name mimetypes snippets)) {
-			unless(defined $file_snippets->{$key}) {
+			unless ( defined $snippet_bundle->{$key} ) {
 				warn "'$key' key is missing from '$file'\n";
 				next LOOP;
 			}
 		}
-		my $id = $file_snippets->{id};
-		if(defined $snippets->{$id}) {
-			warn "Duplicate id: '$id' for '$file'\n";
+		my $mimetypes = $snippet_bundle->{mimetypes};
+		unless ( Params::Util::_ARRAY0($mimetypes) ) {
+			warn "mimetypes is not an array for '$file'\n";
 			next;
 		}
-		$snippets->{$id} = $file_snippets;
+		foreach my $mimetype ( @{$mimetypes} ) {
+			if ( $mimetype eq $doc_mimetype ) {
+
+				# Found document mimetype, let us add it
+				my $id = $snippet_bundle->{id};
+				if ( defined $snippet_bundles->{$id} ) {
+					warn "Duplicate '$id' identifier for '$file'\n";
+					next LOOP;
+				}
+				$snippet_bundles->{$id} = $snippet_bundle;
+
+				# and exit loop
+				last;
+			}
+		}
 	}
 
-	return $snippets;
+	return $snippet_bundles;
 }
 
 1;

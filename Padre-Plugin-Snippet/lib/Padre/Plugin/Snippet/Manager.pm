@@ -12,14 +12,15 @@ our @ISA     = qw{
 };
 
 sub new {
-	my $class  = shift;
-	my $plugin = shift;
-
+	my $class           = shift;
+	my $plugin          = shift;
+	my $snippet_bundles = shift;
 
 	my $self = $class->SUPER::new( $plugin->main );
 
-	# Store the plugin object for future usage
-	$self->{plugin} = $plugin;
+	# Store state
+	$self->{plugin}          = $plugin;
+	$self->{snippet_bundles} = $snippet_bundles;
 
 	# Center & title
 	$self->CenterOnParent;
@@ -39,6 +40,8 @@ sub new {
 	$self->{add_button}->SetBitmapLabel( Padre::Wx::Icon::find('actions/list-add') );
 	$self->{delete_button}->SetBitmapLabel( Padre::Wx::Icon::find('actions/list-remove') );
 
+	$self->_populate_tree;
+
 	return $self;
 }
 
@@ -52,6 +55,46 @@ sub run {
 	$theme->apply( $self->{snippet_editor} );
 
 	$self->ShowModal;
+}
+
+sub _populate_tree {
+	my $self = shift;
+
+	my $snippet_bundles = $self->{snippet_bundles};
+	my $tree            = $self->{tree};
+	my $program_node    = $tree->AddRoot(
+		Wx::gettext('Program'),
+		-1,
+		-1,
+
+		#Wx::TreeItemData->new($program)
+	);
+
+	foreach my $bundle_id ( sort keys %{$snippet_bundles} ) {
+		my $bundle           = $snippet_bundles->{$bundle_id};
+		my $bundle_name      = $bundle->{name};
+		my $bundle_tree_item = $tree->AppendItem(
+			$program_node,
+			$bundle_name,
+			-1, -1,
+
+			#Wx::TreeItemData->new($class_item)
+		);
+
+		foreach my $trigger ( keys %{ $bundle->{snippets} } ) {
+			my $snippet_tree_item = $tree->AppendItem(
+				$bundle_tree_item,
+				$trigger,
+				-1, -1,
+
+				#Wx::TreeItemData->new($class_item)
+			);
+		}
+		
+		$tree->Expand($bundle_tree_item);
+	}
+	$tree->ExpandAll;
+
 }
 
 sub on_prefs_button_clicked {
