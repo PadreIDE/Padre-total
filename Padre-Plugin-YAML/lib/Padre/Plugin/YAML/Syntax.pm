@@ -51,7 +51,7 @@ sub _parse_error {
 	my $error = shift;
 
 	my @issues = ();
-	my ( $type, $message, $code, $line, $doc );
+	my ( $type, $message, $code, $line );
 	for ( split '\n', $error ) {
 		if (/YAML (\w+)\: (.+)/) {
 			$type    = $1;
@@ -60,8 +60,6 @@ sub _parse_error {
 			$code = $1;
 		} elsif (/^\s+Line: (.+)/) {
 			$line = $1;
-		} elsif (/^\s+Document: (.+)/) {
-			$doc = $1;
 		}
 	}
 	push @issues,
