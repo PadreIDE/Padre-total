@@ -6,9 +6,7 @@ use strict;
 use warnings;
 
 use Padre::Plugin ();
-use Padre::Unload ();
 use Padre::Wx     ();
-use File::Spec::Functions qw{ catfile };
 
 our $VERSION = '0.02';
 use parent qw(Padre::Plugin);
@@ -20,16 +18,12 @@ use constant CHILDREN => qw{
 	Padre::Plugin::YAML::Syntax
 };
 
-#######
-# Define Plugin Name Spell Checker
-#######
+# Called by padre to know the plugin name
 sub plugin_name {
 	return Wx::gettext('YAML');
 }
 
-#######
-# Define Padre Interfaces required
-#######
+# Called by padre to check the required interface
 sub padre_interfaces {
 	return (
 		'Padre::Plugin'   => 0.94,
@@ -37,54 +31,22 @@ sub padre_interfaces {
 	);
 }
 
-#######
-# plugin registered_documents
-#######
+# Called by padre to know which document to register for this plugin
 sub registered_documents {
 	return (
 		'text/x-yaml' => 'Padre::Plugin::YAML::Document',
 	);
 }
 
-#######
-# plugin menu_plugins_simple
-#######
+# Called by padre to build the menu in a simple way
 sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
-		Wx::gettext('Check YAML') => sub { $self->check_yaml },
 		Wx::gettext('About')      => sub { $self->show_about },
 	];
 }
 
-#######
-# Method check_yaml
-#######
-sub check_yaml {
-	my $self     = shift;
-	my $main     = $self->main;
-	my $text     = $main->current->text;
-	my $document = $main->current->document;
-
-	unless ( $document and $document->isa('Padre::Document::YAML') ) {
-		$main->message( Wx::gettext('This is not an YAML document! ') . ref $document );
-		return;
-	}
-	eval {
-		require YAML;
-		Load($document);
-	};
-	if($@) {
-		$self->main->error( sprintf( Wx::gettext('YAML Error: %s'), $@ ) );
-	}
-
-	return;
-}
-
-
-#######
-# Method show_about
-#######
+# Shows the about dialog for this plugin
 sub show_about {
 	my $self = shift;
 
@@ -106,14 +68,9 @@ END
 	return;
 }
 
-########
-# plugin_disable
-########
+# Called by Padre when this plugin is disabled
 sub plugin_disable {
 	my $self = shift;
-
-	# Close the dialog if it is hanging around
-	$self->clean_dialog;
 
 	# Unload all our child classes
 	# TODO: Switch to Padre::Unload once Padre 0.96 is released
@@ -126,23 +83,6 @@ sub plugin_disable {
 
 	return 1;
 }
-
-########
-# Composed Method clean_dialog
-########
-sub clean_dialog {
-	my $self = shift;
-
-	# Close the main dialog if it is hanging around
-	if ( $self->{dialog} ) {
-		$self->{dialog}->Hide;
-		$self->{dialog}->Destroy;
-		delete $self->{dialog};
-	}
-
-	return 1;
-}
-
 
 1;
 
@@ -215,6 +155,8 @@ Zeno Gantner E<lt>zenog@cpan.orgE<gt>
 =head1 CONTRIBUTORS
 
 Kevin Dawson  E<lt>bowtie@cpan.orgE<gt>
+
+Ahmad M. Zawawi E<lt>ahmad.zawawi@gmail.comE<gt>
 
 =head1 LICENCE AND COPYRIGHT
 

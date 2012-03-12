@@ -7,7 +7,6 @@ all_from 'lib/Padre/Plugin/YAML.pm';
 
 requires 'Padre'                 => '0.94';
 requires 'YAML'                  => '0.80';
-requires 'File::Spec::Functions' => '3.33';
 test_requires 'Test::More'       => '0.88';
 
 no_index 'directory' => qw{ t eg share inc};

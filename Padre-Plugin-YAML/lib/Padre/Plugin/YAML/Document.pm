@@ -20,7 +20,7 @@ sub task_outline {
 }
 
 sub task_syntax {
-	return 'Padre::Document::YAML::Syntax';
+	return 'Padre::Plugin::YAML::Syntax';
 }
 
 sub comment_lines_str {
