@@ -1,5 +1,3 @@
-
----
 #
 # POD snippets bundle for Padre::Plugin::Snippet
 # Written by Ahmad M. Zawawi (azawawi)
@@ -9,141 +7,138 @@
 # any chance of my $year = 1900 + (localtime)[5];
 # then we could have basic pod
 # could we also use $config->identity_name and $config->identity_email
-
-#pod as in min pod, good habbit
-pod: |
-  =pod
-  
-  =head1 NAME
- 
-  ${1:__PACKAGE__} - ${2:One line description of module's purpose here, ie; Padare The Perl IDE}
-  
-  
-  =head1 VERSION
- 
-  This document describes $1 version ${3:0.01}
-  
-  
-  =head1 AUTHOR
- 
-  ${4:your name}  E<lt>${5:your e-mail address}E<gt>
-  
-  
-  =head1 LICENCE AND COPYRIGHT
- 
-  Copyright (c) ${6:year}, $4 E<lt>$5E<gt>. All rights reserved.
- 
-  This module is free software; you can redistribute it and/or
-  modify it under the same terms as Perl itself. See L<perlartistic>.
-  
-  =cut
-
-
-#podp for a Padre::Plugin
-podp: |
-  =pod
-  
-  =head1 NAME
- 
-  ${1:__PACKAGE__} - ${2:One line description of module's purpose here, ie; Padare The Perl IDE}
- 
- 
-  =head1 VERSION
- 
-  This document describes $1 version ${3:0.01}
-  
-  
-  =head1 DEPENDENCIES
-  
-  ${4:None.}
-  
-  
-  =head1 BUGS AND LIMITATIONS
-  
-  ${5:No bugs have been reported.}  
-  
-  
-  =head1 SUPPORT
-  
-  You can find documentation for this module with the perldoc command.
-  
-    perldoc $1
-  
-  You can also look for information at:
-  
-  =over 4
-  
-  =item * RT: CPAN's request tracker
-  
-  L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=${6:Foo-Bar}>
-  
-  =item * AnnoCPAN: Annotated CPAN documentation
-  
-  L<http://annocpan.org/dist/$6>
-  
-  =item * CPAN Ratings
-  
-  L<http://cpanratings.perl.org/d/$6>
-  
-  =item * Search CPAN
-  
-  L<http://search.cpan.org/dist/$7/>
-  
-  =back
-  
-  
-  =head1 AUTHOR
- 
-  ${8:your name}  E<lt>${9:your e-mail address}E<gt>
-  
-  
-  =head1 CONTRIBUTORS
-  
-  ${10:your name}  E<lt>${11:your e-mail address}E<gt>
-  
-  
-  =head1 LICENCE AND COPYRIGHT
- 
-  Copyright (c) ${12:year}, $8 E<lt>$9E<gt>. All rights reserved.
- 
-  This module is free software; you can redistribute it and/or
-  modify it under the same terms as Perl itself. See L<perlartistic>.
-  
-  =cut
+---
+id: Pod
+name: Perl POD snippets
+mimetypes:
+  - application/x-perl
+snippets:
+  #pod as in min pod, good habbit
+  pod: |
+    =pod
+    
+    =head1 NAME
+   
+    ${1:__PACKAGE__} - ${2:One line description of module's purpose here, ie; Padare The Perl IDE}
+    
+    
+    =head1 VERSION
+   
+    This document describes $1 version ${3:0.01}
+    
+    
+    =head1 AUTHOR
+   
+    ${4:your name}  E<lt>${5:your e-mail address}E<gt>
+    
+    
+    =head1 LICENCE AND COPYRIGHT
+   
+    Copyright (c) ${6:year}, $4 E<lt>$5E<gt>. All rights reserved.
+   
+    This module is free software; you can redistribute it and/or
+    modify it under the same terms as Perl itself. See L<perlartistic>.
+    
+    =cut
 
 
-# un changed
-podsupport: |
-  
-  =head1 SUPPORT
-  
-  You can find documentation for this module with the perldoc command.
-  
-    perldoc ${1:Foo::Bar}
-  
-  You can also look for information at:
-  
-  =over 4
-  
-  =item * RT: CPAN's request tracker
-  
-  L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=${2:Foo-Bar}>
-  
-  =item * AnnoCPAN: Annotated CPAN documentation
-  
-  L<http://annocpan.org/dist/$2>
-  
-  =item * CPAN Ratings
-  
-  L<http://cpanratings.perl.org/d/$2>
-  
-  =item * Search CPAN
-  
-  L<http://search.cpan.org/dist/$2/>
+  #podp for a Padre::Plugin
+  podp: |
+    =pod
+    
+    =head1 NAME
+   
+    ${1:__PACKAGE__} - ${2:One line description of module's purpose here, ie; Padare The Perl IDE}
+   
+   
+    =head1 VERSION
+   
+    This document describes $1 version ${3:0.01}
+    
+    
+    =head1 DEPENDENCIES
+    
+    ${4:None.}
+    
+    
+    =head1 BUGS AND LIMITATIONS
+    
+    ${5:No bugs have been reported.}  
+    
+    
+    =head1 SUPPORT
+    
+    You can find documentation for this module with the perldoc command.
+    
+      perldoc $1
+    
+    You can also look for information at:
+    
+    =over 4
+    
+    =item * RT: CPAN's request tracker
+    
+    L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=${6:Foo-Bar}>
+    
+    =item * AnnoCPAN: Annotated CPAN documentation
+    
+    L<http://annocpan.org/dist/$6>
+    
+    =item * CPAN Ratings
+    
+    L<http://cpanratings.perl.org/d/$6>
+    
+    =item * Search CPAN
+    
+    L<http://search.cpan.org/dist/$7/>
+    
+    =back
+    
+    
+    =head1 AUTHOR
+   
+    ${8:your name}  E<lt>${9:your e-mail address}E<gt>
+    
+    
+    =head1 CONTRIBUTORS
+    
+    ${10:your name}  E<lt>${11:your e-mail address}E<gt>
+    
+    
+    =head1 LICENCE AND COPYRIGHT
+   
+    Copyright (c) ${12:year}, $8 E<lt>$9E<gt>. All rights reserved.
+   
+    This module is free software; you can redistribute it and/or
+    modify it under the same terms as Perl itself. See L<perlartistic>.
+    
+    =cut
 
-
-
-
-
-
-
+  # un changed
+  podsupport: |
+    
+    =head1 SUPPORT
+    
+    You can find documentation for this module with the perldoc command.
+    
+      perldoc ${1:Foo::Bar}
+    
+    You can also look for information at:
+    
+    =over 4
+    
+    =item * RT: CPAN's request tracker
+    
+    L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=${2:Foo-Bar}>
+    
+    =item * AnnoCPAN: Annotated CPAN documentation
+    
+    L<http://annocpan.org/dist/$2>
+    
+    =item * CPAN Ratings
+    
+    L<http://cpanratings.perl.org/d/$2>
+    
+    =item * Search CPAN
+    
+    L<http://search.cpan.org/dist/$2/>
