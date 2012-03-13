@@ -1,5 +1,9 @@
 Changes for Padre-Plugin-YAML
-
+0.03    2012.3.13
+    - update pod & version (BOWTIE)
+    - fix Makefile (AZAWAWI)
+    -
+    
 0.02  2011.3.12
     - Switch to Module::Install (SZABGAB)
     - Update to Plugin API 2.0 (BOWTIE)

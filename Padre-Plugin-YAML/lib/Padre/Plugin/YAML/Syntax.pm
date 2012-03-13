@@ -7,7 +7,7 @@ use warnings;
 use Padre::Task::Syntax ();
 use Padre::Wx           ();
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 use parent qw(Padre::Task::Syntax);
 
 sub new {
@@ -97,7 +97,7 @@ Padre::Plugin::YAML::Syntax - YAML document syntax-checking in the background
 
 =head1 VERSION
 
-This document describes Padre::Plugin::YAML::Syntax version 0.02
+This document describes Padre::Plugin::YAML::Syntax version 0.03
 
 
 =head1 DESCRIPTION
