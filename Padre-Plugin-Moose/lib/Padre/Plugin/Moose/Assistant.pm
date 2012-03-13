@@ -308,6 +308,7 @@ sub on_add_attribute_button {
 		&& $self->{current_parent}->does('Padre::Plugin::Moose::Role::HasClassMembers') )
 	{
 		$self->error( Wx::gettext('You can only add an attribute to a class or role') );
+		$self->{palette}->SetSelection(0);
 		return;
 	}
 
@@ -333,6 +334,7 @@ sub on_add_subtype_button {
 		&& $self->{current_parent}->does('Padre::Plugin::Moose::Role::HasClassMembers') )
 	{
 		$self->error( Wx::gettext('You can only add a subtype to a class or role') );
+		$self->{palette}->SetSelection(0);
 		return;
 	}
 
@@ -358,6 +360,7 @@ sub on_add_method_button {
 		&& $self->{current_parent}->does('Padre::Plugin::Moose::Role::HasClassMembers') )
 	{
 		$self->error( Wx::gettext('You can only add a method to a class or role') );
+		$self->{palette}->SetSelection(0);
 		return;
 	}
 
@@ -383,6 +386,7 @@ sub on_add_constructor_button {
 		&& $self->{current_parent}->does('Padre::Plugin::Moose::Role::HasClassMembers') )
 	{
 		$self->error( Wx::gettext('You can only add a constructor to a class or role') );
+		$self->{palette}->SetSelection(0);
 		return;
 	}
 
@@ -408,6 +412,7 @@ sub on_add_destructor_button {
 		&& $self->{current_parent}->does('Padre::Plugin::Moose::Role::HasClassMembers') )
 	{
 		$self->error( Wx::gettext('You can only add a destructor to a class or role') );
+		$self->{palette}->SetSelection(0);
 		return;
 	}
 
