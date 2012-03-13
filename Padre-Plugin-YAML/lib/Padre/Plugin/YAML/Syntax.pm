@@ -107,11 +107,6 @@ the background. It inherits from L<Padre::Task::Syntax>.
 Please read its documentation.
 
 
-=head1 DEPENDENCIES
-
-None.
-
-
 =head1 BUGS AND LIMITATIONS
 
 No bugs have been reported.
