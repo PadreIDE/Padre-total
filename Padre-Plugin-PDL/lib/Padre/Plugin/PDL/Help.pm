@@ -83,7 +83,7 @@ sub help_list {
 	my $self = shift;
 
 	# Return a unique sorted index
-	my @index = keys $self->{help};
+	my @index = keys %{$self->{help}};
 
 	# Add Perl 5 help index to PDL
 	foreach my $topic ( @{ $self->{p5_help}->help_list } ) {
