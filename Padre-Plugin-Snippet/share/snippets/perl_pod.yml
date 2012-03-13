@@ -55,15 +55,10 @@ snippets:
    
     This document describes $1 version ${3:0.01}
     
-    
-    =head1 DEPENDENCIES
-    
-    ${4:None.}
-    
-    
+       
     =head1 BUGS AND LIMITATIONS
     
-    ${5:No bugs have been reported.}  
+    ${4:No bugs have been reported.}  
     
     
     =head1 SUPPORT
@@ -78,36 +73,36 @@ snippets:
     
     =item * RT: CPAN's request tracker
     
-    L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=${6:Foo-Bar}>
+    L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=${5:Foo-Bar}>
     
     =item * AnnoCPAN: Annotated CPAN documentation
     
-    L<http://annocpan.org/dist/$6>
+    L<http://annocpan.org/dist/$5>
     
     =item * CPAN Ratings
     
-    L<http://cpanratings.perl.org/d/$6>
+    L<http://cpanratings.perl.org/d/$5>
     
     =item * Search CPAN
     
-    L<http://search.cpan.org/dist/$7/>
+    L<http://search.cpan.org/dist/$5/>
     
     =back
     
     
     =head1 AUTHOR
    
-    ${8:your name}  E<lt>${9:your e-mail address}E<gt>
+    ${6:your name}  E<lt>${7:your e-mail address}E<gt>
     
     
     =head1 CONTRIBUTORS
     
-    ${10:your name}  E<lt>${11:your e-mail address}E<gt>
+    ${8:your name}  E<lt>${9:your e-mail address}E<gt>
     
     
     =head1 LICENCE AND COPYRIGHT
    
-    Copyright (c) ${12:year}, $8 E<lt>$9E<gt>. All rights reserved.
+    Copyright (c) ${10:year}, $6 E<lt>$7E<gt>. All rights reserved.
    
     This module is free software; you can redistribute it and/or
     modify it under the same terms as Perl itself. See L<perlartistic>.
