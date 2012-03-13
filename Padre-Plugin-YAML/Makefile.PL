@@ -10,7 +10,7 @@ requires 'YAML'            => '0.80';
 test_requires 'Test::More' => '0.88';
 test_requires 'File::Temp' => '0.22';
 
-no_index 'directory' => qw{ t eg share inc};
+no_index 'directory' => qw{ t eg inc};
 homepage 'http://padre.perlide.org/trac/wiki/PadrePluginYAML';
 bugtracker 'http://padre.perlide.org/';
 repository 'http://svn.perlide.org/padre/trunk/Padre-Plugin-YAML';
