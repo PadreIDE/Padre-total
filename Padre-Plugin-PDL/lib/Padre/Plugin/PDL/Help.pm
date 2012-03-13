@@ -7,7 +7,7 @@ use warnings;
 # For Perl 6 documentation support
 use Padre::Help ();
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 our @ISA = 'Padre::Help';
 

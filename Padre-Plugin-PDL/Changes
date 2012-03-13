@@ -1,5 +1,9 @@
 Changes for Padre-Plugin-PDL
 
+0.04  2012.3.13
+	- Fix a 5.14-ism (Reported by run4flat)
+	- POD typos fixed
+
 0.03  2012.3.13
 	- Fixed HTML help rendering
 
