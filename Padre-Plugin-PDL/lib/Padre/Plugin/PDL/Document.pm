@@ -28,6 +28,12 @@ sub _highlight_pdl_keywords {
 	Padre::Plugin::PDL::Util::add_pdl_keywords_highlighting( $_[0], $_[1] );
 }
 
+sub get_help_provider {
+	print "get_help_provider called\n";
+	require Padre::Plugin::PDL::Help;
+	return Padre::Plugin::PDL::Help->new;
+}
+
 1;
 
 __END__

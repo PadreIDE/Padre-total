@@ -1,6 +1,8 @@
 package Padre::Plugin::PDL::Help;
 
-# ABSTRACT: Perl 6 Help provider for Padre
+use 
+
+# ABSTRACT: 
 
 use strict;
 use warnings;
@@ -10,18 +12,38 @@ use Padre::Help ();
 
 our @ISA = 'Padre::Help';
 
-use Class::XSAccessor accessors => {
-	_grok => '_grok', # App::Grok -> Perl 6 Documentation Reader
-};
-
-
 #
 # Initialize help
 #
 sub help_init {
 	my $self = shift;
-	require App::Grok;
-	$self->_grok( App::Grok->new );
+	
+
+	require Capture::Tiny;
+	my $help_list_output = Capture::Tiny::capture_stdout(
+	    sub {
+		require PDL::Doc::Perldl;
+		PDL::Doc::Perldl::apropos('.*');
+		return;
+	    }
+	);
+
+	my %help = ();
+	for my $line ( split /\n/, $help_list_output ) {
+	    state $topic;
+	    if ( $line =~ /^(\S+)\s+(.+)$/ ) {
+		$topic = $1;
+		$help{$topic} = $2;
+	    }
+	    else {
+		if ( defined $topic ) {
+		    $line =~ s/^\s+//;
+		    $help{$topic} .= " $line";
+		}
+	    }
+	}
+	
+	$self->{help} = $help;
 }
 
 #
@@ -30,10 +52,8 @@ sub help_init {
 sub help_render {
 	my ( $self, $topic ) = @_;
 
-	my $grok     = $self->_grok;
-	my $html     = $grok->render_target( $topic, 'xhtml' );
-	my $location = $grok->locate_target($topic);
-	return ( $html, $location );
+	my $html = $self->{help}->{$topic};
+	return ( $html, $topic );
 }
 
 #
@@ -42,10 +62,8 @@ sub help_render {
 sub help_list {
 	my ($self) = @_;
 
-	# Return Grok's target index
-	my @index = $self->_grok->target_index;
-
 	# Return a unique sorted index
+	my @index = keys $self->{help};
 	my %seen = ();
 	my @unique_sorted_index = sort grep { !$seen{$_}++ } @index;
 	return \@unique_sorted_index;
@@ -57,7 +75,8 @@ __END__
 
 =head1 NAME
 
-Perl 6 
+Padre::Plugin::PDL::Help - PDL help provider for Padre
+
 =head1 DESCRIPTION
 
-Perl 6 Help index is built here and rendered.
+PDL Help index is built here and rendered.

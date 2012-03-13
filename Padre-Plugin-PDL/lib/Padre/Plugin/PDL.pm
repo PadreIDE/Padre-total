@@ -13,23 +13,23 @@ use constant CHILDREN => qw{
 	Padre::Plugin::PDL::Document
 };
 
-# Store the current configuration object for _plugin_config consumers
-my $config;
-
 # Called when Padre wants to check what package versions this
 # plugin needs
 sub padre_interfaces {
-	'Padre::Plugin'               => 0.94,
+	return {
+		'Padre::Plugin'               => 0.94,
 		'Padre::Document'         => 0.94,
 		'Padre::Wx::Main'         => 0.94,
 		'Padre::Wx::Editor'       => 0.94,
 		'Padre::Wx::Role::Main'   => 0.94,
-		;
+		};
 }
 
 # Called when Padre wants to knows what documents this Plugin supports
 sub registered_documents {
-	'application/x-perl' => 'Padre::Plugin::PDL::Document',;
+	return {
+		'application/x-perl' => 'Padre::Plugin::PDL::Document',
+	};
 }
 
 # Called when Padre wants a name for the plugin
@@ -37,17 +37,12 @@ sub plugin_name {
 	Wx::gettext('PDL');
 }
 
-# Called by Padre::Plugin::PDL::Document to retrieve configuration
-sub _plugin_config {
-	return $config;
-}
-
 # Called when the plugin is enabled by Padre
 sub plugin_enable {
 	my $self = shift;
 
 	# Read the plugin configuration, and
-	$config = $self->config_read;
+	my $config = $self->config_read;
 	unless ( defined $config ) {
 
 		# No configuration, let us create it
@@ -76,21 +71,22 @@ sub plugin_disable {
 	}
 }
 
-# Called when Padre wants to display plugin menu items
-sub menu_plugins {
-	my $self      = shift;
-	my $main      = $self->main;
-	my $menu_item = Wx::MenuItem->new( undef, -1, Wx::gettext('PDL') );
+#### FOR FUTURE VERSIONS
+# # Called when Padre wants to display plugin menu items
+# sub menu_plugins {
+	# my $self      = shift;
+	# my $main      = $self->main;
+	# my $menu_item = Wx::MenuItem->new( undef, -1, Wx::gettext('PDL') );
 
-	Wx::Event::EVT_MENU(
-		$main,
-		$menu_item,
-		sub {
-		},
-	);
+	# Wx::Event::EVT_MENU(
+		# $main,
+		# $menu_item,
+		# sub {
+		# },
+	# );
 
-	return $menu_item;
-}
+	# return $menu_item;
+# }
 
 1;
 
@@ -107,10 +103,6 @@ Padre::Plugin::PDL - PDL support for Padre
     cpan Padre::Plugin::PDL;
 
 Then use it via L<Padre>, The Perl IDE. Press F9.
-
-=head1 DESCRIPTION
-
-Once you enable this Plugin under Padre, you'll get a brand new menu with the following options:
 
 =head1 BUGS
 
@@ -153,8 +145,6 @@ L<PDL>, L<Padre>
 =head1 AUTHORS
 
 Ahmad M. Zawawi <ahmad.zawawi@gmail.com>
-
-=head1 CONTRIBUTORS
 
 =head1 COPYRIGHT AND LICENSE
 
