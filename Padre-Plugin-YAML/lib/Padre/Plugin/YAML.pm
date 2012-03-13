@@ -124,7 +124,7 @@ This plug-in adds some more features to deal with YAML files.
 
 =head1 DEPENDENCIES
 
-None.
+Padre, YAML
 
 
 =head1 BUGS AND LIMITATIONS
