@@ -1,0 +1,136 @@
+#
+# HTML  snippets bundle for Padre::Plugin::Snippet
+# Written by Ahmad M. Zawawi (azawawi)
+#
+# Adapted from snipMate vim plugin by Michael Sanders (msanders)
+# https://github.com/msanders/snipmate.vim/blob/master/snippets/html.snippets
+# snipMate is released under the MIT license
+# 
+---
+id: HTML
+name: Hypertext
+mimetypes:
+  - text/html
+snippets:
+  # Non-Breaking Space
+  nbs: |
+    &nbsp;
+  # Generic Doctype
+  docts: |
+    <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+    "http://www.w3.org/TR/html4/strict.dtd">
+  # HTML Doctype 4.01 Transitional
+  doct: |
+    <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+    "http://www.w3.org/TR/html4/loose.dtd">
+  # HTML Doctype 5
+  doct5: |
+    <!DOCTYPE HTML>
+  # XHTML Doctype 1.0 Frameset
+  docxf: |
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+  # XHTML Doctype 1.0 Strict
+  docxs: |
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+  # XHTML Doctype 1.0 Transitional
+  docxt: |
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  # XHTML Doctype 1.1
+  docx: |
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+  html: |
+    <html>
+    ${1}
+    </html>
+  xhtml: |
+    <html xmlns="http://www.w3.org/1999/xhtml">
+    ${1}
+    </html>
+  body: |
+    <body>
+      ${1}
+    </body>
+  head: |
+    <head>
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    
+      <title>${1:title}</title>
+      ${2}
+    </head>
+  title: |
+    <title>${1:name, '^.', '\u&', '')`}</title>${2}
+  script: |
+    <script type="text/javascript" charset="utf-8">
+      ${1}
+    </script>${2}
+  scriptsrc: |
+    <script src="${1}.js" type="text/javascript" charset="utf-8"></script>${2}
+  style: |
+    <style type="text/css" media="${1:screen}">
+      ${2}
+    </style>${3}
+  base: |
+    <base href="${1}" target="${2}">
+  br: |
+    <br>
+  div: |
+    <div id="${1:name}">
+      ${2}
+    </div>
+  # Embed QT Movie
+  movie: |
+    <object width="$2" height="$3" classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B"
+     codebase="http://www.apple.com/qtactivex/qtplugin.cab">
+      <param name="src" value="$1">
+      <param name="controller" value="$4">
+      <param name="autoplay" value="$5">
+      <embed src="${1:movie.mov}"
+        width="${2:320}" height="${3:240}"
+        controller="${4:true}" autoplay="${5:true}"
+        scale="tofit" cache="true"
+        pluginspage="http://www.apple.com/quicktime/download/"
+      >
+    </object>${6}
+  fieldset: |
+    <fieldset id="$1">
+      <legend>${1:name}</legend>
+
+      ${3}
+    </fieldset>
+  form: |
+    <form action="${1:name}" method="${2:get}" accept-charset="utf-8">
+      ${3}
+    
+      <p><input type="submit" value="Continue &rarr;"></p>
+    </form>
+  h1: |
+    <h1 id="${1:heading}">${2:$1}</h1>
+  input: |
+    <input type="${1:text/submit/hidden/button}" name="${2:some_name}" value="${3}">${4}
+  label: |
+    <label for="${2:$1}">${1:name}</label><input type="${3:text/submit/hidden/button}" name="${4:$2}" value="${5}" id="${6:$2}">${7}
+  link: |
+    <link rel="${1:stylesheet}" href="${2:/css/master.css}" type="text/css" media="${3:screen}" charset="utf-8">${4}
+  mailto: |
+    <a href="mailto:${1:joe@example.com}?subject=${2:feedback}">${3:email me}</a>
+  meta: |
+    <meta name="${1:name}" content="${2:content}">${3}
+  opt: |
+    <option value="${1:option}">${2:$1}</option>${3}
+  optt: |
+    <option>${1:option}</option>${2}
+  select: |
+    <select name="${1:some_name}" id="${2:$1}">
+      <option value="${3:option}">${4:$3}</option>
+    </select>${5}
+  table: |
+    <table border="${1:0}">
+      <tr><th>${2:Header}</th></tr>
+      <tr><th>${3:Data}</th></tr>
+    </table>${4}
+  textarea: |
+    <textarea name="${1:Name}" rows="${2:8}" cols="${3:40}">${4}</textarea>${5}

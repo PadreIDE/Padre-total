@@ -235,7 +235,7 @@ sub _load_bundles {
 
 		# snippets field must be a hash with at least one entry
 		unless ( Params::Util::_HASH( $bundle->{snippets} ) ) {
-			warn "name is not a non-empty hash for '$file'\n";
+			warn "snippets is not a non-empty hash for '$file'\n";
 			next;
 		}
 
