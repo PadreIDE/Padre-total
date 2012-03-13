@@ -74,10 +74,10 @@ sub plugin_enable {
 # Called when the plugin is disabled by Padre
 sub plugin_disable {
 	my $self = shift;
-	
+
 	# Close the dialog if it is hanging around
 	$self->clean_manager;
-	
+
 	# TODO: Switch to Padre::Unload once Padre 0.96 is released
 	for my $package (CHILDREN) {
 		require Padre::Unload;
@@ -112,8 +112,8 @@ sub _show_manager {
 		unless ( defined $self->{manager} )
 		{
 			require Padre::Plugin::Snippet::Manager;
-			my $snippet_bundles = $self->_load_snippet_bundles( $document->mimetype );
-			$self->{manager} = Padre::Plugin::Snippet::Manager->new( $self, $snippet_bundles );
+			my $bundles = $self->_load_bundles;
+			$self->{manager} = Padre::Plugin::Snippet::Manager->new( $self, $bundles );
 		}
 	};
 	if ($@) {
@@ -136,28 +136,50 @@ sub editor_changed {
 		$self->{document} = undef;
 	}
 
-	# Only on Perl documents
-	#TODO remove once we support other document types
-	return unless $document->isa('Padre::Document::Perl');
-
 	# Load all snippets here
-	my $snippet_bundles = $self->_load_snippet_bundles( $document->mimetype );
+	my $bundles = $self->_load_bundles;
 
-	# Create a new snippet document
-	require Padre::Plugin::Snippet::Document;
-	$self->{document} = Padre::Plugin::Snippet::Document->new(
-		editor   => $editor,
-		document => $document,
-		config   => $self->{config},
-		snippets => $snippet_bundles->{Perl}->{snippets},
-	);
+	# Filter bundles by mimetype
+	my $filtered_bundles = $self->_filter_by_mimetype( $bundles, $document->mimetype );
+
+	# # Create a new snippet document
+	# require Padre::Plugin::Snippet::Document;
+	# $self->{document} = Padre::Plugin::Snippet::Document->new(
+	# editor   => $editor,
+	# document => $document,
+	# config   => $self->{config},
+	# snippets => $filtered_bundles->{Perl}->{snippets},
+	# );
 
 	return;
 }
 
-sub _load_snippet_bundles {
-	my $self         = shift;
+sub _filter_by_mimetype {
+	my $self = shift;
+
+	my $bundles      = shift;
 	my $doc_mimetype = shift;
+
+	my $filtered_bundles = ();
+	foreach my $id ( sort keys $bundles ) {
+		my $bundle = $bundles->{$id};
+		foreach my $a_mimetype ( @{ $bundle->{mimetypes} } ) {
+			if ( $a_mimetype eq $doc_mimetype ) {
+
+				# Add bundle with matched document mimetype
+				$filtered_bundles->{$id} = $bundle;
+
+				# exit loop
+				last;
+			}
+		}
+	}
+
+	return $filtered_bundles;
+}
+
+sub _load_bundles {
+	my $self = shift;
 
 	require File::ShareDir;
 	require File::Spec;
@@ -173,43 +195,53 @@ sub _load_snippet_bundles {
 	# Find all the YAML files in share/snippets
 	my @files = File::Find::Rule->file()->name('*.yml')->in($dir);
 
-	my $snippet_bundles = ();
-	LOOP: foreach my $file (@files) {
-		my $snippet_bundle;
-		eval { $snippet_bundle = YAML::LoadFile($file); };
+	my $bundles = ();
+	foreach my $file (@files) {
+		my $bundle;
+
+		# Load the YAML snippet bundle and catch errors
+		eval { $bundle = YAML::LoadFile($file); };
 		if ($@) {
 			warn "Error while loading $file:\n$@\n";
 			next;
 		}
-		for my $key (qw(id name mimetypes snippets)) {
-			unless ( defined $snippet_bundle->{$key} ) {
-				warn "'$key' key is missing from '$file'\n";
-				next LOOP;
-			}
+
+		# id field should a string
+		my $id = $bundle->{id};
+		unless ( Params::Util::_STRING($id) ) {
+			warn "id is not a string for '$file'\n";
+			next;
 		}
-		my $mimetypes = $snippet_bundle->{mimetypes};
+
+		# name field should be a string
+		unless ( Params::Util::_STRING( $bundle->{name} ) ) {
+			warn "name is not a string for '$file'\n";
+			next;
+		}
+
+		# Validate mimetypes field
+		my $mimetypes = $bundle->{mimetypes};
 		unless ( Params::Util::_ARRAY0($mimetypes) ) {
 			warn "mimetypes is not an array for '$file'\n";
 			next;
 		}
-		foreach my $mimetype ( @{$mimetypes} ) {
-			if ( $mimetype eq $doc_mimetype ) {
 
-				# Found document mimetype, let us add it
-				my $id = $snippet_bundle->{id};
-				if ( defined $snippet_bundles->{$id} ) {
-					warn "Duplicate '$id' identifier for '$file'\n";
-					next LOOP;
-				}
-				$snippet_bundles->{$id} = $snippet_bundle;
-
-				# and exit loop
-				last;
-			}
+		# snippets field must be a hash with at least one entry
+		unless ( Params::Util::_HASH( $bundle->{snippets} ) ) {
+			warn "name is not a non-empty hash for '$file'\n";
+			next;
 		}
+
+		# let us add it while checking for duplicates
+		if ( defined $bundles->{$id} ) {
+			warn "Duplicate '$id' identifier for '$file'\n";
+			next;
+		}
+		$bundles->{$id} = $bundle;
+
 	}
 
-	return $snippet_bundles;
+	return $bundles;
 }
 
 ########
