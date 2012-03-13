@@ -7,6 +7,8 @@ all_from 'lib/Padre/Plugin/PDL.pm';
 
 requires 'Padre'            => '0.94';
 requires 'PDL'            => '2.4.10';
+requires 'Capture::Tiny'            => '0.06';
+
 test_requires 'Test::More'  => '0.88';
 
 no_index 'directory' => qw{ t xt eg share inc};

@@ -42,26 +42,45 @@ sub help_init {
 	}
 	
 	$self->{help} = $help;
+
+	# Workaround to get Perl + PDL help
+	require Padre::Document::Perl::Help;
+	$self->{p5_help} = Padre::Document::Perl::Help->new;
+	$self->{p5_help}->help_init;
 }
 
 #
 # Renders the help topic content
 #
 sub help_render {
-	my ( $self, $topic ) = @_;
+	my $self = shift;
+	my $topic = shift;
 
-	my $html = $self->{help}->{$topic};
-	return ( $html, $topic );
+	my ($html, $location);
+	if(exists $self->{help}->{$topic}) {
+		$html = $self->{help}->{$topic};
+		$location = $topic;
+	} else {
+		($html, $location) = $self->{p5_help}->help_render($topic);
+	}
+
+	return ( $html, $location );
 }
 
 #
 # Returns the help topic list
 #
 sub help_list {
-	my ($self) = @_;
+	my $self = shift;
 
 	# Return a unique sorted index
 	my @index = keys $self->{help};
+
+	# Add Perl 5 help index to PDL
+	foreach my $topic (@{$self->{p5_help}->help_list}) {
+	    push @index, $topic;
+	}
+
 	my %seen = ();
 	my @unique_sorted_index = sort grep { !$seen{$_}++ } @index;
 	return \@unique_sorted_index;
