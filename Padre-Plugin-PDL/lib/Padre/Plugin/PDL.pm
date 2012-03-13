@@ -101,7 +101,17 @@ Padre::Plugin::PDL - PDL support for Padre
 
     cpan Padre::Plugin::PDL;
 
-Then use it via L<Padre>, The Perl IDE. Press F9.
+Then use it via L<Padre>, The Perl IDE.
+
+=head1 DESCRIPTION
+
+Once enabled, one will automatically get the following features:
+
+=item Context-sensitive help integration
+
+Press F2 to get the help for the current PDL keyword
+
+=back
 
 =head1 BUGS
 
