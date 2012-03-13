@@ -7,7 +7,7 @@ use warnings;
 # For Perl 6 documentation support
 use Padre::Help ();
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 our @ISA = 'Padre::Help';
 
@@ -22,6 +22,7 @@ sub help_init {
 		sub {
 			require PDL::Doc::Perldl;
 			PDL::Doc::Perldl::apropos('.*');
+
 			return;
 		}
 	);
@@ -57,7 +58,16 @@ sub help_render {
 
 	my ( $html, $location );
 	if ( exists $self->{help}->{$topic} ) {
-		$html     = $self->{help}->{$topic};
+		require Capture::Tiny;
+		$html = Capture::Tiny::capture_stdout(
+		    sub {
+			require PDL::Doc::Perldl;
+			PDL::Doc::Perldl::help($topic);
+
+			return;
+		    }
+		);
+		$html = "<pre>$html</pre>";
 		$location = $topic;
 	} else {
 		( $html, $location ) = $self->{p5_help}->help_render($topic);
