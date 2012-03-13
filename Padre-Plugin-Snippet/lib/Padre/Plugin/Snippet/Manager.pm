@@ -12,15 +12,16 @@ our @ISA     = qw{
 };
 
 sub new {
-	my $class           = shift;
-	my $plugin          = shift;
-	my $snippet_bundles = shift;
+	my $class    = shift;
+	my $plugin   = shift;
+	my $bundles  = shift;
+	my $mimetype = shift;
 
 	my $self = $class->SUPER::new( $plugin->main );
 
 	# Store state
-	$self->{plugin}          = $plugin;
-	$self->{snippet_bundles} = $snippet_bundles;
+	$self->{plugin}  = $plugin;
+	$self->{bundles} = $bundles;
 
 	# Center & title
 	$self->CenterOnParent;
@@ -30,7 +31,6 @@ sub new {
 	# Create snippet editor
 	my $editor = $self->{snippet_editor};
 	require Padre::Document;
-	my $mimetype = 'text/plain';
 	$editor->{Document} = Padre::Document->new( mimetype => $mimetype );
 	$editor->{Document}->set_editor($editor);
 	$editor->SetLexer($mimetype);
@@ -60,16 +60,16 @@ sub run {
 sub _populate_tree {
 	my $self = shift;
 
-	my $snippet_bundles = $self->{snippet_bundles};
-	my $tree            = $self->{tree};
-	my $root_node       = $tree->AddRoot(
+	my $bundles   = $self->{bundles};
+	my $tree      = $self->{tree};
+	my $root_node = $tree->AddRoot(
 		Wx::gettext('...'),
 		-1,
 		-1,
 	);
 
-	foreach my $bundle_id ( sort keys %{$snippet_bundles} ) {
-		my $bundle      = $snippet_bundles->{$bundle_id};
+	foreach my $bundle_id ( sort keys %{$bundles} ) {
+		my $bundle      = $bundles->{$bundle_id};
 		my $bundle_node = $tree->AppendItem(
 			$root_node,
 			$bundle->{name},

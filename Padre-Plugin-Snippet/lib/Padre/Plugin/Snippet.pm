@@ -113,7 +113,7 @@ sub _show_manager {
 		{
 			require Padre::Plugin::Snippet::Manager;
 			my $bundles = $self->_load_bundles;
-			$self->{manager} = Padre::Plugin::Snippet::Manager->new( $self, $bundles );
+			$self->{manager} = Padre::Plugin::Snippet::Manager->new( $self, $bundles, $document->mimetype );
 		}
 	};
 	if ($@) {
@@ -142,14 +142,21 @@ sub editor_changed {
 	# Filter bundles by mimetype
 	my $filtered_bundles = $self->_filter_by_mimetype( $bundles, $document->mimetype );
 
-	# # Create a new snippet document
-	# require Padre::Plugin::Snippet::Document;
-	# $self->{document} = Padre::Plugin::Snippet::Document->new(
-	# editor   => $editor,
-	# document => $document,
-	# config   => $self->{config},
-	# snippets => $filtered_bundles->{Perl}->{snippets},
-	# );
+	# Make sure we have at least one snippet bundle available to switch
+	# on snippet for the current document
+	if ( Params::Util::_HASH($filtered_bundles) ) {
+
+		#TODO build big snippet bundle
+
+		# Create a new snippet document
+		require Padre::Plugin::Snippet::Document;
+		$self->{document} = Padre::Plugin::Snippet::Document->new(
+			editor   => $editor,
+			document => $document,
+			config   => $self->{config},
+			snippets => $filtered_bundles->{Perl}->{snippets},
+		);
+	}
 
 	return;
 }
