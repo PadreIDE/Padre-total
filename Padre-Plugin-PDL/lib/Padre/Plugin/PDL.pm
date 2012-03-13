@@ -99,7 +99,7 @@ Padre::Plugin::PDL - PDL support for Padre
 
 =head1 SYNOPSIS
 
-    cpan Padre::Plugin::PDL;
+    cpan Padre::Plugin::PDL
 
 Then use it via L<Padre>, The Perl IDE.
 
