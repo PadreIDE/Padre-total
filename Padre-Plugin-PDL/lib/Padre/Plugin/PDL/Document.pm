@@ -22,6 +22,7 @@ sub get_indentation_style {
 
 # Adds PDL keywords highlighting
 sub _highlight_pdl_keywords {
+
 	# TODO remove hack once Padre supports a better way
 	require Padre::Plugin::PDL::Util;
 	Padre::Plugin::PDL::Util::add_pdl_keywords_highlighting( $_[0], $_[1] );

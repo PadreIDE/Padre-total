@@ -16,8 +16,7 @@ sub add_pdl_keywords_highlighting {
 		foreach my $i ( 0 .. $#$keywords ) {
 			my $keyword_list = $keywords->[$i];
 			if ( $i == 0 ) {
-				$keyword_list
-					.= ' sequence';
+				$keyword_list .= ' sequence';
 			}
 			$editor->Wx::Scintilla::TextCtrl::SetKeyWords( $i, $keyword_list );
 		}

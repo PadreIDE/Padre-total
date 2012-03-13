@@ -16,31 +16,30 @@ our @ISA = 'Padre::Help';
 #
 sub help_init {
 	my $self = shift;
-	
+
 	require Capture::Tiny;
 	my $help_list_output = Capture::Tiny::capture_stdout(
-	    sub {
-		require PDL::Doc::Perldl;
-		PDL::Doc::Perldl::apropos('.*');
-		return;
-	    }
+		sub {
+			require PDL::Doc::Perldl;
+			PDL::Doc::Perldl::apropos('.*');
+			return;
+		}
 	);
 
 	my $help = ();
 	my $topic;
 	for my $line ( split /\n/, $help_list_output ) {
-	    if ( $line =~ /^(\S+)\s+(.+)$/ ) {
-		$topic = $1;
-		$help->{$topic} = $2;
-	    }
-	    else {
-		if ( defined $topic ) {
-		    $line =~ s/^\s+//;
-		    $help->{$topic} .= " $line";
+		if ( $line =~ /^(\S+)\s+(.+)$/ ) {
+			$topic = $1;
+			$help->{$topic} = $2;
+		} else {
+			if ( defined $topic ) {
+				$line =~ s/^\s+//;
+				$help->{$topic} .= " $line";
+			}
 		}
-	    }
 	}
-	
+
 	$self->{help} = $help;
 
 	# Workaround to get Perl + PDL help
@@ -53,15 +52,15 @@ sub help_init {
 # Renders the help topic content
 #
 sub help_render {
-	my $self = shift;
+	my $self  = shift;
 	my $topic = shift;
 
-	my ($html, $location);
-	if(exists $self->{help}->{$topic}) {
-		$html = $self->{help}->{$topic};
+	my ( $html, $location );
+	if ( exists $self->{help}->{$topic} ) {
+		$html     = $self->{help}->{$topic};
 		$location = $topic;
 	} else {
-		($html, $location) = $self->{p5_help}->help_render($topic);
+		( $html, $location ) = $self->{p5_help}->help_render($topic);
 	}
 
 	return ( $html, $location );
@@ -77,8 +76,8 @@ sub help_list {
 	my @index = keys $self->{help};
 
 	# Add Perl 5 help index to PDL
-	foreach my $topic (@{$self->{p5_help}->help_list}) {
-	    push @index, $topic;
+	foreach my $topic ( @{ $self->{p5_help}->help_list } ) {
+		push @index, $topic;
 	}
 
 	my %seen = ();

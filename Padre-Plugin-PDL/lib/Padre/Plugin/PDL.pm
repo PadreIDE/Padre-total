@@ -7,7 +7,7 @@ use Padre::Plugin ();
 
 our $VERSION = '0.02';
 
-our @ISA     = 'Padre::Plugin';
+our @ISA = 'Padre::Plugin';
 
 # Child modules we need to unload when disabled
 use constant CHILDREN => qw{
@@ -18,18 +18,17 @@ use constant CHILDREN => qw{
 # Called when Padre wants to check what package versions this
 # plugin needs
 sub padre_interfaces {
-	return 
-		'Padre::Plugin'               => 0.94,
-		'Padre::Document'         => 0.94,
-		'Padre::Wx::Main'         => 0.94,
-		'Padre::Wx::Role::Main'   => 0.94,
+	return
+		'Padre::Plugin'         => 0.94,
+		'Padre::Document'       => 0.94,
+		'Padre::Wx::Main'       => 0.94,
+		'Padre::Wx::Role::Main' => 0.94,
 		;
 }
 
 # Called when Padre wants to knows what documents this Plugin supports
 sub registered_documents {
-	return 
-		'application/x-perl' => 'Padre::Plugin::PDL::Document',;
+	return 'application/x-perl' => 'Padre::Plugin::PDL::Document',;
 }
 
 # Called when Padre wants a name for the plugin
