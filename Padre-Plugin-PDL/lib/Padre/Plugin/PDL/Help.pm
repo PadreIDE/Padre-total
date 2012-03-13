@@ -1,14 +1,13 @@
 package Padre::Plugin::PDL::Help;
 
-use 
-
-# ABSTRACT: 
-
+use 5.008;
 use strict;
 use warnings;
 
 # For Perl 6 documentation support
 use Padre::Help ();
+
+our $VERSION = '0.02';
 
 our @ISA = 'Padre::Help';
 
@@ -18,7 +17,6 @@ our @ISA = 'Padre::Help';
 sub help_init {
 	my $self = shift;
 	
-
 	require Capture::Tiny;
 	my $help_list_output = Capture::Tiny::capture_stdout(
 	    sub {
@@ -28,17 +26,17 @@ sub help_init {
 	    }
 	);
 
-	my %help = ();
+	my $help = ();
+	my $topic;
 	for my $line ( split /\n/, $help_list_output ) {
-	    state $topic;
 	    if ( $line =~ /^(\S+)\s+(.+)$/ ) {
 		$topic = $1;
-		$help{$topic} = $2;
+		$help->{$topic} = $2;
 	    }
 	    else {
 		if ( defined $topic ) {
 		    $line =~ s/^\s+//;
-		    $help{$topic} .= " $line";
+		    $help->{$topic} .= " $line";
 		}
 	    }
 	}
@@ -47,7 +45,7 @@ sub help_init {
 }
 
 #
-# Renders the help topic content using App::Grok into XHTML
+# Renders the help topic content
 #
 sub help_render {
 	my ( $self, $topic ) = @_;

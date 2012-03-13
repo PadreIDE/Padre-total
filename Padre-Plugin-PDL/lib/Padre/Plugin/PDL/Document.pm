@@ -4,9 +4,8 @@ use 5.008;
 use strict;
 use warnings;
 use Padre::Document::Perl ();
-use Padre::Logger;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 our @ISA = 'Padre::Document::Perl';
 
