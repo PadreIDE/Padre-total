@@ -16,29 +16,12 @@ our @ISA = 'Padre::Help';
 #
 sub help_init {
 	my $self = shift;
-
-	require Capture::Tiny;
-	my $help_list_output = Capture::Tiny::capture_stdout(
-		sub {
-			require PDL::Doc::Perldl;
-			PDL::Doc::Perldl::apropos('.*');
-
-			return;
-		}
-	);
-
-	my $help = ();
-	my $topic;
-	for my $line ( split /\n/, $help_list_output ) {
-		if ( $line =~ /^(\S+)\s+(.+)$/ ) {
-			$topic = $1;
-			$help->{$topic} = $2;
-		} else {
-			if ( defined $topic ) {
-				$line =~ s/^\s+//;
-				$help->{$topic} .= " $line";
-			}
-		}
+ 
+	my $help = {};
+	require PDL::Doc::Perldl;
+	my @matches = PDL::Doc::Perldl::aproposover('.*');
+	for my $match (@matches) {
+		$help->{$match->[0]} = $match;
 	}
 
 	$self->{help} = $help;
