@@ -7,7 +7,7 @@ use warnings;
 # For Perl 6 documentation support
 use Padre::Help ();
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 our @ISA = 'Padre::Help';
 
@@ -58,14 +58,13 @@ sub help_render {
 		my $help         = $pdl_help->{$topic};
 		my %SECTION_NAME = (
 			Module  => 'Module',
-			File    => 'File',
 			Ref     => 'Reference',
 			Sig     => 'Signature',
 			Bad     => 'Bad values',
 			Usage   => 'Usage',
 			Example => 'Example',
 		);
-		foreach my $section (qw(Module File Ref Sig Bad Usage Example)) {
+		foreach my $section (qw(Module Ref Sig Bad Usage Example)) {
 			if ( defined $help->{$section} ) {
 				my $help = $help->{$section};
 				my $name = $SECTION_NAME{$section};
