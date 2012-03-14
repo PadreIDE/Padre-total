@@ -25,7 +25,7 @@ sub add_pdl_keywords_highlighting {
 }
 
 sub get_pdl_keywords {
-	
+
 	require PDL::Doc;
 
 	# Find the pdl documentation
