@@ -11,8 +11,10 @@ our @ISA = 'Padre::Plugin';
 
 # Child modules we need to unload when disabled
 use constant CHILDREN => qw{
+	Padre::Plugin::PDL
 	Padre::Plugin::PDL::Document
 	Padre::Plugin::PDL::Help
+	Padre::Plugin::PDL::Util
 };
 
 # Called when Padre wants to check what package versions this
@@ -23,6 +25,7 @@ sub padre_interfaces {
 		'Padre::Document'       => 0.94,
 		'Padre::Wx::Main'       => 0.94,
 		'Padre::Wx::Role::Main' => 0.94,
+		'Padre::Help'           => 0.94,
 		;
 }
 
