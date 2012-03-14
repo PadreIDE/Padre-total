@@ -32,6 +32,14 @@ sub help_init {
 
 		if ( defined $pdldoc ) {
 			$self->{pdl_help} = $pdldoc->gethash;
+
+			# Delete those cool PDL modules that
+			# Perl 5 Help search will include
+			for my $k ( keys %{ $self->{pdl_help} } ) {
+				if ( $k =~ /^PDL::/ ) {
+					delete $self->{pdl_help}->{$k};
+				}
+			}
 		}
 	};
 	if ($@) {
@@ -73,6 +81,8 @@ sub help_render {
 					or $section eq 'Usage' )
 				{
 					$html .= "<p><b>$name</b><pre>" . $help . "</pre></p>";
+				} elsif ( $section eq 'Module' ) {
+					$html .= qq{<p><b><a href="perldoc:$help">$help</a></b></p>};
 				} else {
 					$html .= "<p><b>$name</b><br>" . $help . "</p>";
 				}
