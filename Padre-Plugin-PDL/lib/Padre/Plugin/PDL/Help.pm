@@ -16,15 +16,27 @@ our @ISA = 'Padre::Help';
 #
 sub help_init {
 	my $self = shift;
- 
-	my $help = {};
-	require PDL::Doc::Perldl;
-	my @matches = PDL::Doc::Perldl::aproposover('.*');
-	for my $match (@matches) {
-		$help->{$match->[0]} = $match;
-	}
 
-	$self->{help} = $help;
+	eval {
+		require PDL::Doc;
+
+		# Find the pdl documentation
+		my $pdldoc;
+		DIRECTORY: for my $dir (@INC) {
+			my $file = "$dir/PDL/pdldoc.db";
+			if ( -f $file ) {
+				$pdldoc = new PDL::Doc($file);
+				last DIRECTORY;
+			}
+		}
+
+		if ( defined $pdldoc ) {
+			$self->{pdl_help} = $pdldoc->gethash;
+		}
+	};
+	if ($@) {
+		warn "Failed to load PDL docs: $@";
+	}
 
 	# Workaround to get Perl + PDL help
 	require Padre::Document::Perl::Help;
@@ -40,17 +52,34 @@ sub help_render {
 	my $topic = shift;
 
 	my ( $html, $location );
-	if ( exists $self->{help}->{$topic} ) {
-		require Capture::Tiny;
-		$html = Capture::Tiny::capture_stdout(
-		    sub {
-			require PDL::Doc::Perldl;
-			PDL::Doc::Perldl::help($topic);
-
-			return;
-		    }
+	my $pdl_help = $self->{pdl_help};
+	if ( defined $pdl_help && exists $pdl_help->{$topic} ) {
+		$html = '';
+		my $help         = $pdl_help->{$topic};
+		my %SECTION_NAME = (
+			Module  => 'Module',
+			File    => 'File',
+			Ref     => 'Reference',
+			Sig     => 'Signature',
+			Bad     => 'Bad values',
+			Usage   => 'Usage',
+			Example => 'Example',
 		);
-		$html = "<pre>$html</pre>";
+		foreach my $section (qw(Module File Ref Sig Bad Usage Example)) {
+			if ( defined $help->{$section} ) {
+				my $help = $help->{$section};
+				my $name = $SECTION_NAME{$section};
+				if (   $section eq 'Example'
+					or $section eq 'Sig'
+					or $section eq 'Usage' )
+				{
+					$html .= "<p><b>$name</b><pre>" . $help . "</pre></p>";
+				} else {
+					$html .= "<p><b>$name</b><br>" . $help . "</p>";
+				}
+			}
+		}
+
 		$location = $topic;
 	} else {
 		( $html, $location ) = $self->{p5_help}->help_render($topic);
@@ -66,7 +95,7 @@ sub help_list {
 	my $self = shift;
 
 	# Return a unique sorted index
-	my @index = keys %{$self->{help}};
+	my @index = keys %{ $self->{pdl_help} };
 
 	# Add Perl 5 help index to PDL
 	foreach my $topic ( @{ $self->{p5_help}->help_list } ) {
