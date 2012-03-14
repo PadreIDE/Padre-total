@@ -8,8 +8,7 @@ our $VERSION = '0.05';
 
 sub add_pdl_keywords_highlighting {
 	my $document = shift;
-	my $type     = shift or return;
-	my $editor   = $document->editor or return;
+	my $editor   = shift;
 
 	my $keywords = Padre::Wx::Scintilla->keywords($document);
 	if ( Params::Util::_ARRAY($keywords) ) {
