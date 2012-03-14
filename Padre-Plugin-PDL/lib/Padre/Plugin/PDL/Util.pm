@@ -15,11 +15,35 @@ sub add_pdl_keywords_highlighting {
 		foreach my $i ( 0 .. $#$keywords ) {
 			my $keyword_list = $keywords->[$i];
 			if ( $i == 0 ) {
-				$keyword_list .= ' sequence';
+				$keyword_list .= ' ' . get_pdl_keywords();
 			}
 			$editor->Wx::Scintilla::TextCtrl::SetKeyWords( $i, $keyword_list );
 		}
 	}
 
 	return;
+}
+
+sub get_pdl_keywords {
+	
+	require PDL::Doc;
+
+	# Find the pdl documentation
+	my $pdldoc;
+	DIRECTORY: for my $dir (@INC) {
+		my $file = "$dir/PDL/pdldoc.db";
+		if ( -f $file ) {
+			$pdldoc = new PDL::Doc($file);
+			last DIRECTORY;
+		}
+	}
+
+	my @functions;
+	if ( defined $pdldoc ) {
+		@functions = keys $pdldoc->gethash;
+	} else {
+		@functions = ();
+	}
+
+	return join ' ', @functions;
 }
