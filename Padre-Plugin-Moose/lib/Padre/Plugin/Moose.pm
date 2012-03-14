@@ -10,6 +10,7 @@ our @ISA     = 'Padre::Plugin';
 
 # Child modules we need to unload when disabled
 use constant CHILDREN => qw{
+	Padre::Plugin::Moose
 	Padre::Plugin::Moose::Role::CanGenerateCode
 	Padre::Plugin::Moose::Role::CanHandleInspector
 	Padre::Plugin::Moose::Role::CanProvideHelp
