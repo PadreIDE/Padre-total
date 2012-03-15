@@ -24,29 +24,12 @@ sub help_init {
 	$self->{p5_help} = Padre::Document::Perl::Help->new;
 	$self->{p5_help}->help_init;
 
-	eval {
-		require PDL::Doc;
-
-		# Find the pdl documentation
-		my $pdldoc;
-		DIRECTORY: for my $dir (@INC) {
-			my $file = "$dir/PDL/pdldoc.db";
-			if ( -f $file ) {
-				$pdldoc = new PDL::Doc($file);
-				last DIRECTORY;
-			}
-		}
-
-		if ( defined $pdldoc ) {
-
-			# Store in self for later access:
-			$self->{pdl_help} = $pdldoc;
-		}
-	};
-	if ($@) {
-		warn "Failed to load PDL docs: $@";
+	require Padre::Plugin::PDL::Util;
+	my $pdldoc = Padre::Plugin::PDL::Util::get_pdldoc();
+	if ( defined $pdldoc ) {
+		$self->{pdldoc}      = $pdldoc;
+		$self->{pdldoc_hash} = $pdldoc->gethash;
 	}
-
 }
 
 #
@@ -57,30 +40,32 @@ sub help_render {
 	my $topic = shift;
 
 	my ( $html, $location );
-	my $pdl_help = $self->{pdl_help};
-	if ( defined $pdl_help && exists $pdl_help->gethash->{$topic} ) {
+	my $pdldoc_hash = $self->{pdldoc_hash};
+	if ( defined $pdldoc_hash && exists $pdldoc_hash->{$topic} ) {
 		require Padre::Pod2HTML;
 
-		# We have two possibilities: the $topic can either be a module, or it
-		# can be a function. If the latter, we extract its pod from the database.
-		# If the former, just pull the pod from the file. We distinguish between
-		# them by noting that functions have a Module key, whereas modules
-		# (ironically) don't.
-		if ( exists $pdl_help->gethash->{$topic}->{Module} ) {
+		# We have two possibilities: the $topic can either be a module,
+		# or it can be a function. If the latter, we extract its pod
+		# from the database.
+		# If the former, just pull the pod from the file. We distinguish
+		# between them by noting that functions have a Module key,
+		# whereas modules (ironically) don't.
+		if ( exists $pdldoc_hash->{$topic}->{Module} ) {
 
 			# Get the pod docs from the docs database:
 			my $pod_handler = StrHandle->new; # defined in PDL::Doc
-			$pdl_help->funcdocs( $topic, $pod_handler );
+			$self->{pdldoc}->funcdocs( $topic, $pod_handler );
 
 			# Convert them to HTML
 			$html = Padre::Pod2HTML->pod2html( $pod_handler->text );
 
-			# Replace the filename in the "docs from" section with the module name:
-			my $module_name = $pdl_help->gethash->{$topic}{Module};
+			# Replace the filename in the "docs from" section with
+			# the module name
+			my $module_name = $pdldoc_hash->{$topic}{Module};
 			$html =~ s{Docs from .*\.pm}
 				{Docs from <a href="perldoc:$module_name">$module_name<\/a>};
 		} else {
-			$html = Padre::Pod2HTML->file2html( $pdl_help->gethash->{$topic}->{File} );
+			$html = Padre::Pod2HTML->file2html( $pdldoc_hash->{$topic}->{File} );
 		}
 
 		$location = $topic;
@@ -98,13 +83,9 @@ sub help_list {
 	my $self = shift;
 
 	# Return a unique sorted index
-	my @index = keys %{ $self->{pdl_help}->gethash };
+	my @index = keys %{ $self->{pdldoc_hash} };
 
 	# Add Perl 5 help index to PDL
-	#foreach my $topic ( @{ $self->{p5_help}->help_list } ) {
-	#	push @index, $topic;
-	#}
-	# I think this is a faster way of doing the above:
 	push @index, @{ $self->{p5_help}->help_list };
 
 	# Make sure things are only listed once:
