@@ -6,7 +6,8 @@ package Padre::Plugin::ParserTool::FBP;
 # To change this module edit the original .fbp file and regenerate.
 # DO NOT MODIFY THIS FILE BY HAND!
 
-use 5.008;
+use 5.008005;
+use utf8;
 use strict;
 use warnings;
 use Padre::Wx ();
@@ -26,24 +27,27 @@ sub new {
 		$parent,
 		-1,
 		Wx::gettext("Parser Tool"),
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
-		Wx::wxDEFAULT_DIALOG_STYLE | Wx::wxRESIZE_BORDER,
+		Wx::DefaultPosition,
+		[ 459, 480 ],
+		Wx::DEFAULT_DIALOG_STYLE | Wx::RESIZE_BORDER,
 	);
 
-	my $m_staticText1 = Wx::StaticText->new(
+	my $input_label = Wx::StaticText->new(
 		$self,
 		-1,
 		Wx::gettext("Input Text"),
+	);
+	$input_label->SetFont(
+		Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" )
 	);
 
 	$self->{input} = Wx::TextCtrl->new(
 		$self,
 		-1,
 		"",
-		Wx::wxDefaultPosition,
+		Wx::DefaultPosition,
 		[ 200, 100 ],
-		Wx::wxTE_DONTWRAP | Wx::wxTE_MULTILINE,
+		Wx::TE_DONTWRAP | Wx::TE_MULTILINE,
 	);
 	$self->{input}->SetMinSize( [ 200, 100 ] );
 
@@ -55,50 +59,59 @@ sub new {
 		},
 	);
 
-	my $m_staticText3 = Wx::StaticText->new(
+	my $module_label = Wx::StaticText->new(
 		$self,
 		-1,
 		Wx::gettext("Parser Module"),
+	);
+	$module_label->SetFont(
+		Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" )
 	);
 
 	$self->{module} = Wx::ComboBox->new(
 		$self,
 		-1,
 		"PPI",
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
 		[
 			"PPI",
 		],
-		Wx::wxCB_DROPDOWN,
+		Wx::CB_DROPDOWN,
 	);
 
-	my $m_staticText4 = Wx::StaticText->new(
+	my $function_label = Wx::StaticText->new(
 		$self,
 		-1,
 		Wx::gettext("Parser Function"),
+	);
+	$function_label->SetFont(
+		Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" )
 	);
 
 	$self->{function} = Wx::ComboBox->new(
 		$self,
 		-1,
 		"PPI::Document->new(\\\$_)",
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
 		[],
 	);
 
-	my $m_staticText6 = Wx::StaticText->new(
+	my $dumper_label = Wx::StaticText->new(
 		$self,
 		-1,
 		Wx::gettext("Dumper Format"),
+	);
+	$dumper_label->SetFont(
+		Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" )
 	);
 
 	$self->{dumper} = Wx::Choice->new(
 		$self,
 		-1,
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
 		[
 			"Stringify",
 			"Devel::Dumpvar",
@@ -116,50 +129,54 @@ sub new {
 		},
 	);
 
-	my $m_staticText2 = Wx::StaticText->new(
+	my $output_label = Wx::StaticText->new(
 		$self,
 		-1,
 		Wx::gettext("Output Structure"),
+	);
+	$output_label->SetFont(
+		Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" )
 	);
 
 	$self->{output} = Wx::TextCtrl->new(
 		$self,
 		-1,
 		"",
-		Wx::wxDefaultPosition,
+		Wx::DefaultPosition,
 		[ 400, 200 ],
-		Wx::wxTE_DONTWRAP | Wx::wxTE_MULTILINE | Wx::wxTE_READONLY,
+		Wx::TE_DONTWRAP | Wx::TE_MULTILINE | Wx::TE_READONLY,
 	);
 	$self->{output}->SetMinSize( [ 400, 200 ] );
 	$self->{output}->SetBackgroundColour(
 		Wx::Colour->new( 240, 240, 240 )
 	);
 
-	my $bSizer6 = Wx::BoxSizer->new(Wx::wxVERTICAL);
-	$bSizer6->Add( $m_staticText1, 0, Wx::wxALL | Wx::wxEXPAND, 5 );
-	$bSizer6->Add( $self->{input}, 1, Wx::wxEXPAND, 0 );
+	my $input_sizer = Wx::BoxSizer->new(Wx::VERTICAL);
+	$input_sizer->Add( $input_label, 0, Wx::ALL | Wx::EXPAND, 5 );
+	$input_sizer->Add( $self->{input}, 1, Wx::EXPAND, 0 );
 
-	my $bSizer7 = Wx::BoxSizer->new(Wx::wxVERTICAL);
-	$bSizer7->Add( $m_staticText3, 0, Wx::wxALIGN_CENTER_VERTICAL | Wx::wxALIGN_LEFT | Wx::wxALL, 5 );
-	$bSizer7->Add( $self->{module}, 0, Wx::wxEXPAND | Wx::wxLEFT, 5 );
-	$bSizer7->Add( $m_staticText4, 0, Wx::wxALIGN_CENTER_VERTICAL | Wx::wxALIGN_LEFT | Wx::wxALL, 5 );
-	$bSizer7->Add( $self->{function}, 0, Wx::wxEXPAND | Wx::wxLEFT, 3 );
-	$bSizer7->Add( $m_staticText6, 0, Wx::wxALIGN_CENTER_VERTICAL | Wx::wxALIGN_LEFT | Wx::wxALL, 5 );
-	$bSizer7->Add( $self->{dumper}, 0, Wx::wxEXPAND | Wx::wxLEFT, 3 );
+	my $options_sizer = Wx::BoxSizer->new(Wx::VERTICAL);
+	$options_sizer->SetMinSize( [ 200, -1 ] );
+	$options_sizer->Add( $module_label, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALIGN_LEFT | Wx::ALL, 5 );
+	$options_sizer->Add( $self->{module}, 0, Wx::EXPAND | Wx::LEFT, 5 );
+	$options_sizer->Add( $function_label, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALIGN_LEFT | Wx::ALL, 5 );
+	$options_sizer->Add( $self->{function}, 0, Wx::EXPAND | Wx::LEFT, 3 );
+	$options_sizer->Add( $dumper_label, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALIGN_LEFT | Wx::ALL, 5 );
+	$options_sizer->Add( $self->{dumper}, 0, Wx::EXPAND | Wx::LEFT, 3 );
 
-	my $bSizer51 = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
-	$bSizer51->Add( $bSizer6, 1, Wx::wxEXPAND, 5 );
-	$bSizer51->Add( $bSizer7, 1, Wx::wxEXPAND, 5 );
+	my $top_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
+	$top_sizer->Add( $input_sizer, 1, Wx::EXPAND, 5 );
+	$top_sizer->Add( $options_sizer, 1, Wx::EXPAND, 5 );
 
-	my $bSizer2 = Wx::BoxSizer->new(Wx::wxVERTICAL);
-	$bSizer2->Add( $bSizer51, 0, Wx::wxEXPAND, 5 );
-	$bSizer2->Add( $m_staticText2, 0, Wx::wxALL | Wx::wxEXPAND, 5 );
-	$bSizer2->Add( $self->{output}, 1, Wx::wxEXPAND, 0 );
+	my $left_sizer = Wx::BoxSizer->new(Wx::VERTICAL);
+	$left_sizer->Add( $top_sizer, 0, Wx::EXPAND, 5 );
+	$left_sizer->Add( $output_label, 0, Wx::ALL | Wx::EXPAND, 5 );
+	$left_sizer->Add( $self->{output}, 1, Wx::EXPAND, 0 );
 
-	my $bSizer1 = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
-	$bSizer1->Add( $bSizer2, 1, Wx::wxALL | Wx::wxEXPAND, 5 );
+	my $sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
+	$sizer->Add( $left_sizer, 1, Wx::ALL | Wx::EXPAND, 5 );
 
-	$self->SetSizerAndFit($bSizer1);
+	$self->SetSizer($sizer);
 	$self->Layout;
 
 	return $self;
@@ -191,7 +208,7 @@ sub refresh {
 
 1;
 
-# Copyright 2008-2011 The Padre development team as listed in Padre.pm.
+# Copyright 2008-2012 The Padre development team as listed in Padre.pm.
 # LICENSE
 # This program is free software; you can redistribute it and/or
 # modify it under the same terms as Perl 5 itself.
