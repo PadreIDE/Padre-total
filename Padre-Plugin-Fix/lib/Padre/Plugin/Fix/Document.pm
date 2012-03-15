@@ -85,8 +85,21 @@ sub _on_key_down {
 				my $start = $editor->PositionFromLine( $_line - 1 ) + $_col - 1;
 				$editor->SetSelection( $start, $start + length($content) );
 				if ( $content =~ /^('|q|qq|")(.+?)\1$/ ) {
-					Padre->ide->wx->main->message("Found quote at line $line, col $col\n|$2|");
-					last;
+					my ( $type, $text ) = ( $1, $2 );
+					if ( $type eq q{"} or $type eq 'qq' ) {
+
+						# No escape sequences?
+						if ( $text !~ /\\(n|r|t)/ ) {
+
+							# Can be replaced by simpler thing
+							if ( Padre->ide->wx->main->yes_no("Convert \n$content\nto\nsingle quote form:\n'$text'?") )
+							{
+								last;
+							}
+						}
+					}
+
+
 				}
 			}
 		}
