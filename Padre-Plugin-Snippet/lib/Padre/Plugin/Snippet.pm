@@ -127,8 +127,9 @@ sub _show_manager {
 
 sub editor_changed {
 	my $self     = shift;
-	my $document = $self->current->document or return;
-	my $editor   = $self->current->editor or return;
+	my $current = $self->current or return;
+	my $document = $current->document or return;
+	my $editor   = $current->editor or return;
 
 	# Always cleanup current document
 	if ( defined $self->{document} ) {
