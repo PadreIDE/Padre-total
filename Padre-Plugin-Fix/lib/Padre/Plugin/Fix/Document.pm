@@ -78,10 +78,15 @@ sub _on_key_down {
 			my $_col    = $quote->location->[1];
 			my $content = $quote->content;
 
-			if ( $line <= $_line && $col >= $_col && $col <= $_col + length($content) ) {
-				print "Found quote at line $line, col $col\n";
-				if ( $content =~ /^'(.+?)'$/ ) {
-					print $1 . "\n";
+			if (   ( $line == $_line )
+				&& ( $col >= $_col )
+				&& ( $col <= $_col + length($content) ) )
+			{
+				my $start = $editor->PositionFromLine( $_line - 1 ) + $_col - 1;
+				$editor->SetSelection( $start, $start + length($content) );
+				if ( $content =~ /^('|q|qq|")(.+?)\1$/ ) {
+					Padre->ide->wx->main->message("Found quote at line $line, col $col\n|$2|");
+					last;
 				}
 			}
 		}
