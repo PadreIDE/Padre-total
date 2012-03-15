@@ -72,16 +72,8 @@ sub plugin_disable {
 		require Padre::Unload;
 		Padre::Unload->unload($package);
 	}
-}
 
-# Called when an editor is opened
-sub editor_enable {
-	my $self     = shift;
-	my $editor   = shift;
-	my $document = shift;
-
-	# Only on Perl documents
-	return unless $document->isa('Padre::Document::Perl');
+	return;
 }
 
 # Called when an editor is changed
@@ -91,8 +83,25 @@ sub editor_changed {
 	my $document = $current->document or return;
 	my $editor   = $current->editor or return;
 
+
+	# Always cleanup current document
+	if ( defined $self->{document} ) {
+		$self->{document}->cleanup;
+		$self->{document} = undef;
+	}
+
 	# Only on Perl documents
 	return unless $document->isa('Padre::Document::Perl');
+	
+	# Create a new snippet document
+	require Padre::Plugin::Fix::Document;
+	$self->{document} = Padre::Plugin::Snippet::Document->new(
+		editor   => $editor,
+		document => $document,
+		config   => $self->{config},
+	);
+
+	return;
 }
 
 1;
@@ -113,14 +122,16 @@ Then use it via L<Padre>, The Perl IDE.
 
 =head1 DESCRIPTION
 
-Once you enable this Plugin under Padre, you will be transform code with CTRL-2 
-key
+Once you enable this Plugin under Padre, you will be fix code with CTRL-2 
+shortcut
 
 =head1 BUGS
 
-Please report any bugs or feature requests to C<bug-padre-plugin-fix at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Padre-Plugin-Fix>.  I will be notified, and then you'll
-automatically be notified of progress on your bug as I make changes.
+Please report any bugs or feature requests to
+C<bug-padre-plugin-fix at rt.cpan.org>, or through the web interface at 
+L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Padre-Plugin-Fix>.  I will be
+notified, and then you'll automatically be notified of progress on your bug as
+I make changes.
 
 =head1 SUPPORT
 
