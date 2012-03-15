@@ -3,6 +3,7 @@ package Padre::Plugin::Snippet;
 use 5.008;
 use strict;
 use warnings;
+
 #use Padre::Plugin ();
 
 our $VERSION = '0.01';
@@ -127,7 +128,7 @@ sub _show_manager {
 
 sub editor_changed {
 	my $self     = shift;
-	my $current = $self->current or return;
+	my $current  = $self->current or return;
 	my $document = $current->document or return;
 	my $editor   = $current->editor or return;
 
