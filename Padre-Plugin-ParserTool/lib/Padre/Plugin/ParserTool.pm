@@ -128,7 +128,7 @@ Ahmad M. Zawawi E<lt>ahmad.zawawi@gmail.comE<gt>
 
 =head1 SEE ALSO
 
-L<Padre>
+L<Padre>, L<PPI>
 
 =head1 COPYRIGHT
 
