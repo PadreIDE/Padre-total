@@ -3,7 +3,7 @@ package Padre::Plugin::Snippet;
 use 5.008;
 use strict;
 use warnings;
-use Padre::Plugin ();
+#use Padre::Plugin ();
 
 our $VERSION = '0.01';
 our @ISA     = 'Padre::Plugin';
@@ -168,7 +168,7 @@ sub _filter_by_mimetype {
 	my $doc_mimetype = shift;
 
 	my $filtered_bundles = ();
-	foreach my $id ( sort keys @$bundles ) {
+	foreach my $id ( sort keys %$bundles ) {
 		my $bundle = $bundles->{$id};
 		foreach my $a_mimetype ( @{ $bundle->{mimetypes} } ) {
 			if ( $a_mimetype eq $doc_mimetype ) {
