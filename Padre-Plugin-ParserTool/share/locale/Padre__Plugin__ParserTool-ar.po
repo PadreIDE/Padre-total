@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: Padre-Plugin-ParserTool\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-03-15 14:39+0200\n"
-"PO-Revision-Date: 2012-03-15 14:39+0200\n"
-"Last-Translator: Ahmad M. Zawawi <ahmad.zawawi@gmail.com>\n"
+"PO-Revision-Date: 2012-03-15 14:56+0200\n"
+"Last-Translator: \n"
 "Language-Team: Arabic\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -13,26 +13,26 @@ msgstr ""
 
 #: lib/Padre/Plugin/ParserTool/FBP.pm:95
 msgid "Dumper Format"
-msgstr ""
+msgstr "نمط الطباعة"
 
 #: lib/Padre/Plugin/ParserTool/FBP.pm:38
 msgid "Input Text"
-msgstr ""
+msgstr "النص المدخل"
 
 #: lib/Padre/Plugin/ParserTool/FBP.pm:122
 msgid "Output Structure"
-msgstr ""
+msgstr "هيكلية المخرجات"
 
 #: lib/Padre/Plugin/ParserTool/FBP.pm:79
 msgid "Parser Function"
-msgstr ""
+msgstr "وظيفة المحلل"
 
 #: lib/Padre/Plugin/ParserTool/FBP.pm:63
 msgid "Parser Module"
-msgstr ""
+msgstr "وحدة المحلل"
 
 #: lib/Padre/Plugin/ParserTool.pm:41
 #: lib/Padre/Plugin/ParserTool/FBP.pm:29
 msgid "Parser Tool"
-msgstr ""
+msgstr "أداة التحليل"
 
