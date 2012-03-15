@@ -17,6 +17,13 @@ our @ISA = 'Padre::Help';
 sub help_init {
 	my $self = shift;
 
+	# Workaround to get Perl + PDL help. Also, we'll need this so we can clean
+	# out things from the PDL help list that are already covered by Perl's
+	# normal help facilities.
+	require Padre::Document::Perl::Help;
+	$self->{p5_help} = Padre::Document::Perl::Help->new;
+	$self->{p5_help}->help_init;
+
 	eval {
 		require PDL::Doc;
 
@@ -31,6 +38,7 @@ sub help_init {
 		}
 
 		if ( defined $pdldoc ) {
+
 			# Store in self for later access:
 			$self->{pdl_help} = $pdldoc;
 		}
@@ -39,10 +47,6 @@ sub help_init {
 		warn "Failed to load PDL docs: $@";
 	}
 
-	# Workaround to get Perl + PDL help
-	require Padre::Document::Perl::Help;
-	$self->{p5_help} = Padre::Document::Perl::Help->new;
-	$self->{p5_help}->help_init;
 }
 
 #
@@ -56,29 +60,29 @@ sub help_render {
 	my $pdl_help = $self->{pdl_help};
 	if ( defined $pdl_help && exists $pdl_help->gethash->{$topic} ) {
 		require Padre::Pod2HTML;
-		
+
 		# We have two possibilities: the $topic can either be a module, or it
 		# can be a function. If the latter, we extract its pod from the database.
 		# If the former, just pull the pod from the file. We distinguish between
-		# them by noting that functions have a Module key, whereas modules 
+		# them by noting that functions have a Module key, whereas modules
 		# (ironically) don't.
-		if (exists $pdl_help->gethash->{$topic}->{Module}) {
+		if ( exists $pdl_help->gethash->{$topic}->{Module} ) {
+
 			# Get the pod docs from the docs database:
 			my $pod_handler = StrHandle->new; # defined in PDL::Doc
-			$pdl_help->funcdocs($topic, $pod_handler);
-			
+			$pdl_help->funcdocs( $topic, $pod_handler );
+
 			# Convert them to HTML
-			$html = Padre::Pod2HTML->pod2html($pod_handler->text);
-			
+			$html = Padre::Pod2HTML->pod2html( $pod_handler->text );
+
 			# Replace the filename in the "docs from" section with the module name:
 			my $module_name = $pdl_help->gethash->{$topic}{Module};
 			$html =~ s{Docs from .*\.pm}
 				{Docs from <a href="perldoc:$module_name">$module_name<\/a>};
+		} else {
+			$html = Padre::Pod2HTML->file2html( $pdl_help->gethash->{$topic}->{File} );
 		}
-		else {
-			$html = Padre::Pod2HTML->file2html($pdl_help->gethash->{$topic}->{File});
-		}
-		
+
 		$location = $topic;
 	} else {
 		( $html, $location ) = $self->{p5_help}->help_render($topic);
