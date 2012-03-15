@@ -40,7 +40,7 @@
 #   Mac OSX SMB mount metadata files
 \B\._
 # Avoid archives of this distribution
-\bPadre-Plugin-Moose-[\d\.\_]+
+\bPadre-Plugin-Fix-[\d\.\_]+
 
 # avoid pot files (gettext)
 \.pot$
