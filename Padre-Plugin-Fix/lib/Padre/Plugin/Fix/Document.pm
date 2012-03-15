@@ -82,24 +82,23 @@ sub _on_key_down {
 				&& ( $col >= $_col )
 				&& ( $col <= $_col + length($content) ) )
 			{
-				my $start = $editor->PositionFromLine( $_line - 1 ) + $_col - 1;
-				$editor->SetSelection( $start, $start + length($content) );
-				if ( $content =~ /^('|q|qq|")(.+?)\1$/ ) {
-					my ( $type, $text ) = ( $1, $2 );
-					if ( $type eq q{"} or $type eq 'qq' ) {
 
-						# No escape sequences?
-						if ( $text !~ /\\(n|r|t)/ ) {
+				#my $start = $editor->PositionFromLine( $_line - 1 ) + $_col - 1;
+				#$editor->SetSelection( $start, $start + length($content) );
 
-							# Can be replaced by simpler thing
-							if ( Padre->ide->wx->main->yes_no("Convert to '$text'?") ) {
-								last;
-							}
-						}
-					}
-
-
+				my $simplified_form;
+				if ( $quote->can('simplify') ) {
+					$simplified_form = $quote->simplify;
 				}
+
+				# Can be replaced by simpler thing
+				if (   defined $simplified_form
+					&& $simplified_form ne $content
+					&& Padre->ide->wx->main->yes_no("Simplify to $simplified_form ?") )
+				{
+					last;
+				}
+
 			}
 		}
 
