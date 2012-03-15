@@ -63,7 +63,7 @@ sub _populate_tree {
 	my $bundles   = $self->{bundles};
 	my $tree      = $self->{tree};
 	my $root_node = $tree->AddRoot(
-		Wx::gettext('...'),
+		'...',
 		-1,
 		-1,
 	);

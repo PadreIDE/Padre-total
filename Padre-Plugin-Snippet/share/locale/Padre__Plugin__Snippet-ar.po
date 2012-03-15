@@ -1,0 +1,76 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Padre-Plugin-Snippet\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-03-15 10:57+0200\n"
+"PO-Revision-Date: 2012-03-15 11:05+0200\n"
+"Last-Translator: \n"
+"Language-Team: Arabic\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: lib/Padre/Plugin/Snippet/FBP/Preferences.pm:62
+msgid "&Cancel"
+msgstr "إلغاء"
+
+#: lib/Padre/Plugin/Snippet/FBP/Manager.pm:118
+msgid "&Close"
+msgstr "اغلاق"
+
+#: lib/Padre/Plugin/Snippet/FBP/Preferences.pm:54
+msgid "&OK"
+msgstr "موافق"
+
+#: lib/Padre/Plugin/Snippet/FBP/Manager.pm:102
+msgid "&Preferences"
+msgstr "التفضيلات"
+
+#: lib/Padre/Plugin/Snippet/Manager.pm:66
+msgid "..."
+msgstr "..."
+
+#: lib/Padre/Plugin/Snippet/FBP/Manager.pm:60
+msgid "Add Snippet"
+msgstr "إضافة قصاصة"
+
+#: lib/Padre/Plugin/Snippet/FBP/Manager.pm:69
+#: lib/Padre/Plugin/Snippet/FBP/Manager.pm:70
+msgid "Delete Snippet"
+msgstr "حذف قصاصة"
+
+#: lib/Padre/Plugin/Snippet/FBP/Preferences.pm:38
+msgid "Enable Snippets?"
+msgstr "تمكين القصاصات؟"
+
+#: lib/Padre/Plugin/Snippet.pm:121
+#, perl-format
+msgid "Error: %s"
+msgstr "خطأ: %s"
+
+#: lib/Padre/Plugin/Snippet.pm:34
+msgid "Snippet"
+msgstr "قصاصة"
+
+#: lib/Padre/Plugin/Snippet.pm:94
+#: lib/Padre/Plugin/Snippet/FBP/Manager.pm:30
+msgid "Snippet Manager"
+msgstr "مدير القصاصات"
+
+#: lib/Padre/Plugin/Snippet/Manager.pm:29
+#, perl-format
+msgid "Snippet Manager %s - Written for fun by Ahmad M. Zawawi (azawawi)"
+msgstr "مدير القصاصات %s - تم كتابته من أجل المتعة من قبل أحمد م. زواوي (azawawi)"
+
+#: lib/Padre/Plugin/Snippet/FBP/Preferences.pm:29
+msgid "Snippet Preferences"
+msgstr "تفضيلات القصاصة"
+
+#: lib/Padre/Plugin/Snippet/FBP/Manager.pm:90
+msgid "Snippet:"
+msgstr "القصاصة:"
+
+#: lib/Padre/Plugin/Snippet/FBP/Manager.pm:75
+msgid "Tab Trigger:"
+msgstr "مشغل التاب:"
+
