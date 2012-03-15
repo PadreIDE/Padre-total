@@ -2,7 +2,7 @@ package Padre::Plugin::Moose::Attribute;
 
 use Moose;
 
-our $VERSION = '0.20';
+our $VERSION = '0.21';
 
 extends 'Padre::Plugin::Moose::ClassMember';
 

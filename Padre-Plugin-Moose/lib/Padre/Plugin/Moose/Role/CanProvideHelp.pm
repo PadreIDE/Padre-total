@@ -2,7 +2,7 @@ package Padre::Plugin::Moose::Role::CanProvideHelp;
 
 use Moose::Role;
 
-our $VERSION = '0.20';
+our $VERSION = '0.21';
 
 requires 'provide_help';
 

@@ -2,7 +2,7 @@ package Padre::Plugin::Moose::Role::CanGenerateCode;
 
 use Moose::Role;
 
-our $VERSION = '0.20';
+our $VERSION = '0.21';
 
 sub generate_code {
 	my $self    = shift;

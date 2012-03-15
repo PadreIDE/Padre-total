@@ -2,7 +2,7 @@ package Padre::Plugin::Moose::Program;
 
 use Moose;
 
-our $VERSION = '0.20';
+our $VERSION = '0.21';
 
 with 'Padre::Plugin::Moose::Role::CanGenerateCode';
 with 'Padre::Plugin::Moose::Role::CanProvideHelp';

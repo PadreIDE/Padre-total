@@ -2,7 +2,7 @@ package Padre::Plugin::Moose::Role::CanHandleInspector;
 
 use Moose::Role;
 
-our $VERSION = '0.20';
+our $VERSION = '0.21';
 
 requires 'read_from_inspector';
 requires 'write_to_inspector';

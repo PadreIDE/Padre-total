@@ -2,7 +2,7 @@ package Padre::Plugin::Moose::ClassMember;
 
 use Moose;
 
-our $VERSION = '0.20';
+our $VERSION = '0.21';
 
 has 'name' => ( is => 'rw', isa => 'Str' );
 
