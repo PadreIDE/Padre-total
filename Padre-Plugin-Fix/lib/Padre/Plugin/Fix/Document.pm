@@ -60,8 +60,32 @@ sub _on_key_down {
 	my $event  = shift;
 
 	if ( $event->ControlDown && $event->GetKeyCode == ord('2') ) {
+
 		# Control-2
-		print "TODO Should do something when Control-2 is pressed\n";
+		my $pos  = $editor->GetCurrentPos;
+		my $line = $editor->LineFromPosition($pos);
+		my $col  = $pos - $editor->PositionFromLine($line) + 1;
+		$line++;
+
+		my $source = $editor->GetText;
+
+		require PPI;
+		my $doc = PPI::Document->new( \$source );
+
+		my $quotes = $doc->find('PPI::Token::Quote');
+		foreach my $quote (@$quotes) {
+			my $_line   = $quote->location->[0];
+			my $_col    = $quote->location->[1];
+			my $content = $quote->content;
+
+			if ( $line <= $_line && $col >= $_col && $col <= $_col + length($content) ) {
+				print "Found quote at line $line, col $col\n";
+				if ( $content =~ /^'(.+?)'$/ ) {
+					print $1 . "\n";
+				}
+			}
+		}
+
 	}
 
 	# Keep processing events
@@ -72,7 +96,6 @@ sub _on_key_down {
 
 no Moose::Util::TypeConstraints;
 no Moose;
-
 
 1;
 
