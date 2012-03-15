@@ -168,7 +168,7 @@ sub _filter_by_mimetype {
 	my $doc_mimetype = shift;
 
 	my $filtered_bundles = ();
-	foreach my $id ( sort keys $bundles ) {
+	foreach my $id ( sort keys @$bundles ) {
 		my $bundle = $bundles->{$id};
 		foreach my $a_mimetype ( @{ $bundle->{mimetypes} } ) {
 			if ( $a_mimetype eq $doc_mimetype ) {
