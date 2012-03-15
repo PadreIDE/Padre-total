@@ -24,7 +24,7 @@ and parsers for custom file formats of your own.
 use 5.008005;
 use strict;
 use warnings;
-use Params::Util  1.00 ();
+use Params::Util 1.00  ();
 use Padre::Plugin 0.89 ();
 
 our $VERSION = '0.01';
@@ -42,9 +42,7 @@ sub plugin_name {
 }
 
 sub padre_interfaces {
-	'Padre::Plugin'           => '0.89',
-	'Padre::Wx'               => '0.89',
-	'Padre::Wx::Role::Dialog' => '0.89',
+	'Padre::Plugin' => '0.89', 'Padre::Wx' => '0.89', 'Padre::Wx::Role::Dialog' => '0.89',;
 }
 
 sub menu_plugins {
@@ -58,13 +56,10 @@ sub menu_plugins {
 		$self->plugin_name,
 	);
 	Wx::Event::EVT_MENU(
-		$main,
-		$item,
+		$main, $item,
 		sub {
 			local $@;
-			eval {
-				$self->menu_dialog($main);
-			};
+			eval { $self->menu_dialog($main); };
 		},
 	);
 
@@ -82,10 +77,12 @@ sub plugin_disable {
 	}
 
 	# Unload any child modules we loaded
-	$self->unload( qw{
-		Padre::Plugin::ParserTool::Dialog
-		Padre::Plugin::ParserTool::FBP
-	} );
+	$self->unload(
+		qw{
+			Padre::Plugin::ParserTool::Dialog
+			Padre::Plugin::ParserTool::FBP
+			}
+	);
 
 	$self->SUPER::plugin_disable(@_);
 }

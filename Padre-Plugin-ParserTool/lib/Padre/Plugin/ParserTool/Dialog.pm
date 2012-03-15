@@ -42,7 +42,7 @@ sub refresh {
 	SCOPE: {
 		local $@;
 		eval "require $module";
-		if ( $@ ) {
+		if ($@) {
 			$self->module->SetBackgroundColour(RED);
 			return $self->fail("Failed to load '$module': $@");
 		}
@@ -56,7 +56,7 @@ sub refresh {
 		local $_ = $self->input->GetValue;
 		eval $code;
 	};
-	if ( $@ ) {
+	if ($@) {
 		$self->function->SetBackgroundColour(RED);
 		return $self->fail("Failed to execute '$code': $@");
 	}
@@ -68,12 +68,10 @@ sub refresh {
 	my $output = '';
 	my $error  = '';
 	if ( $dumper eq 'Stringify' ) {
-		$output = eval {
-			defined $rv ? "$rv" : 'undef';
-		};
+		$output = eval { defined $rv ? "$rv" : 'undef'; };
 		$error = "Exception during stringification: $@" if $@;
 
-	}elsif ( $dumper eq 'Data::Dumper' ) {
+	} elsif ( $dumper eq 'Data::Dumper' ) {
 		eval {
 			require Data::Dumper;
 			$output = Data::Dumper::Dumper($rv);
@@ -91,7 +89,8 @@ sub refresh {
 
 	} elsif ( $dumper eq 'PPI::Dumper' ) {
 		eval {
-			unless ( Params::Util::_INSTANCE($rv, 'PPI::Element') ) {
+			unless ( Params::Util::_INSTANCE( $rv, 'PPI::Element' ) )
+			{
 				die "Not a PPI::Element object";
 			}
 			require PPI::Dumper;
@@ -102,7 +101,7 @@ sub refresh {
 	} else {
 		$error = "Unknown or unsupported dumper '$dumper'";
 	}
-	if ( $error ) {
+	if ($error) {
 		$self->dumper->SetBackgroundColour(RED);
 		return $self->fail($error);
 	}

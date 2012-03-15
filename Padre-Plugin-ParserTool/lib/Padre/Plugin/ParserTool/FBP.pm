@@ -10,7 +10,7 @@ use 5.008005;
 use utf8;
 use strict;
 use warnings;
-use Padre::Wx ();
+use Padre::Wx             ();
 use Padre::Wx::Role::Main ();
 
 our $VERSION = '0.01';
@@ -37,9 +37,7 @@ sub new {
 		-1,
 		Wx::gettext("Input Text"),
 	);
-	$input_label->SetFont(
-		Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" )
-	);
+	$input_label->SetFont( Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" ) );
 
 	$self->{input} = Wx::TextCtrl->new(
 		$self,
@@ -64,18 +62,13 @@ sub new {
 		-1,
 		Wx::gettext("Parser Module"),
 	);
-	$module_label->SetFont(
-		Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" )
-	);
+	$module_label->SetFont( Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" ) );
 
 	$self->{module} = Wx::ComboBox->new(
-		$self,
-		-1,
-		"PPI",
+		$self, -1, "PPI",
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
-		[
-			"PPI",
+		[   "PPI",
 		],
 		Wx::CB_DROPDOWN,
 	);
@@ -85,9 +78,7 @@ sub new {
 		-1,
 		Wx::gettext("Parser Function"),
 	);
-	$function_label->SetFont(
-		Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" )
-	);
+	$function_label->SetFont( Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" ) );
 
 	$self->{function} = Wx::ComboBox->new(
 		$self,
@@ -103,17 +94,13 @@ sub new {
 		-1,
 		Wx::gettext("Dumper Format"),
 	);
-	$dumper_label->SetFont(
-		Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" )
-	);
+	$dumper_label->SetFont( Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" ) );
 
 	$self->{dumper} = Wx::Choice->new(
-		$self,
-		-1,
+		$self, -1,
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
-		[
-			"Stringify",
+		[   "Stringify",
 			"Devel::Dumpvar",
 			"Data::Dumper",
 			"PPI::Dumper",
@@ -134,9 +121,7 @@ sub new {
 		-1,
 		Wx::gettext("Output Structure"),
 	);
-	$output_label->SetFont(
-		Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" )
-	);
+	$output_label->SetFont( Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" ) );
 
 	$self->{output} = Wx::TextCtrl->new(
 		$self,
@@ -147,31 +132,29 @@ sub new {
 		Wx::TE_DONTWRAP | Wx::TE_MULTILINE | Wx::TE_READONLY,
 	);
 	$self->{output}->SetMinSize( [ 400, 200 ] );
-	$self->{output}->SetBackgroundColour(
-		Wx::Colour->new( 240, 240, 240 )
-	);
+	$self->{output}->SetBackgroundColour( Wx::Colour->new( 240, 240, 240 ) );
 
 	my $input_sizer = Wx::BoxSizer->new(Wx::VERTICAL);
-	$input_sizer->Add( $input_label, 0, Wx::ALL | Wx::EXPAND, 5 );
-	$input_sizer->Add( $self->{input}, 1, Wx::EXPAND, 0 );
+	$input_sizer->Add( $input_label,   0, Wx::ALL | Wx::EXPAND, 5 );
+	$input_sizer->Add( $self->{input}, 1, Wx::EXPAND,           0 );
 
 	my $options_sizer = Wx::BoxSizer->new(Wx::VERTICAL);
 	$options_sizer->SetMinSize( [ 200, -1 ] );
-	$options_sizer->Add( $module_label, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALIGN_LEFT | Wx::ALL, 5 );
-	$options_sizer->Add( $self->{module}, 0, Wx::EXPAND | Wx::LEFT, 5 );
-	$options_sizer->Add( $function_label, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALIGN_LEFT | Wx::ALL, 5 );
-	$options_sizer->Add( $self->{function}, 0, Wx::EXPAND | Wx::LEFT, 3 );
-	$options_sizer->Add( $dumper_label, 0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALIGN_LEFT | Wx::ALL, 5 );
-	$options_sizer->Add( $self->{dumper}, 0, Wx::EXPAND | Wx::LEFT, 3 );
+	$options_sizer->Add( $module_label,     0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALIGN_LEFT | Wx::ALL, 5 );
+	$options_sizer->Add( $self->{module},   0, Wx::EXPAND | Wx::LEFT,                                5 );
+	$options_sizer->Add( $function_label,   0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALIGN_LEFT | Wx::ALL, 5 );
+	$options_sizer->Add( $self->{function}, 0, Wx::EXPAND | Wx::LEFT,                                3 );
+	$options_sizer->Add( $dumper_label,     0, Wx::ALIGN_CENTER_VERTICAL | Wx::ALIGN_LEFT | Wx::ALL, 5 );
+	$options_sizer->Add( $self->{dumper},   0, Wx::EXPAND | Wx::LEFT,                                3 );
 
 	my $top_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
-	$top_sizer->Add( $input_sizer, 1, Wx::EXPAND, 5 );
+	$top_sizer->Add( $input_sizer,   1, Wx::EXPAND, 5 );
 	$top_sizer->Add( $options_sizer, 1, Wx::EXPAND, 5 );
 
 	my $left_sizer = Wx::BoxSizer->new(Wx::VERTICAL);
-	$left_sizer->Add( $top_sizer, 0, Wx::EXPAND, 5 );
-	$left_sizer->Add( $output_label, 0, Wx::ALL | Wx::EXPAND, 5 );
-	$left_sizer->Add( $self->{output}, 1, Wx::EXPAND, 0 );
+	$left_sizer->Add( $top_sizer,      0, Wx::EXPAND,           5 );
+	$left_sizer->Add( $output_label,   0, Wx::ALL | Wx::EXPAND, 5 );
+	$left_sizer->Add( $self->{output}, 1, Wx::EXPAND,           0 );
 
 	my $sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
 	$sizer->Add( $left_sizer, 1, Wx::ALL | Wx::EXPAND, 5 );
