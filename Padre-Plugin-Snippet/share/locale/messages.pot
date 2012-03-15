@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-15 10:57+0200\n"
+"POT-Creation-Date: 2012-03-15 11:06+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,10 +31,6 @@ msgstr ""
 
 #: lib/Padre/Plugin/Snippet/FBP/Manager.pm:102
 msgid "&Preferences"
-msgstr ""
-
-#: lib/Padre/Plugin/Snippet/Manager.pm:66
-msgid "..."
 msgstr ""
 
 #: lib/Padre/Plugin/Snippet/FBP/Manager.pm:60
