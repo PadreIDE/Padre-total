@@ -21,7 +21,7 @@ use Padre::Util ();
 
 my @files =
 	File::Find::Rule->file->name( '*.pm', '*.pod', '*.pl', '*.p6', '*.t', '*.yml', '*.txt' )->in( 'lib', 't', 'share' );
-@files = ( @files, 'Makefile.PL', 'Changes', 'padre.yml' );
+@files = ( @files, 'Makefile.PL', 'Changes' );
 
 plan( tests => scalar @files );
 foreach my $file (@files) {

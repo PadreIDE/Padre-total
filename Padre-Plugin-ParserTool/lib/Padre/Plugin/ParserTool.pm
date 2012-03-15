@@ -118,7 +118,7 @@ For other issues, or commercial enhancement or support, contact the author.
 
 Adam Kennedy E<lt>adamk@cpan.orgE<gt>
 
-=head2 CONTRIBUTORS
+=head1 CONTRIBUTORS
 
 Ahmad M. Zawawi E<lt>ahmad.zawawi@gmail.comE<gt>
 
