@@ -92,10 +92,10 @@ sub editor_changed {
 
 	# Only on Perl documents
 	return unless $document->isa('Padre::Document::Perl');
-	
-	# Create a new snippet document
+
+	# Create a new fix-it document :)
 	require Padre::Plugin::Fix::Document;
-	$self->{document} = Padre::Plugin::Snippet::Document->new(
+	$self->{document} = Padre::Plugin::Fix::Document->new(
 		editor   => $editor,
 		document => $document,
 		config   => $self->{config},
