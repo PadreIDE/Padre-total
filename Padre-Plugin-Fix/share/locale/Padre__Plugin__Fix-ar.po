@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: Padre-Plugin-Mojolicious\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-03-15 15:57+0200\n"
-"PO-Revision-Date: 2012-03-15 15:58+0200\n"
-"Last-Translator: Ahmad M. Zawawi <ahmad.zawawi@gmail.com>\n"
+"PO-Revision-Date: 2012-03-15 15:59+0200\n"
+"Last-Translator: \n"
 "Language-Team: Arabic\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -13,35 +13,26 @@ msgstr ""
 
 #: lib/Padre/Plugin/Fix.pm:31
 msgid "Fix"
-msgstr ""
+msgstr "تصليح"
 
 #~ msgid "Mojolicious"
 #~ msgstr "بريمج Mojolicious"
-
 #~ msgid "New Mojolicious Application"
 #~ msgstr "تطبيق Mojolicious جديد"
-
 #~ msgid "Start Web Server"
 #~ msgstr "تشغيل خادم الويب"
-
 #~ msgid "Stop Web Server"
 #~ msgstr "ايقاف خادم الويب"
-
 #~ msgid "Mojolicious Online References"
 #~ msgstr "مراجع Mojolicious  على الانترنت"
-
 #~ msgid "Mojolicious Manual"
 #~ msgstr "دليل Mojolicious"
-
 #~ msgid "Mojolicious Website"
 #~ msgstr "موقع ويب Mojolicious"
-
 #~ msgid "Mojolicious Community Live Support"
 #~ msgstr "دعم مجتمع Mojolicious المباشر"
-
 #~ msgid "About"
 #~ msgstr "عن"
-
 #~ msgid ""
 #~ "Mojolicious application script not found at\n"
 #~ "%s\n"
@@ -52,43 +43,32 @@ msgstr ""
 #~ "%s\n"
 #~ "\n"
 #~ "الرجاء التأكد من الوثيقة الحالية في مشروع Mojolicious  الخاص بك."
-
 #~ msgid "Server not found"
 #~ msgstr "الخادم غير موجود"
-
 #~ msgid "Web server appears to be running. Launch web browser now?"
 #~ msgstr "ببدو أن خادم الويب شغال. هل تريد تشغيل متصفح الويب الآن؟"
-
 #~ msgid "Start Web Browser?"
 #~ msgstr "تشغيل متصفح الويب؟"
-
 #~ msgid ""
 #~ "\n"
 #~ "Web server stopped successfully.\n"
 #~ msgstr ""
 #~ "\n"
 #~ "تم ايقاف خادم الويب بنجاح.\n"
-
 #~ msgid "Application Name:"
 #~ msgstr "اسم التطبيق:"
-
 #~ msgid "Parent Directory:"
 #~ msgstr "الدليل الأصل:"
-
 #~ msgid "Pick parent directory"
 #~ msgstr "اختر الدليل الأصل:"
-
 #~ msgid "Invalid Application name"
 #~ msgstr "اسم التطبيق خاطئ"
-
 #~ msgid "missing field"
 #~ msgstr "حقل مفقود"
-
 #~ msgid "You need to select a base directory"
 #~ msgstr "يجب ان تختار دليل البدايه"
-
 #~ msgid "%s apparently created. Do you want to open it now?"
 #~ msgstr "يبدو أن الملف %s موجود. هل تريد فتح الملف؟"
-
 #~ msgid "Done"
 #~ msgstr "تم"
+
