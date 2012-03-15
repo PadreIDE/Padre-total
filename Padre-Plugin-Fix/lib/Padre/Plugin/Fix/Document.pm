@@ -83,9 +83,6 @@ sub _on_key_down {
 				&& ( $col <= $_col + length($content) ) )
 			{
 
-				my $start = $editor->PositionFromLine( $_line - 1 ) + $_col - 1;
-
-				#$editor->SetSelection( $start, $start + length($content) );
 
 				my $simplified_form;
 				if ( $quote->can('simplify') ) {
@@ -97,6 +94,7 @@ sub _on_key_down {
 					&& $simplified_form ne $content
 					&& Padre->ide->wx->main->yes_no("Simplify to $simplified_form ?") )
 				{
+					my $start = $editor->PositionFromLine( $_line - 1 ) + $_col - 1;
 
 					# Replace with simplified form
 					$editor->SetTargetStart($start);
