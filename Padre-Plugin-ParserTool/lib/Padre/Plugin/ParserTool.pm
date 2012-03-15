@@ -1,26 +1,5 @@
 package Padre::Plugin::ParserTool;
 
-=pod
-
-=head1 NAME
-
-Padre::Plugin::ParserTool - A realtime interactive parser test tool for Padre
-
-=head1 DESCRIPTION
-
-The B<ParserTool> plugin adds an interactive parser testing tool for L<Padre>.
-
-It provides a two-panel dialog where you can type file contents into a panel
-on one side, and see a realtime dump of the resulting parsed structure on the
-other side of the dialog.
-
-The dialog is configurable, so it can be used to test both common Perl parsers
-and parsers for custom file formats of your own.
-
-=head1 METHODS
-
-=cut
-
 use 5.008005;
 use strict;
 use warnings;
@@ -30,9 +9,16 @@ use Padre::Plugin 0.89 ();
 our $VERSION = '0.01';
 our @ISA     = 'Padre::Plugin';
 
-
-
-
+# Child modules we need to unload when disabled
+use constant CHILDREN => qw{
+	Padre::Plugin::Snippet
+	Padre::Plugin::Snippet::Role::NeedsPluginEvent
+	Padre::Plugin::Snippet::Document
+	Padre::Plugin::Snippet::Manager
+	Padre::Plugin::Snippet::FBP::Manager
+	Padre::Plugin::Snippet::Preferences
+	Padre::Plugin::Snippet::FBP::Preferences
+};
 
 ######################################################################
 # Configuration Methods
@@ -76,20 +62,14 @@ sub plugin_disable {
 		delete $self->{dialog};
 	}
 
-	# Unload any child modules we loaded
-	$self->unload(
-		qw{
-			Padre::Plugin::ParserTool::Dialog
-			Padre::Plugin::ParserTool::FBP
-			}
-	);
+	# TODO: Switch to Padre::Unload once Padre 0.96 is released
+	for my $package (CHILDREN) {
+		require Padre::Unload;
+		Padre::Unload->unload($package);
+	}
 
 	$self->SUPER::plugin_disable(@_);
 }
-
-
-
-
 
 ######################################################################
 # Main Methods
@@ -111,8 +91,24 @@ sub menu_dialog {
 
 1;
 
+__END__
 
 =pod
+
+=head1 NAME
+
+Padre::Plugin::ParserTool - A realtime interactive parser test tool for Padre
+
+=head1 DESCRIPTION
+
+The B<ParserTool> plugin adds an interactive parser testing tool for L<Padre>.
+
+It provides a two-panel dialog where you can type file contents into a panel
+on one side, and see a realtime dump of the resulting parsed structure on the
+other side of the dialog.
+
+The dialog is configurable, so it can be used to test both common Perl parsers
+and parsers for custom file formats of your own.
 
 =head1 SUPPORT
 
@@ -126,13 +122,17 @@ For other issues, or commercial enhancement or support, contact the author.
 
 Adam Kennedy E<lt>adamk@cpan.orgE<gt>
 
+=head2 CONTRIBUTORS
+
+Ahmad M. Zawawi E<lt>ahmad.zawawi@gmail.comE<gt>
+
 =head1 SEE ALSO
 
 L<Padre>
 
 =head1 COPYRIGHT
 
-Copyright 2011 Adam Kennedy.
+Copyright 2011-2012 Adam Kennedy.
 
 This program is free software; you can redistribute
 it and/or modify it under the same terms as Perl itself.
