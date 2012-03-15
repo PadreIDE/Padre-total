@@ -18,3 +18,5 @@ bugtracker 'http://padre.perlide.org/';
 repository 'http://svn.perlide.org/padre/trunk/Padre-Plugin-ParserTool';
 
 install_share_with_mofiles;
+
+WriteAll;
