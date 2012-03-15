@@ -92,8 +92,7 @@ sub _on_key_down {
 						if ( $text !~ /\\(n|r|t)/ ) {
 
 							# Can be replaced by simpler thing
-							if ( Padre->ide->wx->main->yes_no("Convert \n$content\nto\nsingle quote form:\n'$text'?") )
-							{
+							if ( Padre->ide->wx->main->yes_no("Convert to '$text'?") ) {
 								last;
 							}
 						}
