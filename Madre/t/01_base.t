@@ -6,10 +6,8 @@ BEGIN {
 	$^W = 1;
 }
 
-use Test::More tests => 4;
+use Test::More tests => 2;
 use t::lib::Test;
 
 use_ok('Madre');
 use_ok('Madre::DB');
-use_ok('Madre::Dance::Sync');
-use_ok('Madre::Dance::Telemetry');

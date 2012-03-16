@@ -11,7 +11,6 @@ use t::lib::Test;
 
 # The order is important
 use Madre;
-use Madre::Dance::Sync;
 use Dancer::Test;
 
 route_exists(
