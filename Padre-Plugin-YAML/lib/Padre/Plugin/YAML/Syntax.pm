@@ -6,7 +6,6 @@ use warnings;
 
 use Padre::Task::Syntax ();
 use Padre::Wx           ();
-# use YAML::Tiny          ();
 use Try::Tiny;
 
 
@@ -40,19 +39,11 @@ sub syntax {
 	my $error;
 
 	try {
-		# require YAML::Syck::XS;
-		# YAML::Syck::Load($text);
-		
 		require YAML::XS;
 		YAML::XS::Load($text);
-		
-		# require YAML::Tiny;
-		# YAML::Tiny::Load($text);
 	}
 	catch {
-		# say "Info: from YAML::Syck::Load: $_";
 		say "Info: from YAML::XS::Load: $_";
-		# say "Info: from YAML::Tiny::Load: $_";
 		return $self->_parse_error($_);
 	}
 	finally {
@@ -89,15 +80,6 @@ sub syntax {
 		return [];
 
 	};
-
-	# else {
-	# if ($@) {
-	# return $self->_parse_error($@);
-	# } else {
-
-	# # No errors...
-	# return [];
-	# }
 }
 
 sub _parse_error {
@@ -107,7 +89,7 @@ sub _parse_error {
 	say "error = $error";
 
 	my @issues = ();
-	my ( $type, $message, $code, $line ) = (
+	my ( $type, $message, $code, $line, $column ) = (
 		'Error',
 		Wx::gettext('Unknown YAML error'),
 		undef,
@@ -115,21 +97,23 @@ sub _parse_error {
 	);
 	for ( split '\n', $error ) {
 		if (/YAML::XS::Load (\w+)\: .+/) {
-			$type    = $1;
+			$type = $1;
 		} elsif (/^\s+(found.+)/) {
 			$message = $1;
 		} elsif (/^\s+Code: (.+)/) {
 			$code = $1;
-		} elsif (/line:\s(\d+)/) {
-			$line = $1;
+		} elsif (/line:\s(\d+), column:\s(\d+)/) {
+			$line   = $1;
+			$column = $2;
 		}
 	}
-
 	say "type = $type";
 	say "message = $message";
+
 	# say "code = $code";
 	say "line = $line";
-	
+	say "column = $column";
+
 	push @issues,
 		{
 		message => $message . ( defined $code ? " ( $code )" : q{} ),
@@ -172,7 +156,9 @@ Please read its documentation.
 
 =head1 BUGS AND LIMITATIONS
 
-No bugs have been reported.
+Now using YAML::XS
+
+    supports %TAG = %YAML 1.1 or no %TAG 
 
 
 =head1 METHODS
