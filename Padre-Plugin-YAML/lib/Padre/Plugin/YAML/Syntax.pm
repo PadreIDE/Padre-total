@@ -6,6 +6,9 @@ use warnings;
 
 use Padre::Task::Syntax ();
 use Padre::Wx           ();
+# use YAML::Tiny          ();
+use Try::Tiny;
+
 
 our $VERSION = '0.03';
 use parent qw(Padre::Task::Syntax);
@@ -32,23 +35,76 @@ sub syntax {
 	my $self = shift;
 	my $text = shift;
 
+	say "text to check follows:\n$text\nend's here:";
+
 	my $error;
-	eval {
-		require YAML;
-		YAML::Load($text);
-	};
-	if ($@) {
-		return $self->_parse_error($@);
-	} else {
+
+	try {
+		# require YAML::Syck::XS;
+		# YAML::Syck::Load($text);
+		
+		require YAML::XS;
+		YAML::XS::Load($text);
+		
+		# require YAML::Tiny;
+		# YAML::Tiny::Load($text);
+	}
+	catch {
+		# say "Info: from YAML::Syck::Load: $_";
+		say "Info: from YAML::XS::Load: $_";
+		# say "Info: from YAML::Tiny::Load: $_";
+		return $self->_parse_error($_);
+	}
+	finally {
 
 		# No errors...
+		# return $self->_parse_error('YAML good: to go');
+
+		# Short circuit if the syntax is OK and no other errors/warnings are present
+		# return [] if $stderr eq "- syntax OK\n";
+
+		# return 	$tree->SetItemText(
+		# $root,
+		# sprintf( Wx::gettext('No errors or warnings found in %s within %3.2f secs.'), $filename, $elapsed )
+		# );
+
+		# return 	$tree->SetItemText(
+		# $root,
+		# Wx::gettext('No errors or warnings found within.'),
+		# );
+
+		# return [];
+		# my @issues = ();
+		# push @issues, {
+		# message => Wx::gettext('No errors or warnings found within.'),
+
+		# # line => $line,
+		# type => 'W',
+
+		# file => $self->{filename},
+		# };
+
+		# return { issues => \@issues, };
+
 		return [];
-	}
+
+	};
+
+	# else {
+	# if ($@) {
+	# return $self->_parse_error($@);
+	# } else {
+
+	# # No errors...
+	# return [];
+	# }
 }
 
 sub _parse_error {
 	my $self  = shift;
 	my $error = shift;
+
+	say "error = $error";
 
 	my @issues = ();
 	my ( $type, $message, $code, $line ) = (
@@ -58,15 +114,22 @@ sub _parse_error {
 		1
 	);
 	for ( split '\n', $error ) {
-		if (/YAML (\w+)\: (.+)/) {
+		if (/YAML::XS::Load (\w+)\: .+/) {
 			$type    = $1;
-			$message = $2;
+		} elsif (/^\s+(found.+)/) {
+			$message = $1;
 		} elsif (/^\s+Code: (.+)/) {
 			$code = $1;
-		} elsif (/^\s+Line: (.+)/) {
+		} elsif (/line:\s(\d+)/) {
 			$line = $1;
 		}
 	}
+
+	say "type = $type";
+	say "message = $message";
+	# say "code = $code";
+	say "line = $line";
+	
 	push @issues,
 		{
 		message => $message . ( defined $code ? " ( $code )" : q{} ),
