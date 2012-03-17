@@ -49,37 +49,9 @@ sub syntax {
 	}
 	finally {
 		TRACE("\nInfo: Looks like we passed %YAML 1.1 conformance") if DEBUG;
+		
 		# No errors...
-		# return $self->_parse_error('YAML good: to go');
-
-		# Short circuit if the syntax is OK and no other errors/warnings are present
-		# return [] if $stderr eq "- syntax OK\n";
-
-		# return 	$tree->SetItemText(
-		# $root,
-		# sprintf( Wx::gettext('No errors or warnings found in %s within %3.2f secs.'), $filename, $elapsed )
-		# );
-
-		# return 	$tree->SetItemText(
-		# $root,
-		# Wx::gettext('No errors or warnings found within.'),
-		# );
-
-		# return [];
-		# my @issues = ();
-		# push @issues, {
-		# message => Wx::gettext('No errors or warnings found within.'),
-
-		# # line => $line,
-		# type => 'W',
-
-		# file => $self->{filename},
-		# };
-
-		# return { issues => \@issues, };
-
-		return [];
-
+		return {};
 	};
 }
 
@@ -128,7 +100,7 @@ sub _parse_error {
 	return {
 		issues => \@issues,
 		stderr => $error,
-		}
+		};
 
 }
 
