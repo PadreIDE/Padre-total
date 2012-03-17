@@ -35,6 +35,7 @@ sub padre_interfaces {
 		'Padre::Document'     => '0.94',
 		'Padre::Wx'           => '0.94',
 		'Padre::Task::Syntax' => '0.94',
+		'Padre::Logger'       => '0.94',
 	);
 }
 

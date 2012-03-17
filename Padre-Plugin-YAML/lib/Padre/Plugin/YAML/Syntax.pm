@@ -4,6 +4,7 @@ use 5.010001;
 use strict;
 use warnings;
 
+use Padre::Logger;
 use Padre::Task::Syntax ();
 use Padre::Wx           ();
 use Try::Tiny;
@@ -34,7 +35,7 @@ sub syntax {
 	my $self = shift;
 	my $text = shift;
 
-	say "text to check follows:\n$text\nend's here:";
+	TRACE( "\n$text" ) if DEBUG;
 
 	my $error;
 
@@ -43,11 +44,11 @@ sub syntax {
 		YAML::XS::Load($text);
 	}
 	catch {
-		say "Info: from YAML::XS::Load: $_";
+		TRACE("\nInfo: from YAML::XS::Load: $_") if DEBUG;
 		return $self->_parse_error($_);
 	}
 	finally {
-
+		TRACE("\nInfo: Looks like we passed %YAML 1.1 conformance") if DEBUG;
 		# No errors...
 		# return $self->_parse_error('YAML good: to go');
 
@@ -86,8 +87,6 @@ sub _parse_error {
 	my $self  = shift;
 	my $error = shift;
 
-	say "error = $error";
-
 	my @issues = ();
 	my ( $type, $message, $code, $line, $column ) = (
 		'Error',
@@ -100,6 +99,8 @@ sub _parse_error {
 			$type = $1;
 		} elsif (/^\s+(found.+)/) {
 			$message = $1;
+		} elsif (/^\s+(could not.+)/) {
+			$message = $1;
 		} elsif (/^\s+Code: (.+)/) {
 			$code = $1;
 		} elsif (/line:\s(\d+), column:\s(\d+)/) {
@@ -107,12 +108,14 @@ sub _parse_error {
 			$column = $2;
 		}
 	}
-	say "type = $type";
-	say "message = $message";
 
-	# say "code = $code";
-	say "line = $line";
-	say "column = $column";
+	if (DEBUG) {
+		say "type = $type"       if $type;
+		say "message = $message" if $message;
+		say "code = $code"       if $code;
+		say "line = $line"       if $line;
+		say "column = $column"   if $column;
+	}
 
 	push @issues,
 		{
@@ -160,6 +163,7 @@ Now using YAML::XS
 
     supports %TAG = %YAML 1.1 or no %TAG 
 
+If you receive "Unknown YAML error" please inform dev's with sample code that causes this, Thanks.
 
 =head1 METHODS
 
