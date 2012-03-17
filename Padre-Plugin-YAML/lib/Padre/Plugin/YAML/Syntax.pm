@@ -66,6 +66,7 @@ sub _parse_error {
 		undef,
 		1
 	);
+	# from scanner.c
 	for ( split '\n', $error ) {
 		if (/YAML::XS::Load (\w+)\: .+/) {
 			$type = $1;
@@ -73,7 +74,13 @@ sub _parse_error {
 			$message = $1;
 		} elsif (/^\s+(could not.+)/) {
 			$message = $1;
-		} elsif (/^\s+Code: (.+)/) {
+		} elsif (/^\s+(did not.+)/) {
+			$message = $1;
+		} elsif (/^\s+(block.+)/) {
+			$message = $1;
+		} elsif (/^\s+(mapping.+)/) {
+			$message = $1;
+		}elsif (/^\s+Code: (.+)/) {
 			$code = $1;
 		} elsif (/line:\s(\d+), column:\s(\d+)/) {
 			$line   = $1;
