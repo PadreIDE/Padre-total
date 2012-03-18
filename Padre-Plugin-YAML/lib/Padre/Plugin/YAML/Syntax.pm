@@ -7,7 +7,6 @@ use warnings;
 use Padre::Logger;
 use Padre::Task::Syntax ();
 use Padre::Wx           ();
-use Try::Tiny;
 
 
 our $VERSION = '0.04';
@@ -55,7 +54,7 @@ sub syntax {
 		return $self->_parse_error($@);
 	}
 
-	# # No errors...
+	# No errors...
 	return {};
 
 }
