@@ -36,8 +36,6 @@ sub syntax {
 
 	TRACE("\n$text") if DEBUG;
 
-	my $error_found = 0;
-
 	eval {
 		if ( $^O =~ /Win32/i )
 		{
@@ -50,7 +48,6 @@ sub syntax {
 	};
 	if ($@) {
 		TRACE("\nInfo: from YAML::XS::Load: $@") if DEBUG;
-		$error_found = 1;
 		return $self->_parse_error($@);
 	}
 
