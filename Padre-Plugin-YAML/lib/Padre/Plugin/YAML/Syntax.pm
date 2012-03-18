@@ -35,13 +35,18 @@ sub syntax {
 	my $self = shift;
 	my $text = shift;
 
-	TRACE( "\n$text" ) if DEBUG;
+	TRACE("\n$text") if DEBUG;
 
 	my $error;
 
 	try {
-		require YAML::XS;
-		YAML::XS::Load($text);
+		if ( $^O =~ /Win32/i ) {
+			require YAML;
+			YAML::Load($text);
+		} else {
+			require YAML::XS;
+			YAML::XS::Load($text);
+		}
 	}
 	catch {
 		TRACE("\nInfo: from YAML::XS::Load: $_") if DEBUG;
@@ -49,7 +54,7 @@ sub syntax {
 	}
 	finally {
 		TRACE("\nInfo: Looks like we passed %YAML 1.1 conformance") if DEBUG;
-		
+
 		# No errors...
 		return {};
 	};
@@ -66,6 +71,7 @@ sub _parse_error {
 		undef,
 		1
 	);
+
 	# from scanner.c
 	for ( split '\n', $error ) {
 		if (/YAML::XS::Load (\w+)\: .+/) {
@@ -80,7 +86,7 @@ sub _parse_error {
 			$message = $1;
 		} elsif (/^\s+(mapping.+)/) {
 			$message = $1;
-		}elsif (/^\s+Code: (.+)/) {
+		} elsif (/^\s+Code: (.+)/) {
 			$code = $1;
 		} elsif (/line:\s(\d+), column:\s(\d+)/) {
 			$line   = $1;
@@ -107,7 +113,7 @@ sub _parse_error {
 	return {
 		issues => \@issues,
 		stderr => $error,
-		};
+	};
 
 }
 
