@@ -16,7 +16,6 @@ use constant CHILDREN => qw{
 	Padre::Plugin::YAML
 	Padre::Plugin::YAML::Document
 	Padre::Plugin::YAML::Syntax
-	Try::Tiny
 };
 
 #######
