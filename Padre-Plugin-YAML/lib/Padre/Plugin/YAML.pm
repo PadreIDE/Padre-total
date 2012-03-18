@@ -151,6 +151,9 @@ Environment.
 Syntax highlighting for YAML is supported by Padre out of the box.
 This plug-in adds some more features to deal with YAML files.
 
+we are using YAML::XS
+
+for win32 you just need YAML
 
 =head1 BUGS AND LIMITATIONS
 
