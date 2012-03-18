@@ -37,27 +37,27 @@ sub syntax {
 
 	TRACE("\n$text") if DEBUG;
 
-	my $error;
+	my $error_found = 0;
 
-	try {
-		if ( $^O =~ /Win32/i ) {
+	eval {
+		if ( $^O =~ /Win32/i )
+		{
 			require YAML;
 			YAML::Load($text);
 		} else {
 			require YAML::XS;
 			YAML::XS::Load($text);
 		}
-	}
-	catch {
-		TRACE("\nInfo: from YAML::XS::Load: $_") if DEBUG;
-		return $self->_parse_error($_);
-	}
-	finally {
-		TRACE("\nInfo: Looks like we passed %YAML 1.1 conformance") if DEBUG;
-
-		# No errors...
-		return {};
 	};
+	if ($@) {
+		TRACE("\nInfo: from YAML::XS::Load: $@") if DEBUG;
+		$error_found = 1;
+		return $self->_parse_error($@);
+	}
+
+	# # No errors...
+	return {};
+
 }
 
 sub _parse_error {
