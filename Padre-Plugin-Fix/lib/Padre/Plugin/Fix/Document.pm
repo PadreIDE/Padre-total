@@ -78,35 +78,35 @@ sub _on_key_down {
 			my $_col    = $quote->location->[1];
 			my $content = $quote->content;
 
-			if (   ( $line == $_line )
-				&& ( $col >= $_col )
-				&& ( $col <= $_col + length($content) ) )
-			{
+			# Shortcut if it is not the current quote
+			next
+				unless ( $line == $_line )
+				and ( $col >= $_col )
+				and ( $col <= $_col + length($content) );
 
-
-				my $simplified_form;
-				if ( $quote->can('simplify') ) {
-					$simplified_form = $quote->simplify;
-				}
-
-				# Can be replaced by simpler thing
-				if (   defined $simplified_form
-					&& $simplified_form ne $content
-					&& Padre->ide->wx->main->yes_no("Simplify to $simplified_form ?") )
-				{
-					my $start = $editor->PositionFromLine( $_line - 1 ) + $_col - 1;
-
-					# Replace with simplified form
-					$editor->SetTargetStart($start);
-					$editor->SetTargetEnd( $start + length($content) );
-					$editor->ReplaceTarget($simplified_form);
-
-					# Restore current position
-					$editor->SetSelection( $pos, $pos );
-					last;
-				}
-
+			# Try a simplify it (if possible)
+			my $simplified_form;
+			if ( $quote->can('simplify') ) {
+				$simplified_form = $quote->simplify;
 			}
+
+			# Can be replaced by simpler thing?
+			next
+				unless ( defined $simplified_form
+				and $simplified_form ne $content
+				and Padre->ide->wx->main->yes_no("Simplify to $simplified_form ?") );
+
+			my $start = $editor->PositionFromLine( $_line - 1 ) + $_col - 1;
+
+			# Replace with simplified form
+			$editor->SetTargetStart($start);
+			$editor->SetTargetEnd( $start + length($content) );
+			$editor->ReplaceTarget($simplified_form);
+
+			# Restore current position
+			$editor->SetSelection( $pos, $pos );
+			last;
+
 		}
 
 	}
