@@ -6,6 +6,7 @@ use warnings;
 
 use Padre::Plugin ();
 use Padre::Wx     ();
+use Try::Tiny;
 
 our $VERSION = '0.04';
 use parent qw(Padre::Plugin);
