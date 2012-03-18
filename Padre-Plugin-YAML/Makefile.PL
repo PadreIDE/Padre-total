@@ -6,7 +6,7 @@ name 'Padre-Plugin-YAML';
 all_from 'lib/Padre/Plugin/YAML.pm';
 
 requires 'Padre'           => '0.94';
-requires 'YAML::XS'        => '0.38';
+requires 'Try::Tiny'       => '0.11';
 test_requires 'Test::More' => '0.88';
 test_requires 'File::Temp' => '0.22';
 
