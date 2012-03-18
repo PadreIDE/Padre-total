@@ -9,6 +9,7 @@ requires 'Padre'          => '0.94';
 requires 'Devel::Dumpvar' => '0.04';
 requires 'Data::Dumper'   => '2.101';
 requires 'PPI::Dumper'    => '1.213';
+requires 'Data::Printer'  => '0.3';
 
 test_requires 'Test::More' => '0.88';
 

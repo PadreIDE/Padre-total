@@ -103,10 +103,11 @@ sub new {
 		[   "Stringify",
 			"Devel::Dumpvar",
 			"Data::Dumper",
+			"Data::Printer",
 			"PPI::Dumper",
 		],
 	);
-	$self->{dumper}->SetSelection(3);
+	$self->{dumper}->SetSelection(4);
 
 	Wx::Event::EVT_CHOICE(
 		$self,

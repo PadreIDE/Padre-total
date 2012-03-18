@@ -530,7 +530,7 @@
                                             <property name="proportion">0</property>
                                             <object class="wxChoice" expanded="0">
                                                 <property name="bg"></property>
-                                                <property name="choices">&quot;Stringify&quot; &quot;Devel::Dumpvar&quot; &quot;Data::Dumper&quot; &quot;PPI::Dumper&quot;</property>
+                                                <property name="choices">&quot;Stringify&quot; &quot;Devel::Dumpvar&quot; &quot;Data::Dumper&quot; &quot;Data::Printer&quot; &quot;PPI::Dumper&quot;</property>
                                                 <property name="context_help"></property>
                                                 <property name="context_menu">1</property>
                                                 <property name="enabled">1</property>
@@ -543,7 +543,7 @@
                                                 <property name="name">dumper</property>
                                                 <property name="permission">public</property>
                                                 <property name="pos"></property>
-                                                <property name="selection">3</property>
+                                                <property name="selection">4</property>
                                                 <property name="size"></property>
                                                 <property name="subclass"></property>
                                                 <property name="tooltip"></property>

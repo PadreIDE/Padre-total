@@ -87,6 +87,17 @@ sub refresh {
 		};
 		$error = "Exception during Devel::Dumpvar: $@" if $@;
 
+	} elsif ( $dumper eq 'Data::Printer' ) {
+		eval {
+			unless ( Params::Util::_INSTANCE( $rv, 'PPI::Element' ) )
+			{
+				die "Not a PPI::Element object";
+			}
+			require Data::Printer;
+			$output = Data::Printer::p($rv);
+		};
+		$error = "Exception during Data::Printer: $@" if $@;
+
 	} elsif ( $dumper eq 'PPI::Dumper' ) {
 		eval {
 			unless ( Params::Util::_INSTANCE( $rv, 'PPI::Element' ) )

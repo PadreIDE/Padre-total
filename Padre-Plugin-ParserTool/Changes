@@ -1,4 +1,7 @@
 Changes for Perl extension Padre-Plugin-ParserTool
 
+0.02    2012.3.TBD
+	- Added support for Data::Printer (AZAWAWI)
+
 0.01    2012.3.15
-	- Creating an initial release
+	- Creating an initial release (ADAMK)
