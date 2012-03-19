@@ -137,7 +137,7 @@ snippets:
   ifopen: |
     my ${1:$filename} = '${2:test.txt}';
     if (open my ${3:$fh}, '${4:<}', $1) {
-      # file is open
+      ${5:# file is open}
     } else {
       die "Cannot open $1\n";
     }
