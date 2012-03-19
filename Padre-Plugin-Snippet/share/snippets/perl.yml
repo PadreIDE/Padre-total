@@ -8,7 +8,7 @@
 # 
 ---
 id: Perl
-name: Perl snippets
+name: Perl
 mimetypes:
   - application/x-perl
 snippets:

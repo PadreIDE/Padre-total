@@ -4,7 +4,7 @@
 #
 ---
 id: MooseX::Declare
-name: Perl 5
+name: MooseX::Declare
 mimetypes:
   - application/x-perl
 snippets:
