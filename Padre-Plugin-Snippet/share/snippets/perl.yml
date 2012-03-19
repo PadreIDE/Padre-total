@@ -146,22 +146,22 @@ snippets:
   p5s: |
     #!/usr/bin/perl
     
-    use v5.10;
+    use ${1:v5.10};
     use strict;
     use warnings;
     
-    say 'Hello World!';
+    ${2:say 'Hello World!';}
 
   # Perl 5 test
   p5t: |
     #!/usr/bin/perl
     
-    use v5.10;
+    use ${1:v5.10};
     use strict;
     use warnings;
-    use Test::More tests => 1;
+    use Test::More tests => ${2:1};
     
-    ok( 0, 'Dummy Test' );
+    ${3:ok( 0, 'Dummy Test' );}
 
   # Perl 6 script
   p6s: |
