@@ -91,7 +91,6 @@ sub _populate_tree {
 			);
 		}
 
-		$tree->Expand($bundle_node);
 	}
 	$tree->Expand($root_node);
 
