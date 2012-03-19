@@ -8,7 +8,6 @@ use Padre::Logger;
 use Padre::Task::Syntax ();
 use Padre::Wx           ();
 
-
 our $VERSION = '0.04';
 use parent qw(Padre::Task::Syntax);
 
@@ -68,7 +67,7 @@ sub _parse_error {
 		1
 	);
 
-	# from scanner.c
+	# from the following in scanner.c inside YAML::XS
 	foreach ( split '\n', $error ) {
 		when (/YAML::XS::Load (\w+)\: .+/) {
 			$type = $1;
