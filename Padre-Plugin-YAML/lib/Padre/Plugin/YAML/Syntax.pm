@@ -1,6 +1,6 @@
 package Padre::Plugin::YAML::Syntax;
 
-use 5.010001;
+use v5.10;
 use strict;
 use warnings;
 
@@ -69,22 +69,29 @@ sub _parse_error {
 	);
 
 	# from scanner.c
-	for ( split '\n', $error ) {
-		if (/YAML::XS::Load (\w+)\: .+/) {
+	foreach ( split '\n', $error ) {
+		when (/YAML::XS::Load (\w+)\: .+/) {
 			$type = $1;
-		} elsif (/^\s+(found.+)/) {
+		}
+		when (/^\s+(found.+)/) {
 			$message = $1;
-		} elsif (/^\s+(could not.+)/) {
+		}
+		when (/^\s+(could not.+)/) {
 			$message = $1;
-		} elsif (/^\s+(did not.+)/) {
+		}
+		when (/^\s+(did not.+)/) {
 			$message = $1;
-		} elsif (/^\s+(block.+)/) {
+		}
+		when (/^\s+(block.+)/) {
 			$message = $1;
-		} elsif (/^\s+(mapping.+)/) {
+		}
+		when (/^\s+(mapping.+)/) {
 			$message = $1;
-		} elsif (/^\s+Code: (.+)/) {
+		}
+		when (/^\s+Code: (.+)/) {
 			$code = $1;
-		} elsif (/line:\s(\d+), column:\s(\d+)/) {
+		}
+		when (/line:\s(\d+), column:\s(\d+)/) {
 			$line   = $1;
 			$column = $2;
 		}
