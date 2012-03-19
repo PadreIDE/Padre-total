@@ -127,6 +127,21 @@ snippets:
     ${4:content}
     $2
 
+  # Open file or die
+  open: |
+    my ${1:$filename} = '${2:test.txt}';
+    open my ${3:$fh}, '${4:<}', $1
+      or die "Cannot open $1\n";
+
+  # if open file else die
+  ifopen: |
+    my ${1:$filename} = '${2:test.txt}';
+    if (open my ${3:$fh}, '${4:<}', $1) {
+      # file is open
+    } else {
+      die "Cannot open $1\n";
+    }
+
   # Perl 5 script
   p5s: |
     #!/usr/bin/perl
