@@ -38,33 +38,6 @@ sub padre_interfaces {
 	);
 }
 
-#########
-# We need plugin_enable
-# as we have an external dependency
-#########
-sub plugin_enable {
-	my $self                 = shift;
-	my $correct_yaml_install = 0;
-
-	# Tests for externals used by Preference's
-
-	if ( $^O =~ /Win32/i ) {
-		try {
-			if ( require YAML ) {
-				$correct_yaml_install = 1;
-			}
-		};
-	} else {
-		try {
-			if ( require YAML::XS ) {
-				$correct_yaml_install = 1;
-			}
-		};
-	}
-
-	return $correct_yaml_install;
-}
-
 #######
 # Called by padre to know which document to register for this plugin
 #######
@@ -150,9 +123,6 @@ Environment.
 Syntax highlighting for YAML is supported by Padre out of the box.
 This plug-in adds some more features to deal with YAML files.
 
-we are using YAML::XS
-
-for win32 you just need YAML
 
 =head1 BUGS AND LIMITATIONS
 

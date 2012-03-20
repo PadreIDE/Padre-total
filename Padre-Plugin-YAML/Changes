@@ -5,7 +5,7 @@ Changes for Padre-Plugin-YAML
     - switch to YAML::XS for better feedback (BOWTIE)
     - enable logging in Syntax for unknowns (BOWTIE)
     - lets make it a bit more Modern (BOWTIE)
-    - 
+    - require correct YAML to Makefile (AZAWAWI)
 
 0.03    2012.3.13
     - update pod & version (BOWTIE)
