@@ -1,0 +1,74 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-03-15 11:06+0200\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Simone Blandino <simone.blandino@gmail.com>\n"
+"Language-Team:  <simone.blandino@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Italian\n"
+"X-Poedit-Country: ITALY\n"
+
+#: lib/Padre/Plugin/Snippet/FBP/Preferences.pm:62
+msgid "&Cancel"
+msgstr "&Annulla"
+
+#: lib/Padre/Plugin/Snippet/FBP/Manager.pm:118
+msgid "&Close"
+msgstr "&Chiudi"
+
+#: lib/Padre/Plugin/Snippet/FBP/Preferences.pm:54
+msgid "&OK"
+msgstr "&OK"
+
+#: lib/Padre/Plugin/Snippet/FBP/Manager.pm:102
+msgid "&Preferences"
+msgstr "&Preferenze"
+
+#: lib/Padre/Plugin/Snippet/FBP/Manager.pm:60
+msgid "Add Snippet"
+msgstr "Aggiungi frammento"
+
+#: lib/Padre/Plugin/Snippet/FBP/Manager.pm:69
+#: lib/Padre/Plugin/Snippet/FBP/Manager.pm:70
+msgid "Delete Snippet"
+msgstr "Elimina frammento"
+
+#: lib/Padre/Plugin/Snippet/FBP/Preferences.pm:38
+msgid "Enable Snippets?"
+msgstr "Abilitare frammenti?"
+
+#: lib/Padre/Plugin/Snippet.pm:121
+#, perl-format
+msgid "Error: %s"
+msgstr "Errore: %s"
+
+#: lib/Padre/Plugin/Snippet.pm:34
+msgid "Snippet"
+msgstr "Frammento"
+
+#: lib/Padre/Plugin/Snippet.pm:94
+#: lib/Padre/Plugin/Snippet/FBP/Manager.pm:30
+msgid "Snippet Manager"
+msgstr "Gestione frammenti"
+
+#: lib/Padre/Plugin/Snippet/Manager.pm:29
+#, perl-format
+msgid "Snippet Manager %s - Written for fun by Ahmad M. Zawawi (azawawi)"
+msgstr "Gestione frammenti %s - Scritto per gioco da Ahmad M. Zawawi (azawawi)"
+
+#: lib/Padre/Plugin/Snippet/FBP/Preferences.pm:29
+msgid "Snippet Preferences"
+msgstr "Preferenze frammenti"
+
+#: lib/Padre/Plugin/Snippet/FBP/Manager.pm:90
+msgid "Snippet:"
+msgstr "Frammento:"
+
+#: lib/Padre/Plugin/Snippet/FBP/Manager.pm:75
+msgid "Tab Trigger:"
+msgstr "Tab Trigger:"
+

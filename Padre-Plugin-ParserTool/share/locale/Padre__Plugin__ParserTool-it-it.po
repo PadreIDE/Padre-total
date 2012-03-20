@@ -1,0 +1,39 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-03-15 14:39+0200\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Simone Blandino <simone.blandino@gmail.com>\n"
+"Language-Team:  <simone.blandino@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Italian\n"
+"X-Poedit-Country: ITALY\n"
+
+#: lib/Padre/Plugin/ParserTool/FBP.pm:95
+msgid "Dumper Format"
+msgstr "Formato dumper"
+
+#: lib/Padre/Plugin/ParserTool/FBP.pm:38
+msgid "Input Text"
+msgstr "Testo in input"
+
+#: lib/Padre/Plugin/ParserTool/FBP.pm:122
+msgid "Output Structure"
+msgstr "Struttura in output"
+
+#: lib/Padre/Plugin/ParserTool/FBP.pm:79
+msgid "Parser Function"
+msgstr "Parser di funzioni"
+
+#: lib/Padre/Plugin/ParserTool/FBP.pm:63
+msgid "Parser Module"
+msgstr "Parser di moduli"
+
+#: lib/Padre/Plugin/ParserTool.pm:41
+#: lib/Padre/Plugin/ParserTool/FBP.pm:29
+msgid "Parser Tool"
+msgstr "Parser Tool"
+

@@ -14,7 +14,7 @@ msgstr ""
 
 #: lib/Padre/Plugin/Moose/Class.pm:194
 msgid " A class is a blueprint of how to create objects of itself. A class can contain attributes, subtypes and methods which enable objects to have state and behavior."
-msgstr "Una classe è un progetto che indica come costruire oggetti da se stessa. Una classe può contenere attributi, sottotipi e metodi che consentono agli oggetti di possedere uno stato e un comportamento"
+msgstr "Una classe è un progetto che indica come sono composti gli oggetti del suo tipo. Una classe può contenere attributi, sottotipi e metodi che consentono agli oggetti di possedere uno stato e un comportamento"
 
 #: lib/Padre/Plugin/Moose/FBP/Assistant.pm:190
 msgid "&Attribute"
@@ -176,7 +176,7 @@ msgstr "Generare codice d'esempio?"
 
 #: lib/Padre/Plugin/Moose/FBP/Assistant.pm:288
 msgid "How to Cook a Moose?"
-msgstr "Come cucinare un Alce?"
+msgstr "Ricette per Moose (Come cucinare un Alce)"
 
 #: lib/Padre/Plugin/Moose/Class.pm:224
 msgid "Make immutable?"
