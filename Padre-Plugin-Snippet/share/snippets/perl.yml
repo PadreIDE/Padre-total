@@ -190,14 +190,3 @@ snippets:
     use Test::More tests => ${2:1};
     
     ${3:ok( 0, 'Dummy Test' );}
-
-  # Perl 6 script
-  p6s: |
-    use v6;
-    
-    =begin pod
-    
-      New Perl 6 script
-    
-    =end pod
-

@@ -1,0 +1,21 @@
+#
+# Perl 6 snippets bundle for Padre::Plugin::Snippet
+# Written by Ahmad M. Zawawi (azawawi)
+#
+# 
+---
+id: Perl 6
+name: Perl 6
+mimetypes:
+  - application/x-perl6
+snippets:
+  # Perl 6 script
+  p6s: |
+    use v6;
+    
+    =begin pod
+    
+      New Perl 6 script
+    
+    =end pod
+
