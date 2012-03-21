@@ -143,30 +143,30 @@ snippets:
     }
 
    # Switch statement
-   given: |
+  given: |
     given(${1:$foo}) {
       when (undef) {
-          say qq{$foo is undefined'};
+          say qq{$1 is undefined'};
       }
       when ("foo") {
-          say qq{$foo is the string "foo"};
+          say qq{$1 is the string "foo"};
       }
       when ([1,3,5,7,9]) {
-          say qq{$foo is an odd digit};
+          say qq{$1 is an odd digit};
           continue; # Fall through
       }
       when (/^\d+/) {
-          say qq{$foo is a number};
+          say qq{$1 is a number};
           continue; # Fall through
       }
       when ($_ < 100) {
-          say qq{$foo is numerically less than 100};
+          say qq{$1 is numerically less than 100};
       }
       when (\&complicated_check) {
-          say qq{a complicated check for $foo is true};
+          say qq{a complicated check for $1 is true};
       }
       default {
-          die qq(I don't know what to do with $foo);
+          die qq(I don't know what to do with $1);
       }
     }   
 
