@@ -1,5 +1,8 @@
 Changes for Padre-Plugin-YAML
-
+0.05    TBA
+    - use old 0.03 error decode for YAML (BOWTIE)
+    -
+    
 0.05  2012. To be released
     - Fix 'make test' failure under RELEASE_TESTING=1 and win32 (AZAWAWI)
     - Fix Arabic translation (AZAWAWI)

@@ -47,7 +47,11 @@ sub syntax {
 	};
 	if ($@) {
 		TRACE("\nInfo: from YAML::XS::Load: $@") if DEBUG;
-		return $self->_parse_error($@);
+		if ( $^O =~ /Win32/i ) {
+			return $self->_parse_error_win32($@);
+		} else {
+			return $self->_parse_error($@);
+		}
 	}
 
 	# No errors...
@@ -119,6 +123,41 @@ sub _parse_error {
 
 }
 
+sub _parse_error_win32 {
+	my $self  = shift;
+	my $error = shift;
+
+	my @issues = ();
+	my ( $type, $message, $code, $line ) = (
+		'Error',
+		Wx::gettext('Unknown YAML error'),
+		undef,
+		1
+	);
+	for ( split '\n', $error ) {
+		if (/YAML (\w+)\: (.+)/) {
+			$type    = $1;
+			$message = $2;
+		} elsif (/^\s+Code: (.+)/) {
+			$code = $1;
+		} elsif (/^\s+Line: (.+)/) {
+			$line = $1;
+		}
+	}
+	push @issues,
+		{
+		message => $message . ( defined $code ? " ( $code )" : q{} ),
+		line => $line,
+		type => $type eq 'Error' ? 'F' : 'W',
+		file => $self->{filename},
+		};
+
+	return {
+		issues => \@issues,
+		stderr => $error,
+		}
+
+}
 
 1;
 
