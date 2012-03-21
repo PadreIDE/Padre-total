@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-07 16:32+0200\n"
+"POT-Creation-Date: 2012-03-21 16:25+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,316 +17,28 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: lib/Padre/Plugin/Moose/Class.pm:194
-msgid ""
-" A class is a blueprint of how to create objects of itself. A class can "
-"contain attributes, subtypes and methods which enable objects to have state "
-"and behavior."
+#: lib/Padre/Plugin/YAML.pm:56
+msgid "About"
 msgstr ""
 
-#: lib/Padre/Plugin/Moose/FBP/Assistant.pm:190
-msgid "&Attribute"
+#: lib/Padre/Plugin/YAML/Syntax.pm:65
+msgid "Unknown YAML error"
 msgstr ""
 
-#: lib/Padre/Plugin/Moose/FBP/Assistant.pm:150
-msgid "&Class"
+#: lib/Padre/Plugin/YAML.pm:25
+msgid "YAML"
 msgstr ""
 
-#: lib/Padre/Plugin/Moose/FBP/Assistant.pm:238
-msgid "&Constructor"
+#: lib/Padre/Plugin/YAML.pm:68
+msgid "YAML Plug-in"
 msgstr ""
 
-#: lib/Padre/Plugin/Moose/FBP/Assistant.pm:254
-msgid "&Destructor"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/FBP/Assistant.pm:328
-msgid "&Generate"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/FBP/Assistant.pm:206
-msgid "&Method"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/FBP/Assistant.pm:360
-msgid "&Preferences"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/FBP/Assistant.pm:166
-msgid "&Role"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/FBP/Assistant.pm:222
-msgid "&Subtype"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/Method.pm:75
-msgid ""
-"A method is a subroutine within a class that defines behavior at runtime"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/Program.pm:108
-msgid "A program can contain multiple class, role definitions"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/Role.pm:119
-msgid ""
-"A role provides some piece of behavior or state that can be shared between "
-"classes."
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/Constructor.pm:75
-msgid "A special type of subroutine called at the creation of an object"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/Destructor.pm:75
-msgid "A special type of subroutine called at the destruction of an object"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/Subtype.pm:46
-msgid ""
-"A subtype provides the ability to create custom type constraints to be used "
-"in attribute definition."
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/Attribute.pm:98
-msgid "Access type:"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/Attribute.pm:71
-msgid "An attribute is a property that every member of a class has."
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/Subtype.pm:73
-msgid "Base Type:"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/Attribute.pm:111
-msgid "Builder:"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/FBP/Preferences.pm:102
-msgid "Cancel"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/Attribute.pm:104
-msgid "Class Attribute?"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/Class.pm:225
-msgid "Clean namespace?"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/Attribute.pm:113
-msgid "Clearer:"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/FBP/Assistant.pm:376
-msgid "Close"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/FBP/Preferences.pm:38
-msgid "Code Generation Options:"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/Attribute.pm:107
-msgid "Coerce?"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/Subtype.pm:78
-msgid "Constraint:"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/FBP/Assistant.pm:413
-msgid "Containers"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/Attribute.pm:112
-msgid "Default:"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/Assistant.pm:485
-msgid "Delete"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/Assistant.pm:428
-msgid "Do you really want to reset?"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/Attribute.pm:115
-msgid "Documentation:"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/Attribute.pm:108
-msgid "Does role:"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/FBP/Preferences.pm:86
-msgid "Enable Snippets?"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/Subtype.pm:79
-msgid "Error message:"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose.pm:146
+#: lib/Padre/Plugin/YAML.pm:71
 #, perl-format
-msgid "Error: %s"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/Assistant.pm:156
-#, perl-format
-msgid "Error:%s"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/FBP/Preferences.pm:62
-msgid "Generate Comments?"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/FBP/Preferences.pm:70
-msgid "Generate Sample code?"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/FBP/Assistant.pm:288
-msgid "How to Cook a Moose?"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/Class.pm:224
-msgid "Make immutable?"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/FBP/Assistant.pm:414
-msgid "Members"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/Destructor.pm:102
-#: lib/Padre/Plugin/Moose/Method.pm:102
-#: lib/Padre/Plugin/Moose/Constructor.pm:102
-msgid "Modifier:"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose.pm:57
-msgid "Moose"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose.pm:121 lib/Padre/Plugin/Moose/FBP/Assistant.pm:30
-msgid "Moose Assistant"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/Assistant.pm:27
-#, perl-format
-msgid "Moose Assistant %s - Written for fun by Ahmad M. Zawawi (azawawi)"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/FBP/Preferences.pm:29
-msgid "Moose Assistant Preferences"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/FBP/Assistant.pm:278
-msgid "Moose Manual"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/FBP/Assistant.pm:298
-msgid "Moose Website"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/Destructor.pm:101
-#: lib/Padre/Plugin/Moose/Attribute.pm:97 lib/Padre/Plugin/Moose/Method.pm:101
-#: lib/Padre/Plugin/Moose/Constructor.pm:101
-#: lib/Padre/Plugin/Moose/Role.pm:145 lib/Padre/Plugin/Moose/Class.pm:221
-#: lib/Padre/Plugin/Moose/Subtype.pm:72
-msgid "Name:"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/FBP/Preferences.pm:94
-msgid "OK"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/FBP/Assistant.pm:41
-msgid "Object Tree"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/FBP/Assistant.pm:415
-msgid "Online References"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/FBP/Assistant.pm:128
-msgid "Palette"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/Attribute.pm:114
-msgid "Predicate:"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/FBP/Assistant.pm:308
-msgid "Preview"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/Assistant.pm:174
-msgid "Program"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/FBP/Assistant.pm:79
-msgid "Properties"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/Attribute.pm:105
-msgid "Required?"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/Role.pm:146
-msgid "Requires:"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/FBP/Assistant.pm:344
-msgid "Reset"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/Class.pm:223
-msgid "Roles:"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/Class.pm:226
-msgid "Singleton?"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/Class.pm:222
-msgid "Superclasses:"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/Attribute.pm:106
-msgid "Trigger:"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/Attribute.pm:99
-#: lib/Padre/Plugin/Moose/FBP/Preferences.pm:45
-msgid "Type:"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/Attribute.pm:109
-msgid "Weak Ref?"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/Assistant.pm:383
-msgid "You can only add a constructor to a class or role"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/Assistant.pm:408
-msgid "You can only add a destructor to a class or role"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/Assistant.pm:358
-msgid "You can only add a method to a class or role"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/Assistant.pm:333
-msgid "You can only add a subtype to a class or role"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/Assistant.pm:308
-msgid "You can only add an attribute to a class or role"
-msgstr ""
-
-#: lib/Padre/Plugin/Moose/Attribute.pm:110
-msgid "lazy?"
+msgid ""
+"YAML support for Padre\n"
+"\n"
+"Copyright 2011-2012 %s\n"
+"This plug-in is free software; you can redistribute it and/or modify it "
+"under the same terms as Padre.\n"
 msgstr ""
