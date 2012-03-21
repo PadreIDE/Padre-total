@@ -8,7 +8,7 @@ use Padre::Plugin ();
 use Padre::Wx     ();
 use Try::Tiny;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 use parent qw(Padre::Plugin);
 
 # Child modules we need to unload when disabled
@@ -112,7 +112,7 @@ Padre::Plugin::YAML - YAML support for Padre The Perl IDE
 
 =head1 VERSION
 
-This document describes Padre::Plugin::YAML version 0.04
+This document describes Padre::Plugin::YAML version 0.05
 
 
 =head1 DESCRIPTION

@@ -6,7 +6,7 @@ use warnings;
 
 use Padre::Document ();
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 use parent qw(Padre::Document);
 
 
@@ -39,7 +39,7 @@ Padre::Plugin::YAML::Document - YAML support for Padre The Perl IDE
 
 =head1 VERSION
 
-This document describes Padre::Plugin::YAML::Document version 0.04
+This document describes Padre::Plugin::YAML::Document version 0.05
 
 
 =head1 DESCRIPTION

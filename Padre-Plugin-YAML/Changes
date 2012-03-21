@@ -1,5 +1,9 @@
 Changes for Padre-Plugin-YAML
 
+0.05  2012. To be released
+    - Fix 'make test' failure under RELEASE_TESTING=1 and win32 (AZAWAWI)
+    - Fix Arabic translation (AZAWAWI)
+
 0.04    2012.3.20
     - remove DEPENDENCIES POD (BOWTIE)
     - switch to YAML::XS for better feedback (BOWTIE)
