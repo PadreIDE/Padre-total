@@ -7,12 +7,10 @@ Changes for Padre-Plugin-YAML
     - lets make it a bit more Modern (BOWTIE)
     - require correct YAML to Makefile (AZAWAWI)
     - Fix t/02-eol.t (AZAWAWI)
-    -
     
 0.03    2012.3.13
     - update pod & version (BOWTIE)
     - fix Makefile (AZAWAWI)
-    -
     
 0.02  2011.3.12
     - Switch to Module::Install (SZABGAB)
