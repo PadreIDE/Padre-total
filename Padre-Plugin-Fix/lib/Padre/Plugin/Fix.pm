@@ -1,11 +1,9 @@
 package Padre::Plugin::Fix;
 
-use 5.008;
-use strict;
-use warnings;
+use Modern::Perl;
 use Padre::Plugin ();
 
-our $VERSION = '0.21';
+our $VERSION = '0.01';
 our @ISA     = 'Padre::Plugin';
 
 # Child modules we need to unload when disabled
@@ -70,6 +68,16 @@ sub show_simplify {
 
 	my $pos    = $editor->GetCurrentPos;
 	my $source = $editor->GetText;
+
+	# Pick an action
+	my @actions = ( Wx::gettext('Simplify quotes') );
+	my $action  = $self->main->single_choice(
+		Wx::gettext('Choose Action'),
+		'',
+		[@actions],
+	);
+
+	say $action;
 
 	require PPI;
 	my $doc = PPI::Document->new( \$source );
