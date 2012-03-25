@@ -101,7 +101,6 @@ sub show_simplify {
 
 		# Restore current position
 		$editor->SetSelection( $pos, $pos );
-		last;
 
 	}
 
