@@ -23,7 +23,6 @@ sub run	{
 	my $changes = shift;
 	
 	
-	if ( $self->ShowModal == Wx::OK ) {
 		my $tree = $self->{tree};
 		my $root_node = $tree->AddRoot(
 			Wx::gettext('Program'),
@@ -43,7 +42,9 @@ sub run	{
 		}
 		
 		$tree->ExpandAll;
-		
+
+	if ( $self->ShowModal == Wx::ID_OK ) {
+		say "OK";
 	} else {
 		say "Cancel";
 	}
