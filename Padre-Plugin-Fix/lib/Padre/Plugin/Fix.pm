@@ -82,7 +82,8 @@ sub show_simplify {
 	require PPI;
 	my $doc = PPI::Document->new( \$source );
 
-	my $quotes = $doc->find('PPI::Token::Quote');
+	my $quotes  = $doc->find('PPI::Token::Quote');
+	my @changes = ();
 	foreach my $quote (@$quotes) {
 		my $line    = $quote->location->[0];
 		my $col     = $quote->location->[1];
@@ -97,22 +98,30 @@ sub show_simplify {
 		# Can be replaced by simpler thing?
 		next
 			unless ( defined $simplified_form
-			and $simplified_form ne $content
-			and Padre->ide->wx->main->yes_no("Simplify to $simplified_form ?") );
+			and $simplified_form ne $content);
 
 		my $start = $editor->PositionFromLine( $line - 1 ) + $col - 1;
 
-		# Replace with simplified form
-		$editor->SetTargetStart($start);
-		$editor->SetTargetEnd( $start + length($content) );
-		$editor->ReplaceTarget($simplified_form);
+		push @changes,
+			{
+			name  => Wx::gettext('Simplify quote'),
+			start => $start,
+			end   => $start + length($content),
+			}
 
-		# Restore current position
-		$editor->SetSelection( $pos, $pos );
+			# # Replace with simplified form
+			# $editor->SetTargetStart($start);
+			# $editor->SetTargetEnd( $start + length($content) );
+			# $editor->ReplaceTarget($simplified_form);
+
+			# # Restore current position
+			# $editor->SetSelection( $pos, $pos );
 
 	}
 
-
+	require Padre::Plugin::Fix::Preview;
+	my $preview = Padre::Plugin::Fix::Preview->new( $self->main );
+	$preview->run(\@changes);
 
 	return;
 }
