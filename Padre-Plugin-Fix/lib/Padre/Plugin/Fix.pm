@@ -63,24 +63,54 @@ END
 sub show_simplify {
 	my $self = shift;
 
-
 	my $editor = $self->current->editor or return;
 
 	my $pos    = $editor->GetCurrentPos;
 	my $source = $editor->GetText;
 
 	# Pick an action
-	my @actions = ( Wx::gettext('Simplify quotes') );
-	my $action  = $self->main->single_choice(
+	my @actions = (
+		Wx::gettext('Simplify quotes'),
+		Wx::gettext('Remove null statements'),
+	);
+	my $action = $self->main->multi_choice(
 		Wx::gettext('Choose Action'),
-		'',
-		[@actions],
+		Wx::gettext('Choose Action'),
+		[ @actions ],
 	);
 
-	say $action;
 
 	require PPI;
 	my $doc = PPI::Document->new( \$source );
+
+	my @changes = ();
+	if ($action == 0) {
+		$self->main->error("Please select an action");
+		return;
+	} 
+	
+	if ( $action == 1 ) {
+		push @changes, @{$self->simplify_quotes($editor, $doc)};
+	} else {
+		$self->main->error("The following " . $actions[$action] . " is not currently supported");
+	}
+
+	if ( scalar @changes ) {
+		require Padre::Plugin::Fix::Preview;
+		my $preview = Padre::Plugin::Fix::Preview->new( $self->main );
+		use Data::Printer; p(@changes);
+		$preview->run( \@changes );
+	} else {
+		$self->main->error("No changes to fix");
+	}
+
+	return;
+}
+
+sub simplify_quotes {
+	my $self   = shift;
+	my $editor = shift;
+	my $doc    = shift;
 
 	my $quotes  = $doc->find('PPI::Token::Quote');
 	my @changes = ();
@@ -98,7 +128,7 @@ sub show_simplify {
 		# Can be replaced by simpler thing?
 		next
 			unless ( defined $simplified_form
-			and $simplified_form ne $content);
+			and $simplified_form ne $content );
 
 		my $start = $editor->PositionFromLine( $line - 1 ) + $col - 1;
 
@@ -119,11 +149,7 @@ sub show_simplify {
 
 	}
 
-	require Padre::Plugin::Fix::Preview;
-	my $preview = Padre::Plugin::Fix::Preview->new( $self->main );
-	$preview->run(\@changes);
-
-	return;
+	return \@changes;
 }
 
 # Called when the plugin is enabled by Padre

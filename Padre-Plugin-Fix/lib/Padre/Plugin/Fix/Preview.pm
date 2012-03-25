@@ -15,33 +15,48 @@ sub new {
 	my $self = $class->SUPER::new($parent);
 	$self->CenterOnParent;
 
+	# Setup preview editor
+	my $preview = $self->{preview};
+	require Padre::Document;
+	$preview->{Document} = Padre::Document->new( mimetype => 'application/x-perl', );
+	$preview->{Document}->set_editor($preview);
+	$preview->SetLexer('application/x-perl');
+	
+	$preview->Show(1);
+
 	return $self;
 }
 
-sub run	{
-	my $self = shift;
+sub run {
+	my $self    = shift;
 	my $changes = shift;
-	
-	
-		my $tree = $self->{tree};
-		my $root_node = $tree->AddRoot(
-			Wx::gettext('Program'),
-			-1,
-			-1,
-			#Wx::TreeItemData->new($program)
+
+	# Apply the current theme to the preview editor
+	my $style = $self->main->config->editor_style;
+	my $theme = Padre::Wx::Theme->find($style)->clone;
+	$theme->apply( $self->{preview} );
+
+	my $tree      = $self->{tree};
+	my $root_node = $tree->AddRoot(
+		Wx::gettext('Changes:'),
+		-1,
+		-1,
+
+		#Wx::TreeItemData->new($program)
+	);
+
+	foreach my $change (@$changes) {
+		my $change_node = $tree->AppendItem(
+			$root_node,
+			$change->{name},
+			-1, -1,
+
+			#Wx::TreeItemData->new($class)
 		);
 
-		foreach my $change (@$changes) {
-			my $change_node = $tree->AppendItem(
-				$root_node,
-				$change->{name},
-				-1, -1,
-				#Wx::TreeItemData->new($class)
-			);
-		  
-		}
-		
-		$tree->ExpandAll;
+	}
+
+	$tree->ExpandAll;
 
 	if ( $self->ShowModal == Wx::ID_OK ) {
 		say "OK";
