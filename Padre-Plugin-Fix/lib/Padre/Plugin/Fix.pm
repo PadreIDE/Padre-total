@@ -11,7 +11,6 @@ our @ISA     = 'Padre::Plugin';
 # Child modules we need to unload when disabled
 use constant CHILDREN => qw{
 	Padre::Plugin::Fix
-	Padre::Plugin::Fix::Role::NeedsPluginEvent
 };
 
 # Called when Padre wants to check what package versions this
@@ -29,6 +28,86 @@ sub padre_interfaces {
 # Called when Padre wants a name for the plugin
 sub plugin_name {
 	Wx::gettext('Fix');
+}
+
+#######
+# Called by padre to build the menu in a simple way
+#######
+sub menu_plugins_simple {
+	my $self = shift;
+	return $self->plugin_name => [
+		Wx::gettext('Simplify') => sub { $self->show_simplify },
+		Wx::gettext('About')    => sub { $self->show_about },
+	];
+}
+
+sub show_about {
+	my $self = shift;
+
+	# Generate the About dialog
+	my $about = Wx::AboutDialogInfo->new;
+	$about->SetName( Wx::gettext('Fix Plug-in') );
+	my $authors     = 'Ahmad M. Zawawi';
+	my $description = Wx::gettext( <<'END' );
+Fix code support for Padre
+
+Copyright 2012 %s
+This plug-in is free software; you can redistribute it and/or modify it under the same terms as Padre.
+END
+	$about->SetDescription( sprintf( $description, $authors ) );
+
+	# Show the About dialog
+	Wx::AboutBox($about);
+
+	return;
+}
+
+sub show_simplify {
+	my $self = shift;
+
+
+	my $editor = $self->current->editor or return;
+
+	my $pos    = $editor->GetCurrentPos;
+	my $source = $editor->GetText;
+
+	require PPI;
+	my $doc = PPI::Document->new( \$source );
+
+	my $quotes = $doc->find('PPI::Token::Quote');
+	foreach my $quote (@$quotes) {
+		my $line    = $quote->location->[0];
+		my $col     = $quote->location->[1];
+		my $content = $quote->content;
+
+		# Try a simplify it (if possible)
+		my $simplified_form;
+		if ( $quote->can('simplify') ) {
+			$simplified_form = $quote->simplify;
+		}
+
+		# Can be replaced by simpler thing?
+		next
+			unless ( defined $simplified_form
+			and $simplified_form ne $content
+			and Padre->ide->wx->main->yes_no("Simplify to $simplified_form ?") );
+
+		my $start = $editor->PositionFromLine( $line - 1 ) + $col - 1;
+
+		# Replace with simplified form
+		$editor->SetTargetStart($start);
+		$editor->SetTargetEnd( $start + length($content) );
+		$editor->ReplaceTarget($simplified_form);
+
+		# Restore current position
+		$editor->SetSelection( $pos, $pos );
+		last;
+
+	}
+
+
+
+	return;
 }
 
 # Called when the plugin is enabled by Padre
@@ -51,15 +130,6 @@ sub plugin_enable {
 	# Update configuration attribute
 	$self->{config} = $config;
 
-	# Generate missing Padre's events
-	# TODO remove once Padre 0.96 is released
-	require Padre::Plugin::Fix::Role::NeedsPluginEvent;
-	Padre::Plugin::Fix::Role::NeedsPluginEvent->meta->apply( $self->main );
-
-	# Highlight the current editor. This is needed when a plugin is enabled
-	# for the first time
-	$self->editor_changed;
-
 	return 1;
 }
 
@@ -72,34 +142,6 @@ sub plugin_disable {
 		require Padre::Unload;
 		Padre::Unload->unload($package);
 	}
-
-	return;
-}
-
-# Called when an editor is changed
-sub editor_changed {
-	my $self     = shift;
-	my $current  = $self->current or return;
-	my $document = $current->document or return;
-	my $editor   = $current->editor or return;
-
-
-	# Always cleanup current document
-	if ( defined $self->{document} ) {
-		$self->{document}->cleanup;
-		$self->{document} = undef;
-	}
-
-	# Only on Perl documents
-	return unless $document->isa('Padre::Document::Perl');
-
-	# Create a new fix-it document :)
-	require Padre::Plugin::Fix::Document;
-	$self->{document} = Padre::Plugin::Fix::Document->new(
-		editor   => $editor,
-		document => $document,
-		config   => $self->{config},
-	);
 
 	return;
 }
@@ -122,7 +164,7 @@ Then use it via L<Padre>, The Perl IDE.
 
 =head1 DESCRIPTION
 
-Once you enable this Plugin under Padre, you will be fix code with CTRL-2 
+Once you enable this Plugin under Padre, you will be fix code with Simplify
 shortcut
 
 =head1 BUGS
