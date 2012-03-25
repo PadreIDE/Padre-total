@@ -30,11 +30,15 @@ sub new {
 sub run {
 	my $self    = shift;
 	my $changes = shift;
+	my $source = shift;
 
 	# Apply the current theme to the preview editor
+	my $preview = $self->{preview};
 	my $style = $self->main->config->editor_style;
 	my $theme = Padre::Wx::Theme->find($style)->clone;
-	$theme->apply( $self->{preview} );
+	$theme->apply( $preview );
+	
+	$preview->SetText($$source);
 
 	my $tree      = $self->{tree};
 	my $root_node = $tree->AddRoot(
