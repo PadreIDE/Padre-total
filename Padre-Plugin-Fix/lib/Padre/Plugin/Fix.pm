@@ -76,7 +76,7 @@ sub show_simplify {
 	my $action = $self->main->multi_choice(
 		Wx::gettext('Choose Action'),
 		Wx::gettext('Choose Action'),
-		[ @actions ],
+		[@actions],
 	);
 
 
@@ -84,15 +84,15 @@ sub show_simplify {
 	my $doc = PPI::Document->new( \$source );
 
 	my @changes = ();
-	if ($action == 0) {
+	if ( $action == 0 ) {
 		$self->main->error("Please select an action");
 		return;
-	} 
-	
+	}
+
 	if ( $action == 1 ) {
-		push @changes, @{$self->simplify_quotes($editor, $doc)};
+		push @changes, @{ $self->simplify_quotes( $editor, $doc ) };
 	} else {
-		$self->main->error("The following " . $actions[$action] . " is not currently supported");
+		$self->main->error( "The following " . $actions[$action] . " is not currently supported" );
 	}
 
 	if ( scalar @changes ) {

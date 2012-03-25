@@ -21,7 +21,7 @@ sub new {
 	$preview->{Document} = Padre::Document->new( mimetype => 'application/x-perl', );
 	$preview->{Document}->set_editor($preview);
 	$preview->SetLexer('application/x-perl');
-	
+
 	$preview->Show(1);
 
 	return $self;
@@ -30,14 +30,14 @@ sub new {
 sub run {
 	my $self    = shift;
 	my $changes = shift;
-	my $source = shift;
+	my $source  = shift;
 
 	# Apply the current theme to the preview editor
 	my $preview = $self->{preview};
-	my $style = $self->main->config->editor_style;
-	my $theme = Padre::Wx::Theme->find($style)->clone;
-	$theme->apply( $preview );
-	
+	my $style   = $self->main->config->editor_style;
+	my $theme   = Padre::Wx::Theme->find($style)->clone;
+	$theme->apply($preview);
+
 	$preview->SetText($$source);
 
 	my $tree      = $self->{tree};
