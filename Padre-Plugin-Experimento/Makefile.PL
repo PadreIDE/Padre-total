@@ -5,9 +5,9 @@ use inc::Module::Install;
 name 'Padre-Plugin-Experimento';
 all_from 'lib/Padre/Plugin/Experimento.pm';
 
-requires 'Padre'        => '0.94';
-requires 'Modern::Perl' => '1.20120130';
-requires 'Wx::Scintilla' => '';
+requires 'Padre'         => '0.94';
+requires 'Modern::Perl'  => '1.20120130';
+requires 'Wx::Scintilla' => '0.3801';
 
 test_requires 'Test::More' => '0.88';
 

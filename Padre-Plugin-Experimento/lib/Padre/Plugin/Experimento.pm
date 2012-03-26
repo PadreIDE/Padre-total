@@ -14,7 +14,7 @@ use constant CHILDREN => qw{
 # Called when Padre wants to check what package versions this
 # plugin needs
 sub padre_interfaces {
-	'Padre::Plugin'               => 0.94, ;
+	'Padre::Plugin' => 0.94,;
 }
 
 # Called when Padre wants a name for the plugin
@@ -30,7 +30,7 @@ sub menu_plugins_simple {
 	return $self->plugin_name => [
 		Wx::gettext('Move Selected Lines Up') => sub { $self->move_selected_lines_up },
 		Wx::gettext('Move Selected Lines Down') => sub { $self->move_selected_lines_down },
-		Wx::gettext('About')    => sub { $self->show_about },
+		Wx::gettext('About')                    => sub { $self->show_about },
 	];
 }
 
@@ -60,6 +60,10 @@ sub move_selected_lines_up {
 
 	my $editor = $self->current->editor or return;
 
+	if ( $editor->can('MoveSelectedLinesUp') ) {
+		$editor->MoveSelectedLinesUp;
+	}
+
 	return;
 }
 
@@ -67,6 +71,9 @@ sub move_selected_lines_down {
 	my $self = shift;
 
 	my $editor = $self->current->editor or return;
+	if ( $editor->can('MoveSelectedLinesDown') ) {
+		$editor->MoveSelectedLinesDown;
+	}
 
 	return;
 }
