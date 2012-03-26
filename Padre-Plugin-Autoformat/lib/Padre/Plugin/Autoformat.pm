@@ -10,7 +10,7 @@ use Padre::Wx     ();
 use File::Spec ();
 use base qw{ Padre::Plugin };
 
-our $VERSION = '1.25';
+our $VERSION = '1.23';
 
 # Child modules we need to unload when disabled
 use constant CHILDREN => qw{
