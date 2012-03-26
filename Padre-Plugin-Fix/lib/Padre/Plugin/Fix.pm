@@ -66,7 +66,15 @@ sub show_simplify {
 	my $editor = $self->current->editor or return;
 
 	my $pos    = $editor->GetCurrentPos;
-	my $source = $editor->GetText;
+	my ($start, $end) = $editor->GetSelection;
+	my $source;
+	if($start < $end) {
+		# Selected text
+		$source = $editor->GetTextRange($start, $end);
+	} else {
+		# Default to whole source
+		$source = $editor->GetText;
+	}
 
 	# Pick an action
 	my @actions = (
