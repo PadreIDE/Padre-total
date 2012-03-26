@@ -4,8 +4,8 @@ use strict;
 use warnings;
 
 use Padre::Plugin ();
-use Padre::Util ();
-use Padre::Wx ();
+use Padre::Util   ();
+use Padre::Wx     ();
 
 use File::Spec ();
 use base qw{ Padre::Plugin };
@@ -41,7 +41,7 @@ sub menu_plugins_simple {
 	Wx::gettext('Autoformat') => [
 
 		Wx::gettext("Autoformat") . "\tCtrl+Shift+J" => sub { $self->autoformat },
-		Wx::gettext('About')                    => sub { $self->show_about },
+		Wx::gettext('About')                         => sub { $self->show_about },
 	];
 }
 

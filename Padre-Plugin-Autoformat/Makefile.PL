@@ -5,10 +5,9 @@ use inc::Module::Install;
 name 'Padre-Plugin-Autoformat';
 all_from 'lib/Padre/Plugin/Autoformat.pm';
 
-requires 'Padre'           => '0.94';
-requires 'Padre'                 => '0.90';
-requires 'Text::Autoformat'      => '0';
-test_requires 'Test::More' => '0.88';
+requires 'Padre'            => '0.94';
+requires 'Text::Autoformat' => '0';
+test_requires 'Test::More'  => '0.88';
 
 no_index 'directory' => qw{ t share inc};
 homepage 'http://padre.perlide.org/trac/wiki/PadrePluginAutoformat';
