@@ -2981,6 +2981,14 @@ public:
     // Make the displayed text smaller by decreasing the sizes by 1 point.
     void ZoomOut();
 
+    // Move the selected lines up one line, shifting the line above after the
+    // selection.
+    void MoveSelectedLinesUp();
+
+    // Move the selected lines down one line, shifting the line below before the
+    // selection.
+    void MoveSelectedLinesDown();
+
     // Delete the word to the left of the caret.
     void DelWordLeft();
 

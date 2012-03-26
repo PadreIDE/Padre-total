@@ -1720,4 +1720,7 @@ wxScintillaTextCtrl::AppendTextRaw( text )
 
     void ZoomIn();
     void ZoomOut();
+
+    void MoveSelectedLinesUp();
+    void MoveSelectedLinesDown();
 };

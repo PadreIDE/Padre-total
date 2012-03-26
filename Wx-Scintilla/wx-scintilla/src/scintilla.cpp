@@ -2344,6 +2344,20 @@ void wxScintillaTextCtrl::ZoomOut()
     SendMsg(2334, 0, 0);
 }
 
+// Move the selected lines up one line, shifting the line above after the
+// selection.
+void wxScintillaTextCtrl::MoveSelectedLinesUp()
+{
+    SendMsg(2620, 0, 0);
+}
+
+// Move the selected lines down one line, shifting the line below before the
+// selection.
+void wxScintillaTextCtrl::MoveSelectedLinesDown()
+{
+    SendMsg(2621, 0, 0);
+}
+
 // Delete the word to the left of the caret.
 void wxScintillaTextCtrl::DelWordLeft()
 {
