@@ -45,8 +45,6 @@ sub run {
 		Wx::gettext('Changes:'),
 		-1,
 		-1,
-
-		#Wx::TreeItemData->new($program)
 	);
 
 	foreach my $change (@$changes) {
@@ -54,8 +52,7 @@ sub run {
 			$root_node,
 			$change->{name},
 			-1, -1,
-
-			#Wx::TreeItemData->new($class)
+			Wx::TreeItemData->new($change)
 		);
 
 	}
@@ -70,6 +67,22 @@ sub run {
 
 	return;
 }
+
+sub on_tree_selection_changed {
+	my $self    = shift;
+	my $event   = shift;
+	my $tree    = $self->{tree};
+	my $item    = $event->GetItem or return;
+	my $data = $tree->GetPlData($item) or return;
+	
+	say $data->{name};
+	my $preview = $self->{preview};
+	$preview->GotoPos( $data->{start} );
+	$preview->SetSelection( $data->{start}, $data->{end} );
+	
+	return;
+}
+
 
 1;
 

@@ -208,7 +208,7 @@
                         <event name="OnTreeItemMiddleClick"></event>
                         <event name="OnTreeItemRightClick"></event>
                         <event name="OnTreeKeyDown"></event>
-                        <event name="OnTreeSelChanged"></event>
+                        <event name="OnTreeSelChanged">on_tree_selection_changed</event>
                         <event name="OnTreeSelChanging"></event>
                         <event name="OnTreeSetInfo"></event>
                         <event name="OnTreeStateImageClick"></event>

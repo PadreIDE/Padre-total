@@ -74,8 +74,8 @@ sub show_simplify {
 		Wx::gettext('Remove null statements'),
 	);
 	my $action = $self->main->multi_choice(
-		Wx::gettext('Choose Action'),
-		Wx::gettext('Choose Action'),
+		Wx::gettext('Choose Action:'),
+		Wx::gettext('Choose Action:'),
 		[@actions],
 	);
 

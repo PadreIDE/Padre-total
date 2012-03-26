@@ -10,9 +10,9 @@ use 5.008005;
 use utf8;
 use strict;
 use warnings;
-use Padre::Wx             ();
+use Padre::Wx ();
 use Padre::Wx::Role::Main ();
-use Padre::Wx::Editor     ();
+use Padre::Wx::Editor ();
 
 our $VERSION = '0.01';
 our @ISA     = qw{
@@ -38,7 +38,9 @@ sub new {
 		-1,
 		Wx::gettext("List of Changes:"),
 	);
-	$tree_label->SetFont( Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" ) );
+	$tree_label->SetFont(
+		Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" )
+	);
 
 	$self->{tree} = Wx::TreeCtrl->new(
 		$self,
@@ -48,12 +50,22 @@ sub new {
 		Wx::TR_DEFAULT_STYLE,
 	);
 
+	Wx::Event::EVT_TREE_SEL_CHANGED(
+		$self,
+		$self->{tree},
+		sub {
+			shift->on_tree_selection_changed(@_);
+		},
+	);
+
 	my $preview_label = Wx::StaticText->new(
 		$self,
 		-1,
 		Wx::gettext("Preview"),
 	);
-	$preview_label->SetFont( Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" ) );
+	$preview_label->SetFont(
+		Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" )
+	);
 
 	$self->{preview} = Padre::Wx::Editor->new(
 		$self,
@@ -86,21 +98,25 @@ sub new {
 
 	my $button_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
 	$button_sizer->Add( 0, 0, 1, Wx::EXPAND, 5 );
-	$button_sizer->Add( $self->{ok_button},     0, Wx::ALL, 5 );
+	$button_sizer->Add( $self->{ok_button}, 0, Wx::ALL, 5 );
 	$button_sizer->Add( $self->{cancel_button}, 0, Wx::ALL, 5 );
 
 	my $sizer = Wx::BoxSizer->new(Wx::VERTICAL);
-	$sizer->Add( $tree_label,          0, Wx::EXPAND | Wx::LEFT | Wx::RIGHT | Wx::TOP, 5 );
-	$sizer->Add( $self->{tree},        1, Wx::ALL | Wx::EXPAND,                        5 );
-	$sizer->Add( $preview_label,       0, Wx::ALL,                                     5 );
-	$sizer->Add( $self->{preview},     1, Wx::ALL | Wx::EXPAND,                        5 );
-	$sizer->Add( $self->{static_line}, 0, Wx::EXPAND | Wx::ALL,                        5 );
-	$sizer->Add( $button_sizer,        0, Wx::EXPAND,                                  5 );
+	$sizer->Add( $tree_label, 0, Wx::EXPAND | Wx::LEFT | Wx::RIGHT | Wx::TOP, 5 );
+	$sizer->Add( $self->{tree}, 1, Wx::ALL | Wx::EXPAND, 5 );
+	$sizer->Add( $preview_label, 0, Wx::ALL, 5 );
+	$sizer->Add( $self->{preview}, 1, Wx::ALL | Wx::EXPAND, 5 );
+	$sizer->Add( $self->{static_line}, 0, Wx::EXPAND | Wx::ALL, 5 );
+	$sizer->Add( $button_sizer, 0, Wx::EXPAND, 5 );
 
 	$self->SetSizer($sizer);
 	$self->Layout;
 
 	return $self;
+}
+
+sub on_tree_selection_changed {
+	$_[0]->main->error('Handler method on_tree_selection_changed for event tree.OnTreeSelChanged not implemented');
 }
 
 1;
