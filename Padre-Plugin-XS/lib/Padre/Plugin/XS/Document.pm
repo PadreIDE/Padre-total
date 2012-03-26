@@ -1,8 +1,6 @@
 package Padre::Plugin::XS::Document;
 
-use 5.008;
-use strict;
-use warnings;
+use Modern::Perl;
 use Padre::Document ();
 
 our $VERSION = '0.11';

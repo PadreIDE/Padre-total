@@ -15,7 +15,7 @@ sub load_modules {
 }
 
 sub padre_interfaces {
-	return 'Padre::Plugin' => '0.91';
+	'Padre::Plugin' => 0.94;
 }
 
 sub plugin_name {
@@ -178,8 +178,6 @@ XS files to use the highlighter via the Preferences menu of L<Padre>.
 The default XS syntax highlighting of Padre is abysmal. You're very
 encouraged to enable the C<XS highlighter> feature.
 
-This is an early release.
-
 =head1 AUTHORS
 
 Steffen Mueller <smueller@cpan.org>
@@ -193,5 +191,12 @@ Ahmad M. Zawawi <ahmad.zawawi@gmail.com>
 Many thanks to Gabor Szabo, who wrote the Kate plugin upon this is based.
 I'm grateful to Herbert Breunung for writing Kephra and getting STC syntax highlighting more
 right that us. Looking at his code has helped me write this.
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010-2012 by Steffen Mueller
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
 =cut

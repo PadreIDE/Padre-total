@@ -5,9 +5,10 @@ use inc::Module::Install;
 name 'Padre-Plugin-XS';
 all_from 'lib/Padre/Plugin/XS.pm';
 
-requires       'Padre'                   => '0.94';
-requires       'Perl::APIReference'      => '0.04';
-test_requires  'Test::More'              => '0.88';
+requires 'Padre'              => '0.94';
+requires 'Perl::APIReference' => '0.04';
+requires 'Modern::Perl'       => '1.20120130';
+test_requires 'Test::More'    => '0.88';
 
 no_index 'directory' => qw{ t share inc};
 homepage 'http://padre.perlide.org/trac/wiki/PadrePluginXS';
