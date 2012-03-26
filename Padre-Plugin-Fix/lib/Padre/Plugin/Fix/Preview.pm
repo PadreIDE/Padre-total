@@ -84,9 +84,9 @@ sub _apply_changes {
 }
 
 sub _setup_editor {
-	my $self = shift;
-
+	my $self   = shift;
 	my $editor = shift;
+
 	require Padre::Document;
 	$editor->{Document} = Padre::Document->new( mimetype => 'application/x-perl', );
 	$editor->{Document}->set_editor($editor);

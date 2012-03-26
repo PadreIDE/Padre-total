@@ -72,7 +72,7 @@ sub show_simplify {
 	my @actions = (
 		Wx::gettext('Simplify quotes'), Wx::gettext('Remove null statements'),
 	);
-	my $action = $self->main->multi_choice(
+	my @choices = $self->main->multi_choice(
 		Wx::gettext('Choose Action:'),
 		Wx::gettext('Choose Action:'),
 		[@actions],
@@ -82,23 +82,28 @@ sub show_simplify {
 	my $doc = PPI::Document->new( \$source );
 
 	my @changes = ();
-	if ( $action == 0 ) {
-		$self->main->error("Please select an action");
+	unless ( scalar @choices ) {
 		return;
 	}
 
-	if ( $action == 1 ) {
-		push @changes, @{ $self->simplify_quotes( $editor, $doc ) };
-	} else {
-		$self->main->error( "The following " . $actions[$action] . " is not currently supported" );
+	for my $choice (@choices) {
+		if ( $choice == $actions[0] ) {
+			push @changes, @{ $self->simplify_quotes( $editor, $doc ) };
+		} elsif ( $choice eq $actions[1] ) {
+			push @changes, @{ $self->remove_null_statements( $editor, $doc ) };
+		} else {
+			$self->main->error( "The following " . $choice . " is not currently supported" );
+			last;
+		}
 	}
+
 
 	if ( scalar @changes ) {
 		require Padre::Plugin::Fix::Preview;
 		my $preview = Padre::Plugin::Fix::Preview->new( $self->main );
 		$preview->run( \@changes, \$source );
 	} else {
-		$self->main->error("No changes to fix");
+		$self->main->message("No changes to fix");
 	}
 
 	return;
@@ -136,6 +141,35 @@ sub simplify_quotes {
 			end     => $start + length($content),
 			content => $simplified_form,
 			};
+
+	}
+
+	return \@changes;
+}
+
+sub remove_null_statements {
+	my $self   = shift;
+	my $editor = shift;
+	my $doc    = shift;
+
+	my $nulls   = $doc->find('PPI::Statement::Null');
+	my @changes = ();
+	foreach my $null (@$nulls) {
+		my $line    = $null->location->[0];
+		my $col     = $null->location->[1];
+		my $content = $null->content;
+
+		my $start = $editor->PositionFromLine( $line - 1 ) + $col - 1;
+
+		say "Remove: " . $content;
+
+		# push @changes,
+		# {
+		# name    => Wx::gettext('Remove null statement'),
+		# start   => $start,
+		# end     => $start + length($content),
+		# content => $simplified_form,
+		# };
 
 	}
 
