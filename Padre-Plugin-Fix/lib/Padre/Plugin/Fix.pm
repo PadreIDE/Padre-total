@@ -87,7 +87,7 @@ sub show_simplify {
 	}
 
 	for my $choice (@choices) {
-		if ( $choice == $actions[0] ) {
+		if ( $choice eq $actions[0] ) {
 			push @changes, @{ $self->simplify_quotes( $editor, $doc ) };
 		} elsif ( $choice eq $actions[1] ) {
 			push @changes, @{ $self->remove_null_statements( $editor, $doc ) };
@@ -114,8 +114,8 @@ sub simplify_quotes {
 	my $editor = shift;
 	my $doc    = shift;
 
-	my $quotes  = $doc->find('PPI::Token::Quote');
 	my @changes = ();
+	my $quotes  = $doc->find('PPI::Token::Quote') or return \@changes;
 	foreach my $quote (@$quotes) {
 		my $line    = $quote->location->[0];
 		my $col     = $quote->location->[1];
@@ -152,8 +152,8 @@ sub remove_null_statements {
 	my $editor = shift;
 	my $doc    = shift;
 
-	my $nulls   = $doc->find('PPI::Statement::Null');
 	my @changes = ();
+	my $nulls   = $doc->find('PPI::Statement::Null') or return \@changes;
 	foreach my $null (@$nulls) {
 		my $line    = $null->location->[0];
 		my $col     = $null->location->[1];
@@ -161,15 +161,13 @@ sub remove_null_statements {
 
 		my $start = $editor->PositionFromLine( $line - 1 ) + $col - 1;
 
-		say "Remove: " . $content;
-
-		# push @changes,
-		# {
-		# name    => Wx::gettext('Remove null statement'),
-		# start   => $start,
-		# end     => $start + length($content),
-		# content => $simplified_form,
-		# };
+		push @changes,
+		{
+		name    => Wx::gettext('Remove null statement'),
+		start   => $start,
+		end     => $start + length($content),
+		content => '',
+		};
 
 	}
 
