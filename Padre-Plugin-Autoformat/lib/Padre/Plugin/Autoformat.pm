@@ -40,8 +40,8 @@ sub menu_plugins_simple {
 	my $self = shift;
 	Wx::gettext('Autoformat') => [
 
+		Wx::gettext("Autoformat") . "\tCtrl+Shift+J" => sub { $self->autoformat },
 		Wx::gettext('About')                    => sub { $self->show_about },
-		Wx::gettext("Autoformat\tCtrl+Shift+J") => sub { $self->autoformat },
 	];
 }
 
@@ -68,6 +68,27 @@ sub autoformat {
 	my $messy  = $editor->GetSelectedText;
 	my $tidied = Text::Autoformat::autoformat($messy);
 	$editor->ReplaceSelection($tidied);
+}
+
+sub show_about {
+	my $self = shift;
+
+	# Generate the About dialog
+	my $about = Wx::AboutDialogInfo->new;
+	$about->SetName( Wx::gettext('Autoformat Plug-in') );
+	my $authors     = 'Jerome Quelin';
+	my $description = Wx::gettext( <<'END' );
+Text Autoformat support for Padre
+
+Copyright 2010-2012 %s
+This plug-in is free software; you can redistribute it and/or modify it under the same terms as Padre.
+END
+	$about->SetDescription( sprintf( $description, $authors ) );
+
+	# Show the About dialog
+	Wx::AboutBox($about);
+
+	return;
 }
 
 #######
