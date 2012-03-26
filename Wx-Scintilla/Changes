@@ -1,5 +1,8 @@
 Revision history for Wx-Scintilla
 
+0.3801 2012.3.26
+    - Added MoveSelectedLinesUp and MoveSelectedLinesDown (AZAWAWI)
+
 0.38  2012.3.12
     - Released 0.37_06 as stable 0.38 (AZAWAWI)
 
