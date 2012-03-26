@@ -13,7 +13,7 @@ use File::Basename qw{ fileparse };
 use File::Spec::Functions qw{ catfile };
 use base qw{ Padre::Plugin };
 
-our $VERSION = '1.24';
+our $VERSION = '1.25';
 
 # -- padre plugin api, refer to Padre::Plugin
 #######
@@ -39,8 +39,8 @@ sub plugin_icon {
 #######
 sub padre_interfaces {
 	return (
-		'Padre::Plugin'     => 0.92,
-		'Padre::Wx::Editor' => 0.92,
+		'Padre::Plugin'     => 0.94,
+		'Padre::Wx::Editor' => 0.94,
 	);
 }
 
@@ -100,8 +100,6 @@ __END__
     $ padre
     Ctrl+Shift+J
 
-
-
 =head1 DESCRIPTION
 
 This plugin allows one to reformat her text automatically with Ctrl+Shift+J.
@@ -141,8 +139,6 @@ Replace the current selection with its autoformatted content.
 
 =back
 
-
-
 =head1 BUGS
 
 Please report any bugs or feature requests to C<padre-plugin-autoformat at
@@ -150,8 +146,6 @@ rt.cpan.org>, or through the web interface at
 L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Padre-Plugin-Autoformat>. I will
 be notified, and then you'll automatically be notified of progress on
 your bug as I make changes.
-
-
 
 =head1 SEE ALSO
 
