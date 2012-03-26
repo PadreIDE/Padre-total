@@ -37,10 +37,10 @@
             <property name="minimum_size"></property>
             <property name="name">Padre::Plugin::Fix::FBP::Preview</property>
             <property name="pos"></property>
-            <property name="size">538,399</property>
-            <property name="style">wxDEFAULT_DIALOG_STYLE</property>
+            <property name="size">640,480</property>
+            <property name="style">wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</property>
             <property name="subclass"></property>
-            <property name="title">Preview</property>
+            <property name="title">Preview Changes</property>
             <property name="tooltip"></property>
             <property name="validator_data_type"></property>
             <property name="validator_style">wxFILTER_NONE</property>
@@ -97,7 +97,7 @@
                         <property name="font">,90,92,-1,70,0</property>
                         <property name="hidden">0</property>
                         <property name="id">wxID_ANY</property>
-                        <property name="label">List of Changes:</property>
+                        <property name="label">Changes:</property>
                         <property name="maximum_size"></property>
                         <property name="minimum_size"></property>
                         <property name="name">tree_label</property>
@@ -159,7 +159,7 @@
                         <property name="permission">protected</property>
                         <property name="pos"></property>
                         <property name="size"></property>
-                        <property name="style">wxTR_DEFAULT_STYLE</property>
+                        <property name="style">wxTR_DEFAULT_STYLE|wxTR_HIDE_ROOT|wxTR_LINES_AT_ROOT</property>
                         <property name="subclass"></property>
                         <property name="tooltip"></property>
                         <property name="validator_data_type"></property>
@@ -218,7 +218,7 @@
                 <object class="sizeritem" expanded="0">
                     <property name="border">5</property>
                     <property name="flag">wxEXPAND</property>
-                    <property name="proportion">1</property>
+                    <property name="proportion">2</property>
                     <object class="wxBoxSizer" expanded="0">
                         <property name="minimum_size"></property>
                         <property name="name">preview_sizer</property>
@@ -246,7 +246,7 @@
                                         <property name="font">,90,92,-1,70,0</property>
                                         <property name="hidden">0</property>
                                         <property name="id">wxID_ANY</property>
-                                        <property name="label">Before</property>
+                                        <property name="label">Before:</property>
                                         <property name="maximum_size"></property>
                                         <property name="minimum_size"></property>
                                         <property name="name">before_label</property>
@@ -371,7 +371,7 @@
                                         <property name="font">,90,92,-1,70,0</property>
                                         <property name="hidden">0</property>
                                         <property name="id">wxID_ANY</property>
-                                        <property name="label">After</property>
+                                        <property name="label">After:</property>
                                         <property name="maximum_size"></property>
                                         <property name="minimum_size"></property>
                                         <property name="name">after_label</property>
