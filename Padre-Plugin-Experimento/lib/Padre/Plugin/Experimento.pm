@@ -28,9 +28,9 @@ sub plugin_name {
 sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
-		Wx::gettext('Move Selected Lines Up') => sub { $self->move_selected_lines_up },
-		Wx::gettext('Move Selected Lines Down') => sub { $self->move_selected_lines_down },
-		Wx::gettext('About')                    => sub { $self->show_about },
+		Wx::gettext('Move Selected Lines Up') . "\tCtrl-Shift-Up"     => sub { $self->move_selected_lines_up },
+		Wx::gettext('Move Selected Lines Down') . "\tCtrl-Shift-Down" => sub { $self->move_selected_lines_down },
+		Wx::gettext('About')                                          => sub { $self->show_about },
 	];
 }
 
@@ -62,6 +62,8 @@ sub move_selected_lines_up {
 
 	if ( $editor->can('MoveSelectedLinesUp') ) {
 		$editor->MoveSelectedLinesUp;
+	} else {
+		$self->main->error( Wx::gettext('Error: Wx::Scintilla should be 0.3801 or later') );
 	}
 
 	return;
@@ -73,6 +75,8 @@ sub move_selected_lines_down {
 	my $editor = $self->current->editor or return;
 	if ( $editor->can('MoveSelectedLinesDown') ) {
 		$editor->MoveSelectedLinesDown;
+	} else {
+		$self->main->error( Wx::gettext('Error: Wx::Scintilla should be 0.3801 or later') );
 	}
 
 	return;
