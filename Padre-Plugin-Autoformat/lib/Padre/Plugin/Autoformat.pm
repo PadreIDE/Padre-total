@@ -1,19 +1,21 @@
 package Padre::Plugin::Autoformat;
 
-# ABSTRACT: Reformats your text within Padre
-
 use strict;
 use warnings;
 
-use Padre::Plugin;
-use Padre::Util;
-use Padre::Wx;
+use Padre::Plugin ();
+use Padre::Util ();
+use Padre::Wx ();
 
-use File::Basename qw{ fileparse };
-use File::Spec::Functions qw{ catfile };
+use File::Spec ();
 use base qw{ Padre::Plugin };
 
 our $VERSION = '1.25';
+
+# Child modules we need to unload when disabled
+use constant CHILDREN => qw{
+	Padre::Plugin::Autoformat
+};
 
 # -- padre plugin api, refer to Padre::Plugin
 #######
@@ -21,17 +23,6 @@ our $VERSION = '1.25';
 #######
 sub plugin_name {
 	return Wx::gettext('Autoformat');
-}
-
-# plugin icon
-sub plugin_icon {
-
-	# find icon path using Padre API
-	my $dir = File::Spec->catdir( Padre::Util::share('Autoformat'), 'icons' );
-	my $icon_file = File::Spec->catfile( $dir, 'justify.png' );
-
-	# create and return icon
-	return Wx::Bitmap->new( $icon_file, Wx::wxBITMAP_TYPE_PNG );
 }
 
 #######
@@ -46,11 +37,11 @@ sub padre_interfaces {
 
 # plugin menu.
 sub menu_plugins_simple {
-	my ($self) = @_;
+	my $self = shift;
 	Wx::gettext('Autoformat') => [
 
-		#'About'                    => 'show_about',
-		Wx::gettext("Autoformat\tCtrl+Shift+J") => 'autoformat',
+		Wx::gettext('About')                    => sub { $self->show_about },
+		Wx::gettext("Autoformat\tCtrl+Shift+J") => sub { $self->autoformat },
 	];
 }
 
@@ -58,7 +49,7 @@ sub menu_plugins_simple {
 # -- public methods
 
 sub autoformat {
-	my ($self) = @_;
+	my $self = shift;
 
 	my $main     = $self->main;
 	my $current  = $main->current;
@@ -83,9 +74,12 @@ sub autoformat {
 # Clean up dialog Main, Padre::Plugin,
 #######
 sub plugin_disable {
-	my $self = shift;
 
-	$self->SUPER::plugin_disable(@_);
+	# TODO: Switch to Padre::Unload once Padre 0.96 is released
+	for my $package (CHILDREN) {
+		require Padre::Unload;
+		Padre::Unload->unload($package);
+	}
 
 	return 1;
 
@@ -94,6 +88,10 @@ sub plugin_disable {
 
 1;
 __END__
+
+=head1 NAME
+
+Padre::Plugin::Autoformat - Reformats your text within Padre
 
 =head1 SYNOPSIS
 
@@ -149,11 +147,7 @@ your bug as I make changes.
 
 =head1 SEE ALSO
 
-Plugin icon courtesy of Mark James, at
-L<http://www.famfamfam.com/lab/icons/silk/>.
-
-You can also look for information on this module at:
-
+L<Text::Autoformat>
 =over 4
 
 =item * AnnoCPAN: Annotated CPAN documentation
@@ -169,5 +163,20 @@ L<http://cpanratings.perl.org/d/Padre-Plugin-Autoformat>
 L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Padre-Plugin-Autoformat>
 
 =back
+
+=head1 AUTHORS
+
+Jerome Quelin <jquelin@gmail.com>
+
+=head1 CONTRIBUTORS
+
+Ahmad M. Zawawi <ahmad.zawawi@gmail.com>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010-2012 by Jerome Quelin
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
 =cut

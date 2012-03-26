@@ -2,14 +2,12 @@ use strict;
 use warnings;
 use inc::Module::Install;
 
-name 'Padre-Plugin-Moose';
+name 'Padre-Plugin-Autoformat';
 all_from 'lib/Padre/Plugin/Autoformat.pm';
 
 requires 'Padre'           => '0.94';
-requires 'File::Basename'        => '0',
-requires 'File::Spec::Functions' => '0',
-requires 'Padre'                 => '0.90',
-requires 'Text::Autoformat'      => '0'
+requires 'Padre'                 => '0.90';
+requires 'Text::Autoformat'      => '0';
 test_requires 'Test::More' => '0.88';
 
 no_index 'directory' => qw{ t share inc};
