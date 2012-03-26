@@ -15,14 +15,9 @@ sub new {
 	my $self = $class->SUPER::new($parent);
 	$self->CenterOnParent;
 
-	# Setup preview editor
-	my $preview = $self->{preview};
-	require Padre::Document;
-	$preview->{Document} = Padre::Document->new( mimetype => 'application/x-perl', );
-	$preview->{Document}->set_editor($preview);
-	$preview->SetLexer('application/x-perl');
-
-	$preview->Show(1);
+	# Setup before/after editor
+	$self->_setup_editor( $self->{before} );
+	$self->_setup_editor( $self->{after} );
 
 	return $self;
 }
@@ -33,25 +28,22 @@ sub run {
 	my $source  = shift;
 
 	# Apply the current theme to the preview editor
-	my $preview = $self->{preview};
-	my $style   = $self->main->config->editor_style;
-	my $theme   = Padre::Wx::Theme->find($style)->clone;
-	$theme->apply($preview);
 
-	$preview->SetText($$source);
+	my $before = $self->{before};
+	$self->_apply_theme($before);
 
-	my $tree      = $self->{tree};
-	my $root_node = $tree->AddRoot(
-		Wx::gettext('Changes:'),
-		-1,
-		-1,
-	);
+	my $after = $self->{after};
+	$self->_apply_theme($after);
+
+	$before->SetText($$source);
+	$after->SetText($$source);
+
+	my $tree = $self->{tree};
+	my $root_node = $tree->AddRoot( Wx::gettext('Changes:'), -1, -1, );
 
 	foreach my $change (@$changes) {
 		my $change_node = $tree->AppendItem(
-			$root_node,
-			$change->{name},
-			-1, -1,
+			$root_node, $change->{name}, -1, -1,
 			Wx::TreeItemData->new($change)
 		);
 
@@ -68,21 +60,47 @@ sub run {
 	return;
 }
 
-sub on_tree_selection_changed {
-	my $self    = shift;
-	my $event   = shift;
-	my $tree    = $self->{tree};
-	my $item    = $event->GetItem or return;
-	my $data = $tree->GetPlData($item) or return;
-	
-	say $data->{name};
-	my $preview = $self->{preview};
-	$preview->GotoPos( $data->{start} );
-	$preview->SetSelection( $data->{start}, $data->{end} );
-	
+sub _setup_editor {
+	my $self = shift;
+
+	my $editor = shift;
+	require Padre::Document;
+	$editor->{Document} = Padre::Document->new( mimetype => 'application/x-perl', );
+	$editor->{Document}->set_editor($editor);
+	$editor->SetLexer('application/x-perl');
+	$editor->Show(1);
+
 	return;
 }
 
+sub _apply_theme {
+	my $self   = shift;
+	my $editor = shift;
+
+	my $style = $self->main->config->editor_style;
+	my $theme = Padre::Wx::Theme->find($style)->clone;
+	$theme->apply($editor);
+
+	return;
+}
+
+sub on_tree_selection_changed {
+	my $self  = shift;
+	my $event = shift;
+	my $tree  = $self->{tree};
+	my $item  = $event->GetItem or return;
+	my $data  = $tree->GetPlData($item) or return;
+
+	my $before = $self->{before};
+	$before->GotoPos( $data->{start} );
+	$before->SetSelection( $data->{start}, $data->{end} );
+
+	my $after = $self->{after};
+	$after->GotoPos( $data->{start} );
+	$after->SetSelection( $data->{start}, $data->{end} );
+
+	return;
+}
 
 1;
 

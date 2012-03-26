@@ -98,7 +98,6 @@ sub show_simplify {
 	if ( scalar @changes ) {
 		require Padre::Plugin::Fix::Preview;
 		my $preview = Padre::Plugin::Fix::Preview->new( $self->main );
-		use Data::Printer; p(@changes);
 		$preview->run( \@changes, \$source );
 	} else {
 		$self->main->error("No changes to fix");
