@@ -1,17 +1,17 @@
 package Padre::Plugin::XS;
 
-# ABSTRACT: Padre support for perl XS (and perlapi)
+use Modern::Perl;
 
-use v5.8.7;
-use strict;
-use warnings;
-
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 use Padre::Wx ();
 use Padre::Current;
 
 use base 'Padre::Plugin';
+
+=head1 NAME
+
+Padre::Plugin::XS - Padre support for perl XS (and perlapi)
 
 =head1 SYNOPSIS
 
@@ -177,6 +177,14 @@ sub about {
 1;
 
 __END__
+
+=head1 AUTHORS
+
+Steffen Mueller <smueller@cpan.org>
+
+=head1 CONTRIBUTORS
+
+Ahmad M. Zawawi <ahmad.zawawi@gmail.com>
 
 =head1 ACKNOWLEDGMENTS
 

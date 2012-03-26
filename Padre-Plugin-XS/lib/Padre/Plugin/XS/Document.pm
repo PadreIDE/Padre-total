@@ -1,13 +1,11 @@
 package Padre::Plugin::XS::Document;
 
-# ABSTRACT: Padre XS Document
-
 use 5.008;
 use strict;
 use warnings;
 use Padre::Document ();
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 our @ISA = 'Padre::Document';
 
@@ -73,3 +71,7 @@ sub _load_perlapi_keywords {
 1;
 
 __END__
+
+=head1 NAME
+
+Padre::Plugin::XS::Document - A Padre Document that understands XS
