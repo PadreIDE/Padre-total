@@ -70,15 +70,13 @@ sub show_simplify {
 
 	# Pick an action
 	my @actions = (
-		Wx::gettext('Simplify quotes'),
-		Wx::gettext('Remove null statements'),
+		Wx::gettext('Simplify quotes'), Wx::gettext('Remove null statements'),
 	);
 	my $action = $self->main->multi_choice(
 		Wx::gettext('Choose Action:'),
 		Wx::gettext('Choose Action:'),
 		[@actions],
 	);
-
 
 	require PPI;
 	my $doc = PPI::Document->new( \$source );
@@ -126,25 +124,18 @@ sub simplify_quotes {
 
 		# Can be replaced by simpler thing?
 		next
-			unless ( defined $simplified_form
-			and $simplified_form ne $content );
+			unless defined $simplified_form
+				and $simplified_form ne $content;
 
 		my $start = $editor->PositionFromLine( $line - 1 ) + $col - 1;
 
 		push @changes,
 			{
-			name  => Wx::gettext('Simplify quote'),
-			start => $start,
-			end   => $start + length($content),
-			}
-
-			# # Replace with simplified form
-			# $editor->SetTargetStart($start);
-			# $editor->SetTargetEnd( $start + length($content) );
-			# $editor->ReplaceTarget($simplified_form);
-
-			# # Restore current position
-			# $editor->SetSelection( $pos, $pos );
+			name    => Wx::gettext('Simplify quote'),
+			start   => $start,
+			end     => $start + length($content),
+			content => $simplified_form,
+			};
 
 	}
 

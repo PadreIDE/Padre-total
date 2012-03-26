@@ -27,16 +27,20 @@ sub run {
 	my $changes = shift;
 	my $source  = shift;
 
-	# Apply the current theme to the preview editor
+	# Store for later usage
+	$self->{changes} = $changes;
+	$self->{source}  = $source;
 
+	# Apply the current theme to the preview editors
 	my $before = $self->{before};
+	my $after  = $self->{after};
 	$self->_apply_theme($before);
-
-	my $after = $self->{after};
 	$self->_apply_theme($after);
 
+	$before->SetReadOnly(0);
 	$before->SetText($$source);
-	$after->SetText($$source);
+	$before->SetReadOnly(1);
+	$self->_apply_changes;
 
 	my $tree = $self->{tree};
 	my $root_node = $tree->AddRoot( Wx::gettext('Changes:'), -1, -1, );
@@ -49,6 +53,8 @@ sub run {
 
 	}
 
+
+
 	$tree->ExpandAll;
 
 	if ( $self->ShowModal == Wx::ID_OK ) {
@@ -56,6 +62,23 @@ sub run {
 	} else {
 		say "Cancel";
 	}
+
+	return;
+}
+
+sub _apply_changes {
+	my $self = shift;
+
+	my $after = $self->{after};
+	$after->SetReadOnly(0);
+	$after->SetText( ${ $self->{source} } );
+	for my $change ( @{ $self->{changes} } ) {
+
+		$after->SetTargetStart( $change->{start} );
+		$after->SetTargetEnd( $change->{end} );
+		$after->ReplaceTarget( $change->{content} );
+	}
+	$after->SetReadOnly(1);
 
 	return;
 }

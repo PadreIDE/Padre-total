@@ -10,9 +10,9 @@ use 5.008005;
 use utf8;
 use strict;
 use warnings;
-use Padre::Wx ();
+use Padre::Wx             ();
 use Padre::Wx::Role::Main ();
-use Padre::Wx::Editor ();
+use Padre::Wx::Editor     ();
 
 our $VERSION = '0.01';
 our @ISA     = qw{
@@ -38,9 +38,7 @@ sub new {
 		-1,
 		Wx::gettext("Changes:"),
 	);
-	$tree_label->SetFont(
-		Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" )
-	);
+	$tree_label->SetFont( Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" ) );
 
 	$self->{tree} = Wx::TreeCtrl->new(
 		$self,
@@ -63,9 +61,7 @@ sub new {
 		-1,
 		Wx::gettext("Before:"),
 	);
-	$before_label->SetFont(
-		Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" )
-	);
+	$before_label->SetFont( Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" ) );
 
 	$self->{before} = Padre::Wx::Editor->new(
 		$self,
@@ -77,9 +73,7 @@ sub new {
 		-1,
 		Wx::gettext("After:"),
 	);
-	$after_label->SetFont(
-		Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" )
-	);
+	$after_label->SetFont( Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" ) );
 
 	$self->{after} = Padre::Wx::Editor->new(
 		$self,
@@ -120,19 +114,19 @@ sub new {
 
 	my $preview_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
 	$preview_sizer->Add( $before_sizer, 1, Wx::EXPAND, 5 );
-	$preview_sizer->Add( $after_sizer, 1, Wx::EXPAND, 5 );
+	$preview_sizer->Add( $after_sizer,  1, Wx::EXPAND, 5 );
 
 	my $button_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
 	$button_sizer->Add( 0, 0, 1, Wx::EXPAND, 5 );
-	$button_sizer->Add( $self->{ok_button}, 0, Wx::ALL, 5 );
+	$button_sizer->Add( $self->{ok_button},     0, Wx::ALL, 5 );
 	$button_sizer->Add( $self->{cancel_button}, 0, Wx::ALL, 5 );
 
 	my $sizer = Wx::BoxSizer->new(Wx::VERTICAL);
-	$sizer->Add( $tree_label, 0, Wx::EXPAND | Wx::LEFT | Wx::RIGHT | Wx::TOP, 5 );
-	$sizer->Add( $self->{tree}, 1, Wx::ALL | Wx::EXPAND, 5 );
-	$sizer->Add( $preview_sizer, 2, Wx::EXPAND, 5 );
-	$sizer->Add( $self->{static_line}, 0, Wx::EXPAND | Wx::ALL, 5 );
-	$sizer->Add( $button_sizer, 0, Wx::EXPAND, 5 );
+	$sizer->Add( $tree_label,          0, Wx::EXPAND | Wx::LEFT | Wx::RIGHT | Wx::TOP, 5 );
+	$sizer->Add( $self->{tree},        1, Wx::ALL | Wx::EXPAND,                        5 );
+	$sizer->Add( $preview_sizer,       2, Wx::EXPAND,                                  5 );
+	$sizer->Add( $self->{static_line}, 0, Wx::EXPAND | Wx::ALL,                        5 );
+	$sizer->Add( $button_sizer,        0, Wx::EXPAND,                                  5 );
 
 	$self->SetSizer($sizer);
 	$self->Layout;
