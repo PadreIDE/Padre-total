@@ -290,17 +290,34 @@ Then use it via L<Padre>, The Perl IDE.
 Once you enable this Plugin under Padre, you'll get TextMate-style TAB triggered
 snippets for the following:
 
-=over 4
+=over
 
-=item Perl
+=item * Perl
 
-=item Moose
+=item * Moose
 
-=item Mouse
+=item * Mouse
 
-=item MooseX::Declare
+=item * MooseX::Declare
 
 =back
+
+=head1 Example
+
+For those who don't who this Text mate bloke is, just try to type in Padre
+something like:
+
+ for<tab>
+ if<tab>
+ ife<tab>
+ cfor<tab>
+
+While editing the generated construct, you can type again <TAB>. Your
+cursor will be moved to the next point needing some attention in the
+generated construct.
+
+You can check the available keyword in the yaml files (perl.yml...)
+shipped with this module.
 
 =head1 BUGS
 
