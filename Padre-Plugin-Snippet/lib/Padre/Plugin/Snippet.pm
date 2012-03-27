@@ -290,6 +290,8 @@ Then use it via L<Padre>, The Perl IDE.
 Once you enable this Plugin under Padre, you'll get TextMate-style TAB triggered
 snippets for the following:
 
+=over 4
+
 =item Perl
 
 =item Moose
