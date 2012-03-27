@@ -294,6 +294,12 @@ snippets for the following:
 
 =item * Perl
 
+=item * POD
+
+=item * Html
+
+=item * MoJo
+
 =item * Moose
 
 =item * Mouse
