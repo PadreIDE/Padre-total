@@ -3,7 +3,7 @@ package Padre::Plugin::Experimento;
 use Modern::Perl;
 use Padre::Plugin ();
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 our @ISA     = 'Padre::Plugin';
 
 # Child modules we need to unload when disabled
@@ -30,6 +30,7 @@ sub menu_plugins_simple {
 	return $self->plugin_name => [
 		Wx::gettext('Move Selected Lines Up') . "\tCtrl-Shift-Up"     => sub { $self->move_selected_lines_up },
 		Wx::gettext('Move Selected Lines Down') . "\tCtrl-Shift-Down" => sub { $self->move_selected_lines_down },
+		Wx::gettext('Check POD')                                      => sub { $self->check_pod },
 		Wx::gettext('About')                                          => sub { $self->show_about },
 	];
 }
@@ -78,6 +79,40 @@ sub move_selected_lines_down {
 	} else {
 		$self->main->error( Wx::gettext('Error: Wx::Scintilla should be 0.3801 or later') );
 	}
+
+	return;
+}
+
+sub check_pod {
+	my $self = shift;
+	my $editor = $self->current->editor or return;
+
+	require Pod::Checker;
+	require IO::String;
+
+	my $checker = Pod::Checker->new;
+	my $output  = '';
+	my $out     = IO::String->new($output);
+	$checker->parse_from_file( IO::String->new( $editor->GetText ), $out );
+
+	my $num_errors = $checker->num_errors;
+	my $results;
+	if ( $num_errors == -1 ) {
+		$results = Wx::gettext('No POD in current document');
+	} else {
+		$results = sprintf( Wx::gettext("Found %s errors and %s warnings"), $num_errors, $checker->num_warnings );
+		for ( split /^/, $output ) {
+			if (/^(.+?) at line (\d+) in file \S+$/) {
+				my ( $message, $line  ) = ( $1, $2 );
+				$results .= "\nAt line $line, $message";
+			}
+		}
+	}
+
+	my $main = $self->main;
+	$main->output->SetValue($results);
+	$main->output->SetSelection( 0, 0 );
+	$main->show_output(1);
 
 	return;
 }
@@ -140,19 +175,31 @@ Once you enable this Plugin under Padre, you will be to do the following:
 
 =head2 Move selected lines up (Ctrl-Shift-Up)
 
-Move the selected lines up one line, shifting the line above after the selection. The selection will be automatically extended to the beginning of the selection's first line and the end of the seletion's last line. If nothing was selected, the line the cursor is currently at will be selected.
+Move the selected lines up one line, shifting the line above after the
+selection. The selection will be automatically extended to the
+beginning of the selection's first line and the end of the seletion's
+last line. If nothing was selected, the line the cursor is currently at
+will be selected.
 
 =head2 Move selected lines down (Ctrl-Shift-Down)
 
-Move the selected lines down one line, shifting the line below before the selection. The selection will be automatically extended to the beginning of the selection's first line and the end of the seletion's last line. If nothing was selected, the line the cursor is currently at will be selected.
+Move the selected lines down one line, shifting the line below before
+the selection. The selection will be automatically extended to the
+beginning of the selection's first line and the end of the seletion's
+last line. If nothing was selected, the line the cursor is currently at
+will be selected.
+
+=head2 Check POD
+
+Checks the current document POD and prints the results in the output panel.
 
 =head1 BUGS
 
 Please report any bugs or feature requests to
 C<bug-padre-plugin-Experimento at rt.cpan.org>, or through the web interface at 
-L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Padre-Plugin-Experimento>.  I will be
-notified, and then you'll automatically be notified of progress on your bug as
-I make changes.
+L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Padre-Plugin-Experimento>.  I
+will be notified, and then you'll automatically be notified of progress on your
+bug as I make changes.
 
 =head1 SUPPORT
 
@@ -184,7 +231,7 @@ L<http://search.cpan.org/dist/Padre-Plugin-Experimento/>
 
 =head1 SEE ALSO
 
-L<Padre>, L<PPI>
+L<Padre>, L<PPI>, L<Pod::Checker>
 
 =head1 AUTHORS
 
