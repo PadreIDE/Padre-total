@@ -191,7 +191,7 @@ will be selected.
 
 =head2 Check POD
 
-Checks the current document POD and prints the results in the output panel.
+Print the current document's POD errors and warnings in the output panel.
 
 =head1 BUGS
 
