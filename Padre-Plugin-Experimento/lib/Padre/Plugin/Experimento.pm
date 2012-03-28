@@ -30,7 +30,9 @@ sub menu_plugins_simple {
 	return $self->plugin_name => [
 		Wx::gettext('Move Selected Lines Up') . "\tCtrl-Shift-Up"     => sub { $self->move_selected_lines_up },
 		Wx::gettext('Move Selected Lines Down') . "\tCtrl-Shift-Down" => sub { $self->move_selected_lines_down },
+		'---'                                                         => undef,
 		Wx::gettext('Check POD')                                      => sub { $self->check_pod },
+		'---'                                                         => undef,
 		Wx::gettext('About')                                          => sub { $self->show_about },
 	];
 }
@@ -95,15 +97,21 @@ sub check_pod {
 	my $out     = IO::String->new($output);
 	$checker->parse_from_file( IO::String->new( $editor->GetText ), $out );
 
-	my $num_errors = $checker->num_errors;
+	my $num_errors   = $checker->num_errors;
+	my $num_warnings = $checker->num_warnings;
 	my $results;
 	if ( $num_errors == -1 ) {
 		$results = Wx::gettext('No POD in current document');
+	} elsif ( $num_errors == 0 and $num_warnings == 0 ) {
+		$results = Wx::gettext('POD check OK');
 	} else {
-		$results = sprintf( Wx::gettext("Found %s errors and %s warnings"), $num_errors, $checker->num_warnings );
+		$results = sprintf(
+			Wx::gettext("Found %s errors and %s warnings"),
+			$num_errors, $num_warnings
+		);
 		for ( split /^/, $output ) {
 			if (/^(.+?) at line (\d+) in file \S+$/) {
-				my ( $message, $line  ) = ( $1, $2 );
+				my ( $message, $line ) = ( $1, $2 );
 				$results .= "\nAt line $line, $message";
 			}
 		}
