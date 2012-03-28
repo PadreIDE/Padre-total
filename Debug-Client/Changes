@@ -1,7 +1,7 @@
-0.18_01 2012.TBA
+0.19 2012.TBA
     - bumped to 0.18_01 (BOWTIE)
-    - fix for #1415 (BOWTIE)
-    - 
+    - fix for #1415 (WHUMANN, BOWTIE)
+    - drop Carp to 1.20, for packaging (VOEGELAS)
 
 0.18    2012.03.07
     - bumped to 0.18 (BOWTIE)

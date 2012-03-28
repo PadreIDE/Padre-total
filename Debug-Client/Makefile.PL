@@ -2,7 +2,7 @@ use inc::Module::Install::DSL 1.04;
 
 all_from	lib/Debug/Client.pm
 
-requires Carp					1.23
+requires Carp					1.20
 requires IO::Socket				1.31
 requires IO::Socket::INET		1.31
 requires PadWalker				1.92

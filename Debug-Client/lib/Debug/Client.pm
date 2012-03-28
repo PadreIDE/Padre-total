@@ -4,7 +4,7 @@ use 5.008006;
 use strict;
 use warnings;
 
-our $VERSION = '0.18_02';
+our $VERSION = '0.19';
 
 use utf8;
 use IO::Socket;
@@ -20,7 +20,7 @@ Debug::Client - debugger client side code for Padre the Perl IDE
 
 =head1 VERSION
 
-This document describes Debug::Client version 0.18_02
+This document describes Debug::Client version 0.19
 
 =head1 SYNOPSIS
 
@@ -141,8 +141,8 @@ TODO: Is there any reason to separate the two?
 # new
 #######
 sub new {
-	my $class = shift; # What class are we constructing?
-	my $self  = {};    # Allocate new memory
+	my $class = shift;   # What class are we constructing?
+	my $self  = {};      # Allocate new memory
 	bless $self, $class; # Mark it of the right type
 	$self->_init(@_);    # Call _init with remaining args
 	return $self;
@@ -265,18 +265,18 @@ sub show_line {
 
 	# return $self->_send_get('.');
 	$self->_send('.');
-	my $buf = $self->_get;
+	my $buffer = $self->_get;
 
-	$self->_prompt( \$buf );
-	return $buf;
+	$self->_prompt( \$buffer );
+	return $buffer;
 }
 
 
 =head2 get_lineinfo
 
 Return the internal debugger pointer to the line last executed, 
-and generate filename and row for where are we now. 
-trying to use perl5db lineinfo in naff way,
+and generate file-name and row for where are we now. 
+trying to use perl5db line-info in naff way,
 
  $debugger->get_lineinfo();
 
@@ -290,13 +290,14 @@ to get filename and row for ide due to changes in perl5db v1.35 see perl5156delt
 =cut
 
 #######
-# Method sget_lineinf
+# Method get_lineinfo
 #######
 sub get_lineinfo {
 	my $self = shift;
 
 	$self->_send('.');
-	my $buf = $self->_get;
+	# my $buffer = $self->_get;
+	$self->_get;
 
 	$self->{buffer} =~ m{^[\w:]*				# module
 						(?:CODE\(.*\))* 		# catch CODE(0x9b434a8)
@@ -327,10 +328,10 @@ sub show_view {
 
 	# return $self->_send_get('.');
 	$self->_send('v');
-	my $buf = $self->_get;
+	my $buffer = $self->_get;
 
-	$self->_prompt( \$buf );
-	return $buf;
+	$self->_prompt( \$buffer );
+	return $buffer;
 }
 
 
@@ -394,13 +395,13 @@ sub step_out {
 	return ('Warning: Must call step_out in list context') if not wantarray;
 
 	$self->_send('r');
-	my $buf = $self->_get;
+	my $buffer = $self->_get;
 
-	$self->_prompt( \$buf );
-	my @line = $self->_process_line( \$buf );
+	$self->_prompt( \$buffer );
+	my @line = $self->_process_line( \$buffer );
 	my $ret;
 	my $context;
-	if ( $buf =~ /^(scalar|list) context return from (\S+):\s*(.*)/s ) {
+	if ( $buffer =~ /^(scalar|list) context return from (\S+):\s*(.*)/s ) {
 		$context = $1;
 		$ret     = $3;
 	}
@@ -418,14 +419,14 @@ when called in array context.
 
 =cut
 
-#T Produce a stack backtrace.
+#T Produce a stack back-trace.
 sub get_stack_trace {
 	my ($self) = @_;
 	$self->_send('T');
-	my $buf = $self->_get;
+	my $buffer = $self->_get;
 
-	$self->_prompt( \$buf );
-	return $buf;
+	$self->_prompt( \$buffer );
+	return $buffer;
 }
 
 =head2 toggle_trace
@@ -443,10 +444,10 @@ sub toggle_trace {
 	my ($self) = @_;
 
 	$self->_send('t');
-	my $buf = $self->_get;
+	my $buffer = $self->_get;
 
-	$self->_prompt( \$buf );
-	return $buf;
+	$self->_prompt( \$buffer );
+	return $buffer;
 }
 
 =head2 list_subroutine_names
@@ -468,10 +469,10 @@ sub list_subroutine_names {
 		$self->_send('S');
 	}
 
-	my $buf = $self->_get;
+	my $buffer = $self->_get;
 
-	$self->_prompt( \$buf );
-	return $buf;
+	$self->_prompt( \$buffer );
+	return $buffer;
 }
 
 =head2 run
@@ -513,21 +514,24 @@ sub set_breakpoint {
 
 	# if it was successful no reply
 	# if it failed we saw two possible replies
-	my $buf = $self->_get;
+	my $buffer = $self->_get;
 
-	my $prompt = $self->_prompt( \$buf );
-	if ( $buf =~ /^Subroutine [\w:]+ not found\./ ) {
+	my $prompt = $self->_prompt( \$buffer );
+	if ( $buffer =~ /^Subroutine [\w:]+ not found\./ ) {
 
 		# failed
 		return 0;
-	} elsif ( $buf =~ /^Line \d+ not breakable\./ ) {
+	} elsif ( $buffer =~ /^Line \d+ not breakable\./ ) {
 
-		# faild to set on line number
+		# failed to set on line number
 		return 0;
-	} elsif ( $buf =~ /\S/ ) {
-		return 0;
-	}
+	} elsif ( $buffer =~ /^\d+ levels deep in subroutine calls!/ ) {
 
+		# failed
+		return 0;
+	} elsif ( $buffer =~ /\S/ ) {
+		return 0;
+	} 
 	return 1;
 }
 
@@ -545,7 +549,7 @@ sub remove_breakpoint {
 	my $b = $self->_get;
 
 	$self->_send("B $line");
-	my $buf = $self->_get;
+	my $buffer = $self->_get;
 	return 1;
 }
 
@@ -594,8 +598,8 @@ sub list_break_watch_action {
 		return $ret;
 	}
 
-	my $buf    = $self->buffer;
-	my $prompt = $self->_prompt( \$buf );
+	my $buffer    = $self->buffer;
+	my $prompt = $self->_prompt( \$buffer );
 
 	my @breakpoints;
 	my %bp;
@@ -604,16 +608,16 @@ sub list_break_watch_action {
 	my $CODE = qr{.*}s;
 	my $COND = qr{1};       ## TODO !!!
 
-	while ($buf) {
-		if ( $buf =~ s{^($PATH):\s*($LINE):\s*($CODE)\s+break if \(($COND)\)s*}{} ) {
-			my %bp = (
+	while ($buffer) {
+		if ( $buffer =~ s{^($PATH):\s*($LINE):\s*($CODE)\s+break if \(($COND)\)s*}{} ) {
+			%bp = (
 				file => $1,
 				line => $2,
 				cond => $4,
 			);
 			push @breakpoints, \%bp;
 		} else {
-			carp "No breakpoint found in '$buf'";
+			carp "No breakpoint found in '$buffer'";
 		}
 	}
 
@@ -637,20 +641,20 @@ sub get_value {
 
 	if ( not defined $var ) {
 		$self->_send('p');
-		my $buf = $self->_get;
-		$self->_prompt( \$buf );
-		return $buf;
+		my $buffer = $self->_get;
+		$self->_prompt( \$buffer );
+		return $buffer;
 	} elsif ( $var =~ /\@/ or $var =~ /\%/ ) {
 		$self->_send("x \\$var");
-		my $buf = $self->_get;
-		$self->_prompt( \$buf );
-		my $data_ref = _parse_dumper($buf);
+		my $buffer = $self->_get;
+		$self->_prompt( \$buffer );
+		my $data_ref = _parse_dumper($buffer);
 		return $data_ref;
 	} else {
 		$self->_send("p $var");
-		my $buf = $self->_get;
-		$self->_prompt( \$buf );
-		return $buf;
+		my $buffer = $self->_get;
+		$self->_prompt( \$buffer );
+		return $buffer;
 	}
 }
 
@@ -678,9 +682,9 @@ sub get_p_exp {
 	my ( $self, $exp ) = @_;
 
 	$self->_send("p $exp");
-	my $buf = $self->_get;
-	$self->_prompt( \$buf );
-	return $buf;
+	my $buffer = $self->_get;
+	$self->_prompt( \$buffer );
+	return $buffer;
 }
 
 =head2 get_y_zero
@@ -689,7 +693,7 @@ From perldebug, but defaulted to y 0
 
  y [level [vars]]
 
-Display all (or some) lexical variables (mnemonic: mY variables) in the current 
+Display all (or some) lexical variables (mnemonic: my variables) in the current 
 scope or level scopes higher. You can limit the variables that you see with vars 
 which works exactly as it does for the V and X commands. Requires the PadWalker 
 module version 0.08 or higher; will warn if this isn't installed. 
@@ -706,9 +710,9 @@ sub get_y_zero {
 	my $self = shift;
 
 	$self->_send("y 0");
-	my $buf = $self->_get;
-	$self->_prompt( \$buf );
-	return $buf;
+	my $buffer = $self->_get;
+	$self->_prompt( \$buffer );
+	return $buffer;
 }
 
 =head2 get_v_vars
@@ -735,9 +739,9 @@ sub get_v_vars {
 	} else {
 		$self->_send('V');
 	}
-	my $buf = $self->_get;
-	$self->_prompt( \$buf );
-	return $buf;
+	my $buffer = $self->_get;
+	$self->_prompt( \$buffer );
+	return $buffer;
 }
 
 =head2 get_x_vars
@@ -760,9 +764,9 @@ sub get_x_vars {
 		$self->_send('X');
 	}
 
-	my $buf = $self->_get;
-	$self->_prompt( \$buf );
-	return $buf;
+	my $buffer = $self->_get;
+	$self->_prompt( \$buffer );
+	return $buffer;
 }
 
 =head2 get_h_var
@@ -786,10 +790,10 @@ sub get_h_var {
 		$self->_send('h');
 	}
 
-	my $buf = $self->_get;
-	$buf =~ s/(\e\[4m|\e\[24m|\e\[1m|\e\[0m)//mg;
-	$self->_prompt( \$buf );
-	return $buf;
+	my $buffer = $self->_get;
+	$buffer =~ s/(\e\[4m|\e\[24m|\e\[1m|\e\[0m)//mg;
+	$self->_prompt( \$buffer );
+	return $buffer;
 }
 
 =head2 set_option
@@ -802,7 +806,7 @@ o anyoption? ...
 Print out the value of one or more options.
 o option=value ...
 
-Set the value of one or more options. If the value has internal whitespace, it should be quoted. For example, you could set o pager="less -MQeicsNfr" to call less with those specific options. You may use either single or double quotes, but if you do, you must escape any embedded instances of same sort of quote you began with, as well as any escaping any escapes that immediately precede that quote but which are not meant to escape the quote itself. In other words, you follow single-quoting rules irrespective of the quote; eg: o option='this isn\'t bad' or o option="She said, \"Isn't it?\"" .
+Set the value of one or more options. If the value has internal white-space, it should be quoted. For example, you could set o pager="less -MQeicsNfr" to call less with those specific options. You may use either single or double quotes, but if you do, you must escape any embedded instances of same sort of quote you began with, as well as any escaping any escapes that immediately precede that quote but which are not meant to escape the quote itself. In other words, you follow single-quoting rules irrespective of the quote; eg: o option='this isn\'t bad' or o option="She said, \"Isn't it?\"" .
 
 For historical reasons, the =value is optional, but defaults to 1 only where it is safe to do so--that is, mostly for Boolean options. It is always better to assign a specific value using = . The option can be abbreviated, but for clarity probably should not be. Several options can be set together. See Configurable Options for a list of these.
 
@@ -821,9 +825,9 @@ sub set_option {
 	}
 
 	$self->_send("o $option");
-	my $buf = $self->_get;
-	$self->_prompt( \$buf );
-	return $buf;
+	my $buffer = $self->_get;
+	$self->_prompt( \$buffer );
+	return $buffer;
 
 }
 
@@ -844,9 +848,9 @@ sub get_options {
 	my $self = shift;
 
 	$self->_send('o');
-	my $buf = $self->_get;
-	$self->_prompt( \$buf );
-	return $buf;
+	my $buffer = $self->_get;
+	$self->_prompt( \$buffer );
+	return $buffer;
 
 }
 
@@ -868,14 +872,14 @@ in the editor. $module is just the name of the module in which the current execu
 sub get {
 	my ($self) = @_;
 
-	my $buf = $self->_get;
+	my $buffer = $self->_get;
 
 	if (wantarray) {
-		$self->_prompt( \$buf );
-		my ( $module, $file, $row, $content ) = $self->_process_line( \$buf );
+		$self->_prompt( \$buffer );
+		my ( $module, $file, $row, $content ) = $self->_process_line( \$buffer );
 		return ( $module, $file, $row, $content );
 	} else {
-		return $buf;
+		return $buffer;
 	}
 }
 
@@ -924,6 +928,7 @@ sub module {
 
 	return $self->{module};
 }
+
 #########################################
 #### Internal Methods
 #######
@@ -934,24 +939,24 @@ sub _get {
 	my ($self) = @_;
 
 	#my $remote_host = gethostbyaddr($sock->sockaddr(), AF_INET) || 'remote';
-	my $buf = q{};
+	my $buffer = q{};
 	my $ret;
-	while ( $buf !~ /DB<\d+>/ ) {
-		$ret = $self->{new_sock}->sysread( $buf, 1024, length $buf );
+	while ( $buffer !~ /DB<\d+>/ ) {
+		$ret = $self->{new_sock}->sysread( $buffer, 1024, length $buffer );
 		if ( not defined $ret ) {
 			carp $!; # TODO better error handling?
 		}
 
-		# _logger("---- ret '$ret'\n$buf\n---");
+		# _logger("---- ret '$ret'\n$buffer\n---");
 		if ( not $ret ) {
 			last;
 		}
 	}
-	_logger("---- ret $ret\n$buf\n---");
+	_logger("---- ret $ret\n$buffer\n---");
 	_logger("_get done");
 
-	$self->{buffer} = $buf;
-	return $buf;
+	$self->{buffer} = $buffer;
+	return $buffer;
 }
 
 #######
@@ -984,7 +989,7 @@ sub _parse_dumper {
 #    $content   is the content of the current row
 # see 00-internal.t for test cases
 sub _process_line {
-	my ( $self, $buf ) = @_;
+	my ( $self, $buffer ) = @_;
 
 	my $line    = BLANK;
 	my $module  = BLANK;
@@ -992,17 +997,17 @@ sub _process_line {
 	my $row     = BLANK;
 	my $content = BLANK;
 
-	if ( not defined $buf or not ref $buf or ref $buf ne 'SCALAR' ) {
+	if ( not defined $buffer or not ref $buffer or ref $buffer ne 'SCALAR' ) {
 		carp('_process_line should be called with a reference to a scalar');
 	}
 
-	if ( $$buf =~ /Debugged program terminated/ ) {
+	if ( $$buffer =~ /Debugged program terminated/ ) {
 		$module = '<TERMINATED>';
 		$self->{module} = $module;
 		return $module;
 	}
 
-	my @parts = split /\n/, $$buf;
+	my @parts = split /\n/, $$buffer;
 
 
 	$line = pop @parts;
@@ -1010,7 +1015,7 @@ sub _process_line {
 	#TODO $line is where all CPAN_Testers errors come from try to debug some test reports
 	# http://www.nntp.perl.org/group/perl.cpan.testers/2009/12/msg6542852.html
 	if ( not defined $line ) {
-		croak("Debug::Client: Line is undef. Buffer is $$buf");
+		croak("Debug::Client: Line is undef. Buffer is $$buffer");
 	}
 
 	# _logger("Line1: $line");
@@ -1023,7 +1028,7 @@ sub _process_line {
 		}
 	}
 
-	$$buf = join "\n", @parts;
+	$$buffer = join "\n", @parts;
 
 	if ($line =~ m{^([\w:]*) 			# module
                   \( ([^\)]*):(\d+) \) 	# (file:row)
@@ -1065,22 +1070,22 @@ sub _process_line {
 #######
 # It takes one argument which is a reference to a scalar that contains the
 # the text sent by the debugger.
-# Extracts and prompt that looks like this:   DB<3> $
+# Extracts a prompt that looks like this:   DB<3> $
 # puts the number from the prompt in $self->{prompt} and also returns it.
 # See 00-internal.t for test cases
 sub _prompt {
-	my ( $self, $buf ) = @_;
+	my ( $self, $buffer ) = @_;
 
-	if ( not defined $buf or not ref $buf or ref $buf ne 'SCALAR' ) {
+	if ( not defined $buffer or not ref $buffer or ref $buffer ne 'SCALAR' ) {
 		croak('_prompt should be called with a reference to a scalar');
 	}
 
 	my $prompt;
-	if ( $$buf =~ s/\s*DB<(\d+)>\s*$// ) {
+	if ( $$buffer =~ s/\s*DB<(\d+)>\s*$// ) {
 		$prompt = $1;
 		_logger("prompt: $prompt");
 	}
-	chomp($$buf);
+	chomp($$buffer);
 
 	return $self->{prompt} = $prompt;
 }
@@ -1114,12 +1119,13 @@ sub __send {
 	my ( $self, $input ) = @_;
 	$self->_send($input);
 
-	my $buf = $self->_get;
+	my $buffer = $self->_get;
 
-	$self->_prompt( \$buf );
+	$self->_prompt( \$buffer );
 
-	return $buf;
+	return $buffer;
 }
+
 #######
 # Internal Method __send_np
 # hidden undocumented
@@ -1128,9 +1134,9 @@ sub __send_np {
 	my ( $self, $input ) = @_;
 	$self->_send($input);
 
-	my $buf = $self->_get;
+	my $buffer = $self->_get;
 
-	return $buf;
+	return $buffer;
 }
 
 1;
@@ -1159,19 +1165,23 @@ and just performing c on it's own
 
 =head1 INTERNAL METHODS
 
-=head3 _get
+=over 4
 
-=head3 _logger
+=item * _get
 
-=head3 _parse_dumper
+=item * _logger
 
-=head3 _process_line
+=item * _parse_dumper
 
-=head3 _prompt
+=item * _process_line
 
-=head3 _send
+=item * _prompt
 
-=head3 _send_get
+=item * _send
+
+=item * _send_get
+
+=back
 
 =head1 AUTHORS
 
