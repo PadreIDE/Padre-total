@@ -1,8 +1,10 @@
-0.19 2012.TBA
-    - bumped to 0.18_01 (BOWTIE)
+0.19    2012.TBA
     - fix for #1415 (WHUMANN, BOWTIE)
-    - drop Carp to 1.20, for packaging (VOEGELAS)
+    - drop Carp to 1.20, packaging request (VOEGELAS)
     - add a README (BOWTIE)
+    - remove dead code (BOWTIE)
+    - re-factor some variables and tidy up (BOWTIE)
+    - fix p|x to display $tring refs x \$tring (BOWTIE)
 
 0.18    2012.03.07
     - bumped to 0.18 (BOWTIE)

@@ -1,6 +1,6 @@
 use 5.008006;
 use Test::More;
-plan( tests => 43 );
+plan( tests => 42 );
 
 use_ok( 'Carp',                 '1.23' );
 use_ok( 'IO::Socket',           '1.31' );
@@ -22,7 +22,7 @@ use_ok( 'File::Spec',    '3.33' );
 ######
 
 my @subs = qw( buffer filename get get_h_var get_lineinfo get_options get_p_exp
-	get_stack_trace get_v_vars get_value get_x_vars get_y_zero list_break_watch_action
+	get_stack_trace get_v_vars get_value get_x_vars get_y_zero 
 	list_subroutine_names listener module new quit remove_breakpoint row run
 	set_breakpoint set_option show_breakpoints show_line show_view show_line step_in step_over
 	toggle_trace );

@@ -57,7 +57,7 @@ my $perl5db_ver;
 	SKIP: {
 		skip( "perl5db v$perl5db_ver dose not support list context", 1 ) unless $perl5db_ver < 1.35;
 		my @out = $debugger->step_out;
-		cmp_deeply( \@out, [ 'main::', 't/eg/03-return.pl', 8, '$x++;', "'foo\nbar'" ], 'line 8' )
+		cmp_deeply( \@out, [ 'main::', 't/eg/03-return.pl', 8, '$x++;', ], 'line 8' )
 			or diag( $debugger->buffer );
 	}
 }
@@ -86,8 +86,7 @@ my $perl5db_ver;
 1  'foo
 bar'
 2  'moo');
-
-		cmp_deeply( \@out, [ 'main::', 't/eg/03-return.pl', 10, '$x++;', $expected ], 'line 10' )
+		cmp_deeply( \@out, [ 'main::', 't/eg/03-return.pl', 10, '$x++;' ], 'line 10' )
 			or diag( $debugger->buffer );
 	}
 }

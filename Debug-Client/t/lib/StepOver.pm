@@ -23,11 +23,11 @@ sub stepover : Test(3) {
 	$self->{debugger}->run(8);
 
 	my @out = $self->{debugger}->step_over;
+
 	SKIP: {
 		skip( "perl5db $] dose not support c [line|sub]", 1 ) if $] =~ m/5.01500(3|4|5)/;
 		SKIP: {
 			skip( "perl5db v$self->{perl5db_ver} dose not support list context", 1 ) if $self->{perl5db_ver} == 1.35;
-			# cmp_deeply( \@out, [ 'main::', 't/eg/02-sub.pl', 9, 'my $z = $x + $y;', 242 ], 'step_out to line 9' );
 			cmp_deeply( \@out, [ 'main::', 't/eg/02-sub.pl', 9, 'my $z = $x + $y;' ], 'stepover line 9' );
 		}
 	}

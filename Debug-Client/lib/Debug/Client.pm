@@ -30,6 +30,7 @@ sub new {
 #######
 sub _init {
 	my ( $self, %args ) = @_;
+
 	$self->{local_host} = $args{host} ? $args{host} : 'localhost';
 	$self->{local_port} = $args{port} ? $args{port} : 24642;
 
@@ -73,7 +74,8 @@ sub listener {
 # Method buffer
 #######
 sub buffer {
-	my ($self) = @_;
+	my $self = shift;
+
 	return $self->{buffer};
 }
 
@@ -82,6 +84,7 @@ sub buffer {
 #######
 sub quit {
 	my $self = shift;
+
 	return $self->_send('q');
 }
 
@@ -91,12 +94,11 @@ sub quit {
 sub show_line {
 	my $self = shift;
 
-	# return $self->_send_get('.');
 	$self->_send('.');
-	my $buffer = $self->_get;
+	$self->_get;
+	$self->_prompt;
 
-	$self->_prompt( \$buffer );
-	return $buffer;
+	return $self->{buffer};
 }
 
 #######
@@ -106,14 +108,11 @@ sub get_lineinfo {
 	my $self = shift;
 
 	$self->_send('.');
-	# my $buffer = $self->_get;
 	$self->_get;
-
 	$self->{buffer} =~ m{^[\w:]*				# module
 						(?:CODE\(.*\))* 		# catch CODE(0x9b434a8)
 						\( ([^\)]*):(\d+) \)	# (file):(row)
                                     }mx;
-
 	$self->{filename} = $1;
 	$self->{row}      = $2;
 
@@ -126,12 +125,11 @@ sub get_lineinfo {
 sub show_view {
 	my $self = shift;
 
-	# return $self->_send_get('.');
 	$self->_send('v');
-	my $buffer = $self->_get;
+	$self->_get;
+	$self->_prompt;
 
-	$self->_prompt( \$buffer );
-	return $buffer;
+	return $self->{buffer};
 }
 
 #######
@@ -139,6 +137,7 @@ sub show_view {
 #######
 sub step_in {
 	my $self = shift;
+
 	return $self->_send_get('s');
 }
 
@@ -147,37 +146,32 @@ sub step_in {
 #######
 sub step_over {
 	my $self = shift;
+
 	return $self->_send_get('n');
 }
 
+#######
+# Method step_out
+#######
 sub step_out {
-	my ($self) = @_;
+	my $self = shift;
 
 	return ('Warning: Must call step_out in list context') if not wantarray;
 
-	$self->_send('r');
-	my $buffer = $self->_get;
-
-	$self->_prompt( \$buffer );
-	my @line = $self->_process_line( \$buffer );
-	my $ret;
-	my $context;
-	if ( $buffer =~ /^(scalar|list) context return from (\S+):\s*(.*)/s ) {
-		$context = $1;
-		$ret     = $3;
-	}
-
-	return ( @line, $ret );
+	return $self->_send_get('r');
 }
 
-#T Produce a stack back-trace.
+#######
+# Accessor Method get_stack_trace
+#######
 sub get_stack_trace {
 	my ($self) = @_;
-	$self->_send('T');
-	my $buffer = $self->_get;
 
-	$self->_prompt( \$buffer );
-	return $buffer;
+	$self->_send('T');
+	$self->_get;
+	$self->_prompt;
+
+	return $self->{buffer};
 }
 
 #######
@@ -187,10 +181,10 @@ sub toggle_trace {
 	my ($self) = @_;
 
 	$self->_send('t');
-	my $buffer = $self->_get;
+	$self->_get;
+	$self->_prompt;
 
-	$self->_prompt( \$buffer );
-	return $buffer;
+	return $self->{buffer};
 }
 
 #######
@@ -205,63 +199,72 @@ sub list_subroutine_names {
 		$self->_send('S');
 	}
 
-	my $buffer = $self->_get;
+	$self->_get;
+	$self->_prompt;
 
-	$self->_prompt( \$buffer );
-	return $buffer;
+	return $self->{buffer};
 }
 
+#######
+# sub run
+#######
 sub run {
 	my ( $self, $param ) = @_;
-	if ( not defined $param ) {
-		return $self->_send_get('c');
-	} else {
-		return $self->_send_get("c $param");
-	}
 
+	if ( defined $param ) {
+		return $self->_send_get("c $param");
+	} else {
+		return $self->_send_get('c');
+	}
 }
 
+#######
+# sub set_breakpoint
+#######
 sub set_breakpoint {
 	my ( $self, $file, $line, $cond ) = @_;
 
 	$self->_send("f $file");
-
-	my $b = $self->_get;
+	$self->_get;
 
 	$self->_send("b $line");
+	$self->_get;
+
+	$self->_prompt;
 
 	# if it was successful no reply
-	# if it failed we saw two possible replies
-	my $buffer = $self->_get;
 
-	my $prompt = $self->_prompt( \$buffer );
-	if ( $buffer =~ /^Subroutine [\w:]+ not found\./ ) {
+	if ( $self->{buffer} =~ /^Subroutine [\w:]+ not found\./ ) {
 
 		# failed
 		return 0;
-	} elsif ( $buffer =~ /^Line \d+ not breakable\./ ) {
+	} elsif ( $self->{buffer} =~ /^Line \d+ not breakable\./ ) {
 
 		# failed to set on line number
 		return 0;
-	} elsif ( $buffer =~ /^\d+ levels deep in subroutine calls!/ ) {
+	} elsif ( $self->{buffer} =~ /^\d+ levels deep in subroutine calls!/ ) {
 
 		# failed
 		return 0;
-	} elsif ( $buffer =~ /\S/ ) {
+	} elsif ( $self->{buffer} =~ /\S/ ) {
 		return 0;
-	} 
+	}
 	return 1;
 }
 
+#######
+# method remove_breakpoint
+#######
 # apparently no clear success/error report for this
 sub remove_breakpoint {
 	my ( $self, $file, $line ) = @_;
 
 	$self->_send("f $file");
-	my $b = $self->_get;
+	$self->_get;
 
 	$self->_send("B $line");
-	my $buffer = $self->_get;
+	$self->_get;
+
 	return 1;
 }
 
@@ -269,67 +272,40 @@ sub remove_breakpoint {
 # show_breakpoints
 #######
 sub show_breakpoints {
-	my ($self) = @_;
+	my $self = shift;
 
-	my $ret = $self->_send_get('L');
-
-	return $ret;
-}
-
-sub list_break_watch_action {
-	my ($self) = @_;
-
-	my $ret = $self->_send_get('L');
-	if ( not wantarray ) {
-		return $ret;
-	}
-
-	my $buffer    = $self->buffer;
-	my $prompt = $self->_prompt( \$buffer );
-
-	my @breakpoints;
-	my %bp;
-	my $PATH = qr{[\w./-]+};
-	my $LINE = qr{\d+};
-	my $CODE = qr{.*}s;
-	my $COND = qr{1};       ## TODO !!!
-
-	while ($buffer) {
-		if ( $buffer =~ s{^($PATH):\s*($LINE):\s*($CODE)\s+break if \(($COND)\)s*}{} ) {
-			%bp = (
-				file => $1,
-				line => $2,
-				cond => $4,
-			);
-			push @breakpoints, \%bp;
-		} else {
-			carp "No breakpoint found in '$buffer'";
-		}
-	}
-
-	return ( $prompt, \@breakpoints );
+	return $self->_send_get('L');
 }
 
 # TODO if the given $x is a reference then something (either this module or its user) should actually call x $var
+#######
+# Accessor get_value
+#######
 sub get_value {
 	my ( $self, $var ) = @_;
 
 	if ( not defined $var ) {
 		$self->_send('p');
-		my $buffer = $self->_get;
-		$self->_prompt( \$buffer );
-		return $buffer;
+		$self->_get;
+		$self->_prompt;
+		return $self->{buffer};
 	} elsif ( $var =~ /\@/ or $var =~ /\%/ ) {
 		$self->_send("x \\$var");
-		my $buffer = $self->_get;
-		$self->_prompt( \$buffer );
-		my $data_ref = _parse_dumper($buffer);
-		return $data_ref;
+		$self->_get;
+		$self->_prompt;
+		return $self->{buffer};
 	} else {
 		$self->_send("p $var");
-		my $buffer = $self->_get;
-		$self->_prompt( \$buffer );
-		return $buffer;
+		$self->_get;
+		$self->_prompt;
+		if ( $self->{buffer} =~ m/^(?:HASH|ARRAY)/ ) {
+			$self->_send("x \\$var");
+			$self->_get;
+			$self->_prompt;
+			return $self->{buffer};
+		} else {
+			return $self->{buffer};
+		}
 	}
 }
 
@@ -340,9 +316,10 @@ sub get_p_exp {
 	my ( $self, $exp ) = @_;
 
 	$self->_send("p $exp");
-	my $buffer = $self->_get;
-	$self->_prompt( \$buffer );
-	return $buffer;
+	$self->_get;
+	$self->_prompt;
+
+	return $self->{buffer};
 }
 
 #######
@@ -352,9 +329,10 @@ sub get_y_zero {
 	my $self = shift;
 
 	$self->_send("y 0");
-	my $buffer = $self->_get;
-	$self->_prompt( \$buffer );
-	return $buffer;
+	$self->_get;
+	$self->_prompt;
+
+	return $self->{buffer};
 }
 
 #######
@@ -368,9 +346,10 @@ sub get_v_vars {
 	} else {
 		$self->_send('V');
 	}
-	my $buffer = $self->_get;
-	$self->_prompt( \$buffer );
-	return $buffer;
+	$self->_get;
+	$self->_prompt;
+
+	return $self->{buffer};
 }
 
 #######
@@ -385,9 +364,10 @@ sub get_x_vars {
 		$self->_send('X');
 	}
 
-	my $buffer = $self->_get;
-	$self->_prompt( \$buffer );
-	return $buffer;
+	$self->_get;
+	$self->_prompt;
+
+	return $self->{buffer};
 }
 
 #######
@@ -402,14 +382,17 @@ sub get_h_var {
 		$self->_send('h');
 	}
 
-	my $buffer = $self->_get;
-	$buffer =~ s/(\e\[4m|\e\[24m|\e\[1m|\e\[0m)//mg;
-	$self->_prompt( \$buffer );
-	return $buffer;
+	$self->_get;
+
+	#Tidy for Output Panel
+	$self->{buffer} =~ s/(\e\[4m|\e\[24m|\e\[1m|\e\[0m)//mg;
+	$self->_prompt;
+
+	return $self->{buffer};
 }
 
 #######
-# Internal Method _set_option
+# Accessor Method set_option
 #######
 sub set_option {
 	my ( $self, $option ) = @_;
@@ -419,36 +402,38 @@ sub set_option {
 	}
 
 	$self->_send("o $option");
-	my $buffer = $self->_get;
-	$self->_prompt( \$buffer );
-	return $buffer;
+	$self->_get;
+	$self->_prompt;
 
+	return $self->{buffer};
 }
-
 #######
-# Internal Method _get_options
+# Accessor Method get_options
 #######
 sub get_options {
 	my $self = shift;
 
 	$self->_send('o');
-	my $buffer = $self->_get;
-	$self->_prompt( \$buffer );
-	return $buffer;
+	$self->_get;
+	$self->_prompt;
 
+	return $self->{buffer};
 }
 
+#######
+# Method get
+#######
 sub get {
-	my ($self) = @_;
+	my $self = shift;
 
-	my $buffer = $self->_get;
+	$self->_get;
 
 	if (wantarray) {
-		$self->_prompt( \$buffer );
-		my ( $module, $file, $row, $content ) = $self->_process_line( \$buffer );
+		$self->_prompt;
+		my ( $module, $file, $row, $content ) = $self->_process_line;
 		return ( $module, $file, $row, $content );
 	} else {
-		return $buffer;
+		return $self->{buffer};
 	}
 }
 
@@ -486,7 +471,7 @@ sub module {
 #######
 # TODO shall we add a time-out and/or a number to count down the number sysread calls that return 0 before deciding it is really done
 sub _get {
-	my ($self) = @_;
+	my $self = shift;
 
 	#my $remote_host = gethostbyaddr($sock->sockaddr(), AF_INET) || 'remote';
 	my $buffer = q{};
@@ -506,7 +491,8 @@ sub _get {
 	_logger("_get done");
 
 	$self->{buffer} = $buffer;
-	return $buffer;
+
+	return $self->{buffer};
 }
 
 #######
@@ -515,14 +501,6 @@ sub _get {
 sub _logger {
 	print "LOG: $_[0]\n" if $ENV{DEBUG_LOGGER};
 	return;
-}
-
-#######
-# Internal Method _parse_dumper
-#######
-sub _parse_dumper {
-	my ($str) = @_;
-	return $str;
 }
 
 #######
@@ -539,7 +517,7 @@ sub _parse_dumper {
 #    $content   is the content of the current row
 # see 00-internal.t for test cases
 sub _process_line {
-	my ( $self, $buffer ) = @_;
+	my $self = shift;
 
 	my $line    = BLANK;
 	my $module  = BLANK;
@@ -547,25 +525,24 @@ sub _process_line {
 	my $row     = BLANK;
 	my $content = BLANK;
 
-	if ( not defined $buffer or not ref $buffer or ref $buffer ne 'SCALAR' ) {
-		carp('_process_line should be called with a reference to a scalar');
-	}
+	# if ( not defined $buffer or not ref $buffer or ref $buffer ne 'SCALAR' ) {
+	# carp('_process_line should be called with a reference to a scalar');
+	# }
 
-	if ( $$buffer =~ /Debugged program terminated/ ) {
+	if ( $self->{buffer} =~ /Debugged program terminated/ ) {
 		$module = '<TERMINATED>';
 		$self->{module} = $module;
 		return $module;
 	}
 
-	my @parts = split /\n/, $$buffer;
-
+	my @parts = split /\n/, $self->{buffer};
 
 	$line = pop @parts;
 
 	#TODO $line is where all CPAN_Testers errors come from try to debug some test reports
 	# http://www.nntp.perl.org/group/perl.cpan.testers/2009/12/msg6542852.html
 	if ( not defined $line ) {
-		croak("Debug::Client: Line is undef. Buffer is $$buffer");
+		croak("Debug::Client: Line is undef. Buffer is  $self->{buffer}");
 	}
 
 	# _logger("Line1: $line");
@@ -578,8 +555,6 @@ sub _process_line {
 		}
 	}
 
-	$$buffer = join "\n", @parts;
-
 	if ($line =~ m{^([\w:]*) 			# module
                   \( ([^\)]*):(\d+) \) 	# (file:row)
                   :\t? 					# :
@@ -591,7 +566,7 @@ sub _process_line {
 	}
 	if ( $module eq BLANK || $file eq BLANK || $row eq BLANK ) {
 
-		# 		# unless ( defined $module || defined $file || defined $row ) {
+		# unless ( defined $module || defined $file || defined $row ) {
 		my $current_file = $self->show_line();
 
 		$current_file =~ m/([\w:]*) \( (.*) : (\d+) .* /mgx;
@@ -609,6 +584,7 @@ sub _process_line {
 	$self->{module}   = $module;
 	$self->{filename} = $file;
 	$self->{row}      = $row;
+
 	return ( $module, $file, $row, $content );
 }
 
@@ -622,18 +598,20 @@ sub _process_line {
 # puts the number from the prompt in $self->{prompt} and also returns it.
 # See 00-internal.t for test cases
 sub _prompt {
-	my ( $self, $buffer ) = @_;
+	my $self = shift;
 
-	if ( not defined $buffer or not ref $buffer or ref $buffer ne 'SCALAR' ) {
-		croak('_prompt should be called with a reference to a scalar');
-	}
+	# my $buffer = $self->{buffer};
+
+	# if ( not defined $buffer or not ref $buffer or ref $buffer ne 'SCALAR' ) {
+	# croak('_prompt should be called with a reference to a scalar');
+	# }
 
 	my $prompt;
-	if ( $$buffer =~ s/\s*DB<(\d+)>\s*$// ) {
+	if ( $self->{buffer} =~ s/\s*DB<(\d+)>\s*$// ) {
 		$prompt = $1;
 		_logger("prompt: $prompt");
 	}
-	chomp($$buffer);
+	chomp $self->{buffer};
 
 	return $self->{prompt} = $prompt;
 }
@@ -654,6 +632,7 @@ sub _send {
 #######
 sub _send_get {
 	my ( $self, $input ) = @_;
+
 	$self->_send($input);
 
 	return $self->get;
@@ -661,29 +640,29 @@ sub _send_get {
 
 #######
 # Internal Method __send_padre
-# hidden undocumented
+# hidden undocumented, used for dev
 ######
 sub __send {
 	my ( $self, $input ) = @_;
+
 	$self->_send($input);
+	$self->_get;
+	$self->_prompt;
 
-	my $buffer = $self->_get;
-	$self->_prompt( \$buffer );
-
-	return $buffer;
+	return $self->{buffer};
 }
 
 #######
 # Internal Method __send_np
-# hidden undocumented
+# hidden undocumented, used for dev
 ######
 sub __send_np {
 	my ( $self, $input ) = @_;
+
 	$self->_send($input);
+	$self->_get;
 
-	my $buffer = $self->_get;
-
-	return $buffer;
+	return $self->{buffer};
 }
 
 1;
@@ -928,22 +907,6 @@ The data as (L) prints in the command line debugger.
 
  $debugger->show_breakpoints();
 
-=item list_break_watch_action
-
-In scalar context returns the list of all the breakpoints 
-and watches as a text output. The data as (L) prints in the
-command line debugger.
-
-In list context it returns the prompt number,
-and a list of hashes. Each hash has
-
-  file =>
-  line =>
-  cond => 
-
-to provide the file-name, line number and the condition of the breakpoint.
-In case of no condition the last one will be the number 1.
-
 =item get_value
 
  my $value = $debugger->get_value($x);
@@ -1073,8 +1036,6 @@ in the editor. $module is just the name of the module in which the current execu
 =item * _get
 
 =item * _logger
-
-=item * _parse_dumper
 
 =item * _process_line
 
