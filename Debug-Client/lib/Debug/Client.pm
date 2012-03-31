@@ -274,7 +274,10 @@ sub remove_breakpoint {
 sub show_breakpoints {
 	my $self = shift;
 
-	return $self->_send_get('L');
+	$self->_send('L');
+	$self->_get;
+	$self->_prompt;
+	return $self->{buffer};
 }
 
 # TODO if the given $x is a reference then something (either this module or its user) should actually call x $var
