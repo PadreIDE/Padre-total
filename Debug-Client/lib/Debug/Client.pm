@@ -14,6 +14,7 @@ use constant {
 	BLANK => qq{ },
 };
 
+# use Data::Printer { caller_info => 1, colored => 1, };
 
 #######
 # new
@@ -38,6 +39,9 @@ sub _init {
 	# $self->{porto}      = $args{porto}  ? $args{porto}  : 'tcp';
 	# $self->{listen}     = $args{listen} ? $args{listen} : SOMAXCONN;
 	# $self->{reuse_addr} = $args{reuse}	? $args{reuse}  : 1;
+
+	$self->{buffer} = undef;
+	$self->{module} = undef;
 
 	return;
 }
@@ -430,10 +434,10 @@ sub get {
 	my $self = shift;
 
 	$self->_get;
-
 	if (wantarray) {
 		$self->_prompt;
 		my ( $module, $file, $row, $content ) = $self->_process_line;
+
 		return ( $module, $file, $row, $content );
 	} else {
 		return $self->{buffer};
@@ -495,7 +499,7 @@ sub _get {
 
 	$self->{buffer} = $buffer;
 
-	return $self->{buffer};
+	return $buffer;
 }
 
 #######
@@ -521,7 +525,10 @@ sub _logger {
 # see 00-internal.t for test cases
 sub _process_line {
 	my $self = shift;
-
+	my $buffer = $self->{buffer};
+	
+	# print "inside _process_line\n";
+	
 	my $line    = BLANK;
 	my $module  = BLANK;
 	my $file    = BLANK;
@@ -532,13 +539,13 @@ sub _process_line {
 	# carp('_process_line should be called with a reference to a scalar');
 	# }
 
-	if ( $self->{buffer} =~ /Debugged program terminated/ ) {
+	if ( $buffer =~ /Debugged program terminated/ ) {
 		$module = '<TERMINATED>';
 		$self->{module} = $module;
 		return $module;
 	}
 
-	my @parts = split /\n/, $self->{buffer};
+	my @parts = split /\n/, $buffer;
 
 	$line = pop @parts;
 
@@ -602,21 +609,22 @@ sub _process_line {
 # See 00-internal.t for test cases
 sub _prompt {
 	my $self = shift;
-
 	# my $buffer = $self->{buffer};
-
-	# if ( not defined $buffer or not ref $buffer or ref $buffer ne 'SCALAR' ) {
-	# croak('_prompt should be called with a reference to a scalar');
-	# }
+	
+	# print "inside _prompt\n";
 
 	my $prompt;
 	if ( $self->{buffer} =~ s/\s*DB<(\d+)>\s*$// ) {
 		$prompt = $1;
 		_logger("prompt: $prompt");
 	}
-	chomp $self->{buffer};
 
-	return $self->{prompt} = $prompt;
+	chomp $self->{buffer};
+	$self->{prompt} = $prompt;
+	# $self->{buffer} = $buffer;
+	# p $self->{prompt};
+	# p $self->{buffer};
+	return $self->{prompt};
 }
 
 #######
