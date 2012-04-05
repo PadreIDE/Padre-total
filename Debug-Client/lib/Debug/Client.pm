@@ -797,7 +797,7 @@ TODO: Is there any reason to separate the two?
 
 =item listener
 
-listener/hearken To listen attentively; give heed.
+listener/hearken To listen attentively; give heed. See C<BUGS AND LIMITATIONS>
 
 See C<new>
 
@@ -1100,7 +1100,7 @@ Ahmad M. Zawawi E<lt>ahmad.zawawi@gmail.comE<gt>
 
 Mark Gardner E<lt>mjgardner@cpan.orgE<gt>
 
-Wolfram Humann E<lt>whumann@cpan.org<gt> 
+Wolfram Humann E<lt>whumann@cpan.orgE<gt> 
 
 =head1 COPYRIGHT
 
