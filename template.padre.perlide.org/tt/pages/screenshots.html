@@ -19,7 +19,7 @@
 	#gallery ul { list-style: none; }
 	#gallery ul li { display: inline; }
 	#gallery ul img {
-		border: 5px solid #cccccc;
+		border: 5px solid white;
 		border-width: 5px 5px 20px;
 		}
 	#gallery ul a:hover img {
@@ -36,58 +36,58 @@
 		var screenshots = [
 			{
 				title:     'Padre 0.95 on Ubuntu YAML Syntax - The YAML plugin shows a syntax error on one of our new snippet YAML files',
-				thumbnail: 'images/screenshots/Padre-Plugin-YAML_01_thumb.png',
-				image:     'images/screenshots/Padre-Plugin-YAML_01.png',
+				thumbnail: 'Padre-Plugin-YAML_01_thumb.png',
+				image:     'Padre-Plugin-YAML_01.png',
 			},
 			{
 				title:     'Padre 0.95 on Ubuntu view Unicode strings in Debugger',
-				thumbnail: 'images/screenshots/debugger_unicode_thumb.png',
-				image:     'images/screenshots/debugger_unicode.png',
+				thumbnail: 'debugger_unicode_thumb.png',
+				image:     'debugger_unicode.png',
 			},
 			{
 				title:     'Padre 0.91 Linux Turquoise Nights + Solarize dark + Swarm',
-				thumbnail: 'images/screenshots/Padre-Plugin-Swarm_01_thumb.png',
-				image:     'images/screenshots/Padre-Plugin-Swarm_01.png',
+				thumbnail: 'Padre-Plugin-Swarm_01_thumb.png',
+				image:     'Padre-Plugin-Swarm_01.png',
 			},
 			{
 				title:     'Padre 0.86, linuXMint 11, Session Load',
-				thumbnail: 'images/screenshots/Padre_Screen_Session_Load_thumb.png',
-				image:     'images/screenshots/Padre_Screen_Session_Load.png',
+				thumbnail: 'Padre_Screen_Session_Load_thumb.png',
+				image:     'Padre_Screen_Session_Load.png',
 			},
 			{
 				title:     'Padre 0.47 on Windows7 using the auto-complete-always feature',
-				thumbnail: 'images/screenshots/Padre_0.47_Win7_autocomplete_thumb.jpg',
-				image:     'images/screenshots/Padre_0.47_Win7_autocomplete.jpg',
+				thumbnail: 'Padre_0.47_Win7_autocomplete_thumb.jpg',
+				image:     'Padre_0.47_Win7_autocomplete.jpg',
 			},
 			{
 				title:     'Padre 0.46 loading a big saved session',
-				thumbnail: 'images/screenshots/Padre_loading_Session_thumb.jpg',
-				image:     'images/screenshots/Padre_loading_Session.jpg',
+				thumbnail: 'Padre_loading_Session_thumb.jpg',
+				image:     'Padre_loading_Session.jpg',
 			},
 			{
 				title:     'Padre 0.45 running on Ubuntu Netbook Remix',
-				thumbnail: 'images/screenshots/Padre_Ubuntu_Netbook_thumb.jpg',
-				image:     'images/screenshots/Padre_Ubuntu_Netbook.jpg',
+				thumbnail: 'Padre_Ubuntu_Netbook_thumb.jpg',
+				image:     'Padre_Ubuntu_Netbook.jpg',
 			},
 			{
 				title:     'Padre 0.45 running on Ubuntu',
-				thumbnail: 'images/screenshots/Padre_Ubuntu_thumb.jpg',
-				image:     'images/screenshots/Padre_Ubuntu.jpg',
+				thumbnail: 'Padre_Ubuntu_thumb.jpg',
+				image:     'Padre_Ubuntu.jpg',
 			},
 			{
 				title:     'Padre 0.41 on Linux with Directory View and the Preferences window showing the mime-type settings',
-				thumbnail: 'images/screenshots/Padre_Ubuntu_thumb.jpg',
-				image:     'images/screenshots/Padre_Ubuntu.jpg',
+				thumbnail: 'Padre_Ubuntu_thumb.jpg',
+				image:     'Padre_Ubuntu.jpg',
 			},
 			{
 				title:     'Padre 0.40 running on Microsoft Open Source Network Server 2008 64bit remote virtual machine',
-				thumbnail: 'images/screenshots/2008_x64_thumb.png',
-				image:     'images/screenshots/2008_x64.png',
+				thumbnail: '2008_x64_thumb.png',
+				image:     '2008_x64.png',
 			},
 			{
 				title:     'Padre 0.38 running on OS X Leopard',
-				thumbnail: 'images/screenshots/padre_0.38_on_osx_leopard_thumb.gif',
-				image:     'images/screenshots/padre_0.38_on_osx_leopard.gif',
+				thumbnail: 'padre_0.38_on_osx_leopard_thumb.gif',
+				image:     'padre_0.38_on_osx_leopard.gif',
 			}
 			
 		];
@@ -96,8 +96,8 @@
 		var html = '<ul>';
 		for(var i = 0; i < screenshots.length; i++) {
 			var s = screenshots[i];
-			html += '<li><a href="' + s.image + '" title="' + s.image + '">' +
-				'<img src="' + s.thumbnail + '" /></a></li>';
+			html += '<li><a href="' + s.image + '" title="' + s.title + '">' +
+				'<img src="images/screenshots/' + s.thumbnail + '" width="100" height="72"></a></li>';
 		}
 		html += '</ul>';
 		$gallery.html(html);
