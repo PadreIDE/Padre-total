@@ -11,6 +11,25 @@
 <link rel="stylesheet" href="css/lightbox/jquery.lightbox-0.5.css" type="text/css"/>
 <script type="text/javascript" src="js/lightbox/jquery.lightbox-0.5.min.js"></script>
 
+<style text="text/css">
+	#gallery {
+		padding: 10px;
+		width: 50%;
+	}
+	#gallery ul { list-style: none; }
+	#gallery ul li { display: inline; }
+	#gallery ul img {
+		border: 5px solid #cccccc;
+		border-width: 5px 5px 20px;
+		}
+	#gallery ul a:hover img {
+		border: 5px solid #808080;
+		border-width: 5px 5px 20px;
+		color: #808080;
+	}
+	#gallery ul a:hover {  color: white; }
+</style>
+
 <!-- Enable lightBox screenshots gallery -->
 <script type="text/javascript">
 	$(document).ready(function() {
@@ -73,15 +92,16 @@
 			
 		];
 		
-		var $screenshots = $('#screenshots');
-		var html = '';
+		var $gallery = $('#gallery');
+		var html = '<ul>';
 		for(var i = 0; i < screenshots.length; i++) {
 			var s = screenshots[i];
-			html += '<a href="' + s.image + '" title="' + s.image + '">' +
-				'<img src="' + s.thumbnail + '" /></a>';
+			html += '<li><a href="' + s.image + '" title="' + s.image + '">' +
+				'<img src="' + s.thumbnail + '" /></a></li>';
 		}
-		$screenshots.html(html);
-		$screenshots.lightBox({
+		html += '</ul>';
+		$gallery.html(html);
+		$gallery.lightBox({
 			fixedNavigation: true,
 			imageLoading:  'images/lightbox/lightbox-ico-loading.gif',
 			imageBtnPrev:  'images/lightbox/lightbox-btn-prev.gif',
@@ -97,7 +117,7 @@
 <h3>Videos and Screencasts</h3>
 On this page you can find static screenshots of Padre (some old and some new).
 On a separate page you can see <a href="screencasts.html">screencasts</a> showing how to use Padre.
-<div id="screenshots"></div>
 [% END %]
+<div id="gallery"></div>
 
 [% END %]
