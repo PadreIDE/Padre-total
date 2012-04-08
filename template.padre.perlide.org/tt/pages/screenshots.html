@@ -14,13 +14,33 @@
 <!-- Enable lightBox screenshots gallery -->
 <script type="text/javascript">
 	$(document).ready(function() {
-		$('#screenshots').lightBox({
+		var screenshots = [
+			{
+				title:     'Padre 0.95 on Ubuntu YAML Syntax - The YAML plugin shows a syntax error on one of our new snippet YAML files',
+				thumbnail: 'images/screenshots/Padre-Plugin-YAML_01_thumb.png',
+				image:     'images/screenshots/Padre-Plugin-YAML_01.png',
+			},
+			{
+				title:     'Padre 0.95 on Ubuntu view Unicode strings in Debugger',
+				thumbnail: 'images/screenshots/debugger_unicode_thumb.png';
+				image:     'images/screenshots/debugger_unicode.png';
+			}
+			
+		];
+		
+		my $screenshots = $('#screenshots');
+		for(var i = 0; i < screenshots.length; i++) {
+			var s = screenshots[i];
+			$screenshots.append('<a href="' + s.image + '" title="' + s.image + '">' +
+				'<img src="' + s.thumbnail + '" /></a>');
+		}
+		$screenshots.lightBox({
 			fixedNavigation: true,
-			imageLoading:  '/images/lightbox/lightbox-ico-loading.gif',
-			imageBtnPrev:  '/images/lightbox/lightbox-btn-prev.gif',
-			imageBtnNext:  '/images/lightbox/lightbox-btn-next.gif',
-			imageBtnClose: '/images/lightbox/lightbox-btn-close.gif',
-			imageBlank:    '/images/lightbox/lightbox-blank.gif',
+			imageLoading:  'images/lightbox/lightbox-ico-loading.gif',
+			imageBtnPrev:  'images/lightbox/lightbox-btn-prev.gif',
+			imageBtnNext:  'images/lightbox/lightbox-btn-next.gif',
+			imageBtnClose: 'images/lightbox/lightbox-btn-close.gif',
+			imageBlank:    'images/lightbox/lightbox-blank.gif',
 		});
 	});
 </script>
@@ -32,31 +52,8 @@ On this page you can find static screenshots of Padre (some old and some new).
 On a separate page you can see <a href="screencasts.html">screencasts</a> showing how to use Padre.
 [% END %]
 
-<div id="screenshots">
-<a href="images/screenshots/Padre-Plugin-YAML_01.png" title='Padre 0.95 on Ubuntu YAML Syntax - The YAML plugin shows a syntax error on one of our new snippet YAML files'>
-<img src="images/screenshots/Padre-Plugin-YAML_01_thumb.png" />
-</a>
-</div>
+<div id="screenshots"></div>
 
-<div class="spacer"></div>
-[% WRAPPER chrome/styled_panel %]
-<h3>Padre 0.95 on Ubuntu YAML Syntax</h3>
-The YAML plugin shows a syntax error on one of our new snippet YAML files.
-<a href="http://padre.perlide.org/trac/raw-attachment/wiki/Screenshots/Padre-Plugin-YAML_01.png">
-<img src="http://padre.perlide.org/trac/raw-attachment/wiki/Screenshots/Padre-Plugin-YAML_01.png" width="1024" height="689" border="0"/>
-</a>
-[% END %]
-
-<div class="spacer"></div>
-[% WRAPPER chrome/styled_panel %]
-<h3>Padre 0.95 on Ubuntu view Unicode strings in Debugger</h3>
-<a href="http://padre.perlide.org/trac/raw-attachment/wiki/Screenshots/debugger_unicode.png">
-<img src="http://padre.perlide.org/trac/raw-attachment/wiki/Screenshots/debugger_unicode.png" width="1024" height="743" border="0"/>
-</a>
-[% END %]
-
-<div class="spacer"></div>
-[% WRAPPER chrome/styled_panel %]
 <h3>Padre 0.91 Linux Turquoise Nights + Solarize dark + Swarm</h3>
 <a href="http://padre.perlide.org/trac/raw-attachment/wiki/Screenshots/Padre-Plugin-Swarm_01.png">
 <img src="http://padre.perlide.org/trac/raw-attachment/wiki/Screenshots/Padre-Plugin-Swarm_01.png" width="1024" height="592" border="0"/>
