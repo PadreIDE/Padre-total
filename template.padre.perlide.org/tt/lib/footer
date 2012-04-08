@@ -5,9 +5,9 @@
 <div class="footer">
 <small>
   last updated [% build_date %];
-  <a href="/contact.html">Contact us</a> -
-  <a href="/code_of_conduct.html">Code of Conduct and Diversity Statement</a> -
-  <a href="/irc.html"><acronym>IRC</acronym></a>
+  <a href="contact.html">Contact us</a> -
+  <a href="code_of_conduct.html">Code of Conduct and Diversity Statement</a> -
+  <a href="irc.html"><acronym>IRC</acronym></a>
 </small>
 </div>
 [% END %]

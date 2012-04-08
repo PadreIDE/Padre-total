@@ -22,18 +22,20 @@
 			},
 			{
 				title:     'Padre 0.95 on Ubuntu view Unicode strings in Debugger',
-				thumbnail: 'images/screenshots/debugger_unicode_thumb.png';
-				image:     'images/screenshots/debugger_unicode.png';
+				thumbnail: 'images/screenshots/debugger_unicode_thumb.png',
+				image:     'images/screenshots/debugger_unicode.png',
 			}
 			
 		];
 		
-		my $screenshots = $('#screenshots');
+		var $screenshots = $('#screenshots');
+		var html = '';
 		for(var i = 0; i < screenshots.length; i++) {
 			var s = screenshots[i];
-			$screenshots.append('<a href="' + s.image + '" title="' + s.image + '">' +
-				'<img src="' + s.thumbnail + '" /></a>');
+			html += '<a href="' + s.image + '" title="' + s.image + '">' +
+				'<img src="' + s.thumbnail + '" /></a>';
 		}
+		$screenshots.html(html);
 		$screenshots.lightBox({
 			fixedNavigation: true,
 			imageLoading:  'images/lightbox/lightbox-ico-loading.gif',
