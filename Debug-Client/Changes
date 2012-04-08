@@ -1,4 +1,4 @@
-0.19    2012.TBA
+0.19    2012.04.08
     - fix for #1415 (WHUMANN, BOWTIE)
     - drop Carp to 1.20, packaging request (VOEGELAS)
     - add a README (BOWTIE)
