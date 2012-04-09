@@ -4,7 +4,7 @@ use 5.008006;
 use strict;
 use warnings;
 
-our $VERSION = '0.19';
+our $VERSION = '0.20';
 
 use utf8;
 use IO::Socket;
@@ -688,7 +688,7 @@ Debug::Client - debugger client side code for Padre, The Perl IDE.
 
 =head1 VERSION
 
-This document describes Debug::Client version 0.19
+This document describes Debug::Client version 0.20
 
 =head1 SYNOPSIS
 

@@ -1,8 +1,8 @@
 NAME
-    Debug::Client - debugger client side code for Padre the Perl IDE
+    Debug::Client - debugger client side code for Padre, The Perl IDE.
 
 VERSION
-    This document describes Debug::Client version 0.19
+    This document describes Debug::Client version 0.20
 
 SYNOPSIS
       use Debug::Client;
@@ -55,19 +55,7 @@ SYNOPSIS
 
       $debugger->get_stack_trace
 
-    Other planned methods:
-
-      $debugger->set_breakpoint( "file", 23, COND ); # set breakpoint on file, line, on condition
-      $debugger->set_breakpoint( "file", subname, [COND] )
-
-      $debugger->set_watch
-      $debugger->remove_watch
-      $debugger->remove_breakpoint
-
-
-      $debugger->watch_variable   (to make it easy to display values of variables)
-
-  example
+  Example
       my $script = 'script_to_debug.pl';
       my @args   = ('param', 'param');
   
@@ -97,258 +85,256 @@ DESCRIPTION
     The prime use of this module is to provide debugger functionality for
     Padre 0.94+,
 
-    This should be Perl 5.16.0 ready.
+    This module should be Perl 5.16.0 ready.
 
-  new
-    The constructor can get two parameters: host and port.
+METHODS
+    new The constructor can get two parameters: host and port.
 
-      my $debugger = Debug::Client->new;
+          my $debugger = Debug::Client->new;
 
-      my $debugger = Debug::Client->new(host => 'remote.hots.com', port => 24642);
+          my $debugger = Debug::Client->new(host => 'remote.host.com', port => 24642);
 
-    Immediately after the object creation one needs to call
+        Immediately after the object creation one needs to call
 
-      $debugger->listener;
+          $debugger->listener;
 
-    TODO: Is there any reason to separate the two?
+        TODO: Is there any reason to separate the two?
 
-Warning sub listen has bean deprecated
-    Has bean deprecated since 0.13_04 and all future versions starting with
-    v0.14
+    listener
+        listener/hearken To listen attentively; give heed. See "BUGS AND
+        LIMITATIONS"
 
-    Perl::Critic Error Subroutine name is a homonym for built-in function
+        See "new"
 
-    Use $debugger->listener instead
+         $debugger->listener
 
-  listener
-    listener/hearken To listen attentively; give heed.
+    buffer
+        Returns the content of the buffer since the last command
 
-    See "new"
+          $debugger->buffer;
 
-     $debugger->listener
+    quit
+         $debugger->quit();
 
-  buffer
-    Returns the content of the buffer since the last command
+    show_line
+        . (dot)
 
-      $debugger->buffer;
+        Return the internal debugger pointer to the line last executed, and
+        print out that line.
 
-  quit
-     $debugger->quit();
+         $debugger->show_line();
 
-  show_line
-    . (dot)
+    get_lineinfo
+        Return the internal debugger pointer to the line last executed, and
+        generate file-name and row for where are we now. trying to use
+        perl5db line-info in naff way,
 
-    Return the internal debugger pointer to the line last executed, and
-    print out that line.
+         $debugger->get_lineinfo();
 
-     $debugger->show_line();
+        Then use the following as and when.
 
-  get_lineinfo
-    Return the internal debugger pointer to the line last executed, and
-    generate filename and row for where are we now. trying to use perl5db
-    lineinfo in naff way,
+         $debugger->filename;
+         $debugger->row;
 
-     $debugger->get_lineinfo();
+        to get filename and row for ide due to changes in perl5db v1.35 see
+        perl5156delta
 
-    Then use the following as and when.
+    show_view
+        v [line]
 
-     $debugger->filename;
-     $debugger->row;
+        View a few lines of code around the current line.
 
-    to get filename and row for ide due to changes in perl5db v1.35 see
-    perl5156delta
+         $debugger->show_view();
 
-  show_view
-    v [line]
+    step_in
+        s [expr]
 
-    View a few lines of code around the current line.
+        Single step. Executes until the beginning of another statement,
+        descending into subroutine calls. If an expression is supplied that
+        includes function calls, it too will be single-stepped.
 
-     $debugger->show_view();
+         $debugger->step_in();
 
-  step_in
-    s [expr]
+        Expressions not supported.
 
-    Single step. Executes until the beginning of another statement,
-    descending into subroutine calls. If an expression is supplied that
-    includes function calls, it too will be single-stepped.
+    step_over
+         $debugger->step_over();
 
-     $debugger->step_in();
+    step_out
+         my ($prompt, $module, $file, $row, $content, $return_value) = $debugger->step_out();
 
-    Expressions not supported.
+        Where $prompt is just a number, probably useless
 
-  step_over
-     $debugger->step_over();
+        $return_value will be undef if the function was called in VOID
+        context
 
-  step_out
-     my ($prompt, $module, $file, $row, $content, $return_value) = $debugger->step_out();
+        It will hold a scalar value if called in SCALAR context
 
-    Where $prompt is just a number, probably useless
+        It will hold a reference to an array if called in LIST context.
 
-    $return_value will be undef if the function was called in VOID context
+        TODO: check what happens when the return value is a reference to a
+        complex data structure or when some of the elements of the returned
+        array are themselves references
 
-    It will hold a scalar value if called in SCALAR context
+    get_stack_trace
+        Sends the stack trace command "T" to the remote debugger and returns
+        it as a string if called in scalar context. Returns the prompt
+        number and the stack trace string when called in array context.
 
-    It will hold a reference to an array if called in LIST context.
+    toggle_trace
+        Sends the stack trace command "t" Toggle trace mode.
 
-    TODO: check what happens when the return value is a reference to a
-    complex data structure or when some of the elements of the returned
-    array are themselves references
+         $debugger->toggle_trace();
 
-  get_stack_trace
-    Sends the stack trace command "T" to the remote debugger and returns it
-    as a string if called in scalar context. Returns the prompt number and
-    the stack trace string when called in array context.
+    list_subroutine_names
+        Sends the stack trace command "S" [[!]pattern] List subroutine names
+        [not] matching pattern.
 
-  toggle_trace
-    Sends the stack trace command "t" Toggle trace mode.
+    run
+          $debugger->run;
 
-     $debugger->toggle_trace();
+        Will run till the next breakpoint or watch or the end of the script.
+        (Like pressing c in the debugger).
 
-  list_subroutine_names
-    Sends the stack trace command "S" [[!]pattern] List subroutine names
-    [not] matching pattern.
+          $debugger->run($param)
 
-  run
-      $debugger->run;
+    set_breakpoint
+         $debugger->set_breakpoint($file, $line, $condition);
 
-    Will run till the next breakpoint or watch or the end of the script.
-    (Like pressing c in the debugger).
+        *$condition is not currently used*
 
-      $debugger->run($param)
+    remove_breakpoint
+         $debugger->remove_breakpoint( $self, $file, $line );
 
-  set_breakpoint
-     $debugger->set_breakpoint($file, $line, $condition);
+    show_breakpoints
+        The data as (L) prints in the command line debugger.
 
-  remove_breakpoint
-     $debugger->remove_breakpoint( $self, $file, $line );
+         $debugger->show_breakpoints();
 
-  show_breakpoints
-    The data as (L) prints in the command line debugger.
+    get_value
+         my $value = $debugger->get_value($x);
 
-     $debugger->show_breakpoints();
+        If $x is a scalar value, $value will contain that value. If it is a
+        reference to a ARRAY or HASH then $value should be the value of that
+        reference?
 
-  list_break_watch_action
-    In scalar context returns the list of all the breakpoints and watches as
-    a text output. The data as (L) prints in the command line debugger.
+    get_p_exp
+        p expr
 
-    In list context it returns the prompt number, and a list of hashes. Each
-    hash has
+        Same as print {$DB::OUT} expr in the current package. In particular,
+        because this is just Perl's own print function, this means that
+        nested data structures and objects are not dumped, unlike with the x
+        command.
 
-      file =>
-      line =>
-      cond =>
+        The DB::OUT filehandle is opened to /dev/tty, regardless of where
+        STDOUT may be redirected to. From perldebug, but defaulted to y 0
 
-    to provide the file-name, line number and the condition of the
-    breakpoint. In case of no condition the last one will be the number 1.
+          $debugger->get_p_exp();
 
-  get_value
-     my $value = $debugger->get_value($x);
+    get_y_zero
+        From perldebug, but defaulted to y 0
 
-    If $x is a scalar value, $value will contain that value. If it is a
-    reference to a SCALAR, ARRAY or HASH then $value should be the value of
-    that reference?
+         y [level [vars]]
 
-  get_p_exp
-    p expr
+        Display all (or some) lexical variables (mnemonic: my variables) in
+        the current scope or level scopes higher. You can limit the
+        variables that you see with vars which works exactly as it does for
+        the V and X commands. Requires the PadWalker module version 0.08 or
+        higher; will warn if this isn't installed. Output is pretty-printed
+        in the same style as for V and the format is controlled by the same
+        options.
 
-    Same as print {$DB::OUT} expr in the current package. In particular,
-    because this is just Perl's own print function, this means that nested
-    data structures and objects are not dumped, unlike with the x command.
+          $debugger->get_y_zero();
 
-    The DB::OUT filehandle is opened to /dev/tty, regardless of where STDOUT
-    may be redirected to. From perldebug, but defaulted to y 0
+    get_v_vars
+        V [pkg [vars]]
 
-      $debugger->get_p_exp();
+        Display all (or some) variables in package (defaulting to main )
+        using a data pretty-printer (hashes show their keys and values so
+        you see what's what, control characters are made printable, etc.).
+        Make sure you don't put the type specifier (like $ ) there, just the
+        symbol names, like this:
 
-  get_y_zero
-    From perldebug, but defaulted to y 0
+         $debugger->get_v_vars(regex);
 
-     y [level [vars]]
+    get_x_vars
+        X [vars] Same as V currentpackage [vars]
 
-    Display all (or some) lexical variables (mnemonic: mY variables) in the
-    current scope or level scopes higher. You can limit the variables that
-    you see with vars which works exactly as it does for the V and X
-    commands. Requires the PadWalker module version 0.08 or higher; will
-    warn if this isn't installed. Output is pretty-printed in the same style
-    as for V and the format is controlled by the same options.
+         $debugger->get_x_vars(regex);
 
-      $debugger->get_y_zero();
+    get_h_var
+        Enter h or `h h' for help, For more help, type h cmd_letter,
+        optional var
 
-  get_v_vars
-    V [pkg [vars]]
+         $debugger->get_h_var();
 
-    Display all (or some) variables in package (defaulting to main ) using a
-    data pretty-printer (hashes show their keys and values so you see what's
-    what, control characters are made printable, etc.). Make sure you don't
-    put the type specifier (like $ ) there, just the symbol names, like
-    this:
+    set_option
+        o booloption ...
 
-     $debugger->get_v_vars(regex);
+        Set each listed Boolean option to the value 1 . o anyoption? ...
 
-  get_x_vars
-    X [vars] Same as V currentpackage [vars]
+        Print out the value of one or more options. o option=value ...
 
-     $debugger->get_x_vars(regex);
+        Set the value of one or more options. If the value has internal
+        white-space, it should be quoted. For example, you could set o
+        pager="less -MQeicsNfr" to call less with those specific options.
+        You may use either single or double quotes, but if you do, you must
+        escape any embedded instances of same sort of quote you began with,
+        as well as any escaping any escapes that immediately precede that
+        quote but which are not meant to escape the quote itself. In other
+        words, you follow single-quoting rules irrespective of the quote;
+        eg: o option='this isn\'t bad' or o option="She said, \"Isn't it?\""
+        .
 
-  get_h_var
-    Enter h or `h h' for help, For more help, type h cmd_letter, optional
-    var
+        For historical reasons, the =value is optional, but defaults to 1
+        only where it is safe to do so--that is, mostly for Boolean options.
+        It is always better to assign a specific value using = . The option
+        can be abbreviated, but for clarity probably should not be. Several
+        options can be set together. See Configurable Options for a list of
+        these.
 
-     $debugger->get_h_var();
+         $debugger->set_option();
 
-  set_option
-    o booloption ...
+    get_options
+        o
 
-    Set each listed Boolean option to the value 1 . o anyoption? ...
+        Display all options.
 
-    Print out the value of one or more options. o option=value ...
+         $debugger->get_options();
 
-    Set the value of one or more options. If the value has internal
-    whitespace, it should be quoted. For example, you could set o
-    pager="less -MQeicsNfr" to call less with those specific options. You
-    may use either single or double quotes, but if you do, you must escape
-    any embedded instances of same sort of quote you began with, as well as
-    any escaping any escapes that immediately precede that quote but which
-    are not meant to escape the quote itself. In other words, you follow
-    single-quoting rules irrespective of the quote; eg: o option='this
-    isn\'t bad' or o option="She said, \"Isn't it?\"" .
+    get Actually I think this is an internal method....
 
-    For historical reasons, the =value is optional, but defaults to 1 only
-    where it is safe to do so--that is, mostly for Boolean options. It is
-    always better to assign a specific value using = . The option can be
-    abbreviated, but for clarity probably should not be. Several options can
-    be set together. See Configurable Options for a list of these.
+        In SCALAR context will return all the buffer collected since the
+        last command.
 
-     $debugger->set_option();
+        In LIST context will return ($prompt, $module, $file, $row,
+        $content) Where $prompt is the what the standard debugger uses for
+        prompt. Probably not too interesting. $file and $row describe the
+        location of the next instructions. $content is the actual line -
+        this is probably not too interesting as it is in the editor. $module
+        is just the name of the module in which the current execution is.
 
-  get_options
-    o
+    filename
+         $debugger->filename();
 
-    Display all options.
+    row
+         $debugger->row();
 
-     $debugger->get_options();
+    module
+         $debugger->module();
 
-  get
-    Actually I think this is an internal method....
+  Internal Methods
+    *   _get
 
-    In SCALAR context will return all the buffer collected since the last
-    command.
+    *   _logger
 
-    In LIST context will return ($prompt, $module, $file, $row, $content)
-    Where $prompt is the what the standard debugger uses for prompt.
-    Probably not too interesting. $file and $row describe the location of
-    the next instructions. $content is the actual line - this is probably
-    not too interesting as it is in the editor. $module is just the name of
-    the module in which the current execution is.
+    *   _process_line
 
-  filename
-     $debugger->filename();
+    *   _prompt
 
-  row
-     $debugger->row();
+    *   _send
 
-  module
-     $debugger->module();
+    *   _send_get
 
 BUGS AND LIMITATIONS
     Warning if you use List request you may get spurious results.
@@ -371,14 +357,15 @@ BUGS AND LIMITATIONS
 
     and just performing c on it's own
 
-INTERNAL METHODS
-   _get
-   _logger
-   _parse_dumper
-   _process_line
-   _prompt
-   _send
-   _send_get
+    *Warning sub listen has bean deprecated*
+
+    Has bean deprecated since 0.13_04 and all future versions starting with
+    v0.14
+
+    Perl::Critic Error Subroutine name is a homonym for built-in function
+
+    Use $debugger->listener instead
+
 AUTHORS
     Kevin Dawson <bowtie@cpan.org>
 
@@ -390,6 +377,8 @@ CONTRIBUTORS
     Ahmad M. Zawawi <ahmad.zawawi@gmail.com>
 
     Mark Gardner <mjgardner@cpan.org>
+
+    Wolfram Humann <whumann@cpan.org>
 
 COPYRIGHT
     Copyright 2008-2012 Gabor Szabo/Kevin Dawson

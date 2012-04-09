@@ -1,3 +1,6 @@
+0.20    2012.04.09
+    - change carp dependancy to 1.20 in test (BOWTIE)
+
 0.19    2012.04.08
     - fix for #1415 (WHUMANN, BOWTIE)
     - drop Carp to 1.20, packaging request (VOEGELAS)

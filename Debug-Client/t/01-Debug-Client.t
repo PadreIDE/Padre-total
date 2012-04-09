@@ -2,7 +2,7 @@ use 5.008006;
 use Test::More;
 plan( tests => 42 );
 
-use_ok( 'Carp',                 '1.23' );
+use_ok( 'Carp',                 '1.20' );
 use_ok( 'IO::Socket',           '1.31' );
 use_ok( 'IO::Socket::INET',     '1.31' );
 use_ok( 'PadWalker',            '1.92' );
