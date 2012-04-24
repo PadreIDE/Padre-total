@@ -17,4 +17,3 @@ homepage		http://padre.perlide.org/trac/wiki/PadrePluginSpellCheck
 bugtracker		http://padre.perlide.org/trac
 repository		http://svn.perlide.org/padre/trunk/Padre-Plugin-SpellCheck/
 install_share
-

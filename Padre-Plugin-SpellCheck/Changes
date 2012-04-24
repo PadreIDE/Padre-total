@@ -1,5 +1,5 @@
 Revision history for Padre-Plugin-SpellCheck
-1.25    2012.TBA
+1.25    2012.04.24
     - dynamic Dialogue Titles (BOWTIE)
     - Update POD, remove test code (BOWTIE)
     - implement new plugin_disable (BOWTIE)
@@ -7,6 +7,7 @@ Revision history for Padre-Plugin-SpellCheck
     - moving to p-p-xx-yy for config, 
       tides code and makes more consistent across plug-ins, 
       Padre 0.96 compatible only (BOWTIE)
+    - Tweak tests, add README (BOWTIE)
 
 1.24    2012.02.26
     - remove unwanted test for Text::Aspell installed (BOWTIE)

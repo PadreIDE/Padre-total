@@ -91,14 +91,12 @@ sub _local_aspell_dictionaries {
 		$self->{local_dictionaries_names} = \@local_dictionaries_names;
 
 		TRACE("local dictionaries names = $self->{local_dictionaries_names}") if DEBUG;
-		return;
 	}
 	catch {
 		$self->{local_dictionaries_names} = \@local_dictionaries_names;
 		$self->main->info( Wx::gettext('Text::Aspell is not installed') );
-		return;
 	};
-
+	return;
 }
 
 
@@ -147,14 +145,12 @@ sub _local_hunspell_dictionaries {
 		@local_dictionaries_names = sort @local_dictionaries_names;
 		$self->{local_dictionaries_names} = \@local_dictionaries_names;
 		TRACE("local dictionaries names = $self->{local_dictionaries_names}") if DEBUG;
-		return;
 	}
 	catch {
 		$self->{local_dictionaries_names} = \@local_dictionaries_names;
 		$self->main->info( Wx::gettext('Text::Hunspell is not installed') );
-		return;
 	};
-
+	return;
 }
 
 #######
@@ -173,11 +169,6 @@ sub _display_dictionaries {
 		$prefered_dictionary = 'Aspell';
 	};
 
-	#Todo enable after 0.96 released
-	# eval {
-	# # require Padre::Plugin;
-	# print $self->config_read->{Engine};
-	# };
 	TRACE("iso prefered_dictionary = $prefered_dictionary ") if DEBUG;
 
 	# set local_dictionaries_index to zero in case prefered_dictionary not found

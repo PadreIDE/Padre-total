@@ -1,8 +1,6 @@
 package Padre::Plugin::SpellCheck;
 
-#TODO release 1.25 after Padre 0.96
-
-use 5.008005;
+use 5.010;
 use strict;
 use warnings;
 
@@ -36,18 +34,17 @@ sub plugin_name {
 #######
 # Define Padre Interfaces required
 #######
-#ToDo change to 0.96
 sub padre_interfaces {
 	return (
-		'Padre::Plugin' => '0.94',
-		'Padre::Unload' => '0.94',
+		'Padre::Plugin' => '0.96',
+		'Padre::Unload' => '0.96',
 
 		# used by my sub packages
-		'Padre::Locale'         => '0.94',
-		'Padre::Logger'         => '0.94',
-		'Padre::Wx'             => '0.94',
-		'Padre::Wx::Role::Main' => '0.94',
-		'Padre::Util'           => '0.94',
+		'Padre::Locale'         => '0.96',
+		'Padre::Logger'         => '0.96',
+		'Padre::Wx'             => '0.96',
+		'Padre::Wx::Role::Main' => '0.96',
+		'Padre::Util'           => '0.96',
 	);
 }
 
@@ -59,7 +56,7 @@ sub menu_plugins {
 	my $main = $self->main;
 
 	# Create a manual menu item
-	my $menu_item = Wx::MenuItem->new( undef, -1, $self->plugin_name . "...\tF7 ", );
+	my $menu_item = Wx::MenuItem->new( undef, -1, $self->plugin_name . "...\tF7", );
 	Wx::Event::EVT_MENU(
 		$main,
 		$menu_item,
@@ -171,7 +168,6 @@ sub plugin_disable {
 	$self->clean_dialog;
 
 	# Unload all our child classes
-	# TODO: Switch to Padre::Unload once Padre 0.96 is released
 	for my $package (CHILDREN) {
 		require Padre::Unload;
 		Padre::Unload->unload($package);
