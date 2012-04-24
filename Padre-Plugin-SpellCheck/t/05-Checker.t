@@ -1,7 +1,7 @@
 use Test::More tests => 14;
 
-use_ok( 'Padre::Unload', '0.94' );
-use_ok( 'Padre::Logger', '0.94' );
+use_ok( 'Padre::Unload', '0.96' );
+use_ok( 'Padre::Logger', '0.96' );
 
 
 ######
