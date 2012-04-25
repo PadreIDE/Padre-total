@@ -1,6 +1,6 @@
 use Test::More tests => 6;
 
-use_ok( 'Padre::Document', '0.94' );
+use_ok( 'Padre::Document', '0.96' );
 
 
 ######

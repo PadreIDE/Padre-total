@@ -1,6 +1,6 @@
 use Test::More tests => 7;
 
-use_ok( 'Padre::Task::Syntax', '0.94' );
+use_ok( 'Padre::Task::Syntax', '0.96' );
 
 
 ######
