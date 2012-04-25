@@ -1,5 +1,6 @@
 package Padre::Plugin::SpellCheck::Checker;
 
+use v5.10;
 use warnings;
 use strict;
 
