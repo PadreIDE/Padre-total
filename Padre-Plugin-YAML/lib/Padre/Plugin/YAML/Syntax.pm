@@ -7,14 +7,14 @@ use warnings;
 use Padre::Logger;
 use Padre::Task::Syntax ();
 use Padre::Wx           ();
+use Try::Tiny;
 
 our $VERSION = '0.06';
 use parent qw(Padre::Task::Syntax);
 
 sub new {
 	my $class = shift;
-	$class->SUPER::new(@_);
-	return;
+	return $class->SUPER::new(@_);
 }
 
 sub run {
@@ -36,28 +36,26 @@ sub syntax {
 
 	TRACE("\n$text") if DEBUG;
 
-	eval {
+	try {
 		if ( $^O =~ /Win32/i )
 		{
 			require YAML;
-			YAML::Load($text);
+			YAML::Load($text);	
 		} else {
 			require YAML::XS;
 			YAML::XS::Load($text);
 		}
-	};
-	if ($@) {
-		TRACE("\nInfo: from YAML::XS::Load: $@") if DEBUG;
-		if ( $^O =~ /Win32/i ) {
-			return $self->_parse_error_win32($@);
-		} else {
-			return $self->_parse_error($@);
-		}
+		# No errors...
+		return {};	
 	}
-
-	# No errors...
-	return {};
-
+	catch {
+		TRACE("\nInfo: from YAML::XS::Load:\n $_") if DEBUG;
+		if ( $^O =~ /Win32/i ) {
+			return $self->_parse_error_win32($_);
+		} else {
+			return $self->_parse_error($_);
+		}
+	};
 }
 
 sub _parse_error {

@@ -2,7 +2,7 @@ Changes for Padre-Plugin-YAML
 0.06    2012.4.xx
     - add plugin_enable backin as we are at Padre 0.96
     - move eol.t to xt
-    -
+    - remove eval for Try-Tiny (BOWTIE)
     
 0.05    2012.3.21
     - Use old 0.03 error decode for YAML under win32 (BOWTIE)
