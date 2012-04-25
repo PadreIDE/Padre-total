@@ -1,6 +1,6 @@
 package Padre::Plugin::YAML::Syntax;
 
-use v5.10;
+use v5.10.1;
 use strict;
 use warnings;
 
@@ -51,8 +51,10 @@ sub syntax {
 	catch {
 		TRACE("\nInfo: from YAML::XS::Load:\n $_") if DEBUG;
 		if ( $^O =~ /Win32/i ) {
+			# send errors to syantax panel
 			return $self->_parse_error_win32($_);
 		} else {
+			# send errors to syantax panel
 			return $self->_parse_error($_);
 		}
 	};
@@ -75,7 +77,10 @@ sub _parse_error {
 		when (/YAML::XS::Load (\w+)\: .+/) {
 			$type = $1;
 		}
-		when (/^\s+(found.+)/) {
+		when (/^\s+(block.+)/) {
+			$message = $1;
+		}
+		when (/^\s+(cannot.+)/) {
 			$message = $1;
 		}
 		when (/^\s+(could not.+)/) {
@@ -84,7 +89,7 @@ sub _parse_error {
 		when (/^\s+(did not.+)/) {
 			$message = $1;
 		}
-		when (/^\s+(block.+)/) {
+		when (/^\s+(found.+)/) {
 			$message = $1;
 		}
 		when (/^\s+(mapping.+)/) {
@@ -109,7 +114,9 @@ sub _parse_error {
 
 	push @issues,
 		{
-		message => $message . ( defined $code ? " ( $code )" : q{} ),
+		# YAML::XS dose not produce error codes, hence we can use defined or //
+		# message => $message . ( defined $code ? " ( $code )" : q{} ),
+		message => $message . ( $code // q{} ),
 		line => $line,
 		type => $type eq 'Error' ? 'F' : 'W',
 		file => $self->{filename},
@@ -161,7 +168,6 @@ sub _parse_error_win32 {
 1;
 
 __END__
-
 
 =pod
 

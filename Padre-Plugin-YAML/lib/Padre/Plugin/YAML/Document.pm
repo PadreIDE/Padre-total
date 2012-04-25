@@ -1,6 +1,6 @@
 package Padre::Plugin::YAML::Document;
 
-use v5.10;
+use v5.10.1;
 use strict;
 use warnings;
 
