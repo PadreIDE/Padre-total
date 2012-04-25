@@ -24,7 +24,7 @@ use Padre::Locale                           ();
 use Padre::Unload                           ();
 use Padre::Plugin::SpellCheck::FBP::Checker ();
 
-our $VERSION = '1.25';
+our $VERSION = '1.26';
 our @ISA     = qw{
 	Padre::Plugin::SpellCheck::FBP::Checker
 	Padre::Plugin

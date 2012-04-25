@@ -9,7 +9,7 @@ use Padre::Unload ();
 use File::Which   ();
 use Try::Tiny;
 
-our $VERSION = '1.25';
+our $VERSION = '1.26';
 our @ISA     = 'Padre::Plugin';
 
 # Child modules we need to unload when disabled

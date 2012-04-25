@@ -1,6 +1,7 @@
 Revision history for Padre-Plugin-SpellCheck
 1.26    TBD
      - use v-string (BOWTIE)
+     - update to next version number (BOWTIE)
 
 1.25    2012.04.24
     - dynamic Dialogue Titles (BOWTIE)
