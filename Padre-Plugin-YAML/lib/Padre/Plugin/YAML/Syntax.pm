@@ -8,12 +8,13 @@ use Padre::Logger;
 use Padre::Task::Syntax ();
 use Padre::Wx           ();
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 use parent qw(Padre::Task::Syntax);
 
 sub new {
 	my $class = shift;
 	$class->SUPER::new(@_);
+	return;
 }
 
 sub run {

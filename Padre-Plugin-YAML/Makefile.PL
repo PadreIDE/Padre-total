@@ -1,4 +1,4 @@
-use 5.010001;
+#use 5.010001;
 use strict;
 use warnings;
 use inc::Module::Install;
@@ -6,7 +6,7 @@ use inc::Module::Install;
 name 'Padre-Plugin-YAML';
 all_from 'lib/Padre/Plugin/YAML.pm';
 
-requires 'Padre'     => '0.94';
+requires 'Padre'     => '0.96';
 requires 'Try::Tiny' => '0.11';
 
 if ( $^O =~ /Win32/i ) {
