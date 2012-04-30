@@ -57,7 +57,6 @@ Environment.
 Syntax highlighting for YAML is supported by Padre out of the box.
 This plug-in adds some more features to deal with YAML files.
 
-
 =head1 BUGS AND LIMITATIONS
 
 No bugs have been reported.

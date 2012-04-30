@@ -178,7 +178,7 @@ Padre::Plugin::YAML::Syntax - YAML document syntax-checking in the background
 
 =head1 VERSION
 
-This document describes Padre::Plugin::YAML::Syntax version 0.05
+This document describes Padre::Plugin::YAML::Syntax version 0.06
 
 
 =head1 DESCRIPTION

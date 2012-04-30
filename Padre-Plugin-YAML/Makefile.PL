@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use inc::Module::Install;
+use inc::Module::Install 1.06;
 
 name 'Padre-Plugin-YAML';
 all_from 'lib/Padre/Plugin/YAML.pm';

@@ -1,5 +1,5 @@
 Changes for Padre-Plugin-YAML
-0.06    2012.4.xx
+0.06    2012.4.30
     - add plugin_enable backin as we are at Padre 0.96
     - move eol.t to xt
     - remove eval for Try-Tiny 
