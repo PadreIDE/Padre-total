@@ -135,7 +135,7 @@ __END__
 
 =head1 NAME
 
-Padre::Plugin::YAML - YAML support for Padre The Perl IDE
+Padre::Plugin::YAML - YAML support for Padre, The Perl IDE.
 
 
 =head1 VERSION
