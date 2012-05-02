@@ -269,7 +269,7 @@ sub menu_plugins_simple {
 
 =head1 NAME
 
-Padre::Plugin::SpellCheck - Check spelling in Padre The Perl IDE
+Padre::Plugin::SpellCheck - Check spelling in Padre, The Perl IDE.
 
 =head1 VERSION
 

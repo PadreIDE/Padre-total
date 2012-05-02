@@ -266,7 +266,7 @@ __END__
 
 =head1 NAME
 
-Padre::Plugin::SpellCheck::Preferences - Check spelling in Padre, The Perl IDE
+Padre::Plugin::SpellCheck::Preferences - Check spelling in Padre, The Perl IDE.
 
 =head1 VERSION
 

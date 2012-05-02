@@ -172,7 +172,7 @@ __END__
 
 =head1 NAME
 
-Padre::Plugin::SpellCheck::Engine - Check spelling in Padre The Perl IDE
+Padre::Plugin::SpellCheck::Engine - Check spelling in Padre, The Perl IDE.
 
 =head1 VERSION
 
