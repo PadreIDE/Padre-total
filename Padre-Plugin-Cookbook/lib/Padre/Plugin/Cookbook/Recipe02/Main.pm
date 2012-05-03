@@ -182,7 +182,7 @@ It's a basic example of a Padre plug-in using a WxDialog.
 
 =head1 VERSION
 
-This document describes Padre::Plugin::Cookbook::Recipe02::Main version 0.14
+This document describes Padre::Plugin::Cookbook::Recipe02::Main version 0.23
 
 =head1 SUBROUTINES/METHODS
 

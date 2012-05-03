@@ -224,7 +224,7 @@ You will find more info in the companion L<wiki|http://padre.perlide.org/trac/wi
 
 =head1 VERSION
 
-This document describes Padre::Plugin::Cookbook version 0.14
+This document describes Padre::Plugin::Cookbook version 0.23
   
 =head1 DESCRIPTION
 

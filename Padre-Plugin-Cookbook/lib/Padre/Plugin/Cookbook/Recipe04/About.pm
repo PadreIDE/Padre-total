@@ -107,7 +107,7 @@ Padre::Plugin::Cookbook::Recipe04::About
 
 =head1 VERSION
 
-This document describes Padre::Plugin::Cookbook::Recipe04::About version 0.22
+This document describes Padre::Plugin::Cookbook::Recipe04::About version 0.23
 
 =head1 DESCRIPTION
 

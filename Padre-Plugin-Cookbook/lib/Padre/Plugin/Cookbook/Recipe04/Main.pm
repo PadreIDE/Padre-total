@@ -822,7 +822,7 @@ Padre::Plugin::Cookbook::Recipe04::Main
 
 =head1 VERSION
 
-This document describes Padre::Plugin::Cookbook::Recipe04::Main version 0.22
+This document describes Padre::Plugin::Cookbook::Recipe04::Main version 0.23
 
 =head1 DESCRIPTION
 
