@@ -219,8 +219,7 @@ __END__
 
 Padre::Plugin::Cookbook
 
-Cookbook contains recipes to assist you in makeing your own Padre::Plugins
-You will find more info in the companion L<wiki|http://padre.perlide.org/trac/wiki/PadrePluginDialog/> pages.
+Cookbook contains recipes to assist you in making your own Plug-ins for Padre, The Perl IDE.
 
 =head1 VERSION
 
@@ -234,13 +233,17 @@ Cookbook is just an example Padre::Plugin using a WxDialog, showing minimal requ
 
 =item * Recipe 01, Hello World what else could it be.
 
-=item * Recipe 02, Fun with widgets and a Dialog (method modifiers and event handlers).
+=item * Recipe 02, Fun with widgets and a Dialogue (method modifiers and event handlers).
 
 =item * Recipe 03, Every Plug-in needs an About Dialogue or Multiple Dialogues.
 
 =item * Recipe 04, ListCtrl or ConfigDB.
 
 =back
+
+=head2 Example
+
+You will find more info in the companion L<wiki|http://padre.perlide.org/trac/wiki/PadrePluginDialog/> pages.
 
 =head1 METHODS
 
