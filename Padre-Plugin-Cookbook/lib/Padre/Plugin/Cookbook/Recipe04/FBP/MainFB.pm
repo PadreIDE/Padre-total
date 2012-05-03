@@ -6,13 +6,13 @@ package Padre::Plugin::Cookbook::Recipe04::FBP::MainFB;
 # To change this module edit the original .fbp file and regenerate.
 # DO NOT MODIFY THIS FILE BY HAND!
 
-use 5.008;
+use v5.10.1;
 use strict;
 use warnings;
 use Padre::Wx ();
 use Padre::Wx::Role::Main ();
 
-our $VERSION = '0.01';
+our $VERSION = '0.23';
 our @ISA     = qw{
 	Padre::Wx::Role::Main
 	Wx::Dialog

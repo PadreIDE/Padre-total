@@ -1,6 +1,6 @@
 package Padre::Plugin::Cookbook::Recipe04::Main;
 
-use 5.010;
+use v5.10.1;
 use strict;
 use warnings;
 
@@ -11,10 +11,11 @@ use Padre::Logger;
 use Padre::Wx             ();
 use Padre::Wx::Role::Main ();
 
-use version; our $VERSION = qv(0.22);
+our $VERSION = '0.23';
 
 use Moose;
 use namespace::autoclean;
+
 # use MooseX::NonMoose;
 extends qw( Padre::Plugin::Cookbook::Recipe04::FBP::MainFB );
 
@@ -261,7 +262,7 @@ sub clean_debug_breakpoints_files {
 	foreach (@files) {
 		unless ( -e $_ ) {
 			TRACE( 'Deleating missing filename from DebugBreakpoints: ' . $_ ) if DEBUG;
-			eval { $self->config_db->delete_where("filename = ?", $_ ); };
+			eval { $self->config_db->delete_where( "filename = ?", $_ ); };
 			if ($EVAL_ERROR) {
 				say "Oops $self->config_db is damaged";
 				carp($EVAL_ERROR);
@@ -296,7 +297,7 @@ sub clean_history {
 			TRACE( $events[$_][1] . ':' . $events[$_][2] )             if DEBUG;
 			TRACE( $events[ $_ + 1 ][1] . ':' . $events[ $_ + 1 ][2] ) if DEBUG;
 			TRACE("$count: $_: found duplicate id: $events[$_][0]")    if DEBUG;
-			eval { $self->config_db->delete_where("id = ?", $events[$_][0] ); };
+			eval { $self->config_db->delete_where( "id = ?", $events[$_][0] ); };
 			if ($EVAL_ERROR) {
 				say "Oops $self->config_db tuple $events[$_][0] is missing";
 				carp($EVAL_ERROR);
@@ -308,7 +309,7 @@ sub clean_history {
 		if ( $events[$_][1] eq 'files' ) {
 			unless ( -e $events[$_][2] ) {
 				TRACE( "found missing file in history " . $events[$_][2] ) if DEBUG;
-				eval { $self->config_db->delete_where("id = ?", $events[$_][0] ); };
+				eval { $self->config_db->delete_where( "id = ?", $events[$_][0] ); };
 				if ($EVAL_ERROR) {
 					say "Oops $self->config_db tuple $events[$_][0] is missing";
 					carp($EVAL_ERROR);
@@ -338,11 +339,11 @@ sub clean_session {
 
 	$main->info( Wx::gettext('Cleaning Session relation') );
 	for ( 0 .. $#tuples ) {
-		my @children = Padre::DB::SessionFile->select("WHERE session = ?", $tuples[$_][0]);
+		my @children = Padre::DB::SessionFile->select( "WHERE session = ?", $tuples[$_][0] );
 
 		if ( @children eq 0 ) {
 			say 'id :' . $tuples[$_][1] . ' empty, deleting';
-			eval { $self->config_db->delete_where("id = ?", $tuples[$_][0]); };
+			eval { $self->config_db->delete_where( "id = ?", $tuples[$_][0] ); };
 			if ($EVAL_ERROR) {
 				say "Oops $self->config_db is damaged";
 				carp($EVAL_ERROR);
@@ -375,7 +376,7 @@ sub clean_session_files {
 	foreach (@files) {
 		unless ( -e $_ ) {
 			TRACE( 'Deleating missing file from Session_Files: ' . $_ ) if DEBUG;
-			eval { $self->config_db->delete_where("file = ?", $_); };
+			eval { $self->config_db->delete_where( "file = ?", $_ ); };
 			if ($EVAL_ERROR) {
 				say "Oops $self->config_db is damaged";
 				carp($EVAL_ERROR);
@@ -409,7 +410,7 @@ sub clean_lastpositioninfile {
 	foreach (@files) {
 		unless ( -e $_ ) {
 			TRACE( 'Deleating missing file from LastPositionInFile: ' . $_ ) if DEBUG;
-			eval { $self->config_db->delete_where("name = ?", $_); };
+			eval { $self->config_db->delete_where( "name = ?", $_ ); };
 			if ($EVAL_ERROR) {
 				say "Oops $self->config_db is damaged";
 				carp($EVAL_ERROR);
@@ -514,6 +515,7 @@ sub _display_session_db {
 			$self->list_ctrl->SetItem( $idx, 2, $tuples[$idx][1] );
 			$self->list_ctrl->SetItem( $idx, 3, $tuples[$idx][2] );
 
+			require POSIX;
 			my $update = POSIX::strftime(
 				'%Y-%m-%d %H:%M:%S',
 				localtime $tuples[$idx][3],
@@ -666,7 +668,7 @@ sub _tidy_display {
 		my $col_data_size = $self->list_ctrl->GetColumnWidth($_);
 		$self->list_ctrl->SetColumnWidth( $_, ( $col_head_size >= $col_data_size ) ? $col_head_size : $col_data_size );
 	}
-	
+
 	return;
 }
 
@@ -806,6 +808,7 @@ sub clean_dialog {
 }
 
 no Moose;
+
 # no need to fiddle with inline_constructor here
 # __PACKAGE__->meta->make_immutable;
 
@@ -866,6 +869,10 @@ removes empty sessions
 
 removes tuples which don't have a valid session reference
 
+=item clean_debug_breakpoints_files
+
+removes files missing on system
+
 =item help_menu_clicked
 
 for use with wx::frame todo
@@ -884,6 +891,8 @@ Required method with minimum requirements
 
     $self->unload('Padre::Plugin::Cookbook::Recipe04::About');
     $self->unload('Padre::Plugin::Cookbook::Recipe04::FBP::AboutFB');
+    
+=item clean_dialog
 
 =item set_up
 
@@ -916,7 +925,7 @@ BOWTIE E<lt>kevin.dawson@btclick.comE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (c) 2008-2011 The Padre development team as listed in Padre.pm.
+Copyright (c) 2008-2012 The Padre development team as listed in Padre.pm.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself.

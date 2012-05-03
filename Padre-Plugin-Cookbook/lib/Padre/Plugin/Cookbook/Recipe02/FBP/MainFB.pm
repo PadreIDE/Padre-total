@@ -4,7 +4,7 @@ package Padre::Plugin::Cookbook::Recipe02::FBP::MainFB;
 # To change this module, edit the original .fbp file and regenerate.
 # DO NOT MODIFY BY HAND!
 
-use 5.010;
+use v5.10.1;
 use strict;
 use warnings;
 # use diagnostics;
@@ -13,7 +13,7 @@ use warnings;
 use Padre::Wx             ();
 use Padre::Wx::Role::Main ();
 
-use version; our $VERSION = qv(0.14);
+our $VERSION = '0.23';
 use parent-norequire, qw(
 	Padre::Wx::Role::Main
 	Wx::Dialog

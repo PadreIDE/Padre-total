@@ -1,6 +1,6 @@
 package Padre::Plugin::Cookbook;
 
-use 5.010001;
+use v5.10.1;
 use strict;
 use warnings;
 
@@ -8,7 +8,7 @@ use Padre::Plugin;
 use Padre::Util;
 use Padre::Wx;
 
-our $VERSION = '0.15';
+our $VERSION = '0.23';
 use parent qw(Padre::Plugin);
 
 # Child modules we need to unload when disabled
@@ -34,14 +34,14 @@ sub padre_interfaces {
 	return (
 
 		# Default, required
-		'Padre::Plugin' => '0.92',
+		'Padre::Plugin' => '0.96',
 
 		# used by Main, About and by Padre::Plugin::FormBuilder
-		'Padre::Wx'             => '0.92',
-		'Padre::Wx::Main'       => '0.92',
-		'Padre::Wx::Role::Main' => '0.92',
-		'Padre::DB'             => '0.92',
-		'Padre::Logger'         => '0.92',
+		'Padre::Wx'             => '0.96',
+		'Padre::Wx::Main'       => '0.96',
+		'Padre::Wx::Role::Main' => '0.96',
+		'Padre::DB'             => '0.96',
+		'Padre::Logger'         => '0.96',
 	);
 }
 
@@ -213,6 +213,8 @@ sub clean_dialog {
 
 __END__
 
+=pod
+
 =head1 NAME
 
 Padre::Plugin::Cookbook
@@ -228,21 +230,23 @@ This document describes Padre::Plugin::Cookbook version 0.14
 
 Cookbook is just an example Padre::Plugin using a WxDialog, showing minimal requirements. It consists of a series of Recipes.
 
-=over
+=over 4
 
-=item Recipe 01, Hello World what else could it be.
+=item * Recipe 01, Hello World what else could it be.
 
-=item Recipe 02, Fun with widgets and a Dialog (method modifiers and event handlers).
+=item * Recipe 02, Fun with widgets and a Dialog (method modifiers and event handlers).
 
-=item Recipe 03, Every Plug-in needs an About Dialogue or Multiple Dialogues.
+=item * Recipe 03, Every Plug-in needs an About Dialogue or Multiple Dialogues.
 
-=item Recipe 04, ListCtrl or ConfigDB.
+=item * Recipe 04, ListCtrl or ConfigDB.
 
 =back
 
 =head1 METHODS
 
-=head2 padre_interfaces
+=over 4
+
+=item padre_interfaces
 
 Required method with minimum requirements
 
@@ -263,7 +267,7 @@ Called by Padre::Wx::Dialog::PluginManager
 
 	my @needs = $plugin->padre_interfaces;
 
-=head2 plugin_name
+=item plugin_name
 
 Required method with minimum requirements
 
@@ -277,7 +281,7 @@ Called by Padre::Wx::Dialog::PluginManager
 	$self->{label}->SetLabel( $plugin->plugin_name );
 
 
-=head2 menu_plugins_simple
+=item menu_plugins_simple
 
 This is where you defined your plugin menu name, note hyphen for clarity.
 
@@ -296,7 +300,7 @@ This is where you defined your plugin menu name, note hyphen for clarity.
 		},
 	];
 
-=head2 plugin_disable
+=item plugin_disable
 
 Required method with minimum requirements
 
@@ -313,32 +317,32 @@ Required method with minimum requirements
 	$self->unload('Padre::Plugin::Cookbook::Recipe04::About');
 	$self->unload('Padre::Plugin::Cookbook::Recipe04::FBP::AboutFB');
 	
-=head2 plugin_icon
+=item plugin_icon
 
 overloads plugin_icon from Padre::Plugin
 
-=head2 load_dialog_recipe01_main
+=item load_dialog_recipe01_main
 
 loads our dialog Main, only allows one instance!
 
     require Padre::Plugin::Cookbook::Recipe01::Main;
     $self->{dialog} = Padre::Plugin::Cookbook::Recipe01::Main->new($main);
 
-=head2 load_dialog_recipe02_main
+=item load_dialog_recipe02_main
 
 loads our dialog Main, only allows one instance!
 
     require Padre::Plugin::Cookbook::Recipe02::Main;
     $self->{dialog} = Padre::Plugin::Cookbook::Recipe02::Main->new($main);
 
-=head2 load_dialog_recipe03_main
+=item load_dialog_recipe03_main
 
 loads our dialog Main, only allows one instance!
 
     require Padre::Plugin::Cookbook::Recipe03::Main;
     $self->{dialog} = Padre::Plugin::Cookbook::Recipe03::Main->new($main);
 
-=head2 load_dialog_recipe04_main
+=item load_dialog_recipe04_main
 
 loads our dialog Main, only allows one instance!
 
@@ -346,11 +350,16 @@ loads our dialog Main, only allows one instance!
     $self->{dialog} = Padre::Plugin::Cookbook::Recipe04::Main->new($main);
     $self->{dialog}->Show;
 
+=item clean_dialog
+
+=back
+
+
 =head1 BUGS AND LIMITATIONS 
 
 =over
 
-=item No bugs have been reported.
+=item * No bugs have been reported.
 
 =back
 
@@ -364,17 +373,40 @@ loads our dialog Main, only allows one instance!
 	Padre::Plugin::Cookbook::Recipe03::About, Padre::Plugin::Cookbook::Recipe03::FBP::AboutFB, 
 	Padre::Plugin::Cookbook::Recipe04::FBP::Main, Padre::Plugin::Cookbook::Recipe04::FBP::MainFB, 
 	Padre::Plugin::Cookbook::Recipe04::About, Padre::Plugin::Cookbook::Recipe04::FBP::AboutFB, 
-	Moose, namespace::autoclean, Data::Printer
+	Moose, namespace::autoclean, Data::Printer, POSIX,
 
 =head1 AUTHOR
 
-BOWTIE E<lt>kevin.dawson@btclick.comE<gt>
+Kevin Dawson E<lt>bowtie@cpan.orgE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (c) 2008-2011 The Padre development team as listed in Padre.pm.
+Copyright (c) 2008-2012 The Padre development team as listed in Padre.pm.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself.
+
+=head1 DISCLAIMER OF WARRANTY
+
+BECAUSE THIS SOFTWARE IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY
+FOR THE SOFTWARE, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN
+OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES
+PROVIDE THE SOFTWARE "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
+EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE
+ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE SOFTWARE IS WITH
+YOU. SHOULD THE SOFTWARE PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL
+NECESSARY SERVICING, REPAIR, OR CORRECTION.
+
+IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
+WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR
+REDISTRIBUTE THE SOFTWARE AS PERMITTED BY THE ABOVE LICENCE, BE
+LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL,
+OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE
+THE SOFTWARE (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING
+RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A
+FAILURE OF THE SOFTWARE TO OPERATE WITH ANY OTHER SOFTWARE), EVEN IF
+SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
+SUCH DAMAGES.
 
 =cut

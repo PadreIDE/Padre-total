@@ -1,14 +1,15 @@
 package Padre::Plugin::Cookbook::Recipe01::Main;
 
-use 5.010;
+use v5.10.1;
 use strict;
 use warnings;
+
 # use diagnostics;
 # use utf8;
 # use autodie;
 
 # Version required
-use version; our $VERSION = qv(0.14);
+our $VERSION = '0.23';
 use parent qw( Padre::Plugin::Cookbook::Recipe01::FBP::MainFB );
 
 #######
@@ -68,7 +69,7 @@ BOWTIE E<lt>kevin.dawson@btclick.comE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (c) 2008-2011 The Padre development team as listed in Padre.pm.
+Copyright (c) 2008-2012 The Padre development team as listed in Padre.pm.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself.
@@ -95,4 +96,3 @@ RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A
 FAILURE OF THE SOFTWARE TO OPERATE WITH ANY OTHER SOFTWARE), EVEN IF
 SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGES.
-
