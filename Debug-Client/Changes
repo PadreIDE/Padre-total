@@ -1,3 +1,9 @@
+0.21_01 2012.05.11
+    - Add Test-Pod to appease Kwalitee (BOWTIE)
+    - change to use $self->{debug} instead of $ENV{DEBUG_LOGGER} 
+      due to bleeding of env causing tests to fail on win32 against 0.20 (BOWTIE)
+    - keep instep with Padre and use perl 5.10 (BOWTIE)
+
 0.20    2012.04.09
     - change carp dependancy to 1.20 in test (BOWTIE)
 
@@ -19,7 +25,6 @@
     - looking to IO::Socket::IP and ipv6
     - update Makefile to use M-I-DSL
     - Tweaks to POD, remove unwanted comments (BOWTIE)
-
 
 0.17_05 2012.01.11
     - Due to issues with perl5db v1.34-5 in Perl 5.15.3-5 very messy

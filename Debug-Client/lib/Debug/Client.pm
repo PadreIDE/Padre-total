@@ -1,10 +1,10 @@
 package Debug::Client;
 
-use 5.008006;
+use v5.10;
 use strict;
 use warnings;
 
-our $VERSION = '0.20';
+our $VERSION = '0.21_01';
 
 use utf8;
 use IO::Socket;
@@ -36,10 +36,11 @@ sub _init {
 	$self->{local_port} = $args{port} ? $args{port} : 24642;
 
 	#ToDo for IO::Socket::IP
-	# $self->{porto}      = $args{porto}  ? $args{porto}  : 'tcp';
-	# $self->{listen}     = $args{listen} ? $args{listen} : SOMAXCONN;
-	# $self->{reuse_addr} = $args{reuse}	? $args{reuse}  : 1;
-
+	$self->{porto}      = $args{porto}  ? $args{porto}  : 'tcp';
+	$self->{listen}     = $args{listen} ? $args{listen} : SOMAXCONN;
+	$self->{reuse_addr} = $args{reuse}	? $args{reuse}  : 1;
+	
+	$self->{debug} = $args{debug} ? $args{debug} : 0;
 	$self->{buffer} = undef;
 	$self->{module} = undef;
 
@@ -56,16 +57,16 @@ sub listener {
 	my $sock = IO::Socket::INET->new(
 		LocalHost => $self->{local_host},
 		LocalPort => $self->{local_port},
-		Proto     => 'tcp',
-		Listen    => SOMAXCONN,
-		ReuseAddr => 1,
+		# Proto     => 'tcp',
+		# Listen    => SOMAXCONN,
+		# ReuseAddr => 1,
 
-		# Proto     => $self->{porto},
-		# Listen    => $self->{listen},
-		# ReuseAddr => $self->{reuse_addr},
+		Proto     => $self->{porto},
+		Listen    => $self->{listen},
+		ReuseAddr => $self->{reuse_addr},
 	);
 	$sock or carp "Could not connect to '$self->{local_host}' '$self->{local_port}' no socket :$!";
-	_logger("listening on '$self->{local_host}:$self->{local_port}'");
+	$self->_logger("listening on '$self->{local_host}:$self->{local_port}'");
 
 	$self->{sock}     = $sock;
 	$self->{new_sock} = $self->{sock}->accept();
@@ -489,13 +490,13 @@ sub _get {
 			carp $!; # TODO better error handling?
 		}
 
-		# _logger("---- ret '$ret'\n$buffer\n---");
+		# $self->_logger("---- ret '$ret'\n$buffer\n---");
 		if ( not $ret ) {
 			last;
 		}
 	}
-	_logger("---- ret $ret\n$buffer\n---");
-	_logger("_get done");
+	$self->_logger("---- ret $ret\n$buffer\n---");
+	$self->_logger("_get done");
 
 	$self->{buffer} = $buffer;
 
@@ -503,10 +504,12 @@ sub _get {
 }
 
 #######
-# Internal Method _logger
+# Internal Method $self->_logger
 #######
 sub _logger {
-	print "LOG: $_[0]\n" if $ENV{DEBUG_LOGGER};
+	my $self = shift;
+	# print "LOG: $_[0]\n" if $ENV{DEBUG_LOGGER};
+	print "LOG: $_[0]\n" if $self->{debug};
 	return;
 }
 
@@ -555,7 +558,7 @@ sub _process_line {
 		croak("Debug::Client: Line is undef. Buffer is  $self->{buffer}");
 	}
 
-	# _logger("Line1: $line");
+	# $self->_logger("Line1: $line");
 	my $cont = 0;
 	if ($line) {
 		if ( $line =~ /^\d+:   \s*  (.*)$/x ) {
@@ -616,7 +619,7 @@ sub _prompt {
 	my $prompt;
 	if ( $self->{buffer} =~ s/\s*DB<(\d+)>\s*$// ) {
 		$prompt = $1;
-		_logger("prompt: $prompt");
+		$self->_logger("prompt: $prompt");
 	}
 
 	chomp $self->{buffer};
@@ -688,7 +691,7 @@ Debug::Client - debugger client side code for Padre, The Perl IDE.
 
 =head1 VERSION
 
-This document describes Debug::Client version 0.20
+This document describes Debug::Client version 0.21_01
 
 =head1 SYNOPSIS
 
@@ -771,7 +774,9 @@ Once the script under test was launched we can call the following:
 
 =head1 DESCRIPTION
 
-The prime use of this module is to provide debugger functionality for Padre 0.94+, 
+This is a DEVELOPMENT Release only, you have been warned!
+
+The prime use of this module is to provide debugger functionality for Padre 0.97+, 
 
 This module should be Perl 5.16.0 ready.
 
@@ -1046,7 +1051,7 @@ in the editor. $module is just the name of the module in which the current execu
 
 =item * _get
 
-=item * _logger
+=item * $self->_logger
 
 =item * _process_line
 
@@ -1092,7 +1097,7 @@ Kevin Dawson E<lt>bowtie@cpan.orgE<gt>
 
 Gabor Szabo E<lt>gabor@szabgab.comE<gt>
 
-=head1 CONTRIBUTORS
+=head2 CONTRIBUTORS
 
 Breno G. de Oliveira E<lt>garu at cpan.orgE<gt>
 
