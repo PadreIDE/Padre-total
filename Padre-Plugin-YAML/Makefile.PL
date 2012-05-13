@@ -14,8 +14,10 @@ if ( $^O =~ /Win32/i ) {
 	requires 'YAML::XS' => '0.38';
 }
 
-test_requires 'Test::More' => '0.92';
-test_requires 'File::Temp' => '0.22';
+test_requires 'Test::More'          => '0.92';
+test_requires 'File::Temp'          => '0.22';
+test_requires 'Test::Pod'           => '1.45';
+test_requires 'Test::Pod::Coverage' => '1.08';
 
 no_index 'directory' => qw{ t xt eg share inc};
 homepage 'http://padre.perlide.org/trac/wiki/PadrePluginYAML';

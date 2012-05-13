@@ -1,8 +1,8 @@
 NAME
-    Padre::Plugin::YAML - YAML support for Padre The Perl IDE
+    Padre::Plugin::YAML - YAML support for Padre, The Perl IDE.
 
 VERSION
-    This document describes Padre::Plugin::YAML version 0.05
+    This document describes Padre::Plugin::YAML version 0.07
 
 DESCRIPTION
     YAML support for Padre, the Perl Application Development and Refactoring
@@ -10,6 +10,9 @@ DESCRIPTION
 
     Syntax highlighting for YAML is supported by Padre out of the box. This
     plug-in adds some more features to deal with YAML files.
+
+  Example
+    Example is not revelant as this is a Padre::Plugin
 
 BUGS AND LIMITATIONS
     No bugs have been reported.
