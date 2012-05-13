@@ -10,8 +10,8 @@ use Padre::Util                                 ();
 use Padre::Locale                               ();
 use Padre::Unload                               ();
 use Padre::Plugin::SpellCheck::FBP::Preferences ();
-
-our $VERSION = '1.26';
+# use Data::Printer { caller_info => 1, colored => 1, };
+our $VERSION = '1.27';
 our @ISA     = qw{
 	Padre::Plugin::SpellCheck::FBP::Preferences
 	Padre::Plugin
@@ -80,8 +80,8 @@ sub _local_aspell_dictionaries {
 
 		my @local_dictionaries = grep { $_ =~ /^\w+$/ } map { $_->{name} } $speller->dictionary_info;
 		$self->{local_dictionaries} = \@local_dictionaries;
-		TRACE("locally installed dictionaries found = @local_dictionaries") if DEBUG;
-		TRACE("iso to dictionary names = $self->{dictionary_names}")        if DEBUG;
+		TRACE("Aspell locally installed dictionaries found = @local_dictionaries") if DEBUG;
+		TRACE("Aspell iso to dictionary names = $self->{dictionary_names}")        if DEBUG;
 
 		for (@local_dictionaries) {
 			push( @local_dictionaries_names, $self->padre_locale_label($_) );
@@ -91,7 +91,7 @@ sub _local_aspell_dictionaries {
 		@local_dictionaries_names = sort @local_dictionaries_names;
 		$self->{local_dictionaries_names} = \@local_dictionaries_names;
 
-		TRACE("local dictionaries names = $self->{local_dictionaries_names}") if DEBUG;
+		TRACE("Aspell local dictionaries names = $self->{local_dictionaries_names}") if DEBUG;
 	}
 	catch {
 		$self->{local_dictionaries_names} = \@local_dictionaries_names;
@@ -109,12 +109,16 @@ sub _local_hunspell_dictionaries {
 
 	my @local_dictionaries_names;
 	my @local_dictionaries;
-
+	
+	
+	# if ( require Text::Hunspell ) {
 	try {
 		require Text::Hunspell;
 		require Padre::Util;
 		my $speller = Padre::Util::run_in_directory_two('hunspell -D </dev/null');
 		chomp $speller;
+		
+		TRACE("hunspell speller = $speller") if DEBUG;
 
 		#TODO this is yuck must do better
 		my @speller_raw = grep { $_ =~ /\w{2}_\w{2}$/m } split /\n/, $$speller;
@@ -135,8 +139,8 @@ sub _local_hunspell_dictionaries {
 		}
 
 		$self->{local_dictionaries} = \@local_dictionaries;
-		TRACE("locally installed dictionaries found = $self->{local_dictionaries}") if DEBUG;
-		TRACE("iso to dictionary names = $self->{dictionary_names}")                if DEBUG;
+		TRACE("Hunspell locally installed dictionaries found = $self->{local_dictionaries}") if DEBUG;
+		TRACE("Hunspell iso to dictionary names = $self->{dictionary_names}")                if DEBUG;
 
 		for (@local_dictionaries) {
 			push( @local_dictionaries_names, $self->padre_locale_label($_) );
@@ -145,11 +149,14 @@ sub _local_hunspell_dictionaries {
 
 		@local_dictionaries_names = sort @local_dictionaries_names;
 		$self->{local_dictionaries_names} = \@local_dictionaries_names;
-		TRACE("local dictionaries names = $self->{local_dictionaries_names}") if DEBUG;
+		TRACE("Hunspell local dictionaries names = $self->{local_dictionaries_names}") if DEBUG;
+		return;
+	# } else {
 	}
 	catch {
 		$self->{local_dictionaries_names} = \@local_dictionaries_names;
 		$self->main->info( Wx::gettext('Text::Hunspell is not installed') );
+		return;
 	};
 	return;
 }
@@ -231,9 +238,11 @@ sub on_dictionary_chosen {
 
 	if ( $self->chosen_dictionary->GetSelection() == 0 ) {
 		$self->{dictionary} = 'Aspell';
+		TRACE("Aspell chosen") if DEBUG;
 		$self->_local_aspell_dictionaries;
 	} else {
 		$self->{dictionary} = 'Hunspell';
+		TRACE("Hunspell chosen") if DEBUG;
 		$self->_local_hunspell_dictionaries;
 	}
 
@@ -270,7 +279,7 @@ Padre::Plugin::SpellCheck::Preferences - Check spelling in Padre, The Perl IDE.
 
 =head1 VERSION
 
-version 1.26
+version 1.27
 
 =head1 DESCRIPTION
 

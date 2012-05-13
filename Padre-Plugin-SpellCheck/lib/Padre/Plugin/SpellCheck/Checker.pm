@@ -24,7 +24,7 @@ use Padre::Locale                           ();
 use Padre::Unload                           ();
 use Padre::Plugin::SpellCheck::FBP::Checker ();
 
-our $VERSION = '1.26';
+our $VERSION = '1.27';
 our @ISA     = qw{
 	Padre::Plugin::SpellCheck::FBP::Checker
 	Padre::Plugin
@@ -355,7 +355,7 @@ Padre::Plugin::SpellCheck::Checker - Check spelling in Padre, The Perl IDE.
 
 =head1 VERSION
 
-version 1.26
+version 1.27
 
 =head1 DESCRIPTION
 

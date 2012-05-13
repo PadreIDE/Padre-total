@@ -4,7 +4,7 @@ use v5.10;
 use warnings;
 use strict;
 
-our $VERSION = '1.26';
+our $VERSION = '1.27';
 
 use Padre::Logger;
 use Padre::Unload ();
@@ -176,7 +176,7 @@ Padre::Plugin::SpellCheck::Engine - Check spelling in Padre, The Perl IDE.
 
 =head1 VERSION
 
-version 1.26
+version 1.27
 
 =head1 PUBLIC METHODS
 

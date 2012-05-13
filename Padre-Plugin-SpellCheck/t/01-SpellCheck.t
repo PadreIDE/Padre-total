@@ -1,12 +1,12 @@
 use Test::More tests => 20;
 
-use_ok( 'Padre',                 '0.94' );
-use_ok( 'Padre::Plugin',         '0.94' );
-use_ok( 'Padre::Unload',         '0.94' );
-use_ok( 'Padre::Locale',         '0.94' );
-use_ok( 'Padre::Logger',         '0.94' );
-use_ok( 'Padre::Wx',             '0.94' );
-use_ok( 'Padre::Wx::Role::Main', '0.94' );
+use_ok( 'Padre',                 '0.96' );
+use_ok( 'Padre::Plugin',         '0.96' );
+use_ok( 'Padre::Unload',         '0.96' );
+use_ok( 'Padre::Locale',         '0.96' );
+use_ok( 'Padre::Logger',         '0.96' );
+use_ok( 'Padre::Wx',             '0.96' );
+use_ok( 'Padre::Wx::Role::Main', '0.96' );
 use_ok( 'File::Which',           '1.09' );
 
 ######

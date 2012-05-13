@@ -9,7 +9,7 @@ use Padre::Unload ();
 use File::Which   ();
 use Try::Tiny;
 
-our $VERSION = '1.26';
+our $VERSION = '1.27';
 our @ISA     = 'Padre::Plugin';
 
 # Child modules we need to unload when disabled
@@ -273,7 +273,7 @@ Padre::Plugin::SpellCheck - Check spelling in Padre, The Perl IDE.
 
 =head1 VERSION
 
-version 1.26
+version 1.27
 
 =head1 DESCRIPTION
 
@@ -338,7 +338,12 @@ Spell checks the current selection (or the whole document).
 
 =back
 
-=head1 BUGS
+=head1 BUGS and LIMITATIONS
+
+If you upgrade your os, and run Perl from a local/lib, 
+you may find Hunspell stops showing local dictionary s in preferences, 
+you will need to un-install Text::Hunspell and re-install in cpan.
+
 
 Spell-checking non-ascii files has bugs: the selection does not
 match the word boundaries, and as the spell checks moves further in
