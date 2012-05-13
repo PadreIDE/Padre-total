@@ -1,4 +1,4 @@
-use Test::More tests => 21;
+use Test::More tests => 20;
 
 use_ok( 'Padre',                 '0.94' );
 use_ok( 'Padre::Plugin',         '0.94' );
@@ -29,8 +29,8 @@ foreach my $subs (@subs) {
 ######
 my $test_object;
 
-require Padre::Plugin::SpellCheck::Preferences;
-$test_object = new_ok('Padre::Plugin::SpellCheck::Preferences');
+# require Padre::Plugin::SpellCheck::Preferences;
+# $test_object = new_ok('Padre::Plugin::SpellCheck::Preferences');
 
 require Padre::Plugin::SpellCheck::FBP::Preferences;
 $test_object = new_ok('Padre::Plugin::SpellCheck::FBP::Preferences');
