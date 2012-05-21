@@ -4,10 +4,10 @@ use v5.10;
 use strict;
 use warnings;
 
-our $VERSION = '0.21_01';
+our $VERSION = '0.21_02';
 
 use utf8;
-use IO::Socket;
+use IO::Socket::IP;
 use Carp qw(carp croak cluck);
 
 use constant {
@@ -32,41 +32,27 @@ sub new {
 sub _init {
 	my ( $self, %args ) = @_;
 
-	$self->{local_host} = $args{host} ? $args{host} : 'localhost';
-	$self->{local_port} = $args{port} ? $args{port} : 24642;
+	$self->{local_host} = $args{host} // 'localhost';
+	$self->{local_port} = $args{port} // 24642;
 
-	#ToDo for IO::Socket::IP
-	$self->{porto}      = $args{porto}  ? $args{porto}  : 'tcp';
-	$self->{listen}     = $args{listen} ? $args{listen} : SOMAXCONN;
-	$self->{reuse_addr} = $args{reuse}	? $args{reuse}  : 1;
+	#for IO::Socket::IP
+	$self->{porto}      = $args{porto}  // 'tcp';
+	$self->{listen}     = $args{listen} // SOMAXCONN;
+	$self->{reuse_addr} = $args{reuse}	// 1;
 	
-	$self->{debug} = $args{debug} ? $args{debug} : 0;
+
 	$self->{buffer} = undef;
 	$self->{module} = undef;
 
-	return;
-}
-
-#######
-# Method listener
-#######
-sub listener {
-	my $self = shift;
-
 	# Open the socket the debugger will connect to.
-	my $sock = IO::Socket::INET->new(
+	my $sock = IO::Socket::IP->new(
 		LocalHost => $self->{local_host},
 		LocalPort => $self->{local_port},
-		# Proto     => 'tcp',
-		# Listen    => SOMAXCONN,
-		# ReuseAddr => 1,
-
 		Proto     => $self->{porto},
 		Listen    => $self->{listen},
 		ReuseAddr => $self->{reuse_addr},
 	);
 	$sock or carp "Could not connect to '$self->{local_host}' '$self->{local_port}' no socket :$!";
-	$self->_logger("listening on '$self->{local_host}:$self->{local_port}'");
 
 	$self->{sock}     = $sock;
 	$self->{new_sock} = $self->{sock}->accept();
@@ -441,6 +427,7 @@ sub get {
 
 		return ( $module, $file, $row, $content );
 	} else {
+		# $self->_process_line;
 		return $self->{buffer};
 	}
 }
@@ -490,28 +477,15 @@ sub _get {
 			carp $!; # TODO better error handling?
 		}
 
-		# $self->_logger("---- ret '$ret'\n$buffer\n---");
 		if ( not $ret ) {
 			last;
 		}
 	}
-	$self->_logger("---- ret $ret\n$buffer\n---");
-	$self->_logger("_get done");
 
 	$self->{buffer} = $buffer;
-
 	return $buffer;
 }
 
-#######
-# Internal Method $self->_logger
-#######
-sub _logger {
-	my $self = shift;
-	# print "LOG: $_[0]\n" if $ENV{DEBUG_LOGGER};
-	print "LOG: $_[0]\n" if $self->{debug};
-	return;
-}
 
 #######
 # Internal Method _process_line
@@ -558,7 +532,6 @@ sub _process_line {
 		croak("Debug::Client: Line is undef. Buffer is  $self->{buffer}");
 	}
 
-	# $self->_logger("Line1: $line");
 	my $cont = 0;
 	if ($line) {
 		if ( $line =~ /^\d+:   \s*  (.*)$/x ) {
@@ -619,7 +592,7 @@ sub _prompt {
 	my $prompt;
 	if ( $self->{buffer} =~ s/\s*DB<(\d+)>\s*$// ) {
 		$prompt = $1;
-		$self->_logger("prompt: $prompt");
+		# $self->_logger("prompt: $prompt");
 	}
 
 	chomp $self->{buffer};
@@ -691,13 +664,12 @@ Debug::Client - debugger client side code for Padre, The Perl IDE.
 
 =head1 VERSION
 
-This document describes Debug::Client version 0.21_01
+This document describes Debug::Client version 0.21_02
 
 =head1 SYNOPSIS
 
   use Debug::Client;
   my $debugger = Debug::Client->new(host => $host, port => $port);
-  $debugger->listener;
 
 Where $host is the host-name to be used by the script under test (SUT)
 to access the machine where Debug::Client runs. If they are on the same machine
@@ -791,22 +763,6 @@ The constructor can get two parameters: host and port.
   my $debugger = Debug::Client->new;
 
   my $debugger = Debug::Client->new(host => 'remote.host.com', port => 24642);
-   
-Immediately after the object creation one needs to call
-
-  $debugger->listener;
-  
-TODO: Is there any reason to separate the two?
-
-
-
-=item listener
-
-listener/hearken To listen attentively; give heed. See C<BUGS AND LIMITATIONS>
-
-See C<new>
-
- $debugger->listener
 
 =item buffer
 
@@ -1050,8 +1006,6 @@ in the editor. $module is just the name of the module in which the current execu
 =over 4
 
 =item * _get
-
-=item * $self->_logger
 
 =item * _process_line
 

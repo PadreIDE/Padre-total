@@ -48,7 +48,7 @@ sub start_script {
 sub start_debugger {
 	require Debug::Client;
 	my $debugger = Debug::Client->new( host => $host, port => $port, );	
-	$debugger->listener;
+	# $debugger->listener;
 	return $debugger;
 }
 
