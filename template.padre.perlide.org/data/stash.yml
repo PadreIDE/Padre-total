@@ -27,6 +27,10 @@ about:
         url: http://blogs.perl.org/users/peter_lavender/2012/04/padre-096-has-been-released.html
         title: Padre 0.96 has been released...
         comment: by Peter Lavender
+      - date: 2012 March 23
+        url: http://kamari.bidcorpe.net/2012/03/23/perl-ide/
+        title: What is Padre?
+        comment: by Mehdi Kamari
       - date: 2012 February 21
         url: http://ahmadzawawi.blogspot.com/2012/02/padre-moose-004.html
         title: Padre and Moose 0.04
