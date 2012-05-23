@@ -19,6 +19,14 @@ navigation:
 about:
   - title: y2012
     events:
+      - date: 2012 May 22
+        url: http://perlgems.blogspot.com/2012/05/first-impressions-padre-perl-ide.html
+        title: First Impressions - Padre the Perl IDE 
+        comment: by Christopher Frenz
+      - date: 2012 April 23
+        url: http://blogs.perl.org/users/peter_lavender/2012/04/padre-096-has-been-released.html
+        title: Padre 0.96 has been released...
+        comment: by Peter Lavender
       - date: 2012 February 21
         url: http://ahmadzawawi.blogspot.com/2012/02/padre-moose-004.html
         title: Padre and Moose 0.04
@@ -32,7 +40,7 @@ about:
         title: DWIM Perl v7 released
         comment: by Ahmad M. Zawawi
       - date: 2012 February 13
-        url: http://szabgab.com/dwimperl-for-windows-v7.html	
+        url: http://szabgab.com/dwimperl-for-windows-v7.html
         title: DWIM Perl 5.14 for Windows (v7) released
         comment: by Gabor Szabo
       - date: 2012 February 6
@@ -43,8 +51,16 @@ about:
         url: http://szabgab.com/dwimperl-for-windows-v6.html
         title: Announcing Dwimperl for Windows
         comment: by Gabor Szabo
+      - date: 2012 January 23
+        url: http://blogs.perl.org/users/peter_lavender/2012/01/padre-094-has-been-released-the-annoucement-is-late.html
+        title: Padre 0.94 has been released... the annoucement is late!
+        comment: by Peter Lavender
   - title: y2011
     events:
+      - date: 2011 November 14
+        url: http://blogs.perl.org/users/peter_lavender/2011/11/padre-092-the-release.html
+        title: Padre 0.92, the release!
+        comment: by Peter Lavender
       - date: 2011 November 3
         url: http://perlnews.org/2011/11/metacpan-org-one-year-old/
         title: metacpan.org one year old
@@ -81,6 +97,10 @@ about:
         url: http://ahmadzawawi.blogspot.com/2011/09/fancy-syntax-checking-with-padre.html
         title: Fancy syntax checking with Padre
         comment: by Ahmad M. Zawawi
+      - date: 2011 August 31
+        url: http://blogs.perl.org/users/peter_lavender/2011/08/padre-090-the-delayed-release-announcement.html
+        title: Padre 0.90, the Delayed Release Announcement
+        comment: by Peter Lavender
       - date: 2011 August 17
         url: http://ahmadzawawi.blogspot.com/2011/08/wxscintilla-latest-scintilla-in-box.html
         title: Wx::Scintilla - Latest Scintilla in a box
