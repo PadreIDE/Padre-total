@@ -202,21 +202,18 @@ sub stc_get_architectures {
 	my %config;
 
 	foreach my $arch ( sort keys(%allowed) ) {
-		if ( $ldflags =~ /-arch $arch /i ) {
+		if ( $ldflags =~ /-arch $arch/i ) {
 			$config{$arch} = $allowed{$arch};
 		} else {
 			$config{$arch} = 0;
 		}
 	}
 	
-	# actual architectures used to build wxWidgets will be in
-	# c_flags
-	my $c_flags = Alien::wxWidgets->c_flags . ' ';
-	foreach my $arch ( sort keys( %config ) ) {
-	    if( $c_flags !~ /-arch $arch /i ) {
-	        $config{$arch} = 0;
-	    }
-	}
+	# if this is 2.009 and we have x86_64, delete i386 as we can't build it
+	# at the same time
+	if ( (Alien::wxWidgets->version >= 2.009 ) && ( $config{'x86_64'} == 1 ) ) {
+		$config{'i386'} = 0;
+    }
 	
 	return \%config;
 }

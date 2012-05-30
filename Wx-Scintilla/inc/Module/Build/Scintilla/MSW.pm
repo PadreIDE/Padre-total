@@ -141,7 +141,8 @@ sub stc_link_xs {
 		$perllib,
 		Alien::wxWidgets->libraries(qw(core base)),
 		'/LIBPATH:"' . Alien::wxWidgets->shared_library_path . '"',
-		$Config{perllibs}
+		$Config{perllibs},
+		'-def:Scintilla.def',
 	);
 
 	$self->_run_command( \@cmd );
