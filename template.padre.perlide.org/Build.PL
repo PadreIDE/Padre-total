@@ -8,7 +8,7 @@ use Local::Padre::Website::Builder qw(); # about Local:: see perlmodlib
 my $self = Local::Padre::Website::Builder->new(
 	module_name    => 'Local::Padre::Website::Builder',
 	build_requires => {
-		'perl'                     => '5.08.8',
+#		'perl'                     => '5.08.8',
 		'autodie'                  => 0,
 		'Capture::Tiny'            => 0,
 		'Encode'                   => 0,
