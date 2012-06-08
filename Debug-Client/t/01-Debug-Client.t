@@ -21,9 +21,9 @@ use_ok( 'File::Spec',    '3.33' );
 # let's check our subs/methods.
 ######
 
-my @subs = qw( buffer filename get get_h_var get_lineinfo get_options get_p_exp
+my @subs = qw( get_buffer get_filename get get_h_var get_lineinfo get_options get_p_exp
 	get_stack_trace get_v_vars get_value get_x_vars get_y_zero
-	list_subroutine_names module new quit remove_breakpoint row run
+	list_subroutine_names module new quit remove_breakpoint get_row run
 	set_breakpoint set_option show_breakpoints show_line show_view show_line step_in step_over
 	toggle_trace );
 

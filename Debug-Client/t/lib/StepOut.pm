@@ -33,9 +33,9 @@ sub stepout : Test(4) {
 	$self->{debugger}->get_lineinfo;
 	SKIP: {
 		skip( "perl5db $] dose not support c [line|sub]", 1 ) if $] =~ m/5.01500(3|4|5)/;
-		ok( $self->{debugger}->row == 9, 'row = 9' );
+		ok( $self->{debugger}->get_row == 9, 'row = 9' );
 	}
-	ok( $self->{debugger}->filename =~ m/02-sub/, 'filename = 02-sub.pl' );
+	ok( $self->{debugger}->get_filename =~ m/02-sub/, 'filename = 02-sub.pl' );
 	
 	$out = $self->{debugger}->step_out;
 	like( $out, qr/^Warning:.*list/s, 'Warning: failed to make list call' );

@@ -5,7 +5,7 @@ BEGIN {
 }
 
 diag("Info: Testing Debug::Client $Debug::Client::VERSION");
-diag("Info: Perl version '$]'");
+diag("Info: Perl version '$^V'");
 
 done_testing();
 

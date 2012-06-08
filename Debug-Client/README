@@ -2,12 +2,11 @@ NAME
     Debug::Client - debugger client side code for Padre, The Perl IDE.
 
 VERSION
-    This document describes Debug::Client version 0.21_01
+    This document describes Debug::Client version 0.21_03
 
 SYNOPSIS
       use Debug::Client;
       my $debugger = Debug::Client->new(host => $host, port => $port);
-      $debugger->listener;
 
     Where $host is the host-name to be used by the script under test (SUT)
     to access the machine where Debug::Client runs. If they are on the same
@@ -96,24 +95,10 @@ METHODS
 
           my $debugger = Debug::Client->new(host => 'remote.host.com', port => 24642);
 
-        Immediately after the object creation one needs to call
-
-          $debugger->listener;
-
-        TODO: Is there any reason to separate the two?
-
-    listener
-        listener/hearken To listen attentively; give heed. See "BUGS AND
-        LIMITATIONS"
-
-        See "new"
-
-         $debugger->listener
-
-    buffer
+    get_buffer
         Returns the content of the buffer since the last command
 
-          $debugger->buffer;
+          $debugger->get_buffer;
 
     quit
          $debugger->quit();
@@ -135,8 +120,8 @@ METHODS
 
         Then use the following as and when.
 
-         $debugger->filename;
-         $debugger->row;
+         $debugger->get_filename;
+         $debugger->get_row;
 
         to get filename and row for ide due to changes in perl5db v1.35 see
         perl5156delta
@@ -316,19 +301,17 @@ METHODS
         this is probably not too interesting as it is in the editor. $module
         is just the name of the module in which the current execution is.
 
-    filename
-         $debugger->filename();
+    get_filename
+         $debugger->get_filename();
 
-    row
-         $debugger->row();
+    get_row
+         $debugger->get_row();
 
     module
          $debugger->module();
 
   Internal Methods
     *   _get
-
-    *   $self->_logger
 
     *   _process_line
 

@@ -30,8 +30,8 @@ sub stepin : Test(4) {
 		cmp_deeply( \@out, [ 'main::', 't/eg/02-sub.pl', 7, 'my $y = 22;' ], 'step to line 7' );
 	}
 	
-	ok( $self->{debugger}->row == 7, 'row = 7');
-	ok( $self->{debugger}->filename =~ m/02-sub/, 'filename = 02-sub.pl');
+	ok( $self->{debugger}->get_row == 7, 'row = 7');
+	ok( $self->{debugger}->get_filename =~ m/02-sub/, 'filename = 02-sub.pl');
 
 }
 

@@ -4,7 +4,9 @@ use v5.10;
 use strict;
 use warnings;
 
-our $VERSION = '0.21_02';
+# Turn on $OUTPUT_AUTOFLUSH
+$| = 1;
+our $VERSION = '0.21_03';
 
 use utf8;
 use IO::Socket::IP;
@@ -14,14 +16,14 @@ use constant {
 	BLANK => qq{ },
 };
 
-# use Data::Printer { caller_info => 1, colored => 1, };
+use Data::Printer { caller_info => 1, colored => 1, };
 
 #######
 # new
 #######
 sub new {
-	my $class = shift;   # What class are we constructing?
-	my $self  = {};      # Allocate new memory
+	my $class = shift; # What class are we constructing?
+	my $self  = {};    # Allocate new memory
 	bless $self, $class; # Mark it of the right type
 	$self->_init(@_);    # Call _init with remaining args
 	return $self;
@@ -38,8 +40,8 @@ sub _init {
 	#for IO::Socket::IP
 	$self->{porto}      = $args{porto}  // 'tcp';
 	$self->{listen}     = $args{listen} // SOMAXCONN;
-	$self->{reuse_addr} = $args{reuse}	// 1;
-	
+	$self->{reuse_addr} = $args{reuse}  // 1;
+
 
 	$self->{buffer} = undef;
 	$self->{module} = undef;
@@ -51,20 +53,22 @@ sub _init {
 		Proto     => $self->{porto},
 		Listen    => $self->{listen},
 		ReuseAddr => $self->{reuse_addr},
-	);
-	$sock or carp "Could not connect to '$self->{local_host}' '$self->{local_port}' no socket :$!";
+	) or carp "Could not connect to '$self->{local_host}' '$self->{local_port}' no socket :$!";
 
-	$self->{sock}     = $sock;
-	$self->{new_sock} = $self->{sock}->accept();
+	# $sock or carp "Could not connect to '$self->{local_host}' '$self->{local_port}' no socket :$!";
 
+	# $self->{sock}     = $sock;
+	# $self->{new_sock} = $self->{sock}->accept();
+	# $self->{sock}     = $sock;
+	$self->{socket} = $sock->accept();
 	return;
 }
 
 
 #######
-# Method buffer
+# Method get_buffer
 #######
-sub buffer {
+sub get_buffer {
 	my $self = shift;
 
 	return $self->{buffer};
@@ -84,7 +88,7 @@ sub quit {
 #######
 sub show_line {
 	my $self = shift;
-
+	# say 'inside show_line';
 	$self->_send('.');
 	$self->_get;
 	$self->_prompt;
@@ -203,8 +207,10 @@ sub run {
 	my ( $self, $param ) = @_;
 
 	if ( defined $param ) {
+		# say 'inside run with param';
 		return $self->_send_get("c $param");
 	} else {
+		# say 'inside run';
 		return $self->_send_get('c');
 	}
 }
@@ -214,7 +220,7 @@ sub run {
 #######
 sub set_breakpoint {
 	my ( $self, $file, $line, $cond ) = @_;
-
+	# say 'inside set breakpoint';
 	$self->_send("f $file");
 	$self->_get;
 
@@ -268,15 +274,20 @@ sub show_breakpoints {
 	$self->_send('L');
 	$self->_get;
 	$self->_prompt;
+
 	return $self->{buffer};
 }
 
-# TODO if the given $x is a reference then something (either this module or its user) should actually call x $var
+
 #######
 # Accessor get_value
 #######
 sub get_value {
 	my ( $self, $var ) = @_;
+	
+	# if ( $self->get_stack_trace =~ /ANON/ ) {
+		# return 'inside an __ANON__ use "Show Local Variavbles" to view contents';
+	# }
 
 	if ( not defined $var ) {
 		$self->_send('p');
@@ -378,7 +389,7 @@ sub get_h_var {
 
 	$self->_get;
 
-	#Tidy for Output Panel
+	#Tidy for Padre Output Panel
 	$self->{buffer} =~ s/(\e\[4m|\e\[24m|\e\[1m|\e\[0m)//mg;
 	$self->_prompt;
 
@@ -419,32 +430,33 @@ sub get_options {
 #######
 sub get {
 	my $self = shift;
-
+	# say 'inside get';
 	$self->_get;
 	if (wantarray) {
 		$self->_prompt;
 		my ( $module, $file, $row, $content ) = $self->_process_line;
-
+		# say 'fin _process_line';
 		return ( $module, $file, $row, $content );
 	} else {
+
 		# $self->_process_line;
 		return $self->{buffer};
 	}
 }
 
 #######
-# Method filename
+# Method get_filename
 #######
-sub filename {
+sub get_filename {
 	my $self = shift;
 
 	return $self->{filename};
 }
 
 #######
-# Method row
+# Method get_row
 #######
-sub row {
+sub get_row {
 	my $self = shift;
 
 	return $self->{row};
@@ -467,12 +479,16 @@ sub module {
 # TODO shall we add a time-out and/or a number to count down the number sysread calls that return 0 before deciding it is really done
 sub _get {
 	my $self = shift;
+	# say 'inside _get';
 
 	#my $remote_host = gethostbyaddr($sock->sockaddr(), AF_INET) || 'remote';
 	my $buffer = q{};
-	my $ret;
+
+	# my $ret;
 	while ( $buffer !~ /DB<\d+>/ ) {
-		$ret = $self->{new_sock}->sysread( $buffer, 1024, length $buffer );
+		my $ret = $self->{socket}->sysread( $buffer, 1024, length $buffer );
+
+		# $ret = $self->{socket}->recv($buffer,1024);
 		if ( not defined $ret ) {
 			carp $!; # TODO better error handling?
 		}
@@ -483,7 +499,9 @@ sub _get {
 	}
 
 	$self->{buffer} = $buffer;
-	return $buffer;
+
+	# return $buffer;
+	return;
 }
 
 
@@ -501,11 +519,11 @@ sub _get {
 #    $content   is the content of the current row
 # see 00-internal.t for test cases
 sub _process_line {
-	my $self = shift;
+	my $self   = shift;
 	my $buffer = $self->{buffer};
-	
-	# print "inside _process_line\n";
-	
+
+	# say 'inside _process_line';
+
 	my $line    = BLANK;
 	my $module  = BLANK;
 	my $file    = BLANK;
@@ -552,14 +570,18 @@ sub _process_line {
 	}
 	if ( $module eq BLANK || $file eq BLANK || $row eq BLANK ) {
 
+		# preserve buffer why we check where we are test_1415.pl
+		my $preserve_buffer = $self->{buffer};
+
 		# unless ( defined $module || defined $file || defined $row ) {
 		my $current_file = $self->show_line();
 
 		$current_file =~ m/([\w:]*) \( (.*) : (\d+) .* /mgx;
 
-		$module = $1;
-		$file   = $2;
-		$row    = $3;
+		$module         = $1;
+		$file           = $2;
+		$row            = $3;
+		$self->{buffer} = $preserve_buffer;
 
 	}
 
@@ -585,18 +607,24 @@ sub _process_line {
 # See 00-internal.t for test cases
 sub _prompt {
 	my $self = shift;
+
 	# my $buffer = $self->{buffer};
-	
-	# print "inside _prompt\n";
+
+	# say 'inside _prompt';
+	##$DB::single = 1;
 
 	my $prompt;
 	if ( $self->{buffer} =~ s/\s*DB<(\d+)>\s*$// ) {
 		$prompt = $1;
+
 		# $self->_logger("prompt: $prompt");
 	}
 
+	# p $self->{buffer};
 	chomp $self->{buffer};
+
 	$self->{prompt} = $prompt;
+
 	# $self->{buffer} = $buffer;
 	# p $self->{prompt};
 	# p $self->{buffer};
@@ -608,17 +636,25 @@ sub _prompt {
 #######
 sub _send {
 	my ( $self, $input ) = @_;
+	# say 'inside _send';
 
-	print { $self->{new_sock} } "$input\n";
+	# print { $self->{socket} } "$input\n";
+	## print $self->{socket} "$input\n";
+	#ToDo sort out why the following dose not work
+	$self->{socket}->print( $input . "\n" );
+	## $self->{socket}->send($input."\n");
 
 	return 1;
 }
 
 #######
 # Internal Method _send_get
+# send then get
 #######
 sub _send_get {
 	my ( $self, $input ) = @_;
+
+	# say 'inside _send then get';
 
 	$self->_send($input);
 
@@ -664,7 +700,7 @@ Debug::Client - debugger client side code for Padre, The Perl IDE.
 
 =head1 VERSION
 
-This document describes Debug::Client version 0.21_02
+This document describes Debug::Client version 0.21_03
 
 =head1 SYNOPSIS
 
@@ -764,11 +800,11 @@ The constructor can get two parameters: host and port.
 
   my $debugger = Debug::Client->new(host => 'remote.host.com', port => 24642);
 
-=item buffer
+=item get_buffer
 
 Returns the content of the buffer since the last command
 
-  $debugger->buffer;
+  $debugger->get_buffer;
 
 =item quit
 
@@ -792,8 +828,8 @@ trying to use perl5db line-info in naff way,
 
 Then use the following as and when.
 
- $debugger->filename;
- $debugger->row;
+ $debugger->get_filename;
+ $debugger->get_row;
  
 to get filename and row for ide due to changes in perl5db v1.35 see perl5156delta
 
@@ -987,13 +1023,13 @@ $file and $row describe the location of the next instructions.
 $content is the actual line - this is probably not too interesting as it is 
 in the editor. $module is just the name of the module in which the current execution is.
 
-=item filename
+=item get_filename
 
- $debugger->filename();
+ $debugger->get_filename();
 
-=item row
+=item get_row
 
- $debugger->row();
+ $debugger->get_row();
 
 =item module
 
