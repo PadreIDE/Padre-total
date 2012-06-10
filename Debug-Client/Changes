@@ -1,5 +1,12 @@
-0.21_03 2012.
-    - 
+# Changes for Debug::Client
+
+0.21_04 2012.TBA
+    - Tests for initialize (BOWTIE)
+    
+0.21_03 2012.06.09
+    - Fix displaying watches in ANON sub #1415 (BOWTIE)
+    - some method refactoring (BOWTIE)
+    - keep test uptodate (BOWTIE)
 
 0.21_02 2012.05.21
     - remove _logger

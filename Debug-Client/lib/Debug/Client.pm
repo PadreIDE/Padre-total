@@ -6,7 +6,7 @@ use warnings;
 
 # Turn on $OUTPUT_AUTOFLUSH
 $| = 1;
-our $VERSION = '0.21_03';
+our $VERSION = '0.21_04';
 
 use utf8;
 use IO::Socket::IP;
@@ -41,7 +41,6 @@ sub _init {
 	$self->{porto}      = $args{porto}  // 'tcp';
 	$self->{listen}     = $args{listen} // SOMAXCONN;
 	$self->{reuse_addr} = $args{reuse}  // 1;
-
 
 	$self->{buffer} = undef;
 	$self->{module} = undef;
@@ -568,8 +567,9 @@ sub _process_line {
 	{
 		( $module, $file, $row, $content ) = ( $1, $2, $3, $4 );
 	}
-	if ( $module eq BLANK || $file eq BLANK || $row eq BLANK ) {
-
+	# if ( $module eq BLANK || $file eq BLANK || $row eq BLANK ) {
+	# we did not need to test for everthing	
+	if ( $module eq BLANK ) {
 		# preserve buffer why we check where we are test_1415.pl
 		my $preserve_buffer = $self->{buffer};
 
@@ -700,7 +700,7 @@ Debug::Client - debugger client side code for Padre, The Perl IDE.
 
 =head1 VERSION
 
-This document describes Debug::Client version 0.21_03
+This document describes Debug::Client version 0.21_04
 
 =head1 SYNOPSIS
 
