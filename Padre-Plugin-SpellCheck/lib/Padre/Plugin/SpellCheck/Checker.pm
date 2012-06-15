@@ -24,12 +24,11 @@ use Padre::Locale                           ();
 use Padre::Unload                           ();
 use Padre::Plugin::SpellCheck::FBP::Checker ();
 
-our $VERSION = '1.27';
-our @ISA     = qw{
+our $VERSION = '1.28';
+use parent qw(
 	Padre::Plugin::SpellCheck::FBP::Checker
 	Padre::Plugin
-};
-
+);
 
 #######
 # Method new
@@ -92,11 +91,6 @@ sub _set_up {
 	# no mistake means bbb we're done
 	if ( not defined $word ) {
 
-		# $main->message( Wx::gettext('Spell check finished.'), 'Padre' );
-		# $self->{replace}->Disable;
-		# $self->{replace_all}->Disable;
-		# $self->{ignore}->Disable;
-		# $self->{ignore_all}->Disable;
 		return;
 	}
 
@@ -122,7 +116,7 @@ sub _update {
 	my $editor  = $current->editor;
 
 	my $error = $self->{error};
-	my ( $word, $pos ) = @$error;
+	my ( $word, $pos ) = @{$error};
 
 	# update selection in parent window
 	## my $editor = Padre::Current->editor;
@@ -179,14 +173,12 @@ sub _next {
 	# no mistake means we're done
 	if ( not defined $word ) {
 		$self->list->DeleteAllItems;
-		$self->labeltext->SetLabel('Spell check finished:...');
 		$self->label->SetLabel('Click Close');
-
-		# $self->replace->Disable;
-		# $self->replace_all->Disable;
-		# $self->{ignore}->Disable;
-		# $self->{ignore_all}->Disable;
-		# $self->list->DeleteAllItems;
+		$self->labeltext->SetLabel('Spell check finished:...');
+		$self->{replace}->Disable;
+		$self->{replace_all}->Disable;
+		$self->{ignore}->Disable;
+		$self->{ignore_all}->Disable;
 		return;
 	}
 
@@ -215,7 +207,7 @@ sub _replace {
 
 	# replace word in editor
 	my $error = $self->{error};
-	my ( $word, $pos ) = @$error;
+	my ( $word, $pos ) = @{$error};
 
 	my $offset = $self->_offset;
 
@@ -252,7 +244,7 @@ sub _replace {
 sub _on_ignore_all_clicked {
 	my $self  = shift;
 	my $error = $self->{error};
-	my ( $word, $pos ) = @$error;
+	my ( $word, $pos ) = @{$error};
 	$self->_engine->set_ignore_word($word);
 	$self->_on_ignore_clicked;
 
@@ -267,7 +259,7 @@ sub _on_ignore_clicked {
 
 	# remove the beginning of the text, up to after current error
 	my $error = $self->{error};
-	my ( $word, $pos ) = @$error;
+	my ( $word, $pos ) = @{$error};
 
 	$pos += length $word;
 	my $text = substr $self->_text, $pos;
@@ -292,7 +284,7 @@ sub _on_ignore_clicked {
 sub _on_replace_all_clicked {
 	my $self  = shift;
 	my $error = $self->{error};
-	my ( $word, $pos ) = @$error;
+	my ( $word, $pos ) = @{$error};
 
 	# get replacing word
 	my $index = $self->list->GetNextItem( -1, Wx::wxLIST_NEXT_ALL, Wx::wxLIST_STATE_SELECTED );
@@ -355,7 +347,7 @@ Padre::Plugin::SpellCheck::Checker - Check spelling in Padre, The Perl IDE.
 
 =head1 VERSION
 
-version 1.27
+version 1.28
 
 =head1 DESCRIPTION
 

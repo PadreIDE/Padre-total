@@ -2,14 +2,15 @@ NAME
     Padre::Plugin::SpellCheck - Check spelling in Padre, The Perl IDE.
 
 VERSION
-    version 1.26
+    version 1.28
 
 DESCRIPTION
     This plug-in allows one to check there spelling within Padre using "F7"
     (standard spelling short-cut across text processors).
 
     One can change the dictionary language used (based upon install
-    languages) in the preferences window via Plug-in Manager. Preferences
+    languages) in the preferences window via Plug-in Manager. Note that
+    preferences can only be setup while the plugin is disabled. Preferences
     are persistent. You need to Save your preferred language.
 
     This plug-in is using "Text::Aspell" default (legacy). You can also use
@@ -49,7 +50,11 @@ PUBLIC METHODS
 
      Spell checks the current selection (or the whole document).
 
-BUGS
+BUGS and LIMITATIONS
+    If you upgrade your os, and run Perl from a local/lib, you may find
+    Hunspell stops showing local dictionary s in preferences, you will need
+    to un-install Text::Hunspell and re-install in cpan.
+
     Spell-checking non-ascii files has bugs: the selection does not match
     the word boundaries, and as the spell checks moves further in the
     document, offsets are totally irrelevant. This is a bug in

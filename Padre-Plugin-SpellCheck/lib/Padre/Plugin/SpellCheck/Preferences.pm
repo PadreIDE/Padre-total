@@ -10,13 +10,12 @@ use Padre::Util                                 ();
 use Padre::Locale                               ();
 use Padre::Unload                               ();
 use Padre::Plugin::SpellCheck::FBP::Preferences ();
-# use Data::Printer { caller_info => 1, colored => 1, };
-our $VERSION = '1.27';
-our @ISA     = qw{
+
+our $VERSION = '1.28';
+use parent qw(
 	Padre::Plugin::SpellCheck::FBP::Preferences
 	Padre::Plugin
-};
-
+);
 
 #######
 # Method new
@@ -25,12 +24,12 @@ sub new {
 	my $class = shift;
 	my $main  = shift;
 
-	# Create the dialog
+	# Create the dialogue
 	my $self = $class->SUPER::new($main);
 
-	# define where to display main dialog
+	# define where to display main dialogue
 	$self->CenterOnParent;
-	$self->SetTitle( sprintf( Wx::gettext('Spell-Checker-Preferences v%s'), $VERSION ) );
+	$self->SetTitle( sprintf Wx::gettext('Spell-Checker-Preferences v%s'), $VERSION );
 	$self->_set_up;
 
 	return $self;
@@ -42,7 +41,7 @@ sub new {
 sub _set_up {
 	my $self = shift;
 
-	# set prefered dictionary from config
+	# set preferred dictionary from config
 	try {
 		$self->{dictionary} = $self->config_read->{Engine};
 	}
@@ -60,7 +59,7 @@ sub _set_up {
 		$self->_local_hunspell_dictionaries;
 	}
 
-	# update dialog with locally install dictionaries;
+	# update dialogue with locally install dictionaries;
 	$self->_display_dictionaries;
 
 	return;
@@ -84,7 +83,7 @@ sub _local_aspell_dictionaries {
 		TRACE("Aspell iso to dictionary names = $self->{dictionary_names}")        if DEBUG;
 
 		for (@local_dictionaries) {
-			push( @local_dictionaries_names, $self->padre_locale_label($_) );
+			push @local_dictionaries_names, $self->padre_locale_label($_) ;
 			$self->{dictionary_names}{$_} = $self->padre_locale_label($_);
 		}
 
@@ -109,26 +108,24 @@ sub _local_hunspell_dictionaries {
 
 	my @local_dictionaries_names;
 	my @local_dictionaries;
-	
-	
+
 	# if ( require Text::Hunspell ) {
 	try {
 		require Text::Hunspell;
 		require Padre::Util;
 		my $speller = Padre::Util::run_in_directory_two('hunspell -D </dev/null');
 		chomp $speller;
-		
+
 		TRACE("hunspell speller = $speller") if DEBUG;
 
 		#TODO this is yuck must do better
-		my @speller_raw = grep { $_ =~ /\w{2}_\w{2}$/m } split /\n/, $$speller;
+		my @speller_raw = grep { $_ =~ /\w{2}_\w{2}$/m } split /\n/, ${$speller};
 
 		my %temp_speller;
 		foreach (@speller_raw) {
 			if ( $_ !~ m/hyph/ ) {
 				m/(\w{2}_\w{2})$/;
 				my $tmp = $1;
-
 				$temp_speller{$tmp}++;
 			}
 		}
@@ -151,7 +148,7 @@ sub _local_hunspell_dictionaries {
 		$self->{local_dictionaries_names} = \@local_dictionaries_names;
 		TRACE("Hunspell local dictionaries names = $self->{local_dictionaries_names}") if DEBUG;
 		return;
-	# } else {
+
 	}
 	catch {
 		$self->{local_dictionaries_names} = \@local_dictionaries_names;
@@ -279,7 +276,7 @@ Padre::Plugin::SpellCheck::Preferences - Check spelling in Padre, The Perl IDE.
 
 =head1 VERSION
 
-version 1.27
+version 1.28
 
 =head1 DESCRIPTION
 

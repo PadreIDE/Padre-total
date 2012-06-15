@@ -4,7 +4,7 @@ use v5.10;
 use warnings;
 use strict;
 
-our $VERSION = '1.27';
+our $VERSION = '1.28';
 
 use Padre::Logger;
 use Padre::Unload ();
@@ -32,8 +32,8 @@ my %MIMETYPE_MODE = (
 # new
 #######
 sub new {
-	my $class = shift;   # What class are we constructing?
-	my $self  = {};      # Allocate new memory
+	my $class = shift; # What class are we constructing?
+	my $self  = {};    # Allocate new memory
 	bless $self, $class; # Mark it of the right type
 	$self->_init(@_);    # Call _init with remaining args
 	return $self;
@@ -48,9 +48,6 @@ sub _init {
 
 	$self->_ignore( {} );
 	$self->_utf_chars(0);
-
-	#just for testing
-	# print "Using Text::$engine with language $iso\n";
 
 	# create speller object
 	my $speller;
@@ -176,7 +173,7 @@ Padre::Plugin::SpellCheck::Engine - Check spelling in Padre, The Perl IDE.
 
 =head1 VERSION
 
-version 1.27
+version 1.28
 
 =head1 PUBLIC METHODS
 

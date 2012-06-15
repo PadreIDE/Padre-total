@@ -9,8 +9,8 @@ use Padre::Unload ();
 use File::Which   ();
 use Try::Tiny;
 
-our $VERSION = '1.27';
-our @ISA     = 'Padre::Plugin';
+our $VERSION = '1.28';
+use parent qw( Padre::Plugin );
 
 # Child modules we need to unload when disabled
 use constant CHILDREN => qw{
@@ -89,7 +89,9 @@ sub plugin_enable {
 	};
 
 	#Set/ReSet Config data
-	$self->_config if $local_dictionary_bin_exists;
+	if ($local_dictionary_bin_exists) {
+		$self->_config;
+	}
 
 	return $local_dictionary_bin_exists;
 }
@@ -211,7 +213,7 @@ sub plugin_preferences {
 		$self->{dialog}->ShowModal;
 	}
 	catch {
-		$self->main->error( sprintf( Wx::gettext('Error: %s'), $_ ) );
+		$self->main->error( sprintf Wx::gettext('Error: %s'), $_ );
 	};
 
 	return;
@@ -233,7 +235,7 @@ sub spell_check {
 		$self->{dialog}->Show;
 	}
 	catch {
-		$self->main->error( sprintf( Wx::gettext('Error: %s'), $_ ) );
+		$self->main->error( sprintf Wx::gettext('Error: %s'), $_ );
 	};
 
 	return;
@@ -273,7 +275,7 @@ Padre::Plugin::SpellCheck - Check spelling in Padre, The Perl IDE.
 
 =head1 VERSION
 
-version 1.27
+version 1.28
 
 =head1 DESCRIPTION
 
@@ -281,6 +283,7 @@ This plug-in allows one to check there spelling within Padre using
 C<F7> (standard spelling short-cut across text processors). 
 
 One can change the dictionary language used (based upon install languages) in the preferences window via Plug-in Manager. 
+Note that preferences can B<only> be setup while the plugin is B<disabled>.
 Preferences are persistent. You need to Save your preferred language.
 
 This plug-in is using C<Text::Aspell> default (legacy). You can also use C<Text::Hunspell>, so check these module's

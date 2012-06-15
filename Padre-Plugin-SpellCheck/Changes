@@ -1,5 +1,9 @@
 Revision history for Padre-Plugin-SpellCheck
 
+1.28    2012.06.15
+     - POD tweak for clarification dod+ (BOWTIE)
+     - disable button when finished (BOWTIE)
+
 1.27    2012.05.13
      - fix hunspell selection, which was not and tweak POD (BOWTIE)
 
