@@ -9,17 +9,28 @@ our $VERSION = '1.28';
 use Padre::Logger;
 use Padre::Unload ();
 
-use Class::XSAccessor {
-	replace   => 1,
-	accessors => {
-		_ignore    => '_ignore',    # list of words to ignore
-		_speller   => '_speller',   # real text::aspell object
-		_utf_chars => '_utf_chars', # FIXME: as soon as wxWidgets/wxPerl supports
-		                            # newer version of STC:
-		                            # number of UTF8 characters
-		                            # used in calculating current possition
-	},
-};
+use Class::Accessor 'antlers';
+
+has _ignore => ( is => 'rw', isa => 'Str' ); # list of words to ignore
+has _speller => ( is => 'rw', isa => 'Str' ); # real text::aspell object
+
+# FIXME: as soon as wxWidgets/wxPerl supports
+# newer version of STC:
+# number of UTF8 characters
+# used in calculating current possition
+has _utf_chars => ( is => 'rw', isa => 'Str' );
+
+# use Class::XSAccessor {
+# replace   => 1,
+# accessors => {
+# _ignore    => '_ignore',    # list of words to ignore
+# _speller   => '_speller',   # real text::aspell object
+# _utf_chars => '_utf_chars', # FIXME: as soon as wxWidgets/wxPerl supports
+# # newer version of STC:
+# # number of UTF8 characters
+# # used in calculating current possition
+# },
+# };
 
 my %MIMETYPE_MODE = (
 	'application/x-latex' => 'tex',
@@ -104,26 +115,17 @@ sub check {
 		# it's going to be used to calculate relative position
 		# of next problematic word
 		if ( exists $ignore->{$word} ) {
-			# say 'exists $ignore->{$word}';
 			$self->_count_utf_chars($word);
 			next;
 		}
 
-		# if ( $speller->check($word) ) {
 		if ( $self->_speller->check($word) ) {
-			# say '$self->_speller->check($word)';
 			$self->_count_utf_chars($word);
 			next;
 		}
-
-		# uncomment when fixed above
-		#        next if exists $ignore->{$word};        # ignored words
-		#
-		#        # check spelling
-		#        next if $speller->check( $word );
 
 		# oops! spell mistake!
-		my $pos = pos($text) - length($word);
+		my $pos = ( pos $text ) - ( length $word );
 
 		return $word, $pos;
 	}
@@ -137,7 +139,9 @@ sub check {
 #######
 sub set_ignore_word {
 	my ( $self, $word ) = @_;
+
 	$self->_ignore->{$word} = 1;
+
 	return;
 }
 
@@ -146,6 +150,7 @@ sub set_ignore_word {
 #######
 sub get_suggestions {
 	my ( $self, $word ) = @_;
+
 	return $self->_speller->suggest($word);
 }
 
@@ -155,16 +160,10 @@ sub get_suggestions {
 #
 sub _count_utf_chars {
 	my ( $self, $word ) = @_;
-	# say '_count_utf_chars';
-	# say 'word '.$word;
+
 	foreach ( split //, $word ) {
-		# say $_;
 		$self->{_utf_chars}++ if ord($_) >= 128;
-		# $self->{_utf_chars}++ if ord($_) >= 255;
-		
 	}
-	
-	# say '$self->{_utf_chars} '.$self->{_utf_chars};
 
 	return;
 }

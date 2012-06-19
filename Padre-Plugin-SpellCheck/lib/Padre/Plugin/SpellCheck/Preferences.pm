@@ -130,7 +130,6 @@ sub _local_hunspell_dictionaries {
 			}
 		}
 
-		my @speller;
 		while ( my ( $key, $value ) = each %temp_speller ) {
 			push @local_dictionaries, $key;
 		}

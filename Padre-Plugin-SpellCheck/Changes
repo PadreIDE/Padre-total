@@ -1,8 +1,10 @@
 Revision history for Padre-Plugin-SpellCheck
 
-1.29    2112.06.xx
+1.29    2012.06.xx
      - Typo in fbp (BOWTIE)
      - replacment text location slipping dod+ (BOWTIE)
+     - remove unused variable (BOWTIE)
+     - switch to Class::Accessor with 'antlers' (BOWTIE)
 
 1.28    2012.06.15
      - POD tweak for clarification dod+ (BOWTIE)

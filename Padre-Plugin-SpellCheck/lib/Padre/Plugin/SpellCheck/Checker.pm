@@ -4,19 +4,20 @@ use v5.10;
 use warnings;
 use strict;
 
-use Class::XSAccessor {
-	replace   => 1,
-	accessors => {
-		_autoreplace => '_autoreplace', # list of automatic replaces
-		_engine      => '_engine',      # pps:engine object
-		_label       => '_label',       # label hosting the misspelled word
-		_list        => '_list',        # listbox listing the suggestions
-		_offset      => '_offset',      # offset of _text within the editor
-		_sizer       => '_sizer',       # window sizer
-		_text        => '_text',        # text being spellchecked
-		                                # _iso_name    => '_iso_name',    # our stored dictonary lanaguage
-	},
-};
+# use Class::XSAccessor {
+# replace   => 1,
+# accessors => {
+# _autoreplace => '_autoreplace', # list of automatic replaces
+# _engine      => '_engine',      # pps:engine object
+# _label       => '_label',       # label hosting the misspelled word
+# _list        => '_list',        # listbox listing the suggestions
+# _offset      => '_offset',      # offset of _text within the editor
+# _sizer       => '_sizer',       # window sizer
+# _text        => '_text',        # text being spellchecked
+
+# # _iso_name    => '_iso_name',    # our stored dictonary lanaguage
+# },
+# };
 
 use Encode;
 use Padre::Logger;
@@ -29,6 +30,16 @@ use parent qw(
 	Padre::Plugin::SpellCheck::FBP::Checker
 	Padre::Plugin
 );
+
+use Class::Accessor 'antlers';
+has _autoreplace => ( is => 'rw' ); # list of automatic replaces
+has _engine      => ( is => 'rw' ); # pps:engine object
+has _label       => ( is => 'rw' ); # label hosting the misspelled word
+has _list        => ( is => 'rw' ); # listbox listing the suggestions
+has _offset      => ( is => 'rw' ); # offset of _text within the editor
+has _sizer       => ( is => 'rw' ); # window sizer
+has _text        => ( is => 'rw' ); # text being spellchecked
+
 
 #######
 # Method new
@@ -74,25 +85,30 @@ sub _set_up {
 	my $mime_type = $current->document->mimetype;
 	require Padre::Plugin::SpellCheck::Engine;
 	my $engine = Padre::Plugin::SpellCheck::Engine->new( $mime_type, $iso_name, $text_spell );
+	$self->_engine($engine);
 
 	# fetch text to check
 	my $selection = $current->text;
 	my $wholetext = $current->document->text_get;
-	my $text      = $selection || $wholetext;
-	my $offset    = $selection ? $current->editor->GetSelectionStart : 0;
+
+	my $text = $selection || $wholetext;
+	$self->_text($text);
+
+	my $offset = $selection ? $current->editor->GetSelectionStart : 0;
+	$self->_offset($offset);
 
 	# try to find a mistake
-	
 	my @error = $engine->check($text);
 	my ( $word, $pos ) = @error;
+
 	# my ( $word, $pos ) = $engine->check($text);
 	# say 'word '.$word;
 	# say 'pos '.$pos;
- 
+
 	# my @error = $engine->check($text);
 
 	$self->{error} = \@error;
-	
+
 	# say '$self->{error} '.$self->{error};
 
 
@@ -102,12 +118,11 @@ sub _set_up {
 		return;
 	}
 
-	$self->_engine($engine);
-	$self->_offset($offset);
-	$self->_text($text);
+	# $self->_engine($engine);
+	# $self->_offset($offset);
+	# $self->_text($text);
 
 	$self->_autoreplace( {} );
-
 	$self->_update;
 
 	return;
@@ -122,6 +137,7 @@ sub _update {
 	my $main    = $self->main;
 	my $current = $main->current;
 	my $editor  = $current->editor;
+
 	# say '_update';
 	my $error = $self->{error};
 	my ( $word, $pos ) = @{$error};
@@ -130,8 +146,9 @@ sub _update {
 	## my $editor = Padre::Current->editor;
 	my $offset = $self->_offset;
 	my $from   = $offset + $pos + $self->_engine->_utf_chars;
+
 	# say 'length '.length Encode::encode_utf8($word);
-	my $to     = $from + length Encode::encode_utf8($word);
+	my $to = $from + length Encode::encode_utf8($word);
 	$editor->goto_pos_centerize($from);
 	$editor->SetSelection( $from, $to );
 
@@ -172,11 +189,13 @@ sub _update {
 sub _next {
 	my ($self) = @_;
 	my $autoreplace = $self->_autoreplace;
+
 	# say '_next ';
 
 	# try to find next mistake
 	my @error = $self->_engine->check( $self->_text );
 	my ( $word, $pos ) = @error;
+
 	# my ( $word, $pos ) = $self->_engine->check( $self->_text );
 
 	# my @error = $self->_engine->check( $self->_text );
@@ -224,8 +243,9 @@ sub _replace {
 	my $offset = $self->_offset;
 
 	my $from = $offset + $pos + $self->_engine->_utf_chars;
+
 	# say 'length '.length Encode::encode_utf8($word);
-	my $to   = $from + length Encode::encode_utf8($word);
+	my $to = $from + length Encode::encode_utf8($word);
 	$editor->SetSelection( $from, $to );
 	$editor->ReplaceSelection($new);
 
@@ -269,14 +289,17 @@ sub _on_ignore_all_clicked {
 #######
 sub _on_ignore_clicked {
 	my $self = shift;
+
 	# say '_on_ignore_clicked';
 	# remove the beginning of the text, up to after current error
 	my $error = $self->{error};
 	my ( $word, $pos ) = @{$error};
+
 	# say 'word '.$word;
 	# say 'pos '.$pos;
 
 	$pos += length $word;
+
 	# say 'length '.length Encode::encode_utf8($word);
 	# say 'pos '.$pos;
 	my $text = substr $self->_text, $pos;

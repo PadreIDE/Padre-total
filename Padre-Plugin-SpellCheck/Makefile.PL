@@ -8,7 +8,7 @@ requires_from lib/Padre/Plugin/SpellCheck/Preferences.pm
 
 requires Padre				0.96
 requires Module::Util		1.07
-requires Class::XSAccessor	1.13
+requires Class::Accessor	0.34
 requires File::Which		1.09
 requires Try::Tiny          0.11
 
