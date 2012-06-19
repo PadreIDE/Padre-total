@@ -10,7 +10,7 @@ use Padre::Locale                           ();
 use Padre::Unload                           ();
 use Padre::Plugin::SpellCheck::FBP::Checker ();
 
-our $VERSION = '1.28';
+our $VERSION = '1.29';
 use parent qw(
 	Padre::Plugin::SpellCheck::FBP::Checker
 	Padre::Plugin
@@ -342,7 +342,7 @@ Padre::Plugin::SpellCheck::Checker - Check spelling in Padre, The Perl IDE.
 
 =head1 VERSION
 
-version 1.28
+version 1.29
 
 =head1 DESCRIPTION
 

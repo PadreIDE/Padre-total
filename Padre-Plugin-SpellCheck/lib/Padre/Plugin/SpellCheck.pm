@@ -9,7 +9,7 @@ use Padre::Unload ();
 use File::Which   ();
 use Try::Tiny;
 
-our $VERSION = '1.28';
+our $VERSION = '1.29';
 use parent qw( Padre::Plugin );
 
 # Child modules we need to unload when disabled
@@ -275,7 +275,7 @@ Padre::Plugin::SpellCheck - Check spelling in Padre, The Perl IDE.
 
 =head1 VERSION
 
-version 1.28
+version 1.29
 
 =head1 DESCRIPTION
 
