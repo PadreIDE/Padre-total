@@ -10,8 +10,7 @@ use Padre::Logger;
 use Padre::Unload ();
 
 use Class::Accessor 'antlers';
-
-has _ignore => ( is => 'rw', isa => 'Str' ); # list of words to ignore
+has _ignore  => ( is => 'rw', isa => 'Str' ); # list of words to ignore
 has _speller => ( is => 'rw', isa => 'Str' ); # real text::aspell object
 
 # FIXME: as soon as wxWidgets/wxPerl supports
@@ -19,18 +18,6 @@ has _speller => ( is => 'rw', isa => 'Str' ); # real text::aspell object
 # number of UTF8 characters
 # used in calculating current possition
 has _utf_chars => ( is => 'rw', isa => 'Str' );
-
-# use Class::XSAccessor {
-# replace   => 1,
-# accessors => {
-# _ignore    => '_ignore',    # list of words to ignore
-# _speller   => '_speller',   # real text::aspell object
-# _utf_chars => '_utf_chars', # FIXME: as soon as wxWidgets/wxPerl supports
-# # newer version of STC:
-# # number of UTF8 characters
-# # used in calculating current possition
-# },
-# };
 
 my %MIMETYPE_MODE = (
 	'application/x-latex' => 'tex',

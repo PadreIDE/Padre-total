@@ -83,7 +83,7 @@ sub _local_aspell_dictionaries {
 		TRACE("Aspell iso to dictionary names = $self->{dictionary_names}")        if DEBUG;
 
 		for (@local_dictionaries) {
-			push @local_dictionaries_names, $self->padre_locale_label($_) ;
+			push @local_dictionaries_names, $self->padre_locale_label($_);
 			$self->{dictionary_names}{$_} = $self->padre_locale_label($_);
 		}
 
