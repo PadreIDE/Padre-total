@@ -82,10 +82,18 @@ sub _set_up {
 	my $offset    = $selection ? $current->editor->GetSelectionStart : 0;
 
 	# try to find a mistake
-	my ( $word, $pos ) = $engine->check($text);
+	
 	my @error = $engine->check($text);
+	my ( $word, $pos ) = @error;
+	# my ( $word, $pos ) = $engine->check($text);
+	# say 'word '.$word;
+	# say 'pos '.$pos;
+ 
+	# my @error = $engine->check($text);
 
 	$self->{error} = \@error;
+	
+	# say '$self->{error} '.$self->{error};
 
 
 	# no mistake means bbb we're done
@@ -114,7 +122,7 @@ sub _update {
 	my $main    = $self->main;
 	my $current = $main->current;
 	my $editor  = $current->editor;
-
+	# say '_update';
 	my $error = $self->{error};
 	my ( $word, $pos ) = @{$error};
 
@@ -122,6 +130,7 @@ sub _update {
 	## my $editor = Padre::Current->editor;
 	my $offset = $self->_offset;
 	my $from   = $offset + $pos + $self->_engine->_utf_chars;
+	# say 'length '.length Encode::encode_utf8($word);
 	my $to     = $from + length Encode::encode_utf8($word);
 	$editor->goto_pos_centerize($from);
 	$editor->SetSelection( $from, $to );
@@ -163,11 +172,14 @@ sub _update {
 sub _next {
 	my ($self) = @_;
 	my $autoreplace = $self->_autoreplace;
+	# say '_next ';
 
 	# try to find next mistake
-	my ( $word, $pos ) = $self->_engine->check( $self->_text );
-
 	my @error = $self->_engine->check( $self->_text );
+	my ( $word, $pos ) = @error;
+	# my ( $word, $pos ) = $self->_engine->check( $self->_text );
+
+	# my @error = $self->_engine->check( $self->_text );
 	$self->{error} = \@error;
 
 	# no mistake means we're done
@@ -212,6 +224,7 @@ sub _replace {
 	my $offset = $self->_offset;
 
 	my $from = $offset + $pos + $self->_engine->_utf_chars;
+	# say 'length '.length Encode::encode_utf8($word);
 	my $to   = $from + length Encode::encode_utf8($word);
 	$editor->SetSelection( $from, $to );
 	$editor->ReplaceSelection($new);
@@ -256,12 +269,16 @@ sub _on_ignore_all_clicked {
 #######
 sub _on_ignore_clicked {
 	my $self = shift;
-
+	# say '_on_ignore_clicked';
 	# remove the beginning of the text, up to after current error
 	my $error = $self->{error};
 	my ( $word, $pos ) = @{$error};
+	# say 'word '.$word;
+	# say 'pos '.$pos;
 
 	$pos += length $word;
+	# say 'length '.length Encode::encode_utf8($word);
+	# say 'pos '.$pos;
 	my $text = substr $self->_text, $pos;
 	$self->_text($text);
 	my $offset = $self->_offset + $pos;

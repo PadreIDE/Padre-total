@@ -104,12 +104,14 @@ sub check {
 		# it's going to be used to calculate relative position
 		# of next problematic word
 		if ( exists $ignore->{$word} ) {
+			# say 'exists $ignore->{$word}';
 			$self->_count_utf_chars($word);
 			next;
 		}
 
 		# if ( $speller->check($word) ) {
 		if ( $self->_speller->check($word) ) {
+			# say '$self->_speller->check($word)';
 			$self->_count_utf_chars($word);
 			next;
 		}
@@ -153,10 +155,16 @@ sub get_suggestions {
 #
 sub _count_utf_chars {
 	my ( $self, $word ) = @_;
-
+	# say '_count_utf_chars';
+	# say 'word '.$word;
 	foreach ( split //, $word ) {
+		# say $_;
 		$self->{_utf_chars}++ if ord($_) >= 128;
+		# $self->{_utf_chars}++ if ord($_) >= 255;
+		
 	}
+	
+	# say '$self->{_utf_chars} '.$self->{_utf_chars};
 
 	return;
 }

@@ -90,20 +90,20 @@ sub new {
 		},
 	);
 
-	$self->{replaece_all} = Wx::Button->new(
+	$self->{replace_all} = Wx::Button->new(
 		$self,
 		-1,
 		Wx::gettext("R&eplace all"),
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
 	);
-	$self->{replaece_all}->SetToolTip(
+	$self->{replace_all}->SetToolTip(
 		Wx::gettext("Same as Replace\nbut also every future occurance\nin current Check")
 	);
 
 	Wx::Event::EVT_BUTTON(
 		$self,
-		$self->{replaece_all},
+		$self->{replace_all},
 		sub {
 			shift->_on_replace_all_clicked(@_);
 		},
@@ -190,7 +190,7 @@ sub new {
 	my $bSizer3 = Wx::BoxSizer->new(Wx::VERTICAL);
 	$bSizer3->Add( $self->{m_button1}, 0, Wx::ALL | Wx::EXPAND, 5 );
 	$bSizer3->Add( $self->{replace}, 0, Wx::ALL | Wx::EXPAND, 5 );
-	$bSizer3->Add( $self->{replaece_all}, 0, Wx::ALL | Wx::EXPAND, 5 );
+	$bSizer3->Add( $self->{replace_all}, 0, Wx::ALL | Wx::EXPAND, 5 );
 	$bSizer3->Add( $self->{ignore}, 0, Wx::ALL | Wx::EXPAND, 5 );
 	$bSizer3->Add( $self->{ignore_all}, 0, Wx::ALL | Wx::EXPAND, 5 );
 	$bSizer3->Add( $self->{m_button6}, 0, Wx::ALL | Wx::EXPAND, 5 );
@@ -221,8 +221,8 @@ sub replace {
 	$_[0]->{replace};
 }
 
-sub replaece_all {
-	$_[0]->{replaece_all};
+sub replace_all {
+	$_[0]->{replace_all};
 }
 
 sub ignore {
@@ -238,7 +238,7 @@ sub _on_replace_clicked {
 }
 
 sub _on_replace_all_clicked {
-	$_[0]->main->error('Handler method _on_replace_all_clicked for event replaece_all.OnButtonClick not implemented');
+	$_[0]->main->error('Handler method _on_replace_all_clicked for event replace_all.OnButtonClick not implemented');
 }
 
 sub _on_ignore_clicked {

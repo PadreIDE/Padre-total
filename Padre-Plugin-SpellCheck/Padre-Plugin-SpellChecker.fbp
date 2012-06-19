@@ -691,7 +691,7 @@
                                 <property name="label">R&amp;eplace all</property>
                                 <property name="maximum_size"></property>
                                 <property name="minimum_size"></property>
-                                <property name="name">replaece_all</property>
+                                <property name="name">replace_all</property>
                                 <property name="permission">public</property>
                                 <property name="pos"></property>
                                 <property name="size"></property>

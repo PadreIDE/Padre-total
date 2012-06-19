@@ -1,5 +1,9 @@
 Revision history for Padre-Plugin-SpellCheck
 
+1.29    2112.06.xx
+     - Typo in fbp (BOWTIE)
+     - replacment text location slipping dod+ (BOWTIE)
+
 1.28    2012.06.15
      - POD tweak for clarification dod+ (BOWTIE)
      - disable button when finished (BOWTIE)
