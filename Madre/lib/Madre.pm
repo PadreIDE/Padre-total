@@ -46,8 +46,7 @@ get '/' => sub {
 
 get '/version' => sub {
     return {
-        version    => $VERSION,
-        compatible => $COMPATIBLE,
+        server => server_json(),
     };
 };
 
@@ -108,6 +107,40 @@ post '/register' => sub {
     };
 };
 
+post "/register.json", sub {
+    my $email    = params->{email};
+    my $password = params->{password};
+
+    # Validate the user information
+    unless ( $email and $password ) {
+        status 500;
+        return "Missing or invalid email address";
+    }
+
+    # Does the user already exist?
+    if ( Madre::DB::User->count("email = ?", $email) ) {
+        status 500;
+        return "The user already exists";
+    }
+
+    # Try to create the user
+    my $user = Madre::DB::User->create(
+        email    => $email,
+        password => salt_password( $email, $password ),
+    );
+    unless ( $user ) {
+        status 500;
+        return "Failed to create the user";
+    }
+
+    # Created the user
+    status 200;
+    return {
+        server => server_json(),
+        user   => user_json($user),
+    };
+};
+
 sub register_error ($) {
     status 500;
     template 'register.tt', {
@@ -124,39 +157,63 @@ sub register_error ($) {
 # Login Management
 
 any '/logout' , sub {
-        session->destroy;
-        redirect '/';
+    session->destroy;
+    redirect '/';
 };
 
 get '/login' , sub {
-       template 'login.tt';
+   template 'login.tt';
 };
 
 post '/login' , sub {
-        my $email    = params->{email};
-        my $password = params->{password};
-        my $hash     = salt_password( $email, $password );
-        debug( "Using hash = $hash" );
+    my $user = login( params->{email}, params->{password} );
+    unless ( $user ) {
+       debug( "Auth failed" );
+       status 401;
+       return 'authentication failure';
+    }
 
-        my ($user) = try {
-            Madre::DB::User->select(
-                'WHERE username = ? AND password = ?',
-                $email,
-                $hash,
-            );
-        };
+    debug "Success ", $user;
+    session user => $user->user_id;
+    session logged_in => true;
+    redirect '/';
+};
 
-        debug($user);
-        unless ( $user ) {
-           debug( "Auth failed" );
-           status 401;
-           return 'authentication failure';
-        }
+post '/login.json', sub {
+    $DB::single = 1;
+    my $user = login( params->{email}, params->{password} );
+    unless ( $user ) {
+       debug( "Auth failed" );
+       status 401;
+       return 'authentication failure';
+    }
 
-        debug "Success ", $user;
-        session user => $user->user_id;
-        session logged_in => true;
-        redirect '/';
+    debug "Success ", $user;
+    session user => $user->user_id;
+    session logged_in => true;
+    status 200;
+    return {
+        server => server_json(),
+        user   => user_json($user),
+    };
+};
+
+sub login {
+    my $email    = shift or return undef;
+    my $password = shift or return undef;
+    my $hash     = salt_password($email, $password);
+    debug( "Using hash = $hash" );
+
+    my ($user) = try {
+        Madre::DB::User->select(
+            'WHERE email = ? AND password = ?',
+            $email,
+            $hash,
+        );
+    };
+
+    debug($user);
+    return $user;
 };
 
 
@@ -273,5 +330,29 @@ sub salt_password {
     my $hash = Digest::MD5::md5_hex( $salt  .  $password );
     return "$salt:$hash";
 };
+
+
+
+
+
+######################################################################
+# Serialisation
+
+sub server_json {
+    return {
+        name       => __PACKAGE__,
+        version    => $VERSION,
+        compatible => $COMPATIBLE,
+    }
+}
+
+sub user_json {
+    my $user = shift;
+    return {
+        id      => $user->id,
+        email   => $user->email,
+        created => $user->created,
+    };
+}
 
 true;
