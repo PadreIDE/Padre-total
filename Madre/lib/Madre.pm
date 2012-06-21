@@ -50,6 +50,9 @@ get '/version' => sub {
     };
 };
 
+get '/version.json' => sub {
+    return json();
+};
 
 
 
@@ -135,10 +138,7 @@ post "/register.json", sub {
 
     # Created the user
     status 200;
-    return {
-        server => server_json(),
-        user   => user_json($user),
-    };
+    return json( user => $user );
 };
 
 sub register_error ($) {
@@ -156,11 +156,6 @@ sub register_error ($) {
 ######################################################################
 # Login Management
 
-any '/logout' , sub {
-    session->destroy;
-    redirect '/';
-};
-
 get '/login' , sub {
    template 'login.tt';
 };
@@ -175,12 +170,10 @@ post '/login' , sub {
 
     debug "Success ", $user;
     session user => $user->user_id;
-    session logged_in => true;
     redirect '/';
 };
 
 post '/login.json', sub {
-    $DB::single = 1;
     my $user = login( params->{email}, params->{password} );
     unless ( $user ) {
        debug( "Auth failed" );
@@ -189,13 +182,8 @@ post '/login.json', sub {
     }
 
     debug "Success ", $user;
-    session user => $user->user_id;
-    session logged_in => true;
     status 200;
-    return {
-        server => server_json(),
-        user   => user_json($user),
-    };
+    return json( user => $user );
 };
 
 sub login {
@@ -212,8 +200,17 @@ sub login {
         );
     };
 
-    debug($user);
     return $user;
+};
+
+any '/logout' , sub {
+    session->destroy;
+    redirect '/';
+};
+
+any '/logout.json', sub {
+    session->destroy;
+    return json();
 };
 
 
@@ -240,7 +237,25 @@ get '/config' => sub {
     return $hash;
 };
 
-put '/config' => sub {
+get '/config.json' => sub {
+    my $user = login( params->{email}, params->{password} );
+    unless ( $user ) {
+       debug( "Auth failed" );
+       status 401;
+       return 'authentication failure';
+    }
+
+    # Get the most recent configuration
+    my ($config) = Madre::DB::Config->select(
+        'WHERE user_id = ? ORDER BY modified DESC LIMIT 1',
+        $user->id,
+    );
+
+    status 200;
+    return json( user => $user, config => $config );
+};
+
+post '/config' => sub {
     my $user_id = session('user');
     unless ( $user_id ) {
         status 401;
@@ -254,6 +269,26 @@ put '/config' => sub {
     );
 
     status 204;
+};
+
+post '/config.json' => sub {
+    $DB::single = 1;
+    my $user = login( params->{email}, params->{password} );
+    unless ( $user ) {
+       debug( "Auth failed" );
+       status 401;
+       return 'authentication failure';
+    }
+
+    # Create and insert the new configuration store
+    my ($config) = Madre::DB::Config->create(
+        user_id => $user->id,
+        data    => params->{data},
+    );
+
+    debug($config);
+    status 200;
+    return json( user => $user, config => $config );
 };
 
 
@@ -338,6 +373,27 @@ sub salt_password {
 ######################################################################
 # Serialisation
 
+sub json {
+    my %param = @_;
+
+    # Basic information
+    my $hash = {
+        server => server_json(),
+    };
+
+    # Add user information if we have one
+    if ( $param{user} ) {
+        $hash->{user} = user_json($param{user});
+    }
+
+    # Add configuration information if we have any
+    if ( $param{config} ) {
+        $hash->{config} = config_json($param{config});
+    }
+
+    return $hash;
+}
+
 sub server_json {
     return {
         name       => __PACKAGE__,
@@ -352,6 +408,16 @@ sub user_json {
         id      => $user->id,
         email   => $user->email,
         created => $user->created,
+    };
+}
+
+sub config_json {
+    my $config = shift;
+    my $data   = JSON::decode_json($config->data);
+    return {
+        config_id => $config->id,
+        modified  => $config->modified,
+        data      => $data,
     };
 }
 
