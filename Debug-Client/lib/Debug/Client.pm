@@ -17,16 +17,16 @@ use constant {
 	NONE  => q{},
 };
 
-use Data::Printer { caller_info => 1, colored => 1, };
+# use Data::Printer { caller_info => 1, colored => 1, };
 
 #######
 # new
 #######
 sub new {
-	my $class = shift; # What class are we constructing?
-	my $self  = {};    # Allocate new memory
-	bless $self, $class; # Mark it of the right type
-	$self->_initialize(@_); # Call _init with remaining args
+	my ( $class, @args ) = @_;   # What class are we constructing?
+	my $self = {};               # Allocate new memory
+	bless $self, $class;         # Mark it of the right type
+	$self->_initialize( @args ); # Call _init with remaining args
 	return $self;
 }
 #######
