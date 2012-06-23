@@ -4,8 +4,8 @@ use v5.10;
 use strict;
 use warnings;
 
-# Turn on $OUTPUT_AUTOFLUSH
-$| = 1;
+local $| = 1; # Turn on $OUTPUT_AUTOFLUSH
+
 our $VERSION = '0.21_04';
 
 use utf8;
@@ -14,7 +14,7 @@ use Carp qw(carp croak cluck);
 
 use constant {
 	BLANK => qq{ },
-	NONE => q{},
+	NONE  => q{},
 };
 
 use Data::Printer { caller_info => 1, colored => 1, };
@@ -105,8 +105,9 @@ sub get_lineinfo {
 
 	$self->_send('.');
 	$self->_get;
-						# (?:CODE\(.*\))* 		# catch CODE(0x9b434a8)
-						# \( ([^\)]*):(\d+) \)	# (file):(row)						
+
+	# (?:CODE\(.*\))* 		# catch CODE(0x9b434a8)
+	# \( ([^\)]*):(\d+) \)	# (file):(row)
 	$self->{buffer} =~ m{^[\w:]*				# module
 						(?:CODE[(].*[)])* 		# catch CODE(0x9b434a8)
 						[(] (?<file>[^\)]*):(?<row>\d+) [)]	# (file):(row)
