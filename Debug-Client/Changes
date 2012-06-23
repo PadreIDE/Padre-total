@@ -1,22 +1,23 @@
 # Changes for Debug::Client
 
-0.21_04 2012.TBA
-    - Tests for initialize (BOWTIE)
-    
+0.21_04 2012.06.23
+    - re-factor initialize plus test (BOWTIE)
+    - turn off test in io (BOWTIE)
+
 0.21_03 2012.06.09
     - Fix displaying watches in ANON sub #1415 (BOWTIE)
-    - some method refactoring (BOWTIE)
-    - keep test uptodate (BOWTIE)
+    - some method re-factoring (BOWTIE)
+    - keep test up-to-date (BOWTIE)
 
 0.21_02 2012.05.21
-    - remove _logger
-    - move listener to _init, hence now redundant
-    - use IO::Socket::IP
+    - remove _logger (BOWTIE)
+    - move listener to _init, hence now redundant (BOWTIE)
+    - use IO::Socket::IP (BOWTIE)
     - tweak tests and Makefile accordingly (BOWTIE)
 
 0.21_01 2012.05.11
     - Add Test-Pod to appease Kwalitee (BOWTIE)
-    - change to use $self->{debug} instead of $ENV{DEBUG_LOGGER} 
+    - change to use $self->{debug} instead of $ENV{DEBUG_LOGGER} (BOWTIE)
       due to bleeding of env causing tests to fail on win32 against 0.20 (BOWTIE)
     - keep instep with Padre and use perl 5.10 (BOWTIE)
 
@@ -34,6 +35,7 @@
 0.18    2012.03.07
     - bumped to 0.18 (BOWTIE)
     - tweaks to POD (BOWTIE)
+
 0.17_06 2012.02.09
     - remove is for cmp_ok where values are numeric
     - fix 'Free to wrong pool' in tests against win32
@@ -47,7 +49,7 @@
       Modify tests to cater for these anomaly's
       add Method get_lineinfo so that we can ask where are we!
       Tweaks to POD (BOWTIE)
-    
+
 0.17_04 2011.12.29
     - remove test code in 0.17_03 that was naffing up cpan testers (BOWTIE)
 
@@ -55,7 +57,7 @@
     - vast changes to test files 
       see #1367/8 (BOWTIE)
     - Patch for 09-io.t ticket #831 (MJGARDNER)
-    
+
 0.17_02 2011.12.08
     - vast changes to test files (BOWTIE)
 
@@ -98,7 +100,7 @@
 
 0.13_07 2011.11.09
     - Tweaks to tests for above (BOWTIE)
-    
+
 0.13_06 2011.11.09
     - Add Method show_view
       modify method show_line
@@ -168,7 +170,7 @@ v0.06 2009.12.14
     Prompt is now the first return parameter
     Added more tests
     Added more documentation
-    
+
 v0.05 2009.12.13
     Try to eliminate infinite loop
     Try to make sure tests are not hung by calling quit at the end of each
