@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /trac/browser
+Disallow: /trac/log
+Disallow: /trac/changeset
+Disallow: /trac/report
+Disallow: /trac/newticket
+Disallow: /trac/search
