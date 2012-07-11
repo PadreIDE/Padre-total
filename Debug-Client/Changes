@@ -1,5 +1,8 @@
 # Changes for Debug::Client
 
+0.21_05 2012.07.TBA
+    - remove comments (BOWTIE)
+    
 0.21_04 2012.06.23
     - re-factor initialize plus test (BOWTIE)
     - turn off test in io (BOWTIE)
