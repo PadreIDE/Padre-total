@@ -2,6 +2,7 @@
 
 0.21_05 2012.07.TBA
     - remove comments (BOWTIE)
+    - remove un-required dependants from Makefile (BOWTIE)
     
 0.21_04 2012.06.23
     - re-factor initialize plus test (BOWTIE)
