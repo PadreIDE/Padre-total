@@ -304,7 +304,7 @@ sub irc_public {
 		$irc->yield( privmsg => $nick, LIGHT_CYAN.@{$channel}[0].' user help'.NORMAL );
 		$irc->yield( privmsg => $nick, LIGHT_CYAN.'nickname++'.NORMAL.' add karma' );
 		$irc->yield( privmsg => $nick, LIGHT_CYAN.'nickname--'.NORMAL.' remove karma' );
-		$irc->yield( privmsg => $nick, LIGHT_CYAN.'karms nickname'.NORMAL.' show karma' );
+		$irc->yield( privmsg => $nick, LIGHT_CYAN.'karma nickname'.NORMAL.' show karma' );
 		$irc->yield( privmsg => $nick, LIGHT_CYAN.$config->{nick}.': tell nickname message'.NORMAL.' leave a message for another user' );
 		$irc->yield( privmsg => $nick, LIGHT_CYAN.$config->{nick}.': word is text'.NORMAL.' teach '.@{$channel}[0].' about a new word = text' );
 		$irc->yield( privmsg => $nick, LIGHT_CYAN.$config->{nick}.': word is also text'.NORMAL.' teach '.@{$channel}[0].' more about word .= text' );
