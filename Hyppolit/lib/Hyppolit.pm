@@ -1,9 +1,7 @@
 package Hyppolit;
 
 use strict;
-
-# use warnings FATAL => 'all';
-use warnings;
+use warnings FATAL => 'all';
 
 # use 5.008005;
 use v5.10;
@@ -35,7 +33,7 @@ use v5.10;
 my $trac_channel = '#padre';
 my $trac_timeout = 5;
 
-our $VERSION = '0.13';
+our $VERSION = '0.14';
 
 use base 'Exporter';
 
@@ -188,7 +186,7 @@ sub irc_public {
 	if ( $text =~ /^\s*  $config->{nick} \s* [,:]? \s* (\S+)  \s+ is \s+ also \s+ (.*)/x ) {
 		my $word = $1;
 		$config->{is}{$word} .= " and also $2";
-		p $config->{is}{$word};
+		# p $config->{is}{$word};
 		save_config();
 		$irc->yield( privmsg => $channel, "$word is now $config->{is}{$word}" );
 
@@ -295,7 +293,29 @@ sub irc_public {
 	}
 
 	if ( $text =~ /^help/ ) {
-		$irc->yield( privmsg => $channel, "help is on the way $nick" );
+		use IRC::Utils qw( YELLOW LIGHT_CYAN ORANGE NORMAL );
+		$irc->yield( privmsg => $nick, "help is on the way $nick" );
+		if ( $config->{trusted}{$nick} ) {
+			$irc->yield( privmsg => $nick, YELLOW.'op help'.NORMAL );
+			$irc->yield( privmsg => $nick, YELLOW.'op me'.NORMAL.' kick the bot in to re-establishing your IRC '.@{$channel}[0].' op status if trusted' );
+			$irc->yield( privmsg => $nick, YELLOW.$config->{nick}.': trust nickname'.NORMAL.' make the nickname an op '.@{$channel}[0] );
+		}
+		
+		$irc->yield( privmsg => $nick, LIGHT_CYAN.@{$channel}[0].' user help'.NORMAL );
+		$irc->yield( privmsg => $nick, LIGHT_CYAN.'nickname++'.NORMAL.' add karma' );
+		$irc->yield( privmsg => $nick, LIGHT_CYAN.'nickname--'.NORMAL.' remove karma' );
+		$irc->yield( privmsg => $nick, LIGHT_CYAN.'karms nickname'.NORMAL.' show karma' );
+		$irc->yield( privmsg => $nick, LIGHT_CYAN.$config->{nick}.': tell nickname message'.NORMAL.' leave a message for another user' );
+		$irc->yield( privmsg => $nick, LIGHT_CYAN.$config->{nick}.': word is text'.NORMAL.' teach '.@{$channel}[0].' about a new word = text' );
+		$irc->yield( privmsg => $nick, LIGHT_CYAN.$config->{nick}.': word is also text'.NORMAL.' teach '.@{$channel}[0].' more about word .= text' );
+		$irc->yield( privmsg => $nick, LIGHT_CYAN.'word?'.NORMAL.' show what we know about word' );
+		$irc->yield( privmsg => $nick, LIGHT_CYAN.$config->{explain}.': <perl code>'.NORMAL.' expermental see Code::Explain' );
+		$irc->yield( privmsg => $nick, LIGHT_CYAN.$config->{nick}.'?'.NORMAL.' info about me' );
+		$irc->yield( privmsg => $nick, LIGHT_CYAN.'uptime?'.NORMAL.' see how old I am' );
+		
+		$irc->yield( privmsg => $nick, ORANGE.'IRC help'.NORMAL );
+		$irc->yield( privmsg => $nick, ORANGE.'/HELP'.NORMAL.' http://www.ircbeginner.com/ircinfo/ircc-commands.html' );
+		$irc->yield( privmsg => $nick, '__END__' );
 	}
 	return;
 }
@@ -328,7 +348,7 @@ sub irc_join {
 	my $nick = ( split /!/, $_[ARG0] )[0];
 	my $channel = $_[ARG1];
 
-	say 'nick joined: ' . $nick;
+	# say 'nick joined: ' . $nick;
 
 	#print "nick joined $nick\n";
 
@@ -437,7 +457,7 @@ sub set_op {
 	if ( ref $channel and ref($channel) eq 'ARRAY' ) {
 		($channel) = @$channel;
 	}
-	print "Giving op to '$nick' on '$channel' ($irc)\n";
+	say 'Giving op to '.$nick.' on '.$channel; #." ($irc)";
 	$irc->yield( mode => $channel => "+o $nick" );
 
 	# its already at another place, should be removed here?

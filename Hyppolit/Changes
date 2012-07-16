@@ -1,5 +1,7 @@
 Changes of Hyppolit the IRC bot
 
+v0.14 2012.07.16
+	- added basic help (BOWTIE)
 
 v0.13 2012.07.16
 	- switch to YAML::XS to use api 1.1 same as pp-yaml
