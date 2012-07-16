@@ -1,5 +1,14 @@
 Changes of Hyppolit the IRC bot
 
+
+v0.13 2012.07.16
+	- switch to YAML::XS to use api 1.1 same as pp-yaml
+	  use data-printer because it's pritty
+	  use irc-utils as it's avabile for colour
+	  add welcome message
+	  request user_x and mib_x change there nickname
+	  handel nick name change (BOWTIE)
+
 v0.12 2012.03.11
     Teach Hyppolit to pass messages
 

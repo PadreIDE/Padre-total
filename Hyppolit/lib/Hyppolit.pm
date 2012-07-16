@@ -1,7 +1,12 @@
 package Hyppolit;
+
 use strict;
-use warnings FATAL => 'all';
-use 5.008005;
+
+# use warnings FATAL => 'all';
+use warnings;
+
+# use 5.008005;
+use v5.10;
 
 # TODO
 # initial welcome message to any new user
@@ -30,7 +35,7 @@ use 5.008005;
 my $trac_channel = '#padre';
 my $trac_timeout = 5;
 
-our $VERSION = '0.12';
+our $VERSION = '0.13';
 
 use base 'Exporter';
 
@@ -41,13 +46,18 @@ use POE::Component::IRC::Plugin::Logger;
 use POE::Component::IRC::Plugin::FollowTail;
 use DBI;
 
-use Data::Dumper;
+# use Data::Dumper;
+use Data::Printer {
+	caller_info => 1,
+	colored     => 1,
+};
 
-use YAML::Syck qw(LoadFile DumpFile);
+# use YAML::Syck qw(LoadFile DumpFile);
+use YAML::XS qw(LoadFile DumpFile);
 my $svnlook = '/usr/bin/svnlook';
 
 my @methods = qw(
-	_start irc_join irc_public irc_msg
+	_start irc_join irc_public irc_msg irc_nick
 	irc_tail_input irc_tail_error irc_tail_reset
 	trac_check
 	enable_registration
@@ -59,12 +69,15 @@ my $config;
 my $config_file;
 
 sub save_config {
+	# p $config_file;
+	# p $config;
 	DumpFile( $config_file, $config );
 }
 
 sub run {
 	my $class = shift;
 	$config_file = shift;
+	# p $config_file;
 
 	die "Missing channels. Usage $0 config_file.yml\n" if not $config_file;
 	$config = LoadFile($config_file);
@@ -80,10 +93,12 @@ sub run {
 		die "No channels defined\n";
 	}
 
-	print Dumper $config;
+	# print Dumper $config;
+	p $config;
 
 	POE::Session->create( package_states => [ main => \@methods ] );
-
+	
+	say $config->{nick}.' is running against '.$config->{channels}[0].' on '.$config->{server};
 	$poe_kernel->run();
 }
 
@@ -148,8 +163,8 @@ sub irc_public {
 
 	my $text = $_[ARG2];
 
-	# Example: 
-	# Hyppolit: trust nickname
+	# Example:
+	# hyppolit: trust nickname
 	#print "Nick $nick on channel @$channel said the following: '$text'\n";
 	if ( $text =~ /^\s*  $config->{nick} \s* [,:]? \s* trust  \s+  (.*)/x ) {
 
@@ -169,15 +184,16 @@ sub irc_public {
 	}
 
 	# Example:
-        # Hyppolit: word is also text
+	# Hyppolit: word is also text
 	if ( $text =~ /^\s*  $config->{nick} \s* [,:]? \s* (\S+)  \s+ is \s+ also \s+ (.*)/x ) {
 		my $word = $1;
 		$config->{is}{$word} .= " and also $2";
+		p $config->{is}{$word};
 		save_config();
 		$irc->yield( privmsg => $channel, "$word is now $config->{is}{$word}" );
 
-	# Example:
-	# Hyppolit: word is text
+		# Example:
+		# Hyppolit: word is text
 	} elsif ( $text =~ /^\s*  $config->{nick} \s* [,:]? \s* (\S+)  \s+ is \s+ (.*)/x ) {
 		my $word = $1;
 		my $was = $config->{is}{$word} || 'unknown';
@@ -186,9 +202,10 @@ sub irc_public {
 		$irc->yield( privmsg => $channel, "$word was $was" );
 		$irc->yield( privmsg => $channel, "$word is now $config->{is}{$word}" );
 
-	# Example:
-	# Hyppolit: trac!
+		# Example:
+		# Hyppolit: trac!
 	} elsif ( $text =~ /^\s*  $config->{nick} \s* [,:]? \s* trac!/x ) {
+
 		#$irc->yield( privmsg => $channel, "Channel $channel" );
 		#$irc->yield( privmsg => $channel, "@$channel" );
 		return if not grep { $_ eq $trac_channel } @$channel;
@@ -196,22 +213,24 @@ sub irc_public {
 		$_[KERNEL]->delay( disable_registration => 60 * $trac_timeout );
 
 	} elsif ( $text =~ /^\s*  $config->{nick} \s* [,:]? \s* tell \s+ (\w+) \s+ (.*)/x ) {
-			my ($to, $msg) = ($1, $2);
-			push @{ $config->{messages}{$to} }, {
-				who => $nick,
-				what => $msg,
-				when => time,
+		my ( $to, $msg ) = ( $1, $2 );
+		push @{ $config->{messages}{$to} },
+			{
+			who  => $nick,
+			what => $msg,
+			when => time,
 			};
-			$irc->yield( privmsg => $channel, "$nick, I'll tell that $to when we see each other." );
-			save_config();
-	# word?
+		$irc->yield( privmsg => $channel, "$nick, I'll tell that $to when we see each other." );
+		save_config();
+
+		# word?
 	} elsif ( $text =~ /^\s*  (\S+)\?  \s*$/x ) {
 		my $word = $1;
 		if ( $word eq $config->{nick} ) {
 			$irc->yield( privmsg => $channel, "$config->{nick} is a bot currently running version $VERSION" );
 			$irc->yield( privmsg => $channel, "My master is szabgab." );
 		} elsif ( $word eq 'uptime' ) {
-			chomp ( my $uptime = qx{uptime} );
+			chomp( my $uptime = qx{uptime} );
 			$irc->yield( privmsg => $channel, $uptime );
 		} elsif ( $config->{is}{$word} ) {
 			$irc->yield( privmsg => $channel, "$word is $config->{is}{$word}" );
@@ -230,6 +249,7 @@ sub irc_public {
 	if ( $config->{explain} ) {
 		if ( $text =~ /^$config->{explain}:\s*(.*)/ ) {
 			my $code = $1;
+			p $code;
 			require Code::Explain;
 			if ( not $code ) {
 				$irc->yield(
@@ -274,6 +294,9 @@ sub irc_public {
 		$irc->yield( privmsg => $channel, "Karma of $1 is $karma" );
 	}
 
+	if ( $text =~ /^help/ ) {
+		$irc->yield( privmsg => $channel, "help is on the way $nick" );
+	}
 	return;
 }
 
@@ -288,9 +311,9 @@ sub irc_msg {
 	#	my $irc = $_[SENDER]->get_heap();
 
 	my $text = $_[ARG2];
-	if ($text eq 'read') {
-		if ($config->{messages}{$nick}) {
-			foreach my $msg (@{ $config->{messages}{$nick} }) {
+	if ( $text eq 'read' ) {
+		if ( $config->{messages}{$nick} ) {
+			foreach my $msg ( @{ $config->{messages}{$nick} } ) {
 				$irc->yield( privmsg => $nick, "$msg->{who} said $msg->{what}" );
 			}
 			delete $config->{messages}{$nick};
@@ -304,6 +327,8 @@ sub irc_msg {
 sub irc_join {
 	my $nick = ( split /!/, $_[ARG0] )[0];
 	my $channel = $_[ARG1];
+
+	say 'nick joined: ' . $nick;
 
 	#print "nick joined $nick\n";
 
@@ -321,12 +346,90 @@ sub irc_join {
 
 	if ( $config->{trusted}{$nick} ) {
 		set_op( $irc, $channel, $nick );
+		use IRC::Utils qw( YELLOW LIGHT_CYAN NORMAL );
+		$irc->yield( privmsg => $channel, YELLOW . "Welcome $nick" . NORMAL );
 	}
-	
+
+	#Advise machine generated nicks to change them
+	elsif ( $nick =~ /^(user|mib)_/ ) {
+		use IRC::Utils qw( ORANGE NORMAL GREEN);
+		$irc->yield(
+			privmsg => $channel,
+			ORANGE . "INFO: Please change your machine generated nickname $nick for continuity " . NORMAL
+		);
+		$irc->yield(
+			privmsg => $channel,
+			"Example: type /nick newnickname (limit 9 characters) " . GREEN . "Thank You" . NORMAL
+		);
+	} else {
+		$irc->yield( privmsg => $channel, LIGHT_CYAN . "Welcome $nick" . NORMAL );
+	}
+
 	# check if there were any messages and send private message if there were any
-	if ($config->{messages}{$nick}) {
-		$irc->yield( privmsg => $nick, "You have " . @{ $config->{messages}{$nick} } . " messages. Type 'read' to read them.");
+	if ( $config->{messages}{$nick} ) {
+		$irc->yield(
+			privmsg => $nick,
+			"You have " . @{ $config->{messages}{$nick} } . " messages. Type 'read' to read them."
+		);
 	}
+}
+
+sub irc_nick {
+	my $old_nick = ( split /!/, $_[ARG0] )[0];
+	my $nick = $_[ARG1];
+	
+	###
+	#
+	#TODO check array againts Padre as this only works for hard coded channel
+	#
+	####
+	my $channel = $config->{channels}[0];
+	say 'irc_nick changed: ' . $nick;
+	# p $channel;
+
+	#print "nick joined $nick\n";
+
+	# now unnecessary
+	#	my $irc = $_[SENDER]->get_heap();
+
+	# only send the message if we were the one joining
+	if ( $nick eq $irc->nick_name() ) {
+
+		#$irc->yield(privmsg => $channel, "Hi everybody! I am the local bot ($VERSION)");
+	}
+
+	# TODO for now it is on every channel
+	# but it should work with some database
+
+	if ( $config->{trusted}{$nick} ) {
+		set_op( $irc, $channel, $nick );
+		use IRC::Utils qw( YELLOW LIGHT_CYAN NORMAL );
+		$irc->yield( privmsg => $channel, YELLOW . "Welcome $nick" . NORMAL );
+	}
+
+	#Advise machine generated nicks to change them
+	elsif ( $nick =~ /^(user|mib)_/ ) {
+		use IRC::Utils qw( ORANGE NORMAL GREEN);
+		$irc->yield(
+			privmsg => $channel,
+			ORANGE . "INFO: Please change your machine generated nickname $nick for continuity " . NORMAL
+		);
+		$irc->yield(
+			privmsg => $channel,
+			"Example: type /nick newnickname (limit 9 characters) " . GREEN . "Thank You" . NORMAL
+		);
+	} else {
+		$irc->yield( privmsg => $channel, LIGHT_CYAN . "Welcome $nick" . NORMAL );
+	}
+
+	# check if there were any messages and send private message if there were any
+	if ( $config->{messages}{$nick} ) {
+		$irc->yield(
+			privmsg => $nick,
+			"You have " . @{ $config->{messages}{$nick} } . " messages. Type 'read' to read them."
+		);
+	}
+
 }
 
 sub set_op {
@@ -524,6 +627,7 @@ sub disable_registration {
 	$irc->yield( privmsg => $trac_channel, 'Trac registration closed' );
 	return 1;
 }
+
 sub enable_registration {
 	eval { trac('enabled'); };
 	my $error = $@;
@@ -531,9 +635,13 @@ sub enable_registration {
 		$irc->yield( privmsg => $trac_channel, $error );
 		return;
 	}
-	$irc->yield( privmsg => $trac_channel, "Trac registration opened for $trac_timeout minutes. Please visit http://padre.perlide.org/trac/register to register" );
+	$irc->yield(
+		privmsg => $trac_channel,
+		"Trac registration opened for $trac_timeout minutes. Please visit http://padre.perlide.org/trac/register to register"
+	);
 	return 1;
 }
+
 sub trac {
 	my $what = shift;
 	my $file = '/var/trac/padre/conf/trac.ini';
