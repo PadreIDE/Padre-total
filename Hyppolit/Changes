@@ -1,5 +1,9 @@
 Changes of Hyppolit the IRC bot
 
+v0.15 2012.07.17
+	- tweak explain: messages submersible_toaster++ (BOWTIE)
+	- various string tweaks (BOWTIE)
+	
 v0.14 2012.07.16
 	- added basic help (BOWTIE)
 
