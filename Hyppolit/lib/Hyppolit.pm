@@ -423,18 +423,18 @@ sub irc_join {
 
 	if ( $config->{trusted}{$nick} ) {
 		set_op( $irc, $channel, $nick );
-		$irc->yield( privmsg => $channel, YELLOW . ' Welcome ' . $nick . NORMAL );
+		$irc->yield( privmsg => $channel, YELLOW . 'Welcome ' . $nick . NORMAL );
 	}
 
 	#Advise machine generated nicks to change them
 	elsif ( $nick =~ /^(user|mib)_/ ) {
 		$irc->yield(
 			privmsg => $channel,
-			ORANGE . ' INFO : Please change your machine generated nickname ' . $nick . ' for continuity ' . NORMAL
+			ORANGE . 'INFO : Please change your machine generated nickname ' . $nick . ' for continuity ' . NORMAL
 		);
 		$irc->yield(
 			privmsg => $channel,
-			' Example : type / nick newnickname( limit 9 characters ) ' . GREEN . ' Thank You ' . NORMAL
+			'Example : type / nick newnickname( limit 9 characters ) ' . GREEN . ' Thank You ' . NORMAL
 		);
 	} else {
 		$irc->yield( privmsg => $channel, LIGHT_CYAN . "Welcome $nick" . NORMAL );
@@ -444,7 +444,7 @@ sub irc_join {
 	if ( $config->{messages}{$nick} ) {
 		$irc->yield(
 			privmsg => $nick,
-			' You have ' . @{ $config->{messages}{$nick} } . " messages. Type ' read ' to read them."
+			'You have ' . @{ $config->{messages}{$nick} } . " messages. Type ' read ' to read them."
 		);
 	}
 	return;
@@ -463,7 +463,7 @@ sub irc_nick {
 	#
 	####
 	my $channel = $config->{channels}[0];
-	say ' irc_nick changed : ' . $nick;
+	say 'irc_nick changed : ' . $nick;
 
 	# p $channel;
 
@@ -483,18 +483,18 @@ sub irc_nick {
 
 	if ( $config->{trusted}{$nick} ) {
 		set_op( $irc, $channel, $nick );
-		$irc->yield( privmsg => $channel, YELLOW . ' Welcome ' . $nick . NORMAL );
+		$irc->yield( privmsg => $channel, YELLOW . 'Welcome ' . $nick . NORMAL );
 	}
 
 	#Advise machine generated nicks to change them
 	elsif ( $nick =~ /^(user|mib)_/sxm ) {
 		$irc->yield(
 			privmsg => $channel,
-			ORANGE . ' INFO : Please change your machine generated nickname ' . $nick . ' for continuity ' . NORMAL
+			ORANGE . 'INFO : Please change your machine generated nickname ' . $nick . ' for continuity ' . NORMAL
 		);
 		$irc->yield(
 			privmsg => $channel,
-			' Example : type / nick newnickname( limit 9 characters ) ' . GREEN . ' Thank You ' . NORMAL
+			'Example : type / nick newnickname( limit 9 characters ) ' . GREEN . ' Thank You ' . NORMAL
 		);
 	} else {
 		$irc->yield( privmsg => $channel, LIGHT_CYAN . ' Welcome ' . $nick . NORMAL );
@@ -504,7 +504,7 @@ sub irc_nick {
 	if ( $config->{messages}{$nick} ) {
 		$irc->yield(
 			privmsg => $nick,
-			' You have ' . @{ $config->{messages}{$nick} } . " messages. Type ' read ' to read them."
+			'You have ' . @{ $config->{messages}{$nick} } . " messages. Type ' read ' to read them."
 		);
 	}
 	return;
@@ -512,10 +512,10 @@ sub irc_nick {
 
 sub set_op {
 	my ( $irc, $channel, $nick ) = @_;
-	if ( ref $channel and ref($channel) eq ' ARRAY ' ) {
+	if ( ref $channel and ref($channel) eq 'ARRAY' ) {
 		($channel) = @$channel;
 	}
-	say ' Giving op to ' . $nick . ' on ' . $channel; #." ($irc)";
+	say 'Giving op to ' . $nick . ' on ' . $channel; #." ($irc)";
 	$irc->yield( mode => $channel => ' + o ' . $nick );
 
 	# its already at another place, should be removed here?
