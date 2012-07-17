@@ -516,7 +516,7 @@ sub set_op {
 		($channel) = @$channel;
 	}
 	say 'Giving op to ' . $nick . ' on ' . $channel; #." ($irc)";
-	$irc->yield( mode => $channel => ' + o ' . $nick );
+	$irc->yield( mode => $channel => ' +o ' . $nick );
 
 	# its already at another place, should be removed here?
 	#	system "chmod -R 755 $config->{logdir}"; # TODO move to a better place
