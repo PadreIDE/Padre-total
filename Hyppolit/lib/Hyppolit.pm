@@ -430,11 +430,11 @@ sub irc_join {
 	elsif ( $nick =~ /^(user|mib)_/ ) {
 		$irc->yield(
 			privmsg => $channel,
-			ORANGE . 'INFO : Please change your machine generated nickname ' . $nick . ' for continuity ' . NORMAL
+			ORANGE . 'INFO : Please change your machine generated nickname ' . $nick . ' for continuity' . NORMAL
 		);
 		$irc->yield(
 			privmsg => $channel,
-			'Example : type / nick newnickname( limit 9 characters ) ' . GREEN . ' Thank You ' . NORMAL
+			'Example : type / nick newnickname( limit 9 characters ) ' . GREEN . ' Thank You' . NORMAL
 		);
 	} else {
 		$irc->yield( privmsg => $channel, LIGHT_CYAN . "Welcome $nick" . NORMAL );
@@ -444,7 +444,7 @@ sub irc_join {
 	if ( $config->{messages}{$nick} ) {
 		$irc->yield(
 			privmsg => $nick,
-			'You have ' . @{ $config->{messages}{$nick} } . " messages. Type ' read ' to read them."
+			'You have ' . @{ $config->{messages}{$nick} } . " messages. Type 'read' to read them."
 		);
 	}
 	return;
@@ -490,11 +490,11 @@ sub irc_nick {
 	elsif ( $nick =~ /^(user|mib)_/sxm ) {
 		$irc->yield(
 			privmsg => $channel,
-			ORANGE . 'INFO : Please change your machine generated nickname ' . $nick . ' for continuity ' . NORMAL
+			ORANGE . 'INFO : Please change your machine generated nickname ' . $nick . ' for continuity' . NORMAL
 		);
 		$irc->yield(
 			privmsg => $channel,
-			'Example : type / nick newnickname( limit 9 characters ) ' . GREEN . ' Thank You ' . NORMAL
+			'Example : type / nick newnickname( limit 9 characters ) ' . GREEN . ' Thank You' . NORMAL
 		);
 	} else {
 		$irc->yield( privmsg => $channel, LIGHT_CYAN . ' Welcome ' . $nick . NORMAL );
@@ -504,7 +504,7 @@ sub irc_nick {
 	if ( $config->{messages}{$nick} ) {
 		$irc->yield(
 			privmsg => $nick,
-			'You have ' . @{ $config->{messages}{$nick} } . " messages. Type ' read ' to read them."
+			'You have ' . @{ $config->{messages}{$nick} } . " messages. Type 'read' to read them."
 		);
 	}
 	return;
@@ -520,16 +520,19 @@ sub set_op {
 
 	# its already at another place, should be removed here?
 	#	system "chmod -R 755 $config->{logdir}"; # TODO move to a better place
+	return;
 }
 
 sub _default {
 	my $nick = ( split /!/, $_[ARG0] )[0];
 	print "Default: $nick ", scalar(@_), "\n";
+	return;
 }
 
 sub irc_all {
 	my $nick = ( split /!/, $_[ARG0] )[0];
 	print "All: $nick ", scalar(@_), "\n";
+	return;
 }
 
 
@@ -546,35 +549,35 @@ sub irc_tail_input {
 		my @dirs = qx{$svnlook dirs-changed $repo -r $id};
 		chomp @dirs;
 		my $msg = "svn: r$id | $author++ | http://padre.perlide.org/trac/changeset/$id\n";
-		$kernel->post( $sender, ' privmsg ', $_, $msg ) for @{ $config->{channels} };
+		$kernel->post( $sender, 'privmsg', $_, $msg ) for @{ $config->{channels} };
 
 		foreach my $line ( split /\n/, $log ) {
-			$kernel->post( $sender, ' privmsg ', $_, "     $line" ) for @{ $config->{channels} };
+			$kernel->post( $sender, 'privmsg', $_, "     $line" ) for @{ $config->{channels} };
 		}
 		my $dirs = join " ", @dirs;
-		$kernel->post( $sender, ' privmsg ', $_, "     $dirs" ) for @{ $config->{channels} };
+		$kernel->post( $sender, 'privmsg', $_, "     $dirs" ) for @{ $config->{channels} };
 
 	}
 
 	# TODO report error ?
-	# $kernel->post( $sender, ' privmsg ', $_, "$config->{inputfile} $input" ) for @{ $config->{channels} };
+	# $kernel->post( $sender, 'privmsg', $_, "$config->{inputfile} $input" ) for @{ $config->{channels} };
 	return;
 }
 
 sub irc_tail_error {
 	my ( $kernel, $sender, $filename, $errnum, $errstring ) = @_[ KERNEL, SENDER, ARG0 .. ARG2 ];
-	$kernel->post( $sender, ' privmsg ', $_, "SVN ERROR: $errnum $errstring" ) for @{ $config->{channels} };
+	$kernel->post( $sender, 'privmsg', $_, "SVN ERROR: $errnum $errstring" ) for @{ $config->{channels} };
 
 	# now unnecessary
 	#	my $irc = $sender->get_heap();
-	$irc->plugin_del(' FollowTail ');
+	$irc->plugin_del('FollowTail');
 	return;
 }
 
 sub irc_tail_reset {
 	my ( $kernel, $sender, $filename ) = @_[ KERNEL, SENDER, ARG0 ];
 
-	#	$kernel->post( $sender, ' privmsg ', $_, "$config->{inputfile} RESET EVENT" ) for @{ $config->{channels} };
+	#	$kernel->post( $sender, 'privmsg', $_, "$config->{inputfile} RESET EVENT" ) for @{ $config->{channels} };
 	return;
 }
 
@@ -602,7 +605,7 @@ sub trac_ticket_text {
 		SELECT oldvalue, author
                 FROM ticket_change
 		WHERE ticket = ?
-                  AND field = ' comment '
+                  AND field = 'comment'
 		  ORDER BY time DESC
 	        }, {}, $ticket_id
 	);
@@ -621,7 +624,7 @@ sub trac_ticket_text {
 		}
 	}
 	if ($type) {
-		if ( $type eq ' attachment ' ) {
+		if ( $type eq 'attachment' ) {
 			$msg .= " new attachment";
 		}
 	}
@@ -656,7 +659,7 @@ sub trac_check {
 		q{
 	       SELECT id FROM attachment
 	       WHERE
-                   type = ' ticket '
+                   type = 'ticket'
                    AND time > ?
                    AND time <= ?
 	       ORDER BY time ASC
@@ -696,18 +699,18 @@ sub trac_check {
 }
 
 sub disable_registration {
-	eval { trac(' disabled '); };
+	eval { trac('disabled'); };
 	my $error = $@;
 	if ($error) {
 		$irc->yield( privmsg => $trac_channel, $error );
 		return;
 	}
-	$irc->yield( privmsg => $trac_channel, ' Trac registration closed ' );
+	$irc->yield( privmsg => $trac_channel, 'Trac registration closed ' );
 	return 1;
 }
 
 sub enable_registration {
-	eval { trac(' enabled '); };
+	eval { trac('enabled'); };
 	my $error = $@;
 	if ($error) {
 		$irc->yield( privmsg => $trac_channel, $error );
@@ -722,8 +725,8 @@ sub enable_registration {
 
 sub trac {
 	my $what = shift;
-	my $file = ' / var / trac / padre / conf / trac . ini ';
-	open my $in, ' < ', $file or die "Could not open '$file' for reading \n ";
+	my $file = '/var/trac/padre/conf/trac.ini';
+	open my $in, '<', $file or die "Could not open '$file' for reading \n ";
 	my @content = <$in>;
 	close $in;
 	@content = map { $_ =~ s/(acct_mgr.web_ui.registrationmodule\s*=\s*)(enabled|disabled)/$1$what/; $_ } @content;
