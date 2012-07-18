@@ -411,7 +411,7 @@ sub irc_msg {
 sub irc_join {
 	my $nick = ( split /!/, $_[ARG0] )[0];
 	my $channel = $_[ARG1];
-	$irc->yield(privmsg => $channel => "hi $channel!");
+	# $irc->yield(privmsg => $channel => "hi $channel!");
 	# say ' nick joined : ' . $nick;
 
 	#print "nick joined $nick\n";
