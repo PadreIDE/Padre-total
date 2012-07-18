@@ -437,11 +437,11 @@ sub irc_join {
 	elsif ( $nick =~ /^(user|mib)_/ ) {
 		$irc->yield(
 			privmsg => $channel,
-			ORANGE . 'INFO : Please change your machine generated nickname ' . $nick . ' for continuity' . NORMAL
+			ORANGE . 'INFO: Please change your machine generated nickname ' . $nick . ' for continuity' . NORMAL
 		);
 		$irc->yield(
 			privmsg => $channel,
-			'Example : type /nick newnickname( limit 9 characters ) ' . GREEN . ' Thank You' . NORMAL
+			'Example: type /nick newnickname( limit 9 characters ) ' . GREEN . ' Thank You' . NORMAL
 		);
 	} else {
 		$irc->yield( privmsg => $channel, LIGHT_CYAN . "Welcome $nick" . NORMAL );
@@ -497,11 +497,11 @@ sub irc_nick {
 	elsif ( $nick =~ /^(user|mib)_/sxm ) {
 		$irc->yield(
 			privmsg => $channel,
-			ORANGE . 'INFO : Please change your machine generated nickname ' . $nick . ' for continuity' . NORMAL
+			ORANGE . 'INFO: Please change your machine generated nickname ' . $nick . ' for continuity' . NORMAL
 		);
 		$irc->yield(
 			privmsg => $channel,
-			'Example : type /nick newnickname( limit 9 characters ) ' . GREEN . ' Thank You' . NORMAL
+			'Example: type /nick newnickname( limit 9 characters ) ' . GREEN . ' Thank You' . NORMAL
 		);
 	} else {
 		$irc->yield( privmsg => $channel, LIGHT_CYAN . 'Welcome ' . $nick . NORMAL );
