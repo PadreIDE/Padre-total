@@ -37,17 +37,26 @@ our $VERSION = '0.15';
 
 use base 'Exporter';
 
-use POE;
-use POE::Component::IRC::State;
+use POE qw( 
+	Component::IRC 
+	Component::IRC::State 
+	Component::IRC::Plugin::AutoJoin
+	Component::IRC::Plugin::Logger
+	Component::IRC::Plugin::FollowTail
+	);
+
+# use POE;
+# use POE::Component::IRC::State;
+# use POE::Component::IRC::Plugin::AutoJoin;
+# use POE::Component::IRC::Plugin::Logger;
+# use POE::Component::IRC::Plugin::FollowTail;
+
 use IRC::Utils qw( GREEN LIGHT_CYAN ORANGE YELLOW NORMAL );
-use POE::Component::IRC::Plugin::AutoJoin;
-use POE::Component::IRC::Plugin::Logger;
-use POE::Component::IRC::Plugin::FollowTail;
 use DBI;
 
 # use Data::Dumper;
 use Data::Printer {
-	caller_info => 1,
+	caller_info => 0,
 	colored     => 1,
 };
 
@@ -99,7 +108,7 @@ sub run {
 	# print Dumper $config;
 	p $config;
 
-	POE::Session->create( package_states => [ main => \@methods ] );
+	POE::Session->create( package_states => [ main => \@methods ], );
 
 	say $config->{nick} . ' is running against ' . $config->{channels}[0] . ' on ' . $config->{server};
 	$poe_kernel->run();
@@ -116,14 +125,16 @@ sub _start {
 		Server => $config->{server},
 	);
 
-	# TODO: AutoJoin does not seem to rejoin after it was kicked out.
-
+	# TODO: AutoJoin does not seem to rejoin after it was kicked out. bowtie agrees 
 	$irc->plugin_add(
 		'AutoJoin',
 		POE::Component::IRC::Plugin::AutoJoin->new(
 			Channels => $config->{channels},
 		)
 	);
+    $irc->yield(register => qw(join) );
+    $irc->yield(connect => { } );
+
 	if ( $config->{logdir} ) {
 		$irc->plugin_add(
 			'Logger',
@@ -138,6 +149,7 @@ sub _start {
 		);
 		system "chmod -R 755 $config->{logdir}"; # TODO move to a better place
 	}
+
 	if ( $config->{inputfile} ) {
 		$irc->plugin_add(
 			'FollowTail' => POE::Component::IRC::Plugin::FollowTail->new(
@@ -145,11 +157,6 @@ sub _start {
 			)
 		);
 	}
-
-	$irc->yield( register => 'join' );
-
-	#$irc->yield(register => 'all');
-	$irc->yield('connect');
 
 	if ( $config->{tracdb} ) {
 		$dbh = DBI->connect( "dbi:SQLite:dbname=" . $config->{tracdb}, "", "" );
@@ -232,7 +239,7 @@ sub irc_public {
 	} elsif ( $text =~ /^\s*  (\S+)\?  \s*$/x ) {
 		my $word = $1;
 		if ( $word eq $config->{nick} ) {
-			$irc->yield( privmsg => $channel, $config->{nick}.' is a bot currently running version '.$VERSION );
+			$irc->yield( privmsg => $channel, $config->{nick} . ' is a bot currently running version ' . $VERSION );
 			$irc->yield( privmsg => $channel, 'My master is szabgab.' );
 		} elsif ( $word eq 'uptime' ) {
 			chomp( my $uptime = qx{uptime} );
@@ -404,7 +411,7 @@ sub irc_msg {
 sub irc_join {
 	my $nick = ( split /!/, $_[ARG0] )[0];
 	my $channel = $_[ARG1];
-
+	$irc->yield(privmsg => $channel => "hi $channel!");
 	# say ' nick joined : ' . $nick;
 
 	#print "nick joined $nick\n";
@@ -434,7 +441,7 @@ sub irc_join {
 		);
 		$irc->yield(
 			privmsg => $channel,
-			'Example : type / nick newnickname( limit 9 characters ) ' . GREEN . ' Thank You' . NORMAL
+			'Example : type /nick newnickname( limit 9 characters ) ' . GREEN . ' Thank You' . NORMAL
 		);
 	} else {
 		$irc->yield( privmsg => $channel, LIGHT_CYAN . "Welcome $nick" . NORMAL );
@@ -494,7 +501,7 @@ sub irc_nick {
 		);
 		$irc->yield(
 			privmsg => $channel,
-			'Example : type / nick newnickname( limit 9 characters ) ' . GREEN . ' Thank You' . NORMAL
+			'Example : type /nick newnickname( limit 9 characters ) ' . GREEN . ' Thank You' . NORMAL
 		);
 	} else {
 		$irc->yield( privmsg => $channel, LIGHT_CYAN . ' Welcome ' . $nick . NORMAL );
