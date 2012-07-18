@@ -504,7 +504,7 @@ sub irc_nick {
 			'Example : type /nick newnickname( limit 9 characters ) ' . GREEN . ' Thank You' . NORMAL
 		);
 	} else {
-		$irc->yield( privmsg => $channel, LIGHT_CYAN . ' Welcome ' . $nick . NORMAL );
+		$irc->yield( privmsg => $channel, LIGHT_CYAN . 'Welcome ' . $nick . NORMAL );
 	}
 
 	# check if there were any messages and send private message if there were any
