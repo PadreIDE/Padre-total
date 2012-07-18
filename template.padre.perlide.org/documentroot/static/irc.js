@@ -1,5 +1,5 @@
 var channels = {
-   padre:        {title:"Padre, the Perl IDE",           host:"irc.freenode.net", channel:"padre"},
+   padre:        {title:"Padre, the Perl IDE",           host:"irc.perl.org",     channel:"padre"},
    general:      {title:"General Perl Help",             host:"irc.freenode.net", channel:"perl"},
    win32:        {title:"Win32 specific",                host:"irc.perl.org",     channel:"win32"},
    catalyst:     {title:"Catalyst",                      host:"irc.perl.org",     channel:"catalyst"},
