@@ -437,7 +437,8 @@ sub irc_join {
 
 	if ( $config->{trusted}{$nick} ) {
 		set_op( $irc, $channel, $nick );
-		$irc->yield( privmsg => $channel, YELLOW . 'Welcome ' . $nick . NORMAL );
+		#turn off Welcome for op's joining
+		# $irc->yield( privmsg => $channel, YELLOW . 'Welcome ' . $nick . NORMAL );
 	}
 
 	#Advise machine generated nicks to change them
@@ -487,16 +488,17 @@ sub irc_nick {
 	#	my $irc = $_[SENDER]->get_heap();
 
 	# only send the message if we were the one joining
-	if ( $nick eq $irc->nick_name() ) {
+	# if ( $nick eq $irc->nick_name() ) {
 
-		#$irc->yield(privmsg => $channel, "Hi everybody! I am the local bot ($VERSION)");
-	}
+		# #$irc->yield(privmsg => $channel, "Hi everybody! I am the local bot ($VERSION)");
+	# }
 
 	# TODO for now it is on every channel
 	# but it should work with some database
 
 	if ( $config->{trusted}{$nick} ) {
 		set_op( $irc, $channel, $nick );
+		#this should be left on showing an op after a /nick
 		$irc->yield( privmsg => $channel, YELLOW . 'Welcome ' . $nick . NORMAL );
 	}
 
