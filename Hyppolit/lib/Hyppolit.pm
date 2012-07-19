@@ -346,7 +346,7 @@ sub irc_public {
 		$irc->yield( privmsg => $nick, LIGHT_CYAN . 'karma nickname' . NORMAL . ' show karma' );
 		$irc->yield(
 			privmsg => $nick,
-			LIGHT_CYAN . $config->{nick} . ': tell nickname message' . NORMAL . ' leave a message for another user'
+			LIGHT_CYAN . $config->{nick} . ': tell nickname message' . NORMAL . ' leave a message for some one who is not currently on irc'
 		);
 		$irc->yield(
 			privmsg => $nick,
@@ -424,8 +424,8 @@ sub irc_join {
 
 	# only send the message if we were the one joining
 	if ( $nick eq $irc->nick_name() ) {
-
-		#$irc->yield(privmsg => $channel, "Hi everybody! I am the local bot ($VERSION)");
+		$irc->yield(privmsg => $channel, "Hi I am $nick the $channel channel bot (v$VERSION), please op me");
+		return;
 	}
 
 	# TODO for now it is on every channel
