@@ -51,7 +51,7 @@ use POE qw(
 # use POE::Component::IRC::Plugin::Logger;
 # use POE::Component::IRC::Plugin::FollowTail;
 
-use IRC::Utils qw( GREEN LIGHT_CYAN ORANGE YELLOW NORMAL );
+use IRC::Utils qw( GREEN LIGHT_CYAN ORANGE YELLOW NORMAL PURPLE);
 use DBI;
 
 # use Data::Dumper;
@@ -145,7 +145,11 @@ sub _start {
 				Path    => $config->{logdir},
 				Private => 0,
 				Public  => 1,
-
+				Strip_color => 1,
+				Strip_formatting => 1,
+				Notices => 0,
+				DCC => 0,
+				
 				# Restricted => 0,   #did not help
 				Sort_by_date => 1,
 			)
@@ -424,7 +428,7 @@ sub irc_join {
 
 	# only send the message if we were the one joining
 	if ( $nick eq $irc->nick_name() ) {
-		$irc->yield(privmsg => $channel, "Hi I am $nick the $channel channel bot (v$VERSION), please op me");
+		$irc->yield(privmsg => $channel, PURPLE."Hi I am $nick the $channel channel bot (v$VERSION), please op me". NORMAL);
 		return;
 	}
 

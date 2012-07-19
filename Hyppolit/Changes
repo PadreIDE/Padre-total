@@ -1,6 +1,8 @@
 Changes of Hyppolit the IRC bot
+
 v0.16 2012.TBA
 	- fixed auto rejoin (BOWTIE)
+	- tweaks to logging to ignore colours (BOWTIE)
 	
 v0.15 2012.07.17
 	- tweak explain: messages submersible_toaster++ (BOWTIE)
