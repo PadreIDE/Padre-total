@@ -33,7 +33,7 @@ use v5.10;
 my $trac_channel = '#padre';
 my $trac_timeout = 5;
 
-our $VERSION = '0.15';
+our $VERSION = '0.16';
 
 use base 'Exporter';
 
@@ -125,11 +125,14 @@ sub _start {
 		Server => $config->{server},
 	);
 
-	# TODO: AutoJoin does not seem to rejoin after it was kicked out. bowtie agrees 
+	# TODO: AutoJoin does not seem to rejoin after it was kicked out. dose now 
 	$irc->plugin_add(
 		'AutoJoin',
 		POE::Component::IRC::Plugin::AutoJoin->new(
 			Channels => $config->{channels},
+			#missing bits follow, bowtie
+			RejoinOnKick => 1, #enable rejoin
+			Rejoin_delay => 7, #delay a nice little prime (seconds)
 		)
 	);
     $irc->yield(register => qw(join) );
