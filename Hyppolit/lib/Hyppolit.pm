@@ -1,7 +1,9 @@
 package Hyppolit;
 
 use strict;
-use warnings FATAL => 'all';
+
+# use warnings FATAL => 'all';
+use warnings;
 
 # use 5.008005;
 use v5.10;
@@ -37,30 +39,22 @@ our $VERSION = '0.16';
 
 use base 'Exporter';
 
-use POE qw( 
-	Component::IRC 
-	Component::IRC::State 
+use POE qw(
+	Component::IRC
+	Component::IRC::State
 	Component::IRC::Plugin::AutoJoin
 	Component::IRC::Plugin::Logger
 	Component::IRC::Plugin::FollowTail
-	);
+);
 
-# use POE;
-# use POE::Component::IRC::State;
-# use POE::Component::IRC::Plugin::AutoJoin;
-# use POE::Component::IRC::Plugin::Logger;
-# use POE::Component::IRC::Plugin::FollowTail;
-
-use IRC::Utils qw( GREEN LIGHT_CYAN ORANGE YELLOW NORMAL PURPLE);
+use IRC::Utils qw( GREEN LIGHT_CYAN ORANGE YELLOW NORMAL PURPLE RED );
 use DBI;
 
-# use Data::Dumper;
 use Data::Printer {
-	caller_info => 0,
+	caller_info => 1,
 	colored     => 1,
 };
 
-# use YAML::Syck qw(LoadFile DumpFile);
 use YAML::XS qw(LoadFile DumpFile);
 my $svnlook = '/usr/bin/svnlook';
 
@@ -78,9 +72,6 @@ my $config;
 my $config_file;
 
 sub save_config {
-
-	# p $config_file;
-	# p $config;
 	DumpFile( $config_file, $config );
 	return;
 }
@@ -88,8 +79,6 @@ sub save_config {
 sub run {
 	my $class = shift;
 	$config_file = shift;
-
-	# p $config_file;
 
 	die "Missing channels. Usage $0 config_file.yml\n" if not $config_file;
 	$config = LoadFile($config_file);
@@ -105,7 +94,6 @@ sub run {
 		die "No channels defined\n";
 	}
 
-	# print Dumper $config;
 	p $config;
 
 	POE::Session->create( package_states => [ main => \@methods ], );
@@ -119,37 +107,42 @@ sub run {
 my $irc;
 my $dbh;
 
+#######
+# event handler for _start
+#######
 sub _start {
 	$irc = POE::Component::IRC::State->spawn(
 		Nick   => $config->{nick},
 		Server => $config->{server},
 	);
 
-	# TODO: AutoJoin does not seem to rejoin after it was kicked out. dose now 
+	# TODO: AutoJoin does not seem to rejoin after it was kicked out. dose now
 	$irc->plugin_add(
 		'AutoJoin',
 		POE::Component::IRC::Plugin::AutoJoin->new(
 			Channels => $config->{channels},
+
 			#missing bits follow, bowtie
 			RejoinOnKick => 1, #enable rejoin
 			Rejoin_delay => 7, #delay a nice little prime (seconds)
 		)
 	);
-    $irc->yield(register => qw(join) );
-    $irc->yield(connect => { } );
+
+	$irc->yield( register => qw(join) );
+	$irc->yield( connect  => {} );
 
 	if ( $config->{logdir} ) {
 		$irc->plugin_add(
 			'Logger',
 			POE::Component::IRC::Plugin::Logger->new(
-				Path    => $config->{logdir},
-				Private => 0,
-				Public  => 1,
-				Strip_color => 1,
+				Path             => $config->{logdir},
+				Private          => 0,
+				Public           => 1,
+				Strip_color      => 1,
 				Strip_formatting => 1,
-				Notices => 0,
-				DCC => 0,
-				
+				Notices          => 0,
+				DCC              => 0,
+
 				# Restricted => 0,   #did not help
 				Sort_by_date => 1,
 			)
@@ -169,9 +162,13 @@ sub _start {
 		$dbh = DBI->connect( "dbi:SQLite:dbname=" . $config->{tracdb}, "", "" );
 		$_[KERNEL]->delay( trac_check => 5 );
 	}
+
 	return;
 }
 
+#######
+# event handler for public
+#######
 sub irc_public {
 	my $nick = ( split /!/, $_[ARG0] )[0];
 	my $channel = $_[ARG1];
@@ -190,17 +187,56 @@ sub irc_public {
 		if ( $config->{trusted}{$nick} ) {
 			foreach my $n ( split /\s*[ ,]\s*/, $1 ) {
 				if ( $config->{trusted}{$n} ) {
-					$irc->yield( privmsg => $channel, "$n was already trusted" );
+					$irc->yield( privmsg => $channel, PURPLE ."$n was already trusted" . NORMAL );
 				} else {
 					$config->{trusted}{$n} = 1;
-					$irc->yield( privmsg => $channel, "Consider $n trusted" );
+					$irc->yield( privmsg => $channel, PURPLE ."Consider $n trusted" . NORMAL );
 				}
 				set_op( $irc, $channel, $n );
 			}
 			save_config();
 		}
 	}
+	# Example:
+	# hyppolit: hop nickname
+	#print "Nick $nick on channel @$channel said the following: '$text'\n";
+	if ( $text =~ /^\s*  $config->{nick} \s* [,:]? \s* hop  \s+  (?<hop>.*)/x ) {
 
+		say 'trying to hop '.$+{hop};
+		if ( $config->{trusted}{$nick} ) {
+			foreach my $n ( split /\s*[ ,]\s*/, $+{hop} ) {
+				if ( $config->{halfop}{$n} ) {
+					$irc->yield( privmsg => $channel, PURPLE ."$n is already a hop". NORMAL );
+				} else {
+					$config->{halfop}{$n} = 1;
+					set_hop( $irc, $channel, $n );
+					save_config();
+					$irc->yield( privmsg => $channel, PURPLE ."Consider $n now a hop". NORMAL );
+				}
+				# set_hop( $irc, $channel, $n );
+			}
+			# save_config();
+		}
+	}
+	# Example:
+	# hyppolit: dehop nickname
+	#print "Nick $nick on channel @$channel said the following: '$text'\n";
+	if ( $text =~ /^\s*  $config->{nick} \s* [,:]? \s* dehop  \s+  (?<hop>.*)/x ) {
+
+		say 'trying to dehop '.$+{hop};
+		if ( $config->{trusted}{$nick} ) {
+			foreach my $n ( split /\s*[ ,]\s*/, $+{hop} ) {
+				if ( $config->{halfop}{$n} ) {
+					$config->{halfop}{$n} = 0;
+					set_dehop( $irc, $channel, $n );
+					save_config();
+					$irc->yield( privmsg => $channel, RED ."Rescinded $n as a hop". NORMAL );
+				}
+			}
+		}
+	}	
+	
+	
 	# Example:
 	# Hyppolit: word is also text
 	if ( $text =~ /^\s*  $config->{nick} \s* [,:]? \s* (\S+)  \s+ is \s+ also \s+ (.*)/x ) {
@@ -321,76 +357,77 @@ sub irc_public {
 		}
 		save_config();
 	}
+
 	if ( $text =~ /^\s* karma \s+ (\S+) \s*$/x ) {
 		my $karma = $config->{karma}{$1} || 0;
 		$irc->yield( privmsg => $channel, "Karma of $1 is $karma" );
 	}
 
-	if ( $text =~ /^help/ ) {
-		$irc->yield( privmsg => $nick, 'help is on the way ' . $nick );
+	if ( $text =~ /^help$/ ) {
+		my @help;
+		push @help, 'help is on the way ' . $nick;
 		if ( $config->{trusted}{$nick} ) {
-			$irc->yield( privmsg => $nick, YELLOW . 'op help' . NORMAL );
-			$irc->yield(
-				privmsg => $nick,
-				YELLOW . 'op me'
-					. NORMAL
-					. ' kick the bot in to re-establishing your IRC '
-					. @{$channel}[0]
-					. ' op status if trusted'
-			);
-			$irc->yield(
-				privmsg => $nick,
-				YELLOW . $config->{nick} . ': trust nickname' . NORMAL . ' make the nickname an op ' . @{$channel}[0]
-			);
+			push @help, YELLOW . 'op help' . NORMAL;
+			push @help,
+				  YELLOW . 'op me'
+				. NORMAL
+				. ' kick the bot in to re-establishing your IRC '
+				. @{$channel}[0]
+				. ' op status if trusted';
+			push @help,
+				YELLOW . $config->{nick} . ': trust nickname' . NORMAL . ' make the nickname an op ' . @{$channel}[0];
+			push @help,
+				YELLOW . $config->{nick} . ': hop nickname' . NORMAL . ' make the nickname an hop ' . @{$channel}[0];
+			push @help,
+				YELLOW . $config->{nick} . ': dehop nickname' . NORMAL . ' remove the nickname as a hop ' . @{$channel}[0];							
 		}
+		push @help, LIGHT_CYAN . @{$channel}[0] . ' user help' . NORMAL;
+		push @help, LIGHT_CYAN . 'nickname++' . NORMAL . ' add karma';
+		push @help, LIGHT_CYAN . 'nickname--' . NORMAL . ' remove karma';
+		push @help, LIGHT_CYAN . 'karma nickname' . NORMAL . ' show karma';
+		push @help,
+			  LIGHT_CYAN
+			. $config->{nick}
+			. ': tell nickname message'
+			. NORMAL
+			. ' leave a message for some one who is not currently on irc';
+		push @help,
+			  LIGHT_CYAN
+			. $config->{nick}
+			. ': word is text'
+			. NORMAL
+			. ' teach '
+			. @{$channel}[0]
+			. ' about a new word = text';
+		push @help,
+			  LIGHT_CYAN
+			. $config->{nick}
+			. ': word is also text'
+			. NORMAL
+			. ' teach '
+			. @{$channel}[0]
+			. ' more about word .= text';
+		push @help, LIGHT_CYAN . 'word?' . NORMAL . ' show what we know about word';
+		push @help, LIGHT_CYAN . $config->{explain} . ': <perl code>' . NORMAL . ' expermental see Code::Explain';
+		push @help, LIGHT_CYAN . $config->{nick} . '?' . NORMAL . ' info about me';
+		push @help, LIGHT_CYAN . 'uptime?' . NORMAL . ' see how old I am';
+		push @help, ORANGE . 'IRC help' . NORMAL;
+		push @help, ORANGE . '/HELP' . NORMAL . ' http://www.ircbeginner.com/ircinfo/ircc-commands.html';
+		push @help,
+			  LIGHT_CYAN . '!help'
+			. NORMAL
+			. ' expermental for more help, only works in private chat with '
+			. $config->{nick};
+		push @help, '__END__';
+		$irc->yield( privmsg => $nick => $_ ) for @help;
 
-		$irc->yield( privmsg => $nick, LIGHT_CYAN . @{$channel}[0] . ' user help' . NORMAL );
-		$irc->yield( privmsg => $nick, LIGHT_CYAN . 'nickname++' . NORMAL . ' add karma' );
-		$irc->yield( privmsg => $nick, LIGHT_CYAN . 'nickname--' . NORMAL . ' remove karma' );
-		$irc->yield( privmsg => $nick, LIGHT_CYAN . 'karma nickname' . NORMAL . ' show karma' );
-		$irc->yield(
-			privmsg => $nick,
-			LIGHT_CYAN . $config->{nick} . ': tell nickname message' . NORMAL . ' leave a message for some one who is not currently on irc'
-		);
-		$irc->yield(
-			privmsg => $nick,
-			LIGHT_CYAN
-				. $config->{nick}
-				. ': word is text'
-				. NORMAL
-				. ' teach '
-				. @{$channel}[0]
-				. ' about a new word = text'
-		);
-		$irc->yield(
-			privmsg => $nick,
-			LIGHT_CYAN
-				. $config->{nick}
-				. ': word is also text'
-				. NORMAL
-				. ' teach '
-				. @{$channel}[0]
-				. ' more about word .= text'
-		);
-		$irc->yield( privmsg => $nick, LIGHT_CYAN . 'word?' . NORMAL . ' show what we know about word' );
-		$irc->yield(
-			privmsg => $nick,
-			LIGHT_CYAN . $config->{explain} . ': <perl code>' . NORMAL . ' expermental see Code::Explain'
-		);
-		$irc->yield( privmsg => $nick, LIGHT_CYAN . $config->{nick} . '?' . NORMAL . ' info about me' );
-		$irc->yield( privmsg => $nick, LIGHT_CYAN . 'uptime?' . NORMAL . ' see how old I am' );
-
-		$irc->yield( privmsg => $nick, ORANGE . 'IRC help' . NORMAL );
-		$irc->yield(
-			privmsg => $nick,
-			ORANGE . '/HELP' . NORMAL . ' http://www.ircbeginner.com/ircinfo/ircc-commands.html'
-		);
-		$irc->yield( privmsg => $nick, '__END__' );
 	}
 	return;
 }
 
-
+#######
+# event handler for msg
+#######
 sub irc_msg {
 	my $nick = ( split /!/, $_[ARG0] )[0];
 
@@ -415,9 +452,13 @@ sub irc_msg {
 	return;
 }
 
+#######
+# event handler for join channel
+#######
 sub irc_join {
 	my $nick = ( split /!/, $_[ARG0] )[0];
 	my $channel = $_[ARG1];
+
 	# $irc->yield(privmsg => $channel => "hi $channel!");
 	# say ' nick joined : ' . $nick;
 
@@ -428,7 +469,10 @@ sub irc_join {
 
 	# only send the message if we were the one joining
 	if ( $nick eq $irc->nick_name() ) {
-		$irc->yield(privmsg => $channel, PURPLE."Hi I am $nick the $channel channel bot (v$VERSION), please op me". NORMAL);
+		$irc->yield(
+			privmsg => $channel,
+			PURPLE . "Hi I am $nick the $channel channel bot (v$VERSION), please op me" . NORMAL
+		);
 		return;
 	}
 
@@ -437,20 +481,28 @@ sub irc_join {
 
 	if ( $config->{trusted}{$nick} ) {
 		set_op( $irc, $channel, $nick );
-		#turn off Welcome for op's joining
-		# $irc->yield( privmsg => $channel, YELLOW . 'Welcome ' . $nick . NORMAL );
-	}
 
+		#turn off Welcome for op's joining
+		# $irc->yield( privmsg => $channel, YELLOW . 'Welcome ' . $nick . NORMAL 
+		return;
+	}
+	elsif ( $config->{halfop}{$nick} ) {
+		set_hop( $irc, $channel, $nick );
+		return;
+	}
 	#Advise machine generated nicks to change them
 	elsif ( $nick =~ /^(user|mib)_/ ) {
 		$irc->yield(
-			privmsg => $channel,
+			privmsg => $nick,
+			# privmsg => $channel,
 			ORANGE . 'INFO: Please change your machine generated nickname ' . $nick . ' for continuity' . NORMAL
 		);
 		$irc->yield(
-			privmsg => $channel,
-			'Example: type /nick newnickname( limit 9 characters ) ' . GREEN . ' Thank You' . NORMAL
+			privmsg => $nick,
+			# privmsg => $channel,
+			'Example: /nick newnickname (limit 9 characters) ' . GREEN . ' Thank You' . NORMAL
 		);
+		$irc->yield( privmsg => $channel, LIGHT_CYAN . "Welcome $nick" . NORMAL );
 	} else {
 		$irc->yield( privmsg => $channel, LIGHT_CYAN . "Welcome $nick" . NORMAL );
 	}
@@ -466,52 +518,45 @@ sub irc_join {
 }
 
 #######
-#
+# event handler for nick change
 #######
 sub irc_nick {
 	my $old_nick = ( split /!/, $_[ARG0] )[0];
 	my $nick = $_[ARG1];
 
 	###
-	#
 	#TODO check array againts Padre as this only works for hard coded channel
-	#
-	####
+	###
 	my $channel = $config->{channels}[0];
-	say 'irc_nick changed : ' . $nick;
+	say $old_nick.' changed /nick to: ' . $nick;
 
-	# p $channel;
-
-	#print "nick joined $nick\n";
-
-	# now unnecessary
-	#	my $irc = $_[SENDER]->get_heap();
-
-	# only send the message if we were the one joining
-	# if ( $nick eq $irc->nick_name() ) {
-
-		# #$irc->yield(privmsg => $channel, "Hi everybody! I am the local bot ($VERSION)");
-	# }
-
-	# TODO for now it is on every channel
-	# but it should work with some database
 
 	if ( $config->{trusted}{$nick} ) {
 		set_op( $irc, $channel, $nick );
+
 		#this should be left on showing an op after a /nick
 		$irc->yield( privmsg => $channel, YELLOW . 'Welcome ' . $nick . NORMAL );
+		return;
 	}
-
+	elsif ( $config->{halfop}{$nick} ) {
+		set_hop( $irc, $channel, $nick );
+		#this should be left on showing an hop after a /nick
+		$irc->yield( privmsg => $channel, LIGHT_CYAN . 'Welcome ' . $nick . NORMAL );
+		return;
+	}
 	#Advise machine generated nicks to change them
 	elsif ( $nick =~ /^(user|mib)_/sxm ) {
 		$irc->yield(
-			privmsg => $channel,
+			privmsg => $nick,
+			# privmsg => $channel,
 			ORANGE . 'INFO: Please change your machine generated nickname ' . $nick . ' for continuity' . NORMAL
 		);
 		$irc->yield(
-			privmsg => $channel,
-			'Example: type /nick newnickname( limit 9 characters ) ' . GREEN . ' Thank You' . NORMAL
+			privmsg => $nick,
+			# privmsg => $channel,
+			'Example: /nick newnickname (limit 9 characters) ' . GREEN . ' Thank You' . NORMAL
 		);
+		$irc->yield( privmsg => $channel, LIGHT_CYAN . 'Welcome ' . $nick . NORMAL );
 	} else {
 		$irc->yield( privmsg => $channel, LIGHT_CYAN . 'Welcome ' . $nick . NORMAL );
 	}
@@ -526,6 +571,7 @@ sub irc_nick {
 	return;
 }
 
+
 sub set_op {
 	my ( $irc, $channel, $nick ) = @_;
 	if ( ref $channel and ref($channel) eq 'ARRAY' ) {
@@ -538,6 +584,28 @@ sub set_op {
 	#	system "chmod -R 755 $config->{logdir}"; # TODO move to a better place
 	return;
 }
+
+sub set_hop {
+	my ( $irc, $channel, $nick ) = @_;
+	if ( ref $channel and ref($channel) eq 'ARRAY' ) {
+		($channel) = @$channel;
+	}
+	say 'Making '.$nick.' a hop on ' . $channel; #." ($irc)";
+	$irc->yield( mode => $channel => ' +h ' . $nick );
+
+	return;
+}
+sub set_dehop {
+	my ( $irc, $channel, $nick ) = @_;
+	if ( ref $channel and ref($channel) eq 'ARRAY' ) {
+		($channel) = @$channel;
+	}
+	say 'Rescinded '.$nick.' as hop on ' . $channel; #." ($irc)";
+	$irc->yield( mode => $channel => ' -h ' . $nick );
+
+	return;
+}
+
 
 sub _default {
 	my $nick = ( split /!/, $_[ARG0] )[0];
@@ -597,6 +665,10 @@ sub irc_tail_reset {
 	return;
 }
 
+
+#######
+# trac stuff below
+###################
 sub trac_changeset_text {
 	my $changeset_id = shift;
 	return "Changeset #" . $changeset_id . " http://padre.perlide.org/trac/changeset/" . $changeset_id;

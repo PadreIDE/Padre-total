@@ -1,9 +1,11 @@
 Changes of Hyppolit the IRC bot
 
-v0.16 2012.TBA
+v0.16 2012.07.20
 	- fixed auto rejoin (BOWTIE)
 	- tweaks to logging to ignore colours (BOWTIE)
 	- don't welcome op's on join only on /nick (BOWTIE)
+	- add use of hop as a form of anti spam for members (BOWTIE)
+	- send the /nick message privatly (BOWTIE)
 	
 v0.15 2012.07.17
 	- tweak explain: messages submersible_toaster++ (BOWTIE)
