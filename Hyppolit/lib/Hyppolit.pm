@@ -413,11 +413,6 @@ sub irc_public {
 		push @help, LIGHT_CYAN . 'uptime?' . NORMAL . ' see how old I am';
 		push @help, ORANGE . 'IRC help' . NORMAL;
 		push @help, ORANGE . '/HELP' . NORMAL . ' http://www.ircbeginner.com/ircinfo/ircc-commands.html';
-		push @help,
-			  LIGHT_CYAN . '!help'
-			. NORMAL
-			. ' expermental for more help, only works in private chat with '
-			. $config->{nick};
 		push @help, '__END__';
 		$irc->yield( privmsg => $nick => $_ ) for @help;
 
