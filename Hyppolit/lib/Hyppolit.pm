@@ -498,7 +498,9 @@ sub irc_join {
 			'Example: /nick newnickname (limit 9 characters) ' . GREEN . ' Thank You' . NORMAL
 		);
 		$irc->yield( privmsg => $channel, LIGHT_CYAN . "Welcome $nick" . NORMAL );
-	} else {
+	} 
+	#ToDo SPAM should this be commented out?
+	else {
 		$irc->yield( privmsg => $channel, LIGHT_CYAN . "Welcome $nick" . NORMAL );
 	}
 
