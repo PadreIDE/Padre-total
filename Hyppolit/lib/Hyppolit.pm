@@ -414,7 +414,7 @@ sub irc_public {
 				. $config->{nick}
 				. ': ban nickname'
 				. NORMAL
-				. " ban's nick then kick's the nick, added's to banned list, dose not work against op's "
+				. " ban nick then kick the nick, added to banned list, dose not work against op's "
 				. @{$channel}[0];
 		}
 		push @help, LIGHT_CYAN . @{$channel}[0] . ' user help' . NORMAL;
