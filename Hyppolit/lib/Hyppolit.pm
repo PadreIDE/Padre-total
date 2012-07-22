@@ -35,7 +35,7 @@ use v5.10;
 my $trac_channel = '#padre';
 my $trac_timeout = 5;
 
-our $VERSION = '0.16';
+our $VERSION = '0.17';
 
 use base 'Exporter';
 
@@ -170,7 +170,8 @@ sub _start {
 # event handler for public
 #######
 sub irc_public {
-	my $nick = ( split /!/, $_[ARG0] )[0];
+	my $who     = $_[ARG0];
+	my $nick    = ( split /!/, $_[ARG0] )[0];
 	my $channel = $_[ARG1];
 
 	# now unnecessary
@@ -187,56 +188,79 @@ sub irc_public {
 		if ( $config->{trusted}{$nick} ) {
 			foreach my $n ( split /\s*[ ,]\s*/, $1 ) {
 				if ( $config->{trusted}{$n} ) {
-					$irc->yield( privmsg => $channel, PURPLE ."$n was already trusted" . NORMAL );
+					$irc->yield( privmsg => $channel, PURPLE . "$n was already trusted" . NORMAL );
 				} else {
 					$config->{trusted}{$n} = 1;
-					$irc->yield( privmsg => $channel, PURPLE ."Consider $n trusted" . NORMAL );
+					$irc->yield( privmsg => $channel, PURPLE . "Consider $n trusted" . NORMAL );
 				}
 				set_op( $irc, $channel, $n );
 			}
 			save_config();
 		}
 	}
+
 	# Example:
 	# hyppolit: hop nickname
 	#print "Nick $nick on channel @$channel said the following: '$text'\n";
 	if ( $text =~ /^\s*  $config->{nick} \s* [,:]? \s* hop  \s+  (?<hop>.*)/x ) {
 
-		say 'trying to hop '.$+{hop};
+		say 'trying to hop ' . $+{hop};
 		if ( $config->{trusted}{$nick} ) {
 			foreach my $n ( split /\s*[ ,]\s*/, $+{hop} ) {
 				if ( $config->{halfop}{$n} ) {
-					$irc->yield( privmsg => $channel, PURPLE ."$n is already a hop". NORMAL );
+					$irc->yield( privmsg => $channel, PURPLE . "$n is already a hop" . NORMAL );
 				} else {
 					$config->{halfop}{$n} = 1;
 					set_hop( $irc, $channel, $n );
 					save_config();
-					$irc->yield( privmsg => $channel, PURPLE ."Consider $n now a hop". NORMAL );
+					$irc->yield( privmsg => $channel, PURPLE . "Consider $n now a hop" . NORMAL );
 				}
-				# set_hop( $irc, $channel, $n );
 			}
-			# save_config();
 		}
 	}
+
 	# Example:
 	# hyppolit: dehop nickname
 	#print "Nick $nick on channel @$channel said the following: '$text'\n";
 	if ( $text =~ /^\s*  $config->{nick} \s* [,:]? \s* dehop  \s+  (?<hop>.*)/x ) {
 
-		say 'trying to dehop '.$+{hop};
+		say 'trying to dehop ' . $+{hop};
 		if ( $config->{trusted}{$nick} ) {
 			foreach my $n ( split /\s*[ ,]\s*/, $+{hop} ) {
 				if ( $config->{halfop}{$n} ) {
 					$config->{halfop}{$n} = 0;
 					set_dehop( $irc, $channel, $n );
 					save_config();
-					$irc->yield( privmsg => $channel, RED ."Rescinded $n as a hop". NORMAL );
+					$irc->yield( privmsg => $channel, RED . "Rescinded $n as a hop" . NORMAL );
 				}
 			}
 		}
-	}	
-	
-	
+	}
+
+	# Example:
+	# hyppolit: ban nickname
+	#print "Nick $nick on channel @$channel said the following: '$text'\n";
+	if ( $text =~ /^\s*  $config->{nick} \s* [,:]? \s* ban  \s+  (?<ban>.*)/x ) {
+
+		say 'trying to ban ' . $+{ban};
+		if ( $config->{trusted}{$nick} ) {
+			foreach my $n ( split /\s*[ ,]\s*/, $+{ban} ) {
+				if ( !$config->{trusted}{$n} ) {
+					$config->{ban}{$n} = 1;
+					set_ban( $irc, $channel, $n );
+					save_config();
+					$irc->yield( privmsg => $channel, RED . "Consider $n now baned" . NORMAL );
+				} else {
+					$irc->yield(
+						privmsg => $channel,
+						PURPLE . "Sorry, banning another trustie dose not compute!" . NORMAL
+					);
+					say 'We have a problem ' . $nick . ' just tried to ban ' . $n;
+				}
+			}
+		}
+	}
+
 	# Example:
 	# Hyppolit: word is also text
 	if ( $text =~ /^\s*  $config->{nick} \s* [,:]? \s* (\S+)  \s+ is \s+ also \s+ (.*)/x ) {
@@ -379,7 +403,19 @@ sub irc_public {
 			push @help,
 				YELLOW . $config->{nick} . ': hop nickname' . NORMAL . ' make the nickname an hop ' . @{$channel}[0];
 			push @help,
-				YELLOW . $config->{nick} . ': dehop nickname' . NORMAL . ' remove the nickname as a hop ' . @{$channel}[0];							
+				  YELLOW
+				. $config->{nick}
+				. ': dehop nickname'
+				. NORMAL
+				. ' remove the nickname as a hop '
+				. @{$channel}[0];
+			push @help,
+				  YELLOW
+				. $config->{nick}
+				. ': ban nickname'
+				. NORMAL
+				. " ban's nick then kick's the nick, added's to banned list, dose not work against op's "
+				. @{$channel}[0];
 		}
 		push @help, LIGHT_CYAN . @{$channel}[0] . ' user help' . NORMAL;
 		push @help, LIGHT_CYAN . 'nickname++' . NORMAL . ' add karma';
@@ -454,6 +490,11 @@ sub irc_join {
 	my $nick = ( split /!/, $_[ARG0] )[0];
 	my $channel = $_[ARG1];
 
+	if ( $config->{ban}{$nick} ) {
+		set_ban( $irc, $channel, $nick );
+		return;
+	}
+
 	# $irc->yield(privmsg => $channel => "hi $channel!");
 	# say ' nick joined : ' . $nick;
 
@@ -478,27 +519,30 @@ sub irc_join {
 		set_op( $irc, $channel, $nick );
 
 		#turn off Welcome for op's joining
-		# $irc->yield( privmsg => $channel, YELLOW . 'Welcome ' . $nick . NORMAL 
+		# $irc->yield( privmsg => $channel, YELLOW . 'Welcome ' . $nick . NORMAL
 		return;
-	}
-	elsif ( $config->{halfop}{$nick} ) {
+	} elsif ( $config->{halfop}{$nick} ) {
 		set_hop( $irc, $channel, $nick );
 		return;
 	}
+
 	#Advise machine generated nicks to change them
 	elsif ( $nick =~ /^(user|mib)_/ ) {
 		$irc->yield(
 			privmsg => $nick,
+
 			# privmsg => $channel,
 			ORANGE . 'INFO: Please change your machine generated nickname ' . $nick . ' for continuity' . NORMAL
 		);
 		$irc->yield(
 			privmsg => $nick,
+
 			# privmsg => $channel,
 			'Example: /nick newnickname (limit 9 characters) ' . GREEN . ' Thank You' . NORMAL
 		);
 		$irc->yield( privmsg => $channel, LIGHT_CYAN . "Welcome $nick" . NORMAL );
-	} 
+	}
+
 	#ToDo SPAM should this be commented out?
 	else {
 		$irc->yield( privmsg => $channel, LIGHT_CYAN . "Welcome $nick" . NORMAL );
@@ -525,7 +569,7 @@ sub irc_nick {
 	#TODO check array againts Padre as this only works for hard coded channel
 	###
 	my $channel = $config->{channels}[0];
-	say $old_nick.' changed /nick to: ' . $nick;
+	say $old_nick. ' changed /nick to: ' . $nick;
 
 
 	if ( $config->{trusted}{$nick} ) {
@@ -534,22 +578,25 @@ sub irc_nick {
 		#this should be left on showing an op after a /nick
 		$irc->yield( privmsg => $channel, YELLOW . 'Welcome ' . $nick . NORMAL );
 		return;
-	}
-	elsif ( $config->{halfop}{$nick} ) {
+	} elsif ( $config->{halfop}{$nick} ) {
 		set_hop( $irc, $channel, $nick );
+
 		#this should be left on showing an hop after a /nick
 		$irc->yield( privmsg => $channel, LIGHT_CYAN . 'Welcome ' . $nick . NORMAL );
 		return;
 	}
+
 	#Advise machine generated nicks to change them
 	elsif ( $nick =~ /^(user|mib)_/sxm ) {
 		$irc->yield(
 			privmsg => $nick,
+
 			# privmsg => $channel,
 			ORANGE . 'INFO: Please change your machine generated nickname ' . $nick . ' for continuity' . NORMAL
 		);
 		$irc->yield(
 			privmsg => $nick,
+
 			# privmsg => $channel,
 			'Example: /nick newnickname (limit 9 characters) ' . GREEN . ' Thank You' . NORMAL
 		);
@@ -587,22 +634,33 @@ sub set_hop {
 	if ( ref $channel and ref($channel) eq 'ARRAY' ) {
 		($channel) = @$channel;
 	}
-	say 'Making '.$nick.' a hop on ' . $channel; #." ($irc)";
+	say 'Making ' . $nick . ' a hop on ' . $channel;
 	$irc->yield( mode => $channel => ' +h ' . $nick );
 
 	return;
 }
+
 sub set_dehop {
 	my ( $irc, $channel, $nick ) = @_;
 	if ( ref $channel and ref($channel) eq 'ARRAY' ) {
 		($channel) = @$channel;
 	}
-	say 'Rescinded '.$nick.' as hop on ' . $channel; #." ($irc)";
+	say 'Rescinded ' . $nick . ' as hop on ' . $channel;
 	$irc->yield( mode => $channel => ' -h ' . $nick );
 
 	return;
 }
 
+sub set_ban {
+	my ( $irc, $channel, $nick ) = @_;
+	if ( ref $channel and ref($channel) eq 'ARRAY' ) {
+		($channel) = @$channel;
+	}
+	say 'Added ' . $nick . ' to ban list on ' . $channel;
+	$irc->yield( mode => $channel => ' +b ' . $nick );
+	$irc->yield( kick => $channel, $nick );
+	return;
+}
 
 sub _default {
 	my $nick = ( split /!/, $_[ARG0] )[0];

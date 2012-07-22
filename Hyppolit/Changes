@@ -1,5 +1,8 @@
 Changes of Hyppolit the IRC bot
 
+v0.17 2012.07.22
+	- add a persistent ban list (BOWTIE)
+
 v0.16 2012.07.20
 	- fixed auto rejoin (BOWTIE)
 	- tweaks to logging to ignore colours (BOWTIE)
