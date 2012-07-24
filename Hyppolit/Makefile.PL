@@ -15,6 +15,7 @@ requires 'Data::Printer'              => '0.3';
 requires 'DBD::SQLite'                => '1.25';
 requires 'DBI'                        => '1.609';
 requires 'IRC::Utils'                 => '0';
+requires 'DateTime'                   => '0';
 no_index 'directory'                  => qw{ t xt eg share inc privinc };
 
 #homepage       'http://padre.perlide.org/';
@@ -22,6 +23,5 @@ no_index 'directory'                  => qw{ t xt eg share inc privinc };
 #repository     'http://svn.perlide.org/padre/trunk/Padre/';
 # MailingList  'http://mail.perlide.org/mailman/listinfo/padre-dev';
 install_script 'script/hyppolit.pl';
-
 
 WriteAll;

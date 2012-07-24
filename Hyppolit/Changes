@@ -1,5 +1,12 @@
 Changes of Hyppolit the IRC bot
 
+v0.18 2012.07.24
+	- remove Welcome for normal nicks sewi++
+	- Welcome on nick change
+	- Extended the info for user_x and mib_x nicks, assume new to IRC
+	- Say Welcome with extended info to all regardless around
+	  Padre birthday 20/08/2008 plus or minus 1 day (BOWTIE)
+	
 v0.17 2012.07.22
 	- add a persistent ban list (BOWTIE)
 

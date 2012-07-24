@@ -1,11 +1,8 @@
 package Hyppolit;
 
 use strict;
+use warnings FATAL => 'all';
 
-# use warnings FATAL => 'all';
-use warnings;
-
-# use 5.008005;
 use v5.10;
 
 # TODO
@@ -35,7 +32,7 @@ use v5.10;
 my $trac_channel = '#padre';
 my $trac_timeout = 5;
 
-our $VERSION = '0.17';
+our $VERSION = '0.18';
 
 use base 'Exporter';
 
@@ -55,6 +52,7 @@ use Data::Printer {
 	colored     => 1,
 };
 
+use DateTime;
 use YAML::XS qw(LoadFile DumpFile);
 my $svnlook = '/usr/bin/svnlook';
 
@@ -391,7 +389,8 @@ sub irc_public {
 		my @help;
 		push @help, 'help is on the way ' . $nick;
 		if ( $config->{trusted}{$nick} ) {
-			push @help, YELLOW . 'op help' . NORMAL;
+
+			# push @help, YELLOW . 'op help' . NORMAL;
 			push @help,
 				  YELLOW . 'op me'
 				. NORMAL
@@ -417,7 +416,7 @@ sub irc_public {
 				. " ban nick then kick the nick, added to banned list, dose not work against op's "
 				. @{$channel}[0];
 		}
-		push @help, LIGHT_CYAN . @{$channel}[0] . ' user help' . NORMAL;
+		push @help, LIGHT_CYAN . @{$channel}[0] . ' channel help' . NORMAL;
 		push @help, LIGHT_CYAN . 'nickname++' . NORMAL . ' add karma';
 		push @help, LIGHT_CYAN . 'nickname--' . NORMAL . ' remove karma';
 		push @help, LIGHT_CYAN . 'karma nickname' . NORMAL . ' show karma';
@@ -489,19 +488,15 @@ sub irc_msg {
 sub irc_join {
 	my $nick = ( split /!/, $_[ARG0] )[0];
 	my $channel = $_[ARG1];
+	
+	# Build a date representing Padre birthday
+	my $birthday = DateTime->new( year => 2008, month => 7, day => 20, );
+	my $dt = DateTime->now;
 
 	if ( $config->{ban}{$nick} ) {
 		set_ban( $irc, $channel, $nick );
 		return;
 	}
-
-	# $irc->yield(privmsg => $channel => "hi $channel!");
-	# say ' nick joined : ' . $nick;
-
-	#print "nick joined $nick\n";
-
-	# now unnecessary
-	#	my $irc = $_[SENDER]->get_heap();
 
 	# only send the message if we were the one joining
 	if ( $nick eq $irc->nick_name() ) {
@@ -520,32 +515,23 @@ sub irc_join {
 
 		#turn off Welcome for op's joining
 		# $irc->yield( privmsg => $channel, YELLOW . 'Welcome ' . $nick . NORMAL
-		return;
 	} elsif ( $config->{halfop}{$nick} ) {
 		set_hop( $irc, $channel, $nick );
-		return;
 	}
 
 	#Advise machine generated nicks to change them
 	elsif ( $nick =~ /^(user|mib)_/ ) {
-		$irc->yield(
-			privmsg => $nick,
+		new_user( $irc, $channel, $nick );
 
-			# privmsg => $channel,
-			ORANGE . 'INFO: Please change your machine generated nickname ' . $nick . ' for continuity' . NORMAL
-		);
-		$irc->yield(
-			privmsg => $nick,
-
-			# privmsg => $channel,
-			'Example: /nick newnickname (limit 9 characters) ' . GREEN . ' Thank You' . NORMAL
-		);
-		$irc->yield( privmsg => $channel, LIGHT_CYAN . "Welcome $nick" . NORMAL );
+		#dont send messages to machine generated nicks
+		return;
 	}
 
-	#ToDo SPAM should this be commented out?
-	else {
-		$irc->yield( privmsg => $channel, LIGHT_CYAN . "Welcome $nick" . NORMAL );
+	#ToDo SPAM should this be commented out? +/- 1 for Padre
+	elsif ( $dt->month eq $birthday->month ) {
+		if ( $dt->day >= $birthday->day - 1 && $dt->day <= $birthday->day + 1 ) {
+			new_user( $irc, $channel, $nick );
+		}
 	}
 
 	# check if there were any messages and send private message if there were any
@@ -555,6 +541,7 @@ sub irc_join {
 			'You have ' . @{ $config->{messages}{$nick} } . " messages. Type 'read' to read them."
 		);
 	}
+
 	return;
 }
 
@@ -577,32 +564,25 @@ sub irc_nick {
 
 		#this should be left on showing an op after a /nick
 		$irc->yield( privmsg => $channel, YELLOW . 'Welcome ' . $nick . NORMAL );
-		return;
+
 	} elsif ( $config->{halfop}{$nick} ) {
 		set_hop( $irc, $channel, $nick );
 
 		#this should be left on showing an hop after a /nick
 		$irc->yield( privmsg => $channel, LIGHT_CYAN . 'Welcome ' . $nick . NORMAL );
+
+	}
+
+	#Assume machine generated nicks are new user's to IRC
+	elsif ( $nick =~ /^(user|mib)_/ ) {
+		new_user( $irc, $channel, $nick );
+
+		#dont send messages to machine generated nicks
 		return;
 	}
 
-	#Advise machine generated nicks to change them
-	elsif ( $nick =~ /^(user|mib)_/sxm ) {
-		$irc->yield(
-			privmsg => $nick,
-
-			# privmsg => $channel,
-			ORANGE . 'INFO: Please change your machine generated nickname ' . $nick . ' for continuity' . NORMAL
-		);
-		$irc->yield(
-			privmsg => $nick,
-
-			# privmsg => $channel,
-			'Example: /nick newnickname (limit 9 characters) ' . GREEN . ' Thank You' . NORMAL
-		);
-		$irc->yield( privmsg => $channel, LIGHT_CYAN . 'Welcome ' . $nick . NORMAL );
-	} else {
-		$irc->yield( privmsg => $channel, LIGHT_CYAN . 'Welcome ' . $nick . NORMAL );
+	else {
+		$irc->yield( privmsg => $channel, LIGHT_CYAN . "Welcome $nick" . NORMAL );
 	}
 
 	# check if there were any messages and send private message if there were any
@@ -659,6 +639,36 @@ sub set_ban {
 	say 'Added ' . $nick . ' to ban list on ' . $channel;
 	$irc->yield( mode => $channel => ' +b ' . $nick );
 	$irc->yield( kick => $channel, $nick );
+	return;
+}
+
+sub new_user {
+	my ( $irc, $channel, $nick ) = @_;
+	my @info;
+	push @info, "You have found #Padre, the Perl IDE.";
+	push @info, "It's nice to see you, some guidance follows, which may be of help to you.";
+	push @info,
+		"Please Ask your question and wait, 'Please be Patient', do not give up after two minutes. Remember this is a community channel. May be you just popied by to say Hi that's ok to. ";
+	push @info,
+		"You did look in our wiki -> http://padre.perlide.org/trac/wiki. Don't forget to Register, Login and join in.";
+	push @info, 'If you need to show us code/errors, Please use the no-paste service http://scsys.co.uk:8001 ';
+	push @info, ORANGE . 'IRC help' . NORMAL;
+	push @info, ORANGE . '/HELP' . NORMAL . ' http://www.ircbeginner.com/ircinfo/ircc-commands.html';
+	push @info,
+		  ORANGE
+		. 'INFO: Please change your machine generated nickname '
+		. NORMAL
+		. $nick
+		. ORANGE
+		. ' for continuity, this will enable our '
+		. $irc->nick_name()
+		. ' to relay any messages left for you.'
+		. NORMAL;
+
+	push @info, 'Example: /nick new-nickname (limit 9 characters) ' . GREEN . ' Thank You' . NORMAL;
+	$irc->yield( privmsg => $nick => $_ ) for @info;
+
+	$irc->yield( privmsg => $channel, ORANGE . "Welcome $nick" . NORMAL );
 	return;
 }
 
