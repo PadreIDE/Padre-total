@@ -528,7 +528,7 @@ sub irc_join {
 	}
 
 	#ToDo SPAM should this be commented out? +/- 1 for Padre
-	elsif ( $dt->month eq $birthday->month ) {
+	if ( $dt->month eq $birthday->month ) {
 		if ( $dt->day >= $birthday->day - 1 && $dt->day <= $birthday->day + 1 ) {
 			new_user( $irc, $channel, $nick );
 		}
