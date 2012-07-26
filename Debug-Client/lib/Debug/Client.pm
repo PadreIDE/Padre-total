@@ -35,7 +35,7 @@ sub _initialize {
 	my ( $self, %args ) = @_;
 
 	$self->{local_host} = $args{host} // 'localhost';
-	$self->{local_port} = $args{port} // 24642;
+	$self->{local_port} = $args{port} // 24_642;
 
 	#for IO::Socket::IP
 	$self->{porto}      = $args{porto}  // 'tcp';

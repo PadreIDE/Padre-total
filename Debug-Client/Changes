@@ -1,8 +1,9 @@
 # Changes for Debug::Client
 
-0.21_05 2012.07.TBA
+0.21_05 2012.07.26
     - remove comments (BOWTIE)
     - remove un-required dependants from Makefile (BOWTIE)
+    - tweak version requirments for IO::Socket::IP (BOWTIE)
     
 0.21_04 2012.06.23
     - re-factor initialize plus test (BOWTIE)
