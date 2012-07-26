@@ -2,7 +2,7 @@ NAME
     Debug::Client - debugger client side code for Padre, The Perl IDE.
 
 VERSION
-    This document describes Debug::Client version 0.21_03
+    This document describes Debug::Client version 0.21_05
 
 SYNOPSIS
       use Debug::Client;
@@ -366,7 +366,9 @@ AUTHORS
     Wolfram Humann <whumann@cpan.org>
 
 COPYRIGHT
-    Copyright 2008-2012 Gabor Szabo/Kevin Dawson
+    Copyright 2008-2011 Gabor Szabo
+
+    Some parts copyright 2011-2012 Kevin Dawson
 
 LICENSE
     This program is free software; you can redistribute it and/or modify it

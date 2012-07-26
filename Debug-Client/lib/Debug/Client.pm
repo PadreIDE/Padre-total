@@ -1074,7 +1074,9 @@ Wolfram Humann E<lt>whumann@cpan.orgE<gt>
 
 =head1 COPYRIGHT
 
-Copyright 2008-2012 Gabor Szabo/Kevin Dawson
+Copyright 2008-2011 Gabor Szabo
+
+Some parts copyright 2011-2012 Kevin Dawson
 
 =head1 LICENSE
 
