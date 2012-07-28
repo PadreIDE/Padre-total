@@ -1,5 +1,8 @@
 # Changes for Debug::Client
 
+0.21_05 tba
+    - silly dependancy issue, my bad (BOWTIE)
+
 0.21_05 2012.07.26
     - remove comments (BOWTIE)
     - remove un-required dependants from Makefile (BOWTIE)

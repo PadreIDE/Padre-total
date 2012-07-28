@@ -1,10 +1,9 @@
 use 5.010;
 use Test::More;
-plan( tests => 41 );
+plan( tests => 40 );
 
 use_ok( 'Carp',                 '1.20' );
-use_ok( 'IO::Socket',           '1.31' );
-use_ok( 'IO::Socket::IP',       '0.10' );
+use_ok( 'IO::Socket::IP',       '0.16' );
 use_ok( 'PadWalker',            '1.92' );
 use_ok( 'Term::ReadLine',       '1.07' );
 use_ok( 'Term::ReadLine::Perl', '1.0303' );
