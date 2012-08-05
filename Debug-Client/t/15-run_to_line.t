@@ -19,13 +19,18 @@ plan( tests => 4 );
 
 my $debugger = start_debugger();
 my $perl5db_ver;
+my $perl5db_index;
 
 {
 	my $out = $debugger->get;
-	$out =~ m/(?<ver>1.\d{2})(_\d{2})*$/m;
-	say 'version '.$+{ver};
-	$perl5db_ver = $+{ver} // 0;
-	diag("Info: perl5db version $perl5db_ver");
+	$out =~ m/(?<ver>1.\d{2})(?<index>_\d{2})*$/m;
+	$perl5db_ver   = $+{ver}   // 0;
+	$perl5db_index = $+{index} // undef;
+	if ($perl5db_index) {
+		diag("Info: perl5db version $perl5db_ver$perl5db_index");
+	} else {
+		diag("Info: perl5db version $perl5db_ver");
+	}
 
 	like( $out, qr/Loading DB routines from perl5db.pl version/, 'loading line' );
 	like( $out, qr{main::\(t/eg/02-sub.pl:4\):\s*\$\| = 1;},     'line 4' );
