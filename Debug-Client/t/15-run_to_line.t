@@ -1,5 +1,6 @@
 #!/usr/bin/env perl
 
+use v5.10;
 use strict;
 use warnings;
 
@@ -21,9 +22,9 @@ my $perl5db_ver;
 
 {
 	my $out = $debugger->get;
-
-	$out =~ m/(1.\d{2})$/m;
-	$perl5db_ver = $1;
+	$out =~ m/(?<ver>1.\d{2})$/m;
+	say 'version '.$+{ver};
+	$perl5db_ver = $+{ver} // 0;
 	diag("Info: perl5db version $perl5db_ver");
 
 	like( $out, qr/Loading DB routines from perl5db.pl version/, 'loading line' );
