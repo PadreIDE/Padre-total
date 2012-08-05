@@ -1,7 +1,8 @@
 # Changes for Debug::Client
 
-0.21_05 tba
+0.21_06 tba
     - silly dependancy issue, my bad (BOWTIE)
+    - Info: perl5db v1.39_02 yes in perl 5.17.2, O what fun (BOWTIE)
 
 0.21_05 2012.07.26
     - remove comments (BOWTIE)
