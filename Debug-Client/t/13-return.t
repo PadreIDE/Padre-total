@@ -19,8 +19,8 @@ my $debugger = start_debugger();
 my $perl5db_ver;
 {
 	my $out = $debugger->get;
-	$out =~ m/(1.\d{2})$/m;
-	$perl5db_ver = $1;
+	$out =~ m/(?<ver>1.\d{2})$/m;
+	$perl5db_ver = $+{ver} // 0;
 
 	# Loading DB routines from perl5db.pl version 1.28
 	# Editor support available.
