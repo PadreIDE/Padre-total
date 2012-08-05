@@ -22,7 +22,7 @@ my $perl5db_ver;
 
 {
 	my $out = $debugger->get;
-	$out =~ m/(?<ver>1.\d{2}(_\d{2})*)$/m;
+	$out =~ m/(?<ver>1.\d{2})(_\d{2})*$/m;
 	say 'version '.$+{ver};
 	$perl5db_ver = $+{ver} // 0;
 	diag("Info: perl5db version $perl5db_ver");
