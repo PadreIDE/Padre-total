@@ -21,9 +21,8 @@ my $perl5db_ver;
 
 {
 	my $out = $debugger->get;
-
-	$out =~ m/(1.\d{2})$/m;
-	$perl5db_ver = $1;
+	$out =~ m/(?<ver>1.\d{2})(?<index>_\d{2})*$/m;
+	$perl5db_ver   = $+{ver}   // 0;
 
 	like( $out, qr/Loading DB routines from perl5db.pl version/, 'loading line' );
 	like( $out, qr{main::\(t/eg/02-sub.pl:4\):\s*\$\| = 1;},     'line 4' );
