@@ -2,7 +2,7 @@ NAME
     Debug::Client - debugger client side code for Padre, The Perl IDE.
 
 VERSION
-    This document describes Debug::Client version 0.21_05
+    This document describes Debug::Client version 0.21_06
 
 SYNOPSIS
       use Debug::Client;

@@ -6,7 +6,7 @@ use warnings;
 
 local $| = 1; # Turn on $OUTPUT_AUTOFLUSH
 
-our $VERSION = '0.21_05';
+our $VERSION = '0.21_06';
 
 use utf8;
 use IO::Socket::IP;
@@ -675,7 +675,7 @@ Debug::Client - debugger client side code for Padre, The Perl IDE.
 
 =head1 VERSION
 
-This document describes Debug::Client version 0.21_05
+This document describes Debug::Client version 0.21_06
 
 =head1 SYNOPSIS
 
