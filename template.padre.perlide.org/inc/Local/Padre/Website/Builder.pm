@@ -47,6 +47,8 @@ sub ACTION_build {
 }
 
 sub ACTION_build_docs {
+	return; # the docs look much better on MetaCPAN
+
 	my ($self) = @_;
 	my $root = dir( $self->config_data('sourcedir'), '..' );
 	my $dir = dir( $root, 'Padre', 'lib' );
