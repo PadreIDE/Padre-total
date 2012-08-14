@@ -1,22 +1,23 @@
 package Padre::Plugin::Git;
 
-use 5.008;
+use v5.10;
 use warnings;
 use strict;
 
-use Padre::Config ();
-use Padre::Wx     ();
-use Padre::Plugin ();
-use Padre::Util   ();
+use Padre::Config     ();
+use Padre::Wx         ();
+use Padre::Plugin     ();
+use Padre::Util       ();
 use Padre::Wx::Action ();
 
-use Capture::Tiny  qw(capture_merged);
+use Capture::Tiny qw(capture_merged);
 use File::Basename ();
 use File::Spec;
-use Cwd qw/cwd chdir/;
+use Cwd qw(cwd chdir);
 
-our $VERSION = '0.03';
-our @ISA     = 'Padre::Plugin';
+our $VERSION = '0.04';
+use parent qw(Padre::Plugin);
+
 
 # TODO
 # diff of file/dir/project
@@ -57,20 +58,35 @@ under the same terms as Perl itself.
 #####################################################################
 # Padre::Plugin Methods
 
+
+#######
+# Called by padre to check the required interface
+#######
 sub padre_interfaces {
-	'Padre::Plugin' => 0.46,
+	return (
+		# Default, required
+		'Padre::Plugin' => '0.94',
+
+		'Padre::Config'     => '0.94',
+		'Padre::Wx'         => '0.94',
+		'Padre::Wx::Action' => '0.94',
+		'Padre::Util'       => '0.94',
+	);
 }
 
+#######
+# Called by padre to know the plugin name
+#######
 sub plugin_name {
-	'Git';
+	return Wx::gettext('Git');
 }
-
 
 
 #####################################################################
 
 # should be called once when loading the plugin
 my $ONCE;
+
 sub define_actions {
 	my $self = shift;
 	return if $ONCE;
@@ -175,20 +191,17 @@ sub menu_actions {
 
 	return $self->plugin_name => [
 		'git.about',
-		[
-			'Commit...',
+		[   'Commit...',
 			'git.commit_file',
 			'git.commit_project',
 		],
-		[
-			'Status...',
+		[   'Status...',
 			'git.status_of_file',
 			'git.status_of_dir',
 			'git.status_of_project',
 		],
 
-		[
-			'Diff...',
+		[   'Diff...',
 			'git.diff_of_file',
 			'git.diff_of_dir',
 			'git.diff_of_project',
@@ -214,20 +227,20 @@ sub show_about {
 	$about->SetDescription( <<"END_MESSAGE" );
 Initial Git support for Padre
 END_MESSAGE
-	$about->SetVersion( $VERSION );
+	$about->SetVersion($VERSION);
 
 	# Show the About dialog
-	Wx::AboutBox( $about );
+	Wx::AboutBox($about);
 
 	return;
 }
 
 
 sub git_commit {
-	my ($self, $path) = @_;
-	
+	my ( $self, $path ) = @_;
+
 	my $main = Padre->ide->wx->main;
-	my $message = $main->prompt("Git Commit of $path", "Please type in your message", "MY_GIT_COMMIT");
+	my $message = $main->prompt( "Git Commit of $path", "Please type in your message", "MY_GIT_COMMIT" );
 	if ($message) {
 		$main->message( $message, 'Filename' );
 		my $cwd = cwd;
@@ -236,14 +249,14 @@ sub git_commit {
 		chdir $cwd;
 	}
 
-	return;	
+	return;
 }
 
 sub git_commit_file {
 	my ($self) = @_;
 
-	my $main = Padre->ide->wx->main;
-	my $doc = $main->current->document;
+	my $main     = Padre->ide->wx->main;
+	my $doc      = $main->current->document;
 	my $filename = $doc->filename;
 	$self->git_commit($filename);
 	return;
@@ -252,28 +265,28 @@ sub git_commit_file {
 sub git_commit_project {
 	my ($self) = @_;
 
-	my $main = Padre->ide->wx->main;
-	my $doc = $main->current->document;
+	my $main     = Padre->ide->wx->main;
+	my $doc      = $main->current->document;
 	my $filename = $doc->filename;
-	my $dir = Padre::Util::get_project_dir($filename);
+	my $dir      = Padre::Util::get_project_dir($filename);
 	$self->git_commit($dir);
 	return;
 }
 
 sub git_status {
-	my ($self, $path) = @_;
+	my ( $self, $path ) = @_;
 
 	my $main = Padre->ide->wx->main;
-	my $out = capture_merged(sub { system "git status $path" });
-	$main->message($out, "Git Status of $path");
+	my $out = capture_merged( sub { system "git status $path" } );
+	$main->message( $out, "Git Status of $path" );
 	return;
 }
 
 sub git_status_of_file {
 	my ($self) = @_;
 
-#	return $main->error("No document found") if not $doc;
-	$self->git_status(_get_current_filename());
+	#	return $main->error("No document found") if not $doc;
+	$self->git_status( _get_current_filename() );
 	return;
 }
 
@@ -281,10 +294,10 @@ sub git_status_of_dir {
 	my ($self) = @_;
 
 	my $main = Padre->ide->wx->main;
-	my $doc = $main->current->document;
+	my $doc  = $main->current->document;
 	return $main->error("No document found") if not $doc;
 	my $filename = $doc->filename;
-	$self->git_status(File::Basename::dirname($filename));
+	$self->git_status( File::Basename::dirname($filename) );
 
 	return;
 }
@@ -294,30 +307,31 @@ sub git_status_of_project {
 	my ($self) = @_;
 
 	my $main = Padre->ide->wx->main;
-	my $doc = $main->current->document;
+	my $doc  = $main->current->document;
 	return $main->error("No document found") if not $doc;
 	my $filename = $doc->filename;
-	my $dir = Padre::Util::get_project_dir($filename);
-	
+	my $dir      = Padre::Util::get_project_dir($filename);
+
 	return $main->error("Could not find project root") if not $dir;
-	
+
 	$self->git_status($dir);
 
 	return;
 }
 
 sub git_diff {
-	my ($self, $path) = @_;
+	my ( $self, $path ) = @_;
 
 	use Cwd qw/cwd chdir/;
 	my $cwd = cwd;
 	chdir File::Basename::dirname($path);
-	my $out = capture_merged(sub { system "git diff $path" });
+	my $out = capture_merged( sub { system "git diff $path" } );
 	chdir $cwd;
 	require Padre::Wx::Dialog::Text;
 	my $main = Padre->ide->wx->main;
-	Padre::Wx::Dialog::Text->show($main, "Git Diff of $path", $out);
-#	$main->message($out, "Git Diff of $path");
+	Padre::Wx::Dialog::Text->show( $main, "Git Diff of $path", $out );
+
+	#	$main->message($out, "Git Diff of $path");
 
 	return;
 }
@@ -325,30 +339,30 @@ sub git_diff {
 sub git_diff_of_file {
 	my ($self) = @_;
 
-	$self->git_diff(_get_current_filename());
+	$self->git_diff( _get_current_filename() );
 
 	return;
 }
 
 sub git_diff_of_dir {
-	my ($self, $path) = @_;
+	my ( $self, $path ) = @_;
 
 	$self->git_diff($path);
 
-    return;
+	return;
 }
 
 sub git_diff_of_project {
 	my ($self) = @_;
-	
+
 	my $main = Padre->ide->wx->main;
-	my $doc = $main->current->document;
+	my $doc  = $main->current->document;
 	return $main->error("No document found") if not $doc;
 	my $filename = $doc->filename;
-	my $dir = Padre::Util::get_project_dir($filename);
-	
+	my $dir      = Padre::Util::get_project_dir($filename);
+
 	return $main->error("Could not find project root") if not $dir;
-	
+
 	$self->git_diff($dir);
 
 	return;
@@ -356,7 +370,7 @@ sub git_diff_of_project {
 
 sub _get_current_filename {
 	my $main = Padre->ide->wx->main;
-	my $doc = $main->current->document;
+	my $doc  = $main->current->document;
 
 	return $doc->filename;
 }
@@ -364,33 +378,33 @@ sub _get_current_filename {
 
 sub _get_current_filedir {
 	my $main = Padre->ide->wx->main;
-	my $doc = $main->current->document;
+	my $doc  = $main->current->document;
 	return $main->error("No document found") if not $doc;
 
-	return File::Basename::dirname($doc->filename);
+	return File::Basename::dirname( $doc->filename );
 }
 
+#ToDo disabled as this sub needs to be updated to api 2
 # This thing should just list a few actions
-sub event_on_context_menu {
-	my ( $self, $doc, $editor, $menu, $event ) = @_;
+# sub event_on_context_menu {
+	# my ( $self, $doc, $editor, $menu, $event ) = @_;
 
-	# Same code for all VCS
-	my $filename = $doc->filename;
-	return if not $filename;
+	# # Same code for all VCS
+	# my $filename = $doc->filename;
+	# return if not $filename;
 
-	my $project_dir = Padre::Util::get_project_dir($filename);
-	return if not $project_dir;
+	# my $project_dir = Padre::Util::get_project_dir($filename);
+	# return if not $project_dir;
+
+	# my $rcs = Padre::Util::get_project_rcs($project_dir);
+	# return if $rcs ne 'Git';
+
+	# $menu->AppendSeparator;
+	# my $menu_rcs = Wx::Menu->new;
+	# $menu->Append( -1, Wx::gettext('Git'), $menu_rcs );
 	
-	my $rcs = Padre::Util::get_project_rcs($project_dir);
-	return if $rcs ne 'Git';
-
-	$menu->AppendSeparator;
-	my $menu_rcs = Wx::Menu->new;
-	$menu->Append(-1, Wx::gettext('Git'), $menu_rcs);
-
-
-	return;
-}
+	# return;
+# }
 
 
 1;
@@ -400,3 +414,9 @@ sub event_on_context_menu {
 # This program is free software; you can redistribute it and/or
 # modify it under the same terms as Perl 5 itself.
 
+__END__
+
+
+    
+    
+    
