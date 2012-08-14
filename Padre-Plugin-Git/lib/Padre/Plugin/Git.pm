@@ -384,26 +384,26 @@ sub _get_current_filedir {
 	return File::Basename::dirname( $doc->filename );
 }
 
-#ToDo disabled as this sub needs to be updated to api 2
+#ToDo this sub breaks Padre, needs to be padre-plugin api v2.2 compatable
 # This thing should just list a few actions
 # sub event_on_context_menu {
-	# my ( $self, $doc, $editor, $menu, $event ) = @_;
+# my ( $self, $doc, $editor, $menu, $event ) = @_;
 
-	# # Same code for all VCS
-	# my $filename = $doc->filename;
-	# return if not $filename;
+# # Same code for all VCS
+# my $filename = $doc->filename;
+# return if not $filename;
 
-	# my $project_dir = Padre::Util::get_project_dir($filename);
-	# return if not $project_dir;
+# my $project_dir = Padre::Util::get_project_dir($filename);
+# return if not $project_dir;
 
-	# my $rcs = Padre::Util::get_project_rcs($project_dir);
-	# return if $rcs ne 'Git';
+# my $rcs = Padre::Util::get_project_rcs($project_dir);
+# return if $rcs ne 'Git';
 
-	# $menu->AppendSeparator;
-	# my $menu_rcs = Wx::Menu->new;
-	# $menu->Append( -1, Wx::gettext('Git'), $menu_rcs );
-	
-	# return;
+# $menu->AppendSeparator;
+# my $menu_rcs = Wx::Menu->new;
+# $menu->Append( -1, Wx::gettext('Git'), $menu_rcs );
+
+# return;
 # }
 
 
@@ -415,8 +415,3 @@ sub _get_current_filedir {
 # modify it under the same terms as Perl 5 itself.
 
 __END__
-
-
-    
-    
-    
