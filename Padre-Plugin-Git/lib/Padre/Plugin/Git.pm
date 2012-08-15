@@ -18,6 +18,7 @@ use Cwd qw(cwd chdir);
 our $VERSION = '0.04';
 use parent qw(Padre::Plugin);
 
+use Data::Printer { caller_info => 1, colored => 1, };
 
 # TODO
 # diff of file/dir/project
@@ -386,26 +387,78 @@ sub _get_current_filedir {
 
 #ToDo this sub breaks Padre, needs to be padre-plugin api v2.2 compatable
 # This thing should just list a few actions
-# sub event_on_context_menu {
-# my ( $self, $doc, $editor, $menu, $event ) = @_;
+sub event_on_context_menu {
+	my ( $self, $document, $editor, $menu, $event ) = @_;
 
-# # Same code for all VCS
-# my $filename = $doc->filename;
-# return if not $filename;
+	$self->current_files;
 
-# my $project_dir = Padre::Util::get_project_dir($filename);
-# return if not $project_dir;
+	# Same code for all VCS
+	# my $filename = $document->filename;
+	# return if not $filename;
+	return if not $document->filename;
 
-# my $rcs = Padre::Util::get_project_rcs($project_dir);
-# return if $rcs ne 'Git';
+	#
+	# my $project_dir = Padre::Util::get_project_dir($filename);
+	# return if not $project_dir;
+	return if not $document->project_dir;
+	p $document->project_dir;
+	my $tab_id = $self->main->editor_of_file( $document->{filename} );
+	p $tab_id;
 
-# $menu->AppendSeparator;
-# my $menu_rcs = Wx::Menu->new;
-# $menu->Append( -1, Wx::gettext('Git'), $menu_rcs );
+	# ( $self->{open_file_info}->{$_}->{'vcs'} =~ /SVN/sxm )
+	p $self->{open_file_info}->{$tab_id}->{'vcs'};
 
-# return;
-# }
+	# my $rcs = Padre::Util::get_project_rcs($project_dir);
+	# return if $rcs ne 'Git';
 
+	if ( $self->{open_file_info}->{$tab_id}->{'vcs'} =~ m/Git/sxm ) {
+
+
+		$menu->AppendSeparator;
+		# my $menu_rcs = Wx::Menu->new;
+		my $menu_rcs = $self->menu_actions;
+		$menu->Append( -1, Wx::gettext('Git'), $menu_rcs );
+	}
+
+	return;
+}
+
+#######
+# Method current_files hacked from wx-dialog-patch
+#######
+sub current_files {
+	my $self     = shift;
+	my $main     = $self->main;
+	my $current  = $main->current;
+	my $notebook = $current->notebook;
+	my @label    = $notebook->labels;
+
+	# get last element # not size
+	$self->{tab_cardinality} = $#label;
+
+	# thanks Alias
+	my @file_vcs = map { $_->project->vcs } $self->main->documents;
+
+	# create a bucket for open file info, as only a current file bucket exist
+	for ( 0 .. $self->{tab_cardinality} ) {
+		$self->{open_file_info}->{$_} = (
+			{   'index'    => $_,
+				'URL'      => $label[$_][1],
+				'filename' => $notebook->GetPageText($_),
+				'changed'  => 0,
+				'vcs'      => $file_vcs[$_],
+			},
+		);
+
+		if ( $notebook->GetPageText($_) =~ /^\*/sxm ) {
+
+			# TRACE("Found an unsaved file, will ignore: $notebook->GetPageText($_)") if DEBUG;
+			$self->{open_file_info}->{$_}->{'changed'} = 1;
+		}
+	}
+
+	return;
+}
 
 1;
 
