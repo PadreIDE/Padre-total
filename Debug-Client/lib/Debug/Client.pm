@@ -6,7 +6,7 @@ use warnings;
 
 local $| = 1; # Turn on $OUTPUT_AUTOFLUSH
 
-our $VERSION = '0.21_06';
+our $VERSION = '0.21_07';
 
 use utf8;
 use IO::Socket::IP;
@@ -630,7 +630,7 @@ sub _send {
 #######
 sub _send_get {
 	my ( $self, $input ) = @_;
-
+	
 	$self->_send($input);
 
 	return $self->get;
@@ -675,7 +675,7 @@ Debug::Client - debugger client side code for Padre, The Perl IDE.
 
 =head1 VERSION
 
-This document describes Debug::Client version 0.21_06
+This document describes Debug::Client version 0.21_07
 
 =head1 SYNOPSIS
 
