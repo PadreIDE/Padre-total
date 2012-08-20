@@ -39,7 +39,6 @@ sub _initialize {
 
 	#for IO::Socket::IP
 	$self->{porto}      = $args{porto}  // 'tcp';
-	# $self->{listen}     = $args{listen} // SOMAXCONN; # Opps my bad
 	$self->{listen}     = $args{listen} // 1;
 	$self->{reuse_addr} = $args{reuse}  // 1;
 

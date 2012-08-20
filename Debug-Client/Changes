@@ -1,9 +1,13 @@
 # Changes for Debug::Client
+
+0.21_08 2012.08.20
+    - correction to parameters for IO::Socket::IP initialisation (BOWTIE)
+
 0.21_07 2012.08.18
     - bump IO::Socket::IP to 0.17 (BOWTIE)
     
 0.21_06 2012.08.05
-    - silly dependancy issue, my bad (BOWTIE)
+    - silly dependency issue, my bad (BOWTIE)
     - Info: perl5db v1.39_02 yes in perl 5.17.2, O what fun (BOWTIE)
 
 0.21_05 2012.07.26
