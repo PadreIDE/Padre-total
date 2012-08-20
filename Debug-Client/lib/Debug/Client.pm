@@ -6,11 +6,11 @@ use warnings;
 
 local $| = 1; # Turn on $OUTPUT_AUTOFLUSH
 
-our $VERSION = '0.21_07';
+our $VERSION = '0.21_08';
 
 use utf8;
 use IO::Socket::IP;
-use Carp qw(carp croak cluck);
+use Carp qw(carp croak);
 
 use constant {
 	BLANK => qq{ },
@@ -29,7 +29,7 @@ sub new {
 	return $self;
 }
 #######
-# _init
+# _initialize
 #######
 sub _initialize {
 	my ( $self, %args ) = @_;
@@ -39,7 +39,8 @@ sub _initialize {
 
 	#for IO::Socket::IP
 	$self->{porto}      = $args{porto}  // 'tcp';
-	$self->{listen}     = $args{listen} // SOMAXCONN;
+	# $self->{listen}     = $args{listen} // SOMAXCONN; # Opps my bad
+	$self->{listen}     = $args{listen} // 1;
 	$self->{reuse_addr} = $args{reuse}  // 1;
 
 	$self->{buffer} = undef;
@@ -675,7 +676,7 @@ Debug::Client - debugger client side code for Padre, The Perl IDE.
 
 =head1 VERSION
 
-This document describes Debug::Client version 0.21_07
+This document describes Debug::Client version 0.21_08
 
 =head1 SYNOPSIS
 
@@ -761,7 +762,7 @@ This is a DEVELOPMENT Release only, you have been warned!
 
 The prime use of this module is to provide debugger functionality for Padre 0.97+, 
 
-This module should be Perl 5.16.0 ready.
+This module has been tested against Perl 5.17.2.
 
 =head1 METHODS
 
