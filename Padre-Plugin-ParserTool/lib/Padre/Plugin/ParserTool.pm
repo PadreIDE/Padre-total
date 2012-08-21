@@ -6,7 +6,7 @@ use warnings;
 use Params::Util 1.00  ();
 use Padre::Plugin 0.89 ();
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 our @ISA     = 'Padre::Plugin';
 
 # Child modules we need to unload when disabled
@@ -24,7 +24,7 @@ sub plugin_name {
 }
 
 sub padre_interfaces {
-	'Padre::Plugin' => '0.89', 'Padre::Wx' => '0.89', 'Padre::Wx::Role::Dialog' => '0.89',;
+	'Padre::Plugin' => '0.93', 'Padre::Wx' => '0.93', 'Padre::Wx::Role::Dialog' => '0.93',;
 }
 
 # Core plugins may reuse the page icon
