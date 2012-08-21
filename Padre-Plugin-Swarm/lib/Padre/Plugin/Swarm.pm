@@ -203,13 +203,26 @@ sub plugin_icons_directory {
 	$dir;
 }
 
+
+#######
+# Add icon to Plugin
+#######
 sub plugin_icon {
 	my $class = shift;
-	Padre::Wx::Icon::find(
-		'status/padre-plugin-swarm',
-		{ icons => $class->plugin_icons_directory },
-	);
+	my $share = $class->plugin_directory_share or return;
+	my $file  = File::Spec->catfile( $share, 'icons', 'padre', '16x16', 'status', 'swarm.png' );
+	return unless -f $file;
+	return unless -r $file;
+	return Wx::Bitmap->new( $file, Wx::wxBITMAP_TYPE_PNG );
 }
+
+# sub plugin_icon {
+	# my $class = shift;
+	# Padre::Wx::Icon::find(
+		# 'status/padre-plugin-swarm',
+		# { icons => $class->plugin_icons_directory },
+	# );
+# }
 
 sub plugin_large_icon {
 	my $class = shift;
