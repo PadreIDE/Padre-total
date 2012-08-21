@@ -27,6 +27,12 @@ sub padre_interfaces {
 	'Padre::Plugin' => '0.89', 'Padre::Wx' => '0.89', 'Padre::Wx::Role::Dialog' => '0.89',;
 }
 
+# Core plugins may reuse the page icon
+sub plugin_icon {
+	require Padre::Wx::Icon;
+	Padre::Wx::Icon::find('logo');
+}
+
 sub menu_plugins {
 	my $self = shift;
 	my $main = shift;
@@ -80,7 +86,7 @@ sub menu_dialog {
 		$self->{dialog} = Padre::Plugin::ParserTool::Dialog->new($main);
 	}
 	$self->{dialog}->refresh;
-	$self->{dialog}->ShowModal;
+	$self->{dialog}->Show;
 
 	return;
 }
