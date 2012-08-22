@@ -1,4 +1,4 @@
-use Test::More tests => 20;
+use Test::More tests => 22;
 
 use_ok( 'Padre',                 '0.96' );
 use_ok( 'Padre::Plugin',         '0.96' );
@@ -15,6 +15,7 @@ use_ok( 'File::Which',           '1.09' );
 
 my @subs = qw( _config clean_dialog menu_plugins padre_interfaces
 	plugin_disable plugin_enable plugin_name plugin_preferences spell_check
+	plugin_icon event_on_context_menu
 );
 
 use_ok( 'Padre::Plugin::SpellCheck', @subs );

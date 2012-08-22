@@ -11,7 +11,7 @@ use Padre::Locale                               ();
 use Padre::Unload                               ();
 use Padre::Plugin::SpellCheck::FBP::Preferences ();
 
-our $VERSION = '1.29';
+our $VERSION = '1.30';
 use parent qw(
 	Padre::Plugin::SpellCheck::FBP::Preferences
 	Padre::Plugin
@@ -113,14 +113,12 @@ sub _local_hunspell_dictionaries {
 	try {
 		require Text::Hunspell;
 		require Padre::Util;
-		my $speller = Padre::Util::run_in_directory_two('hunspell -D </dev/null');
-		chomp $speller;
 
+		my $speller = Padre::Util::run_in_directory_two( cmd => 'hunspell -D </dev/null', option => '0' );
 		TRACE("hunspell speller = $speller") if DEBUG;
 
 		#TODO this is yuck must do better
-		my @speller_raw = grep { $_ =~ /\w{2}_\w{2}$/m } split /\n/, ${$speller};
-
+		my @speller_raw = grep { $_ =~ /\w{2}_\w{2}$/m } split /\n/, $speller->{error};
 		my %temp_speller;
 		foreach (@speller_raw) {
 			if ( $_ !~ m/hyph/ ) {
@@ -275,7 +273,7 @@ Padre::Plugin::SpellCheck::Preferences - Check spelling in Padre, The Perl IDE.
 
 =head1 VERSION
 
-version 1.29
+version 1.30
 
 =head1 DESCRIPTION
 
