@@ -9,7 +9,7 @@ use Padre::Unload ();
 use File::Which   ();
 use Try::Tiny;
 
-our $VERSION = '1.29';
+our $VERSION = '1.30';
 use parent qw( Padre::Plugin );
 
 # Child modules we need to unload when disabled
@@ -44,7 +44,7 @@ sub padre_interfaces {
 		'Padre::Logger'         => '0.96',
 		'Padre::Wx'             => '0.96',
 		'Padre::Wx::Role::Main' => '0.96',
-		'Padre::Util'           => '0.96',
+		'Padre::Util'           => '0.97',
 	);
 }
 
@@ -241,24 +241,46 @@ sub spell_check {
 	return;
 }
 
+#######
+# Add icon to Plugin
+#######
+sub plugin_icon {
+	my $class = shift;
+	my $share = $class->plugin_directory_share or return;
+	my $file  = File::Spec->catfile( $share, 'icons', '16x16', 'spellcheck.png' );
+	return unless -f $file;
+	return unless -r $file;
+	return Wx::Bitmap->new( $file, Wx::wxBITMAP_TYPE_PNG );
+}
+
+#######
+# Add SpellCheck Preferences to Context Menu
+#######
+sub event_on_context_menu {
+	my ( $self, $document, $editor, $menu, $event ) = @_;
+
+	#Test for valid file type
+	return if not $document->filename;
+
+	$menu->AppendSeparator;
+
+	my $item = $menu->Append( -1, Wx::gettext('SpellCheck Preferences') );
+	Wx::Event::EVT_MENU(
+		$self->main,
+		$item,
+		sub { $self->plugin_preferences },
+	);
+
+	return;
+}
+
 
 1;
 
 __END__
 
 # DO NOT REMOVE
-#######
-# Add icon to Plugin
-#######
-sub plugin_icon {
-		my $self = shift;
 
-		# find resource path
-		my $iconpath = catfile( $self->plugin_directory_share, 'icons', 'spellcheck.png' );
-
-		# create and return icon
-		return Wx::Bitmap->new( $iconpath, Wx::wxBITMAP_TYPE_PNG );
-}
 
 sub menu_plugins_simple {
 	my $self = shift;
@@ -275,9 +297,11 @@ Padre::Plugin::SpellCheck - Check spelling in Padre, The Perl IDE.
 
 =head1 VERSION
 
-version 1.29
+version 1.30
 
 =head1 DESCRIPTION
+
+For Padre 0.97+
 
 This plug-in allows one to check there spelling within Padre using
 C<F7> (standard spelling short-cut across text processors). 
@@ -325,7 +349,15 @@ Return the plug-in's configuration, or a suitable default one if none exist prev
 
 =item plugin_preferences()
 
-Open the check spelling preferences window.
+Spelling preferences window normaly access via Plug-in Manager
+
+=item plugin_icon()
+
+Used by Plug-in Manager
+
+=item event_on_context_menu
+
+Add access to spelling preferences window.
 
 =back
 
