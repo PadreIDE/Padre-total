@@ -2,9 +2,11 @@ NAME
     Padre::Plugin::SpellCheck - Check spelling in Padre, The Perl IDE.
 
 VERSION
-    version 1.29
+    version 1.30
 
 DESCRIPTION
+    For Padre 0.97+
+
     This plug-in allows one to check there spelling within Padre using "F7"
     (standard spelling short-cut across text processors).
 
@@ -42,7 +44,13 @@ PUBLIC METHODS
 
     plugin_name()
     plugin_preferences()
-           Open the check spelling preferences window.
+           Spelling preferences window normaly access via Plug-in Manager
+
+    plugin_icon()
+           Used by Plug-in Manager
+
+    event_on_context_menu
+           Add access to spelling preferences window.
 
   Spell checking methods
     *
