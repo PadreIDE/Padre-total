@@ -264,7 +264,7 @@ sub event_on_context_menu {
 
 	$menu->AppendSeparator;
 
-	my $item = $menu->Append( -1, Wx::gettext('SpellCheck Preferences') );
+	my $item = $menu->Append( -1, Wx::gettext('SpellCheck Preferences...') );
 	Wx::Event::EVT_MENU(
 		$self->main,
 		$item,
