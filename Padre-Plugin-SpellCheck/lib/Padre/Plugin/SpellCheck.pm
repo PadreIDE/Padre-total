@@ -9,7 +9,7 @@ use Padre::Unload ();
 use File::Which   ();
 use Try::Tiny;
 
-our $VERSION = '1.30';
+our $VERSION = '0.31';
 use parent qw( Padre::Plugin );
 
 # Child modules we need to unload when disabled
