@@ -2,7 +2,7 @@ NAME
     Padre::Plugin::SpellCheck - Check spelling in Padre, The Perl IDE.
 
 VERSION
-    version 1.30
+    version 1.31
 
 DESCRIPTION
     For Padre 0.97+
