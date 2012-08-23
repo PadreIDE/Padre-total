@@ -4,7 +4,7 @@ use v5.10;
 use warnings;
 use strict;
 
-our $VERSION = '0.31';
+our $VERSION = '1.31';
 
 use Padre::Logger;
 use Padre::Unload ();
