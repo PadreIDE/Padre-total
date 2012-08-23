@@ -1,5 +1,9 @@
 Revision history for Padre-Plugin-SpellCheck
-1.30    2012.08.TBA
+
+1.31    2012.08.23
+     - My Bad, forgot to add icon (BOWTIE)
+
+1.30    2012.08.22
      - update preferences to new Padre::Util::run_in_dir_two format (BOWTIE)
      - Add event_on_context_menu to enable changing preferences (BOWTIE)
      - Tweak tests for above (BOWTIE) 
