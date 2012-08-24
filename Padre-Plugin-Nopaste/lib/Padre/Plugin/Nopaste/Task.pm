@@ -39,7 +39,7 @@ sub new {
 sub run {
 	my $self = shift;
 
-	say 'start task process';
+	# say 'start task process';
 
 	my $url = nopaste(
 
@@ -49,7 +49,7 @@ sub run {
 		# desc          => "This is a test no-paste",
 		nick => $self->{nick},
 
-		lang          => "perl",
+		lang => "perl",
 		chan => "#padre",
 
 		# private       => 1,                        # default: 0
@@ -88,7 +88,7 @@ sub run {
 	# $self->{message} = $text_output;
 	# }
 
-	say 'end of task process';
+	# say 'end of task process';
 
 	return;
 }
