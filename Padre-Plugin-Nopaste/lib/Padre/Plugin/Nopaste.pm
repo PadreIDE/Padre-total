@@ -9,89 +9,284 @@
 
 package Padre::Plugin::Nopaste;
 
+use v5.10;
 use strict;
 use warnings;
+our $VERSION = '0.4_1';
 
-use File::Basename qw{ fileparse };
-use File::Spec::Functions qw{ catfile };
-use Module::Util qw{ find_installed };
+
+# use File::Basename qw{ fileparse };
+# use File::Spec::Functions qw{ catfile };
+# use Module::Util qw{ find_installed };
+# use Padre::Logger qw(TRACE DEBUG);
+# use App::Nopaste 'nopaste';
+# use App::Nopaste::Service::Shadowcat;
 
 #use Padre::Task;
 #our @ISA     = qw{
 #	Padre::Role::Task
 #	Padre::Plugin
 #};
-use parent qw{ Padre::Plugin
+
+use parent qw{
+	Padre::Plugin
 	Padre::Role::Task
-	}; #
-
-#
-
-our $VERSION = '0.3.1';
+};
 
 
-# -- padre plugin api, refer to Padre::Plugin
+# Turn on $OUTPUT_AUTOFLUSH
+local $| = 1;
+use Data::Printer {
+	caller_info => 1,
+	colored     => 1,
+};
 
-# plugin name
-sub plugin_name {'Nopaste'}
 
-# plugin icon
-sub plugin_icon {
+# Child modules we need to unload when disabled
+use constant CHILDREN => qw{
+	Padre::Plugin::Nopaste
+	Padre::Plugin::Nopaste::Task
+	App::Nopaste
+};
 
-	# find resource path
-	my $pkgpath = find_installed(__PACKAGE__);
-	my ( undef, $dirname, undef ) = fileparse($pkgpath);
-	my $iconpath = catfile(
-		$dirname,
-		'Nopaste', 'share', 'icons', 'paste.png'
-	);
+# Padre::Plugin::SpellCheck::FBP::Checker
+# Padre::Plugin::SpellCheck::Engine
+# Padre::Plugin::SpellCheck::Preferences
+# Padre::Plugin::SpellCheck::FBP::Preferences
+# Text::Aspell
+# Text::Hunspell
+# };
 
-	# create and return icon
-	return Wx::Bitmap->new( $iconpath, Wx::wxBITMAP_TYPE_PNG );
+
+#######
+# Define Plugin Name Spell Checker
+#######
+sub plugin_name {
+	return Wx::gettext('Nopaste');
 }
 
-# padre interface
+#######
+# Define Padre Interfaces required
+#######
 sub padre_interfaces {
 	return (
-		'Padre::Plugin' => '0.91',
-		'Padre::Task'   => '0.91',
-		'Padre::Logger' => '0.91',
+		'Padre::Plugin' => '0.96',
+		'Padre::Task'   => '0.96',
+		'Padre::Unload' => '0.96',
+
+		# used by my sub packages
+		# 'Padre::Locale'         => '0.96',
+		'Padre::Logger' => '0.96',
+
+		# 'Padre::Wx'             => '0.96',
+		# 'Padre::Wx::Role::Main' => '0.96',
+		# 'Padre::Util'           => '0.97',
 	);
 }
 
-# plugin menu.
-sub menu_plugins_simple {
-	my ($self) = @_;
-	'Nopaste' => [
-		"Nopaste\tCtrl+Shift+V" => 'nopaste', # launch thread, see Padre::Task
-	];
+#########
+# We need plugin_enable
+# as we have an external dependency
+#########
+sub plugin_enable {
+	my $self   = shift;
+	my $main   = $self->main;
+	my $config = $main->config;
+	my $nick   = 0;
+
+	# Tests for externals used by Preference's
+	if ( $config->identity_nickname ) {
+		$nick = 1;
+	}
+
+	return $nick;
 }
 
-require Padre::Plugin::Nopaste::Task;
+#######
+# plugin menu
+#######
+sub menu_plugins {
+	my $self = shift;
+	my $main = $self->main;
 
-sub nopaste {
+	# Create a manual menu item
+	my $menu_item = Wx::MenuItem->new( undef, -1, $self->plugin_name . "\tCtrl+Shift+V", );
+	Wx::Event::EVT_MENU(
+		$main,
+		$menu_item,
+		sub {
+			$self->paste_it;
+		},
+	);
 
-	#TRACE("nopaste") if DEBUG;
+	return $menu_item;
+}
+
+
+
+########
+# plugin_disable
+########
+sub plugin_disable {
 	my $self = shift;
 
-	# Fire the task
+	# Close the dialog if it is hanging around
+	$self->clean_dialog;
+
+	# Unload all our child classes
+	for my $package (CHILDREN) {
+		require Padre::Unload;
+		Padre::Unload->unload($package);
+	}
+
+	$self->SUPER::plugin_disable(@_);
+
+	return 1;
+}
+
+########
+# Composed Method clean_dialog
+########
+sub clean_dialog {
+	my $self = shift;
+
+	# Close the main dialog if it is hanging around
+	if ( $self->{dialog} ) {
+		$self->{dialog}->Hide;
+		$self->{dialog}->Destroy;
+		delete $self->{dialog};
+	}
+
+	return 1;
+}
+
+
+#######
+# plugin_preferences
+#######
+# sub plugin_preferences {
+# my $self = shift;
+# my $main = $self->main;
+
+# # Clean up any previous existing dialog
+# $self->clean_dialog;
+
+# try {
+# require Padre::Plugin::SpellCheck::Preferences;
+# $self->{dialog} = Padre::Plugin::SpellCheck::Preferences->new($main);
+# $self->{dialog}->ShowModal;
+# }
+# catch {
+# $self->main->error( sprintf Wx::gettext('Error: %s'), $_ );
+# };
+
+# return;
+# }
+
+
+
+sub paste_it {
+	my $self          = shift;
+	my $main          = $self->main;
+	my $config        = $main->config;
+	my $output        = $main->output;
+	my $current       = $self->current;
+	my $document      = $current->document;
+	my $full_text     = $document->text_get;
+	my $selected_text = $current->text;
+
+	say 'start paste_it';
+
+	# TRACE("nopaste") if DEBUG;
+
+	# my $main    = $self->{document}->main;
+	# my $current = $main->current;
+	# my $editor  = $current->editor;
+	# return unless $editor;
+
+	# p $selected_text;
+	# p $full_text;
+
+	# no selection means send current file
+	# my $text = $editor->GetSelectedText // $editor->GetText;
+
+	my $text = $selected_text || $full_text;
+
+	# p $text;
+
+	# return;
+
+	return unless $text;
+
+
+	# my $url = nopaste(
+
+	# # text => "Full text to paste (the only mandatory argument)",
+	# text          => $text,
+	# # desc          => "This is a test no-paste",
+	# nick          => "bowtie",
+	# # lang          => "perl",
+	# chan          => "#padre",
+	# # private       => 1,                        # default: 0
+	# # this is the default, but maybe you want to do something different
+	# error_handler => sub {
+	# my ( $error, $service ) = @_;
+	# warn "$service: $error";
+	# },
+	# warn_handler => sub {
+	# my ( $warning, $service ) = @_;
+	# warn "$service: $warning";
+	# },
+
+	# # you may specify the services to use - but you don't have to
+	# services => [ "Shadowcat", ],
+
+	# # services => ["Shadowcat", "Gist"],
+	# );
+
+	# my $output;
+
+	# # # show result in output section
+	# if ( defined $url ) {
+	# $output          = "Text successfully nopasted at: $url\n";
+	# $self->{err}     = 0;
+	# $self->{message} = $output;
+	# } else {
+	# $output          = "Error while nopasting text\n";
+	# $self->{err}     = 1;
+	# $self->{message} = $output;
+	# }
+
+	# say $output;
+
+
+
+
+
+	require Padre::Plugin::Nopaste::Task;
+
+	# # Fire the task
 	$self->task_request(
 		task     => 'Padre::Plugin::Nopaste::Task',
-		document => $self,
+		text     => $text,
+		nick     => $config->identity_nickname,
 		callback => 'on_finish',
 
 		# callback => 'task_response',
 	);
-
+	say 'end paste_it';
 	return;
 }
 
 sub on_finish {
-
-	# sub task_response {
-	#TRACE("nopaste_response") if DEBUG;
 	my $self = shift;
 	my $task = shift;
+
+	# sub task_response {
+	say 'nopaste_response';
+
+	# TRACE("nopaste_response") if DEBUG;
+
 
 	# Found what we were looking for
 	if ( $task->{location} ) {
@@ -119,16 +314,81 @@ sub on_finish {
 }
 
 
+#######
+# Add icon to Plugin
+#######
+sub plugin_icon {
+	my $class = shift;
+	my $share = $class->plugin_directory_share or return;
+	my $file  = File::Spec->catfile( $share, 'icons', '16x16', 'nopaste.png' );
+	return unless -f $file;
+	return unless -r $file;
+	return Wx::Bitmap->new( $file, Wx::wxBITMAP_TYPE_PNG );
+}
 
-# -- public methods
+#######
+# Add SpellCheck Preferences to Context Menu
+#######
+# sub event_on_context_menu {
+# my ( $self, $document, $editor, $menu, $event ) = @_;
 
+# #Test for valid file type
+# return if not $document->filename;
 
-# -- private methods
+# $menu->AppendSeparator;
 
+# my $item = $menu->Append( -1, Wx::gettext('SpellCheck Preferences...') );
+# Wx::Event::EVT_MENU(
+# $self->main,
+# $item,
+# sub { $self->plugin_preferences },
+# );
 
+# return;
+# }
 
 1;
 __END__
+
+
+#######################################################
+
+
+
+# plugin icon
+# sub plugin_icon {
+
+	# # find resource path
+	# my $pkgpath = find_installed(__PACKAGE__);
+	# my ( undef, $dirname, undef ) = fileparse($pkgpath);
+	# my $iconpath = catfile(
+		# $dirname,
+		# 'Nopaste', 'share', 'icons', 'paste.png'
+	# );
+
+	# # create and return icon
+	# return Wx::Bitmap->new( $iconpath, Wx::wxBITMAP_TYPE_PNG );
+# }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+######################################################
+
 
 =head1 NAME
 
