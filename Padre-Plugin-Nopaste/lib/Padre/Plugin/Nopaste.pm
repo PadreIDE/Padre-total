@@ -14,25 +14,10 @@ use strict;
 use warnings;
 our $VERSION = '0.4_1';
 
-
-# use File::Basename qw{ fileparse };
-# use File::Spec::Functions qw{ catfile };
-# use Module::Util qw{ find_installed };
-# use Padre::Logger qw(TRACE DEBUG);
-# use App::Nopaste 'nopaste';
-# use App::Nopaste::Service::Shadowcat;
-
-#use Padre::Task;
-#our @ISA     = qw{
-#	Padre::Role::Task
-#	Padre::Plugin
-#};
-
 use parent qw{
 	Padre::Plugin
 	Padre::Role::Task
 };
-
 
 # Turn on $OUTPUT_AUTOFLUSH
 local $| = 1;
@@ -47,15 +32,8 @@ use constant CHILDREN => qw{
 	Padre::Plugin::Nopaste
 	Padre::Plugin::Nopaste::Task
 	App::Nopaste
+	App::Nopaste::Service::Shadowcat
 };
-
-# Padre::Plugin::SpellCheck::FBP::Checker
-# Padre::Plugin::SpellCheck::Engine
-# Padre::Plugin::SpellCheck::Preferences
-# Padre::Plugin::SpellCheck::FBP::Preferences
-# Text::Aspell
-# Text::Hunspell
-# };
 
 
 #######
@@ -122,8 +100,6 @@ sub menu_plugins {
 	return $menu_item;
 }
 
-
-
 ########
 # plugin_disable
 ########
@@ -189,79 +165,19 @@ sub paste_it {
 	my $self          = shift;
 	my $main          = $self->main;
 	my $config        = $main->config;
+	
 	my $output        = $main->output;
 	my $current       = $self->current;
 	my $document      = $current->document;
+	
 	my $full_text     = $document->text_get;
 	my $selected_text = $current->text;
 
 	say 'start paste_it';
-
-	# TRACE("nopaste") if DEBUG;
-
-	# my $main    = $self->{document}->main;
-	# my $current = $main->current;
-	# my $editor  = $current->editor;
-	# return unless $editor;
-
-	# p $selected_text;
-	# p $full_text;
-
-	# no selection means send current file
-	# my $text = $editor->GetSelectedText // $editor->GetText;
+	# TRACE('start paste_it') if DEBUG;
 
 	my $text = $selected_text || $full_text;
-
-	# p $text;
-
-	# return;
-
-	return unless $text;
-
-
-	# my $url = nopaste(
-
-	# # text => "Full text to paste (the only mandatory argument)",
-	# text          => $text,
-	# # desc          => "This is a test no-paste",
-	# nick          => "bowtie",
-	# # lang          => "perl",
-	# chan          => "#padre",
-	# # private       => 1,                        # default: 0
-	# # this is the default, but maybe you want to do something different
-	# error_handler => sub {
-	# my ( $error, $service ) = @_;
-	# warn "$service: $error";
-	# },
-	# warn_handler => sub {
-	# my ( $warning, $service ) = @_;
-	# warn "$service: $warning";
-	# },
-
-	# # you may specify the services to use - but you don't have to
-	# services => [ "Shadowcat", ],
-
-	# # services => ["Shadowcat", "Gist"],
-	# );
-
-	# my $output;
-
-	# # # show result in output section
-	# if ( defined $url ) {
-	# $output          = "Text successfully nopasted at: $url\n";
-	# $self->{err}     = 0;
-	# $self->{message} = $output;
-	# } else {
-	# $output          = "Error while nopasting text\n";
-	# $self->{err}     = 1;
-	# $self->{message} = $output;
-	# }
-
-	# say $output;
-
-
-
-
+	return unless defined $text;
 
 	require Padre::Plugin::Nopaste::Task;
 
@@ -271,9 +187,8 @@ sub paste_it {
 		text     => $text,
 		nick     => $config->identity_nickname,
 		callback => 'on_finish',
-
-		# callback => 'task_response',
 	);
+	
 	say 'end paste_it';
 	return;
 }
@@ -337,7 +252,7 @@ sub plugin_icon {
 
 # $menu->AppendSeparator;
 
-# my $item = $menu->Append( -1, Wx::gettext('SpellCheck Preferences...') );
+# my $item = $menu->Append( -1, Wx::gettext('Nopaste Preferences...') );
 # Wx::Event::EVT_MENU(
 # $self->main,
 # $item,
@@ -349,45 +264,6 @@ sub plugin_icon {
 
 1;
 __END__
-
-
-#######################################################
-
-
-
-# plugin icon
-# sub plugin_icon {
-
-	# # find resource path
-	# my $pkgpath = find_installed(__PACKAGE__);
-	# my ( undef, $dirname, undef ) = fileparse($pkgpath);
-	# my $iconpath = catfile(
-		# $dirname,
-		# 'Nopaste', 'share', 'icons', 'paste.png'
-	# );
-
-	# # create and return icon
-	# return Wx::Bitmap->new( $iconpath, Wx::wxBITMAP_TYPE_PNG );
-# }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-######################################################
 
 
 =head1 NAME
