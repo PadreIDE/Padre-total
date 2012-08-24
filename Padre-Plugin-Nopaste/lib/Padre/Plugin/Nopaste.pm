@@ -141,12 +141,12 @@ sub clean_dialog {
 #######
 # plugin_preferences
 #######
-# sub plugin_preferences {
-# my $self = shift;
-# my $main = $self->main;
+sub plugin_preferences {
+my $self = shift;
+my $main = $self->main;
 
-# # Clean up any previous existing dialog
-# $self->clean_dialog;
+# Clean up any previous existing dialog
+$self->clean_dialog;
 
 # try {
 # require Padre::Plugin::SpellCheck::Preferences;
@@ -157,8 +157,8 @@ sub clean_dialog {
 # $self->main->error( sprintf Wx::gettext('Error: %s'), $_ );
 # };
 
-# return;
-# }
+return;
+}
 
 
 #######
@@ -176,7 +176,7 @@ sub paste_it {
 	my $full_text     = $document->text_get;
 	my $selected_text = $current->text;
 
-	say 'start paste_it';
+	# say 'start paste_it';
 
 	# TRACE('start paste_it') if DEBUG;
 
@@ -193,16 +193,18 @@ sub paste_it {
 		on_finish => 'on_finish',
 	);
 
-	say 'end paste_it';
+	# say 'end paste_it';
 	return;
 }
 
+#######
+# on compleation of task do this
+#######
 sub on_finish {
 	my $self = shift;
 	my $task = shift;
 
-	# sub task_response {
-	say 'start on_finish';
+	# say 'start on_finish';
 
 	# TRACE("nopaste_response") if DEBUG;
 
@@ -213,11 +215,11 @@ sub on_finish {
 	my $output = $main->output;
 	$output->clear;
 	if ( $task->{error} ) {
-		$output->AppendText( 'Something went wrong, here is the response we got:' );
+		$output->AppendText('Something went wrong, here is the response we got:');
 	}
 	$output->AppendText( $task->{message} );
-say $task->{error};
-say $task->{message};
+	say $task->{error};
+	say $task->{message};
 
 	# # Found what we were looking for
 	# if ( $task->{location} ) {
@@ -243,7 +245,7 @@ say $task->{message};
 	#		$self->current->main,
 	#	);
 
-	say 'start on_finish';
+	# say 'start on_finish';
 	return;
 
 }
@@ -264,23 +266,23 @@ sub plugin_icon {
 #######
 # Add SpellCheck Preferences to Context Menu
 #######
-# sub event_on_context_menu {
-# my ( $self, $document, $editor, $menu, $event ) = @_;
+sub event_on_context_menu {
+my ( $self, $document, $editor, $menu, $event ) = @_;
 
-# #Test for valid file type
-# return if not $document->filename;
+#Test for valid file type
+return if not $document->filename;
 
-# $menu->AppendSeparator;
+$menu->AppendSeparator;
 
-# my $item = $menu->Append( -1, Wx::gettext('Nopaste Preferences...') );
-# Wx::Event::EVT_MENU(
-# $self->main,
-# $item,
-# sub { $self->plugin_preferences },
-# );
+my $item = $menu->Append( -1, Wx::gettext('Nopaste Preferences...') );
+Wx::Event::EVT_MENU(
+$self->main,
+$item,
+sub { $self->plugin_preferences },
+);
 
-# return;
-# }
+return;
+}
 
 1;
 __END__
