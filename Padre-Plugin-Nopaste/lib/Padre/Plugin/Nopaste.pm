@@ -32,6 +32,7 @@ use constant CHILDREN => qw{
 	Padre::Plugin::Nopaste
 	Padre::Plugin::Nopaste::Task
 	App::Nopaste
+	App::Nopaste::Service
 	App::Nopaste::Service::Shadowcat
 };
 
@@ -160,20 +161,23 @@ sub clean_dialog {
 # }
 
 
-
+#######
+# paste_it
+#######
 sub paste_it {
-	my $self          = shift;
-	my $main          = $self->main;
-	my $config        = $main->config;
-	
-	my $output        = $main->output;
-	my $current       = $self->current;
-	my $document      = $current->document;
-	
+	my $self   = shift;
+	my $main   = $self->main;
+	my $config = $main->config;
+
+	my $output   = $main->output;
+	my $current  = $self->current;
+	my $document = $current->document;
+
 	my $full_text     = $document->text_get;
 	my $selected_text = $current->text;
 
 	say 'start paste_it';
+
 	# TRACE('start paste_it') if DEBUG;
 
 	my $text = $selected_text || $full_text;
@@ -183,12 +187,12 @@ sub paste_it {
 
 	# # Fire the task
 	$self->task_request(
-		task     => 'Padre::Plugin::Nopaste::Task',
-		text     => $text,
-		nick     => $config->identity_nickname,
-		callback => 'on_finish',
+		task      => 'Padre::Plugin::Nopaste::Task',
+		text      => $text,
+		nick      => $config->identity_nickname,
+		on_finish => 'on_finish',
 	);
-	
+
 	say 'end paste_it';
 	return;
 }
@@ -198,24 +202,36 @@ sub on_finish {
 	my $task = shift;
 
 	# sub task_response {
-	say 'nopaste_response';
+	say 'start on_finish';
 
 	# TRACE("nopaste_response") if DEBUG;
 
 
-	# Found what we were looking for
-	if ( $task->{location} ) {
-
-		#$self->ppi_select( $task->{location} );
-		#return;
+	# Generate the dump string and set into the output window
+	my $main = $self->main;
+	$main->show_output(1);
+	my $output = $main->output;
+	$output->clear;
+	if ( $task->{error} ) {
+		$output->AppendText( 'Something went wrong, here is the response we got:' );
 	}
+	$output->AppendText( $task->{message} );
+say $task->{error};
+say $task->{message};
 
-	my $main = $self->current->main;
+	# # Found what we were looking for
+	# if ( $task->{location} ) {
+
+	# #$self->ppi_select( $task->{location} );
+	# #return;
+	# }
+
+	# my $main = $self->current->main;
 
 	# Generate the dump string and set into the output window
-	$main->output->SetValue( $task->{message} );
-	$main->output->SetSelection( 0, 0 );
-	$main->show_output(1);
+	# $main->output->SetValue( $task->{message} );
+	# $main->output->SetSelection( 0, 0 );
+	# $main->show_output(1);
 
 	# Must have been a clean result
 	# TO DO: Convert this to a call to ->main that doesn't require
@@ -226,6 +242,10 @@ sub on_finish {
 	#		Wx::wxOK,
 	#		$self->current->main,
 	#	);
+
+	say 'start on_finish';
+	return;
+
 }
 
 
