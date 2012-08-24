@@ -3,15 +3,15 @@ package Padre::Plugin::Nopaste::Task;
 use v5.10;
 use strict;
 use warnings;
+
+our $VERSION = '0.4_1';
+
 use Padre::Task ();
 use Padre::Logger;
 
 use App::Nopaste 'nopaste';
 use App::Nopaste::Service::Shadowcat;
 
-our $VERSION = '0.4_1';
-
-# our @ISA     = 'Padre::Task';
 use parent qw{ Padre::Task };
 
 # Turn on $OUTPUT_AUTOFLUSH
@@ -20,10 +20,14 @@ use Data::Printer {
 	caller_info => 1,
 	colored     => 1,
 };
-
-# Constructor
+#######
+# Default Constructor from Padre::Task POD
+#######
 sub new {
-	my $self = shift->SUPER::new(@_);
+	my $class = shift;
+	my $self  = $class->SUPER::new(@_);
+
+	# my $self = shift->SUPER::new(@_);
 
 	# Assert required command parameter
 	unless ( defined $self->{text} ) {
