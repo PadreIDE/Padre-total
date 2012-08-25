@@ -87,30 +87,30 @@ sub plugin_enable {
 #######
 sub _config {
 	my $self   = shift;
-	my $config = $self->config_read;
+	my $config_db = $self->config_read;
 
 	try {
-		if ( defined $config->{Services} ) {
-			my $tmp_services = $config->{Services};
-			my $tmp_channel  = $config->{Channel};
+		if ( defined $config_db->{Services} ) {
+			my $tmp_services = $config_db->{Services};
+			my $tmp_channel  = $config_db->{Channel};
 			$self->config_write( {} );
-			$config             = $self->config_read;
-			$config->{Services} = $tmp_services;
-			$config->{Channel}  = $tmp_channel;
-			$self->config_write($config);
+			$config_db             = $self->config_read;
+			$config_db->{Services} = $tmp_services;
+			$config_db->{Channel}  = $tmp_channel;
+			$self->config_write($config_db);
 			return;
 		} else {
 			$self->config_write( {} );
-			$config->{Services} = 'Shadowcat';
-			$config->{Channel}  = '#padre';
-			$self->config_write($config);
+			$config_db->{Services} = 'Shadowcat';
+			$config_db->{Channel}  = '#padre';
+			$self->config_write($config_db);
 		}
 	}
 	catch {
 		$self->config_write( {} );
-		$config->{Services} = 'Shadowcat';
-		$config->{Channel}  = '#padre';
-		$self->config_write($config);
+		$config_db->{Services} = 'Shadowcat';
+		$config_db->{Channel}  = '#padre';
+		$self->config_write($config_db);
 		return;
 	};
 
@@ -212,7 +212,7 @@ sub paste_it {
 	my $full_text     = $document->text_get;
 	my $selected_text = $current->text;
 
-	my $config_data = $self->config_read;
+	my $config_db = $self->config_read;
 
 	TRACE('paste_it: start task to nopaste') if DEBUG;
 
@@ -226,8 +226,8 @@ sub paste_it {
 		task      => 'Padre::Plugin::Nopaste::Task',
 		text      => $text,
 		nick      => $config->identity_nickname,
-		services  => $config_data->{Services},
-		channel   => $config_data->{Channel},
+		services  => $config_db->{Services},
+		channel   => $config_db->{Channel},
 		on_finish => 'on_finish',
 	);
 
