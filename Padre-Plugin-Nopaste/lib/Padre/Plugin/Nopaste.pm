@@ -21,9 +21,10 @@ use parent qw{
 
 # Turn on $OUTPUT_AUTOFLUSH
 local $| = 1;
+
 # use Data::Printer {
-	# caller_info => 1,
-	# colored     => 1,
+# caller_info => 1,
+# colored     => 1,
 # };
 
 
@@ -142,22 +143,22 @@ sub clean_dialog {
 # plugin_preferences
 #######
 sub plugin_preferences {
-my $self = shift;
-my $main = $self->main;
+	my $self = shift;
+	my $main = $self->main;
 
-# Clean up any previous existing dialog
-$self->clean_dialog;
+	# Clean up any previous existing dialog
+	$self->clean_dialog;
 
-# try {
-# require Padre::Plugin::SpellCheck::Preferences;
-# $self->{dialog} = Padre::Plugin::SpellCheck::Preferences->new($main);
-# $self->{dialog}->ShowModal;
-# }
-# catch {
-# $self->main->error( sprintf Wx::gettext('Error: %s'), $_ );
-# };
+	# try {
+	# require Padre::Plugin::SpellCheck::Preferences;
+	# $self->{dialog} = Padre::Plugin::SpellCheck::Preferences->new($main);
+	# $self->{dialog}->ShowModal;
+	# }
+	# catch {
+	# $self->main->error( sprintf Wx::gettext('Error: %s'), $_ );
+	# };
 
-return;
+	return;
 }
 
 
@@ -218,6 +219,7 @@ sub on_finish {
 		$output->AppendText('Something went wrong, here is the response we got:');
 	}
 	$output->AppendText( $task->{message} );
+
 	# say $task->{error};
 	# say $task->{message};
 
@@ -267,21 +269,21 @@ sub plugin_icon {
 # Add Preferences to Context Menu
 #######
 sub event_on_context_menu {
-my ( $self, $document, $editor, $menu, $event ) = @_;
+	my ( $self, $document, $editor, $menu, $event ) = @_;
 
-#Test for valid file type
-return if not $document->filename;
+	#Test for valid file type
+	return if not $document->filename;
 
-$menu->AppendSeparator;
+	$menu->AppendSeparator;
 
-my $item = $menu->Append( -1, Wx::gettext('Nopaste Preferences...') );
-Wx::Event::EVT_MENU(
-$self->main,
-$item,
-sub { $self->plugin_preferences },
-);
+	my $item = $menu->Append( -1, Wx::gettext('Nopaste Preferences...') );
+	Wx::Event::EVT_MENU(
+		$self->main,
+		$item,
+		sub { $self->plugin_preferences },
+	);
 
-return;
+	return;
 }
 
 1;
