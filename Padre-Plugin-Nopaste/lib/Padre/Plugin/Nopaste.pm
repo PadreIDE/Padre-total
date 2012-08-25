@@ -264,7 +264,7 @@ sub plugin_icon {
 }
 
 #######
-# Add SpellCheck Preferences to Context Menu
+# Add Preferences to Context Menu
 #######
 sub event_on_context_menu {
 my ( $self, $document, $editor, $menu, $event ) = @_;
