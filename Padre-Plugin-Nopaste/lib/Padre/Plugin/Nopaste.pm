@@ -5,6 +5,7 @@ use strict;
 use warnings;
 our $VERSION = '0.4';
 
+use Try::Tiny;
 use Padre::Logger qw( TRACE DEBUG );
 use parent qw{
 	Padre::Plugin
@@ -14,10 +15,10 @@ use parent qw{
 # Turn on $OUTPUT_AUTOFLUSH
 local $| = 1;
 
-# use Data::Printer {
-# caller_info => 1,
-# colored     => 1,
-# };
+use Data::Printer {
+	caller_info => 1,
+	colored     => 1,
+};
 
 
 # Child modules we need to unload when disabled
@@ -71,7 +72,49 @@ sub plugin_enable {
 		$nick = 1;
 	}
 
+	#Set/ReSet Config data
+	if ($nick) {
+		say ' self config';
+		$self->_config;
+	}
+
 	return $nick;
+}
+
+#######
+# Composed Method _config
+# called on enable in plugin manager, bit like run/setup for a Plugin
+#######
+sub _config {
+	my $self   = shift;
+	my $config = $self->config_read;
+
+	try {
+		if ( defined $config->{Services} ) {
+			my $tmp_services = $config->{Services};
+			my $tmp_channel  = $config->{Channel};
+			$self->config_write( {} );
+			$config             = $self->config_read;
+			$config->{Services} = $tmp_services;
+			$config->{Channel}  = $tmp_channel;
+			$self->config_write($config);
+			return;
+		} else {
+			$self->config_write( {} );
+			$config->{Services} = 'Shadowcat';
+			$config->{Channel}  = '#padre';
+			$self->config_write($config);
+		}
+	}
+	catch {
+		$self->config_write( {} );
+		$config->{Services} = 'Shadowcat';
+		$config->{Channel}  = '#padre';
+		$self->config_write($config);
+		return;
+	};
+
+	return;
 }
 
 #######
