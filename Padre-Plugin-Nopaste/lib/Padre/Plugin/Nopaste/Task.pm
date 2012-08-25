@@ -44,7 +44,9 @@ sub run {
 		nick => $self->{nick},
 
 		lang => 'perl',
-		chan => '#padre',
+
+		# chan => '#padre',
+		chan => $self->{channel},
 
 		# private       => 1,                        # default: 0
 		# # this is the default, but maybe you want to do something different
@@ -64,7 +66,8 @@ sub run {
 		},
 
 		# you may specify the services to use - but you don't have to
-		services => [ 'Shadowcat', ],
+		# services => [ 'Shadowcat', ],
+		services => [ $self->{services}, ],
 
 		# services => ["Shadowcat", "Gist"],
 	);

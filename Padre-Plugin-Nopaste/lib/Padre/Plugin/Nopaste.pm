@@ -212,6 +212,8 @@ sub paste_it {
 	my $full_text     = $document->text_get;
 	my $selected_text = $current->text;
 
+	my $config_data = $self->config_read;
+
 	TRACE('paste_it: start task to nopaste') if DEBUG;
 
 	my $text = $selected_text || $full_text;
@@ -224,6 +226,8 @@ sub paste_it {
 		task      => 'Padre::Plugin::Nopaste::Task',
 		text      => $text,
 		nick      => $config->identity_nickname,
+		services  => $config_data->{Services},
+		channel   => $config_data->{Channel},
 		on_finish => 'on_finish',
 	);
 
