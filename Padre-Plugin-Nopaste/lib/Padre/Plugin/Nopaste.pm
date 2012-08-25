@@ -169,7 +169,7 @@ sub paste_it {
 	my $full_text     = $document->text_get;
 	my $selected_text = $current->text;
 
-	TRACE('start paste_it') if DEBUG;
+	TRACE('paste_it: start task to nopaste') if DEBUG;
 
 	my $text = $selected_text || $full_text;
 	return unless defined $text;
@@ -195,7 +195,7 @@ sub on_finish {
 	my $self = shift;
 	my $task = shift;
 
-	TRACE("nopaste_response") if DEBUG;
+	TRACE('on_finish: nopaste_response') if DEBUG;
 
 
 	# Generate the dump string and set into the output window
