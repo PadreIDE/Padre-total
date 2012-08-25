@@ -3,14 +3,9 @@ use inc::Module::Install::DSL 1.06;
 all_from      lib/Padre/Plugin/Nopaste.pm
 requires_from lib/Padre/Plugin/Nopaste.pm
 requires_from lib/Padre/Plugin/Nopaste/Task.pm
-# requires_from lib/Padre/Plugin/SpellCheck/Engine.pm
-# requires_from lib/Padre/Plugin/SpellCheck/Preferences.pm
 
 requires Padre					0.96
-requires App::Nopaste			0
-requires File::Basename			0
-requires File::Spec::Functions	0
-requires Module::Util			0
+requires App::Nopaste			0.35
 requires Try::Tiny				0.11
 
 test_requires Test::More	  		0.98
