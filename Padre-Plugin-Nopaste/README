@@ -1,55 +1,92 @@
-Padre-Plugin-Nopaste
-====================
+NAME
+    Padre::Plugin::Nopaste - send code on a nopaste website from padre
 
-This Padre plugin allows one to reformat her text automatically with Ctrl+Shift+J.
-It is using Text::Nopaste underneath, so check this module's pod for more
-information.
+SYNOPSIS
+        $ padre
+        Ctrl+Shift+V
 
+DESCRIPTION
+    This plugin allows one to send stuff from Padre to a nopaste website
+    with Ctrl+Shift+V, allowing for easy code / whatever sharing without
+    having to open a browser.
 
-INSTALLATION
-============
+    It is using "App::Nopaste" underneath, so check this module's pod for
+    more information.
 
-To install this module, run the following commands:
+PUBLIC METHODS
+  Standard Padre::Plugin API
+    "Padre::Plugin::Nopaste" defines a plugin which follows "Padre::Plugin"
+    API. Refer to this module's documentation for more information.
 
-	perl Build.PL
-	./Build
-	./Build test
-	./Build install
+    The following methods are implemented:
 
+    paste_it
+        runs nopaste as a padre task
 
-SUPPORT AND DOCUMENTATION
-=========================
+    on_finish
+        post task, display result
 
-After installing, you can find documentation for this module with the
-perldoc command.
+    padre_interfaces()
+    plugin_icon()
+    plugin_name()
+    clean_dialog()
+    menu_plugins()
+    plugin_disable()
+    plugin_enable()
+    plugin_preferences()
+        Spelling preferences window normaly access via Plug-in Manager
 
-    perldoc Padre::Plugin::Nopaste
+    event_on_context_menu
+        Add access to spelling preferences window.
 
+  Standard Padre::Role::Task API
+    In order not to freeze Padre during web access, nopasting is done in a
+    thread, as implemented by "Padre::Task". Refer to this module's
+    documentation for more information.
 
-You can also look for information at:
+    The following methods are implemented:
 
-    RT, CPAN's request tracker
-        http://rt.cpan.org/NoAuth/Bugs.html?Dist=Padre-Plugin-Nopaste
+    *   nopaste()
 
-    AnnoCPAN, Annotated CPAN documentation
-        http://annocpan.org/dist/Padre-Plugin-Nopaste
+    *   task_response()
 
-    CPAN Ratings
-        http://cpanratings.perl.org/d/Padre-Plugin-Nopaste
+        Callback for task runned by nopaste().
 
-    Search CPAN
-        http://search.cpan.org/dist/Padre-Plugin-Nopaste/
+BUGS
+    Please report any bugs or feature requests to "padre-plugin-nopaste at
+    rt.cpan.org", or through the web interface at
+    <http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Padre-Plugin-Nopaste>. I
+    will be notified, and then you'll automatically be notified of progress
+    on your bug as I make changes.
+
+SEE ALSO
+    Plugin icon courtesy of Mark James, at
+    <http://www.famfamfam.com/lab/icons/silk/>.
+
+    Our git repository is located at
+    <git://repo.or.cz/padre-plugin-nopaste.git>, and can be browsed at
+    <http://repo.or.cz/w/padre-plugin-nopaste.git>.
+
+    You can also look for information on this module at:
+
+    *   AnnoCPAN: Annotated CPAN documentation
+
+        <http://annocpan.org/dist/Padre-Plugin-Nopaste>
+
+    *   CPAN Ratings
+
+        <http://cpanratings.perl.org/d/Padre-Plugin-Nopaste>
+
+    *   Open bugs
+
+        <http://rt.cpan.org/NoAuth/Bugs.html?Dist=Padre-Plugin-Nopaste>
 
 AUTHOR
-======
-
-Jerome Quelin, <jquelin@cpan.org>
-
+    Jerome Quelin, "<jquelin@cpan.org>"
 
 COPYRIGHT & LICENSE
-===================
+    Copyright (c) 2009 Jerome Quelin, all rights reserved.
 
-Copyright (c) 2009 Jerome Quelin, all rights reserved.
+    This program is free software; you can redistribute it and/or modify it
+    under the same terms as Perl itself.
 
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
