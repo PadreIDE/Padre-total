@@ -4,7 +4,7 @@ use v5.10;
 use strict;
 use warnings;
 
-our $VERSION = '0.4_1';
+our $VERSION = '0.4';
 
 use Padre::Task   ();
 use Padre::Unload ();
@@ -129,6 +129,10 @@ information.
 The following methods are implemented:
 
 =over 4
+
+=item * new()
+
+default Padre Task constructor, see Padre::Task POD
 
 =item * prepare()
 

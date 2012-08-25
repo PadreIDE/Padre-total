@@ -12,7 +12,7 @@ package Padre::Plugin::Nopaste;
 use v5.10;
 use strict;
 use warnings;
-our $VERSION = '0.4_1';
+our $VERSION = '0.4';
 
 use parent qw{
 	Padre::Plugin
@@ -49,13 +49,13 @@ sub plugin_name {
 #######
 sub padre_interfaces {
 	return (
-		'Padre::Plugin' => '0.96',
-		'Padre::Task'   => '0.96',
-		'Padre::Unload' => '0.96',
+		'Padre::Plugin' => '0.94',
+		'Padre::Task'   => '0.94',
+		'Padre::Unload' => '0.94',
 
 		# used by my sub packages
 		# 'Padre::Locale'         => '0.96',
-		'Padre::Logger' => '0.96',
+		# 'Padre::Logger' => '0.94',
 
 		# 'Padre::Wx'             => '0.96',
 		# 'Padre::Wx::Role::Main' => '0.96',
@@ -322,13 +322,35 @@ The following methods are implemented:
 
 =over 4
 
-=item menu_plugins_simple()
+=item 	paste_it
+
+runs nopaste as a padre task
+
+=item 	on_finish
+
+post task, display result
 
 =item padre_interfaces()
 
 =item plugin_icon()
 
 =item plugin_name()
+
+=item clean_dialog()
+
+=item menu_plugins()
+
+=item plugin_disable()
+
+=item plugin_enable()
+
+=item plugin_preferences()
+
+Spelling preferences window normaly access via Plug-in Manager
+
+=item event_on_context_menu
+
+Add access to spelling preferences window.
 
 =back
 
