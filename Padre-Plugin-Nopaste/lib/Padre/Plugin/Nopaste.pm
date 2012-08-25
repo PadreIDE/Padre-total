@@ -21,10 +21,10 @@ use parent qw{
 
 # Turn on $OUTPUT_AUTOFLUSH
 local $| = 1;
-use Data::Printer {
-	caller_info => 1,
-	colored     => 1,
-};
+# use Data::Printer {
+	# caller_info => 1,
+	# colored     => 1,
+# };
 
 
 # Child modules we need to unload when disabled
@@ -218,8 +218,8 @@ sub on_finish {
 		$output->AppendText('Something went wrong, here is the response we got:');
 	}
 	$output->AppendText( $task->{message} );
-	say $task->{error};
-	say $task->{message};
+	# say $task->{error};
+	# say $task->{message};
 
 	# # Found what we were looking for
 	# if ( $task->{location} ) {
