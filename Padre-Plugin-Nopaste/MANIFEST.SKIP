@@ -1,35 +1,47 @@
-# avoid version control files.
-\B\.git\b
-\B\.gitignore$
+# Avoid version control files.
+\bRCS\b
+\bCVS\b
+,v$
+\B\.svn\b
+\B\.cvsignore$
 
-# avoid Makemaker generated and utility files.
+# Avoid Makemaker generated and utility files.
 \bMakefile$
 \bblib
 \bMakeMaker-\d
 \bpm_to_blib$
 \bblibdirs$
 ^MANIFEST\.SKIP$
+\.tar.gz$
+\.log$
+\bxt
 
-# avoid Module::Build generated and utility files.
+# Avoid Module::Build generated and utility files.
 \bBuild$
 \bBuild.bat$
 \b_build
 
-# avoid Devel::Cover generated files
+# Avoid Devel::Cover generated files
 \bcover_db
 
-# avoid temp and backup files.
+# Avoid temp and backup files.
 ~$
-\.bak$
-\.old$
-\.rej$
-\.swp$
 \.tmp$
+\.old$
+\.bak$
 \#$
 \.#
+\.rej$
+\btmp
+\bTODO
 
-\B.svn
+# Avoid OS-specific files/dirs
+#   Mac OSX metadata
+\B\.DS_Store
+#   Mac OSX SMB mount metadata files
+\B\._
+# Avoid archives of this distribution
+\bPadre-Plugin-YAML-[\d\.\_]+
 
-# avoid archives of this distribution
-\bPadre-Plugin-Nopaste-[\d\.\_]+
-^MYMETA.yml$
+# avoid pot files (gettext)
+\.pot$
