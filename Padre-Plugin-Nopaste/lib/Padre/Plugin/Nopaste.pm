@@ -1,12 +1,3 @@
-#
-# This file is part of Padre::Plugin::Nopaste.
-# Copyright (c) 2009 Jerome Quelin, all rights reserved.
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the same terms as Perl itself.
-#
-#
-
 package Padre::Plugin::Nopaste;
 
 use v5.10;
@@ -413,13 +404,11 @@ L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Padre-Plugin-Nopaste>
 =back
 
 
-
 =head1 AUTHOR
 
 Kevin Dawson E<lt>bowtie@cpan.orgE<gt>
 
 Jerome Quelin, E<lt>jquelin@cpan.orgE<gt>
-
 
 
 =head1 COPYRIGHT & LICENSE

@@ -144,18 +144,22 @@ default Padre Task constructor, see Padre::Task POD
 
 =head1 AUTHOR
 
-Alexandr Ciornii, Jerome Quelin, C<< <jquelin@cpan.org> >>
+Kevin Dawson E<lt>bowtie@cpan.orgE<gt>
+
+Jerome Quelin, E<lt>jquelin@cpan.orgE<gt>
+
+Alexandr Ciornii,
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2008-2010 The Padre development team as listed in Padre.pm.
+Copyright 2008-2012 The Padre development team as listed in Padre.pm.
 
 This program is free software; you can redistribute it and/or
 modify it under the same terms as Perl 5 itself.
 
 =cut
 
-# Copyright 2008-2010 The Padre development team as listed in Padre.pm.
+# Copyright 2008-2012 The Padre development team as listed in Padre.pm.
 # LICENSE
 # This program is free software; you can redistribute it and/or
 # modify it under the same terms as Perl 5 itself.
