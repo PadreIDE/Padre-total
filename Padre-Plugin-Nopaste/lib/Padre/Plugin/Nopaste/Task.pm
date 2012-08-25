@@ -8,13 +8,7 @@ our $VERSION = '0.4_1';
 
 use Padre::Task   ();
 use Padre::Unload ();
-
-# use Padre::Logger;
-
 use App::Nopaste 'nopaste';
-
-# use App::Nopaste::Service::Shadowcat;
-
 use parent qw{ Padre::Task };
 
 
