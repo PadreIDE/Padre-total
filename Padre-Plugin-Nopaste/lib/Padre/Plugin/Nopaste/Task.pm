@@ -3,7 +3,7 @@ package Padre::Plugin::Nopaste::Task;
 use v5.10;
 use strict;
 use warnings;
-
+use Carp qw( croak );
 our $VERSION = '0.4';
 
 use Padre::Task   ();
@@ -20,8 +20,8 @@ sub new {
 	my $self  = $class->SUPER::new(@_);
 
 	# Assert required command parameter
-	unless ( defined $self->{text} ) {
-		die "Failed to provide any text to the Nopaste task\n";
+	if ( not defined $self->{text} ) {
+		croak "Failed to provide any text to the Nopaste task\n";
 	}
 
 	return $self;
@@ -43,8 +43,8 @@ sub run {
 		# desc          => "This is a test no-paste",
 		nick => $self->{nick},
 
-		lang => "perl",
-		chan => "#padre",
+		lang => 'perl',
+		chan => '#padre',
 
 		# private       => 1,                        # default: 0
 		# # this is the default, but maybe you want to do something different
@@ -64,7 +64,7 @@ sub run {
 		},
 
 		# you may specify the services to use - but you don't have to
-		services => [ "Shadowcat", ],
+		services => [ 'Shadowcat', ],
 
 		# services => ["Shadowcat", "Gist"],
 	);
