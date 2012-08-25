@@ -14,6 +14,7 @@ use strict;
 use warnings;
 our $VERSION = '0.4';
 
+use Padre::Logger qw( TRACE DEBUG );
 use parent qw{
 	Padre::Plugin
 	Padre::Role::Task
@@ -56,7 +57,7 @@ sub padre_interfaces {
 
 		# used by my sub packages
 		# 'Padre::Locale'         => '0.96',
-		# 'Padre::Logger' => '0.94',
+		'Padre::Logger' => '0.94',
 
 		# 'Padre::Wx'             => '0.96',
 		# 'Padre::Wx::Role::Main' => '0.96',
@@ -177,9 +178,7 @@ sub paste_it {
 	my $full_text     = $document->text_get;
 	my $selected_text = $current->text;
 
-	# say 'start paste_it';
-
-	# TRACE('start paste_it') if DEBUG;
+	TRACE('start paste_it') if DEBUG;
 
 	my $text = $selected_text || $full_text;
 	return unless defined $text;
@@ -205,9 +204,7 @@ sub on_finish {
 	my $self = shift;
 	my $task = shift;
 
-	# say 'start on_finish';
-
-	# TRACE("nopaste_response") if DEBUG;
+	TRACE("nopaste_response") if DEBUG;
 
 
 	# Generate the dump string and set into the output window
