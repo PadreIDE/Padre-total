@@ -419,7 +419,9 @@ L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Padre-Plugin-Nopaste>
 
 =head1 AUTHOR
 
-Jerome Quelin, C<< <jquelin@cpan.org> >>
+Kevin Dawson E<lt>bowtie@cpan.orgE<gt>
+
+Jerome Quelin, E<lt>jquelin@cpan.orgE<gt>
 
 
 
@@ -431,3 +433,8 @@ This program is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
 
 =cut
+
+# Copyright 2008-2012 The Padre development team as listed in Padre.pm.
+# LICENSE
+# This program is free software; you can redistribute it and/or
+# modify it under the same terms as Perl 5 itself.
