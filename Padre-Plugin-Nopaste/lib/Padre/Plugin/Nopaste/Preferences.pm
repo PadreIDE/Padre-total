@@ -6,9 +6,10 @@ use strict;
 
 use Try::Tiny;
 use Padre::Logger;
-use Padre::Util                                 ();
-use Padre::Locale                               ();
-use Padre::Unload                               ();
+use Padre::Util                              ();
+use Padre::Locale                            ();
+use Padre::Unload                            ();
+use Padre::Plugin::Nopaste::Services         ();
 use Padre::Plugin::Nopaste::FBP::Preferences ();
 
 our $VERSION = '1.31_01';
@@ -16,7 +17,10 @@ use parent qw(
 	Padre::Plugin::Nopaste::FBP::Preferences
 	Padre::Plugin
 );
-
+use Data::Printer {
+	caller_info => 1,
+	colored     => 1,
+};
 #######
 # Method new
 #######
@@ -39,31 +43,42 @@ sub new {
 # Method _set_up
 #######
 sub _set_up {
-	my $self = shift;
+	my $self   = shift;
 	my $main   = $self->main;
 	my $config = $main->config;
-		
-	$self->{config_nickname}->SetLabel( $config->identity_nickname );
-	# set preferred dictionary from config
+
+	# my $services = Padre::Plugin::Nopaste::Services->new;
 	try {
-		$self->{dictionary} = $self->config_read->{Engine};
+		my $services = Padre::Plugin::Nopaste::Services->new;
+		$self->{nopaste_services} = $services;
+		# p $self->{nopaste_services};
 	}
-	catch {
-		$self->{dictionary} = 'Aspell';
-	};
 
-	if ( $self->{dictionary} eq 'Aspell' ) {
+	# p $services->check_server( $config_db->{Services} );
 
-		# use Aspell as default, as the aspell engine works
-		$self->chosen_dictionary->SetSelection(0);
-		$self->_local_aspell_dictionaries;
-	} else {
-		$self->chosen_dictionary->SetSelection(1);
-		$self->_local_hunspell_dictionaries;
-	}
+	#Set nickname
+	$self->{config_nickname}->SetLabel( $config->identity_nickname );
+
+	#get nopaste server from config db
+	# try {
+	# $self->{dictionary} = $self->config_read->{Engine};
+	# }
+	# catch {
+	# $self->{dictionary} = 'Aspell';
+	# };
+
+	# if ( $self->{dictionary} eq 'Aspell' ) {
+
+	# # use Aspell as default, as the aspell engine works
+	# $self->chosen_dictionary->SetSelection(0);
+	# $self->_local_aspell_dictionaries;
+	# } else {
+	# $self->chosen_dictionary->SetSelection(1);
+	# $self->_local_hunspell_dictionaries;
+	# }
 
 	# update dialogue with locally install dictionaries;
-	$self->_display_dictionaries;
+	$self->_display_servers;
 
 	return;
 }
@@ -77,27 +92,27 @@ sub _local_aspell_dictionaries {
 	# my @local_dictionaries_names = ();
 
 	# try {
-		# require Text::Aspell;
-		# my $speller = Text::Aspell->new;
+	# require Text::Aspell;
+	# my $speller = Text::Aspell->new;
 
-		# my @local_dictionaries = grep { $_ =~ /^\w+$/ } map { $_->{name} } $speller->dictionary_info;
-		# $self->{local_dictionaries} = \@local_dictionaries;
-		# TRACE("Aspell locally installed dictionaries found = @local_dictionaries") if DEBUG;
-		# TRACE("Aspell iso to dictionary names = $self->{dictionary_names}")        if DEBUG;
+	# my @local_dictionaries = grep { $_ =~ /^\w+$/ } map { $_->{name} } $speller->dictionary_info;
+	# $self->{local_dictionaries} = \@local_dictionaries;
+	# TRACE("Aspell locally installed dictionaries found = @local_dictionaries") if DEBUG;
+	# TRACE("Aspell iso to dictionary names = $self->{dictionary_names}")        if DEBUG;
 
-		# for (@local_dictionaries) {
-			# push @local_dictionaries_names, $self->padre_locale_label($_);
-			# $self->{dictionary_names}{$_} = $self->padre_locale_label($_);
-		# }
+	# for (@local_dictionaries) {
+	# push @local_dictionaries_names, $self->padre_locale_label($_);
+	# $self->{dictionary_names}{$_} = $self->padre_locale_label($_);
+	# }
 
-		# @local_dictionaries_names = sort @local_dictionaries_names;
-		# $self->{local_dictionaries_names} = \@local_dictionaries_names;
+	# @local_dictionaries_names = sort @local_dictionaries_names;
+	# $self->{local_dictionaries_names} = \@local_dictionaries_names;
 
-		# TRACE("Aspell local dictionaries names = $self->{local_dictionaries_names}") if DEBUG;
+	# TRACE("Aspell local dictionaries names = $self->{local_dictionaries_names}") if DEBUG;
 	# }
 	# catch {
-		# $self->{local_dictionaries_names} = \@local_dictionaries_names;
-		# $self->main->info( Wx::gettext('Text::Aspell is not installed') );
+	# $self->{local_dictionaries_names} = \@local_dictionaries_names;
+	# $self->main->info( Wx::gettext('Text::Aspell is not installed') );
 	# };
 	return;
 }
@@ -114,46 +129,46 @@ sub _local_hunspell_dictionaries {
 
 	# # if ( require Text::Hunspell ) {
 	# try {
-		# require Text::Hunspell;
-		# require Padre::Util;
+	# require Text::Hunspell;
+	# require Padre::Util;
 
-		# my $speller = Padre::Util::run_in_directory_two( cmd => 'hunspell -D </dev/null', option => '0' );
-		# TRACE("hunspell speller = $speller") if DEBUG;
+	# my $speller = Padre::Util::run_in_directory_two( cmd => 'hunspell -D </dev/null', option => '0' );
+	# TRACE("hunspell speller = $speller") if DEBUG;
 
-		# #TODO this is yuck must do better
-		# my @speller_raw = grep { $_ =~ /\w{2}_\w{2}$/m } split /\n/, $speller->{error};
-		# my %temp_speller;
-		# foreach (@speller_raw) {
-			# if ( $_ !~ m/hyph/ ) {
-				# m/(\w{2}_\w{2})$/;
-				# my $tmp = $1;
-				# $temp_speller{$tmp}++;
-			# }
-		# }
+	# #TODO this is yuck must do better
+	# my @speller_raw = grep { $_ =~ /\w{2}_\w{2}$/m } split /\n/, $speller->{error};
+	# my %temp_speller;
+	# foreach (@speller_raw) {
+	# if ( $_ !~ m/hyph/ ) {
+	# m/(\w{2}_\w{2})$/;
+	# my $tmp = $1;
+	# $temp_speller{$tmp}++;
+	# }
+	# }
 
-		# while ( my ( $key, $value ) = each %temp_speller ) {
-			# push @local_dictionaries, $key;
-		# }
+	# while ( my ( $key, $value ) = each %temp_speller ) {
+	# push @local_dictionaries, $key;
+	# }
 
-		# $self->{local_dictionaries} = \@local_dictionaries;
-		# TRACE("Hunspell locally installed dictionaries found = $self->{local_dictionaries}") if DEBUG;
-		# TRACE("Hunspell iso to dictionary names = $self->{dictionary_names}")                if DEBUG;
+	# $self->{local_dictionaries} = \@local_dictionaries;
+	# TRACE("Hunspell locally installed dictionaries found = $self->{local_dictionaries}") if DEBUG;
+	# TRACE("Hunspell iso to dictionary names = $self->{dictionary_names}")                if DEBUG;
 
-		# for (@local_dictionaries) {
-			# push( @local_dictionaries_names, $self->padre_locale_label($_) );
-			# $self->{dictionary_names}{$_} = $self->padre_locale_label($_);
-		# }
+	# for (@local_dictionaries) {
+	# push( @local_dictionaries_names, $self->padre_locale_label($_) );
+	# $self->{dictionary_names}{$_} = $self->padre_locale_label($_);
+	# }
 
-		# @local_dictionaries_names = sort @local_dictionaries_names;
-		# $self->{local_dictionaries_names} = \@local_dictionaries_names;
-		# TRACE("Hunspell local dictionaries names = $self->{local_dictionaries_names}") if DEBUG;
-		# return;
+	# @local_dictionaries_names = sort @local_dictionaries_names;
+	# $self->{local_dictionaries_names} = \@local_dictionaries_names;
+	# TRACE("Hunspell local dictionaries names = $self->{local_dictionaries_names}") if DEBUG;
+	# return;
 
 	# }
 	# catch {
-		# $self->{local_dictionaries_names} = \@local_dictionaries_names;
-		# $self->main->info( Wx::gettext('Text::Hunspell is not installed') );
-		# return;
+	# $self->{local_dictionaries_names} = \@local_dictionaries_names;
+	# $self->main->info( Wx::gettext('Text::Hunspell is not installed') );
+	# return;
 	# };
 	return;
 }
@@ -161,39 +176,29 @@ sub _local_hunspell_dictionaries {
 #######
 # Method _display_dictionaries
 #######
-sub _display_dictionaries {
-	my $self = shift;
+sub _display_servers {
+	my $self      = shift;
+	my $config_db = $self->config_read;
 
-	# # my $main = $self->main;
+	my $prefered_server;
+	$prefered_server = $config_db->{Services};
 
-	# my $prefered_dictionary;
-	# try {
-		# $prefered_dictionary = $self->config_read->{ $self->{dictionary} };
-	# }
-	# catch {
-		# $prefered_dictionary = 'Aspell';
-	# };
+	my $servers = $self->{nopaste_services}->servers;
 
-	# TRACE("iso prefered_dictionary = $prefered_dictionary ") if DEBUG;
+	# set local_server_index to zero in case predefined not found
+	my $local_server_index = 0;
 
-	# # set local_dictionaries_index to zero in case prefered_dictionary not found
-	# my $local_dictionaries_index = 0;
-	# require Padre::Locale;
-	# for ( 0 .. $#{ $self->{local_dictionaries_names} } ) {
-		# if ( $self->{local_dictionaries_names}->[$_] eq $self->padre_locale_label($prefered_dictionary) ) {
-			# $local_dictionaries_index = $_;
-		# }
-	# }
+	for ( 0 .. $#{$servers} ) {
+		if ( $servers->[$_] eq $prefered_server ) {
+			$local_server_index = $_;
+		}
+	}
 
-	# TRACE("local_dictionaries_index = $local_dictionaries_index ") if DEBUG;
+	$self->{nopaste_server}->Clear;
 
-	# $self->language->Clear;
+	$self->{nopaste_server}->Append($servers);
 
-	# # load local_dictionaries_names
-	# $self->language->Append( $self->{local_dictionaries_names} );
-
-	# # highlight prefered_dictionary
-	# $self->language->SetSelection($local_dictionaries_index);
+	$self->{nopaste_server}->SetSelection($local_server_index);
 
 	return;
 }
@@ -211,9 +216,9 @@ sub _on_button_save_clicked {
 
 	# # require Padre::Locale;
 	# for my $iso ( keys %{ $self->{dictionary_names} } ) {
-		# if ( $self->padre_locale_label($iso) eq $select_dictionary_name ) {
-			# $select_dictionary_iso = $iso;
-		# }
+	# if ( $self->padre_locale_label($iso) eq $select_dictionary_name ) {
+	# $select_dictionary_iso = $iso;
+	# }
 	# }
 	# TRACE("selected dictionary iso = $select_dictionary_iso ") if DEBUG;
 
@@ -234,13 +239,13 @@ sub on_dictionary_chosen {
 	my $self = shift;
 
 	# if ( $self->chosen_dictionary->GetSelection() == 0 ) {
-		# $self->{dictionary} = 'Aspell';
-		# TRACE("Aspell chosen") if DEBUG;
-		# $self->_local_aspell_dictionaries;
+	# $self->{dictionary} = 'Aspell';
+	# TRACE("Aspell chosen") if DEBUG;
+	# $self->_local_aspell_dictionaries;
 	# } else {
-		# $self->{dictionary} = 'Hunspell';
-		# TRACE("Hunspell chosen") if DEBUG;
-		# $self->_local_hunspell_dictionaries;
+	# $self->{dictionary} = 'Hunspell';
+	# TRACE("Hunspell chosen") if DEBUG;
+	# $self->_local_hunspell_dictionaries;
 	# }
 
 	# $self->_display_dictionaries;
@@ -253,7 +258,8 @@ sub on_dictionary_chosen {
 # aspell to padre local label
 #######
 sub padre_locale_label {
-	my $self             = shift;
+	my $self = shift;
+
 	# my $local_dictionary = shift;
 
 	# my $lc_local_dictionary = lc( $local_dictionary ? $local_dictionary : 'en_GB' );

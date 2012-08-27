@@ -32,49 +32,29 @@ sub new {
 		Wx::DEFAULT_DIALOG_STYLE | Wx::RESIZE_BORDER,
 	);
 
-	$self->{m_staticText1} = Wx::StaticText->new(
-		$self,
-		-1,
-		Wx::gettext("Nick-Name:"),
-	);
-
 	$self->{config_nickname} = Wx::StaticText->new(
 		$self,
 		-1,
 		Wx::gettext("config_nickname"),
 	);
 
-	$self->{chosen_dictionary} = Wx::RadioBox->new(
-		$self,
-		-1,
-		Wx::gettext("Dictionary"),
-		Wx::DefaultPosition,
-		Wx::DefaultSize,
-		[
-			"Aspell",
-			"Hunspell",
-		],
-		1,
-		Wx::RA_SPECIFY_ROWS,
-	);
-	$self->{chosen_dictionary}->SetSelection(0);
-
-	Wx::Event::EVT_RADIOBOX(
-		$self,
-		$self->{chosen_dictionary},
-		sub {
-			shift->on_dictionary_chosen(@_);
-		},
-	);
-
-	$self->{language} = Wx::Choice->new(
+	$self->{nopaste_server} = Wx::Choice->new(
 		$self,
 		-1,
 		Wx::DefaultPosition,
 		[ 220, -1 ],
 		[],
 	);
-	$self->{language}->SetSelection(0);
+	$self->{nopaste_server}->SetSelection(0);
+
+	$self->{nopaste_channel} = Wx::Choice->new(
+		$self,
+		-1,
+		Wx::DefaultPosition,
+		[ 220, -1 ],
+		[],
+	);
+	$self->{nopaste_channel}->SetSelection(0);
 
 	$self->{m_sdbSizer1_save} = Wx::Button->new(
 		$self,
@@ -94,20 +74,35 @@ sub new {
 		Wx::ID_CANCEL,
 	);
 
-	my $bSizer2 = Wx::BoxSizer->new(Wx::HORIZONTAL);
-	$bSizer2->Add( $self->{m_staticText1}, 0, Wx::ALL, 5 );
-	$bSizer2->Add( $self->{config_nickname}, 0, Wx::ALL, 5 );
+	my $sbSizer2 = Wx::StaticBoxSizer->new(
+		Wx::StaticBox->new(
+			$self,
+			-1,
+			Wx::gettext("Nick Name"),
+		),
+		Wx::VERTICAL,
+	);
+	$sbSizer2->Add( $self->{config_nickname}, 0, Wx::ALL, 5 );
 
 	$self->{sbSizer4} = Wx::StaticBoxSizer->new(
 		Wx::StaticBox->new(
 			$self,
 			-1,
-			Wx::gettext("Select Dictionary and Language"),
+			Wx::gettext("Nopaste Server"),
 		),
 		Wx::VERTICAL,
 	);
-	$self->{sbSizer4}->Add( $self->{chosen_dictionary}, 0, Wx::ALL | Wx::EXPAND, 5 );
-	$self->{sbSizer4}->Add( $self->{language}, 0, Wx::ALL, 5 );
+	$self->{sbSizer4}->Add( $self->{nopaste_server}, 0, Wx::ALL, 5 );
+
+	$self->{sbSizer41} = Wx::StaticBoxSizer->new(
+		Wx::StaticBox->new(
+			$self,
+			-1,
+			Wx::gettext("Nopaste Channel"),
+		),
+		Wx::VERTICAL,
+	);
+	$self->{sbSizer41}->Add( $self->{nopaste_channel}, 0, Wx::ALL, 5 );
 
 	$self->{m_sdbSizer1} = Wx::StdDialogButtonSizer->new;
 	$self->{m_sdbSizer1}->AddButton( $self->{m_sdbSizer1_save} );
@@ -115,8 +110,9 @@ sub new {
 	$self->{m_sdbSizer1}->Realize;
 
 	my $bSizer1 = Wx::BoxSizer->new(Wx::VERTICAL);
-	$bSizer1->Add( $bSizer2, 0, Wx::EXPAND, 5 );
+	$bSizer1->Add( $sbSizer2, 1, Wx::EXPAND, 5 );
 	$bSizer1->Add( $self->{sbSizer4}, 1, Wx::ALL | Wx::EXPAND, 5 );
+	$bSizer1->Add( $self->{sbSizer41}, 1, Wx::ALL | Wx::EXPAND, 5 );
 	$bSizer1->Add( $self->{m_sdbSizer1}, 0, Wx::ALL | Wx::EXPAND, 5 );
 
 	$self->SetSizerAndFit($bSizer1);
@@ -129,16 +125,12 @@ sub config_nickname {
 	$_[0]->{config_nickname};
 }
 
-sub chosen_dictionary {
-	$_[0]->{chosen_dictionary};
+sub nopaste_server {
+	$_[0]->{nopaste_server};
 }
 
-sub language {
-	$_[0]->{language};
-}
-
-sub on_dictionary_chosen {
-	$_[0]->main->error('Handler method on_dictionary_chosen for event chosen_dictionary.OnRadioBox not implemented');
+sub nopaste_channel {
+	$_[0]->{nopaste_channel};
 }
 
 sub _on_button_ok_clicked {
