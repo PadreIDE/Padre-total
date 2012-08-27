@@ -40,7 +40,10 @@ sub new {
 #######
 sub _set_up {
 	my $self = shift;
-
+	my $main   = $self->main;
+	my $config = $main->config;
+		
+	$self->{config_nickname}->SetLabel( $config->identity_nickname );
 	# set preferred dictionary from config
 	try {
 		$self->{dictionary} = $self->config_read->{Engine};

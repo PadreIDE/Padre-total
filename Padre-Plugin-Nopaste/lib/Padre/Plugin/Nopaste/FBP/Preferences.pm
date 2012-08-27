@@ -32,6 +32,18 @@ sub new {
 		Wx::DEFAULT_DIALOG_STYLE | Wx::RESIZE_BORDER,
 	);
 
+	$self->{m_staticText1} = Wx::StaticText->new(
+		$self,
+		-1,
+		Wx::gettext("Nick-Name:"),
+	);
+
+	$self->{config_nickname} = Wx::StaticText->new(
+		$self,
+		-1,
+		Wx::gettext("config_nickname"),
+	);
+
 	$self->{chosen_dictionary} = Wx::RadioBox->new(
 		$self,
 		-1,
@@ -82,6 +94,10 @@ sub new {
 		Wx::ID_CANCEL,
 	);
 
+	my $bSizer2 = Wx::BoxSizer->new(Wx::HORIZONTAL);
+	$bSizer2->Add( $self->{m_staticText1}, 0, Wx::ALL, 5 );
+	$bSizer2->Add( $self->{config_nickname}, 0, Wx::ALL, 5 );
+
 	$self->{sbSizer4} = Wx::StaticBoxSizer->new(
 		Wx::StaticBox->new(
 			$self,
@@ -99,6 +115,7 @@ sub new {
 	$self->{m_sdbSizer1}->Realize;
 
 	my $bSizer1 = Wx::BoxSizer->new(Wx::VERTICAL);
+	$bSizer1->Add( $bSizer2, 0, Wx::EXPAND, 5 );
 	$bSizer1->Add( $self->{sbSizer4}, 1, Wx::ALL | Wx::EXPAND, 5 );
 	$bSizer1->Add( $self->{m_sdbSizer1}, 0, Wx::ALL | Wx::EXPAND, 5 );
 
@@ -106,6 +123,10 @@ sub new {
 	$self->Layout;
 
 	return $self;
+}
+
+sub config_nickname {
+	$_[0]->{config_nickname};
 }
 
 sub chosen_dictionary {
