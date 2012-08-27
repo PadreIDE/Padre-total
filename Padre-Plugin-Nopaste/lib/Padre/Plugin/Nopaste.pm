@@ -6,11 +6,14 @@ use warnings;
 our $VERSION = '0.4';
 
 use Try::Tiny;
+use Padre::Unload ();
 use Padre::Logger qw( TRACE DEBUG );
 use parent qw{
 	Padre::Plugin
 	Padre::Role::Task
 };
+use Padre::Plugin::Nopaste::Services;
+use Carp::Always;
 
 # Turn on $OUTPUT_AUTOFLUSH
 local $| = 1;
@@ -25,6 +28,9 @@ use Data::Printer {
 use constant CHILDREN => qw{
 	Padre::Plugin::Nopaste
 	Padre::Plugin::Nopaste::Task
+	Padre::Plugin::Nopaste::Services
+	Padre::Plugin::Nopaste::Preferences
+	Padre::Plugin::Nopaste::FBP::Preferences
 	App::Nopaste
 	App::Nopaste::Service
 	App::Nopaste::Service::Shadowcat
@@ -74,7 +80,6 @@ sub plugin_enable {
 
 	#Set/ReSet Config data
 	if ($nick) {
-		say ' self config';
 		$self->_config;
 	}
 
@@ -86,9 +91,24 @@ sub plugin_enable {
 # called on enable in plugin manager, bit like run/setup for a Plugin
 #######
 sub _config {
-	my $self   = shift;
+	my $self      = shift;
 	my $config_db = $self->config_read;
+	# p $config_db;
+	# p $config_db->{Services};
+	# p $config_db->{Channel};
 
+
+	# my $services = Padre::Plugin::Nopaste::Services->new;
+	# p $services->check_server( $config_db->{Services} );
+	# given ( $config_db->{Services} ) {
+		# when ('Shadowcat') { p $services->$_; }
+	# }
+
+	# p $services->servers;
+	# p $services->channels;
+	# p $services->Shadowcat;
+	# p $services;
+	
 	try {
 		if ( defined $config_db->{Services} ) {
 			my $tmp_services = $config_db->{Services};
@@ -184,14 +204,14 @@ sub plugin_preferences {
 	# Clean up any previous existing dialog
 	$self->clean_dialog;
 
-	# try {
-	# require Padre::Plugin::SpellCheck::Preferences;
-	# $self->{dialog} = Padre::Plugin::SpellCheck::Preferences->new($main);
-	# $self->{dialog}->ShowModal;
-	# }
-	# catch {
-	# $self->main->error( sprintf Wx::gettext('Error: %s'), $_ );
-	# };
+	try {
+	require Padre::Plugin::Nopaste::Preferences;
+	$self->{dialog} = Padre::Plugin::Nopaste::Preferences->new($main);
+	$self->{dialog}->ShowModal;
+	}
+	catch {
+	$self->main->error( sprintf Wx::gettext('Error: %s'), $_ );
+	};
 
 	return;
 }
