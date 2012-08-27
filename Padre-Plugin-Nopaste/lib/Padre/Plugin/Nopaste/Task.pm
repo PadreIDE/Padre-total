@@ -40,7 +40,7 @@ sub run {
 		# text => "Full text to paste (the only mandatory argument)",
 		text => $self->{text},
 
-		desc          => "This is a test no-paste",
+		# desc          => "This is a test no-paste",
 		nick => $self->{nick},
 
 		lang => 'perl',
