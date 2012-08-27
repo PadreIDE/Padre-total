@@ -6,7 +6,7 @@ BEGIN {
 		exit 0;
 	}
 }
-plan( tests => 3 );
+plan( tests => 2 );
 
 use Padre::Perl;
 use Padre::Plugin::Dancer;
@@ -14,3 +14,8 @@ use Padre::Plugin::Dancer;
 ok( my $perl = Padre::Perl->perl, "Get perl interpreter" );
 ok( defined $perl, "Perl interpreter defined" );
 
+done_testing();
+
+1;
+
+__END__

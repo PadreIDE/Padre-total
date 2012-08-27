@@ -1,5 +1,3 @@
-use strict;
-use warnings;
 use inc::Module::Install;
 
 name 'Padre-Plugin-Dancer';
@@ -12,7 +10,7 @@ all_from 'lib/Padre/Plugin/Dancer.pm';
 requires_from 'lib/Padre/Plugin/Dancer/NewApp.pm';
 requires_from 'lib/Padre/Plugin/Catalyst/Util.pm';
 
-requires 'Padre'      => '0.91';
+requires 'Padre'      => '0.94';
 requires 'Dancer'     => 0;
 requires 'File::Spec' => 0;
 
@@ -23,6 +21,6 @@ homepage 'http://padre.perlide.org/';
 bugtracker 'http://padre.perlide.org/';
 repository 'http://svn.perlide.org/padre/trunk/Padre-Plugin-Dancer';
 
-is_padre_plugin; # authors: Install Module::Install::PadrePlugin
+# is_padre_plugin; # authors: Install Module::Install::PadrePlugin
 
 WriteAll;

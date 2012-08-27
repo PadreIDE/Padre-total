@@ -1,23 +1,59 @@
 package Padre::Plugin::Dancer;
 
 # ABSTRACT: Dancer helper interface for Padre
-
+use v5.10;
 use warnings;
 use strict;
 
 our $VERSION = '0.01';
 
-use Padre::Perl ();
+use Padre::Unload ();
+use Padre::Perl   ();
 
-use base 'Padre::Plugin';
+# use base 'Padre::Plugin';
+use parent qw{
+	Padre::Plugin
+};
+
+
+#######
+# Define Plugin Name Spell Checker
+#######
+sub plugin_name {
+	return Wx::gettext('Dancer');
+}
+
+#######
+# Define Padre Interfaces required
+#######
+sub padre_interfaces {
+	return (
+		'Padre::Plugin' => '0.94',
+
+		# 'Padre::Task'   => '0.94',
+		'Padre::Unload' => '0.94',
+		'Padre::Perl'   => '0.94',
+
+		# used by my sub packages
+		# 'Padre::Locale'         => '0.96',
+		# 'Padre::Logger' => '0.94',
+
+		# 'Padre::Wx'             => '0.96',
+		# 'Padre::Wx::Role::Main' => '0.96',
+		# 'Padre::Util'           => '0.97',
+	);
+}
+
+
+
 
 # The plugin name to show in the Plugin Manager and menus
-sub plugin_name {'Dancer'}
+# sub plugin_name {'Dancer'}
 
 # Declare the Padre interfaces this plugin uses
-sub padre_interfaces {
-	'Padre::Plugin' => '0.91',;
-}
+# sub padre_interfaces {
+# 'Padre::Plugin' => '0.91',;
+# }
 
 # TODO: see the Catalyst plugin for inspiration
 # sub plugin_icon {
@@ -252,11 +288,11 @@ sub on_show_about {
 	return;
 }
 
-sub plugin_enable {
-	my $self = shift;
+# sub plugin_enable {
+	# my $self = shift;
 
-	return;
-}
+	# return;
+# }
 
 
 sub plugin_disable {
