@@ -47,6 +47,14 @@ sub new {
 	);
 	$self->{nopaste_server}->SetSelection(0);
 
+	Wx::Event::EVT_CHOICE(
+		$self,
+		$self->{nopaste_server},
+		sub {
+			shift->on_server_chosen(@_);
+		},
+	);
+
 	$self->{nopaste_channel} = Wx::Choice->new(
 		$self,
 		-1,
@@ -131,6 +139,10 @@ sub nopaste_server {
 
 sub nopaste_channel {
 	$_[0]->{nopaste_channel};
+}
+
+sub on_server_chosen {
+	$_[0]->main->error('Handler method on_server_chosen for event nopaste_server.OnChoice not implemented');
 }
 
 sub _on_button_ok_clicked {
