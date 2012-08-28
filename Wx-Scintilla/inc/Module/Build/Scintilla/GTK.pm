@@ -85,9 +85,7 @@ sub stc_extra_scintilla_libs {
 	my $self   = shift;
 	my $extras = '-lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lpangoft2-1.0 ';
 	$extras .= '-lgdk_pixbuf-2.0 -lm -lpango-1.0 -lfreetype -lfontconfig -lgobject-2.0 ';
-	$extras .= '-lgmodule-2.0 -lgthread-2.0 -lrt -lglib-2.0 -lpng -lz -ldl -lm ';
-
-	#'-lgio-2.0', # does not apper to be needed and not present on some systems
+	$extras .= '-lgmodule-2.0 -lgthread-2.0 -lglib-2.0';
 	return $extras;
 }
 
@@ -97,7 +95,7 @@ sub stc_link_scintilla_objects {
 	my @cmd = (
 		$self->stc_linker,
 		$self->stc_ldflags,
-		'-fPIC',
+		'-fPIC -shared',
 		' -o ' . $shared_lib,
 		join( ' ', @$objects ),
 		$self->stc_link_paths,
