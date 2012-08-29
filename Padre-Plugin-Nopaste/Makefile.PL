@@ -12,7 +12,7 @@ requires Carp         1.26
 
 test_requires Test::More          0.98
 test_requires Test::Pod           1.45
-test_requires Test::Pod::Coverage 1.0 8
+test_requires Test::Pod::Coverage 1.08
 
 no_index directory	qw{ t xt eg share inc privinc }
 homepage		http://padre.perlide.org/trac/wiki/PadrePluginNopaste
