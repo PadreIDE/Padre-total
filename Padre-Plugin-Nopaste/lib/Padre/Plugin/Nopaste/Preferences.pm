@@ -1,8 +1,7 @@
 package Padre::Plugin::Nopaste::Preferences;
 
 use v5.10;
-use warnings;
-use strict;
+use strictures 1;
 
 use Try::Tiny;
 use Padre::Logger;
@@ -17,10 +16,7 @@ use parent qw(
 	Padre::Plugin::Nopaste::FBP::Preferences
 	Padre::Plugin
 );
-use Data::Printer {
-	caller_info => 1,
-	colored     => 1,
-};
+
 #######
 # Method new
 #######
@@ -64,10 +60,6 @@ sub _set_up {
 
 	return;
 }
-
-
-
-
 
 #######
 # Method _display_servers
@@ -128,9 +120,6 @@ sub on_button_save_clicked {
 	$config_db->{Channel} =
 		$self->{nopaste_services}->{ $self->{prefered_server} }->[ $self->{nopaste_channel}->GetSelection() ];
 
-	# p $config_db->{Services};
-	# p $config_db->{Channel};
-
 	$self->config_write($config_db);
 
 	$self->Hide;
@@ -147,10 +136,10 @@ sub on_button_reset_clicked {
 	$config_db->{Services} = 'Shadowcat';
 	$config_db->{Channel}  = '#padre';
 	$self->config_write($config_db);
-	
-	$self->{prefered_server} = 'Shadowcat';
+
+	$self->{prefered_server}  = 'Shadowcat';
 	$self->{prefered_channel} = '#padre';
-	
+
 	$self->refresh;
 	return;
 }
@@ -161,12 +150,7 @@ sub on_button_reset_clicked {
 sub on_server_chosen {
 	my $self = shift;
 
-	# p $self->{nopaste_server}->GetSelection();
-
-	# p $self->{nopaste_services}->servers->[ $self->{nopaste_server}->GetSelection() ];
-
-	$self->{prefered_server} = $self->{nopaste_services}->servers->[ $self->{nopaste_server}->GetSelection() ];
-
+	$self->{prefered_server}  = $self->{nopaste_services}->servers->[ $self->{nopaste_server}->GetSelection() ];
 	$self->{prefered_channel} = 0;
 
 	$self->refresh;
@@ -187,119 +171,6 @@ sub refresh {
 }
 
 
-
-
-
-#######
-# Method _local_aspell_dictionaries
-#######
-# sub z_local_hunspell_dictionaries {
-# my $self = shift;
-
-# my @local_dictionaries_names;
-# my @local_dictionaries;
-
-# # if ( require Text::Hunspell ) {
-# try {
-# require Text::Hunspell;
-# require Padre::Util;
-
-# my $speller = Padre::Util::run_in_directory_two( cmd => 'hunspell -D </dev/null', option => '0' );
-# TRACE("hunspell speller = $speller") if DEBUG;
-
-# #TODO this is yuck must do better
-# my @speller_raw = grep { $_ =~ /\w{2}_\w{2}$/m } split /\n/, $speller->{error};
-# my %temp_speller;
-# foreach (@speller_raw) {
-# if ( $_ !~ m/hyph/ ) {
-# m/(\w{2}_\w{2})$/;
-# my $tmp = $1;
-# $temp_speller{$tmp}++;
-# }
-# }
-
-# while ( my ( $key, $value ) = each %temp_speller ) {
-# push @local_dictionaries, $key;
-# }
-
-# $self->{local_dictionaries} = \@local_dictionaries;
-# TRACE("Hunspell locally installed dictionaries found = $self->{local_dictionaries}") if DEBUG;
-# TRACE("Hunspell iso to dictionary names = $self->{dictionary_names}")                if DEBUG;
-
-# for (@local_dictionaries) {
-# push( @local_dictionaries_names, $self->padre_locale_label($_) );
-# $self->{dictionary_names}{$_} = $self->padre_locale_label($_);
-# }
-
-# @local_dictionaries_names = sort @local_dictionaries_names;
-# $self->{local_dictionaries_names} = \@local_dictionaries_names;
-# TRACE("Hunspell local dictionaries names = $self->{local_dictionaries_names}") if DEBUG;
-# return;
-
-# }
-# catch {
-# $self->{local_dictionaries_names} = \@local_dictionaries_names;
-# $self->main->info( Wx::gettext('Text::Hunspell is not installed') );
-# return;
-# };
-# return;
-# }
-
-
-
-#######
-# Method _local_aspell_dictionaries
-#######
-# sub z_local_aspell_dictionaries {
-# my $self = shift;
-
-# my @local_dictionaries_names = ();
-
-# try {
-# require Text::Aspell;
-# my $speller = Text::Aspell->new;
-
-# my @local_dictionaries = grep { $_ =~ /^\w+$/ } map { $_->{name} } $speller->dictionary_info;
-# $self->{local_dictionaries} = \@local_dictionaries;
-# TRACE("Aspell locally installed dictionaries found = @local_dictionaries") if DEBUG;
-# TRACE("Aspell iso to dictionary names = $self->{dictionary_names}")        if DEBUG;
-
-# for (@local_dictionaries) {
-# push @local_dictionaries_names, $self->padre_locale_label($_);
-# $self->{dictionary_names}{$_} = $self->padre_locale_label($_);
-# }
-
-# @local_dictionaries_names = sort @local_dictionaries_names;
-# $self->{local_dictionaries_names} = \@local_dictionaries_names;
-
-# TRACE("Aspell local dictionaries names = $self->{local_dictionaries_names}") if DEBUG;
-# }
-# catch {
-# $self->{local_dictionaries_names} = \@local_dictionaries_names;
-# $self->main->info( Wx::gettext('Text::Aspell is not installed') );
-# };
-# return;
-# }
-
-
-
-#######
-# Composed Method padre_local_label
-# aspell to padre local label
-#######
-# sub z_padre_locale_label {
-# my $self = shift;
-
-# my $local_dictionary = shift;
-
-# my $lc_local_dictionary = lc( $local_dictionary ? $local_dictionary : 'en_GB' );
-# $lc_local_dictionary =~ s/_/-/;
-# require Padre::Locale;
-# my $label = Padre::Locale::label($lc_local_dictionary);
-
-# return $label;
-# }
-
 1;
 
 __END__
@@ -308,7 +179,7 @@ __END__
 
 =head1 NAME
 
-Padre::Plugin::SpellCheck::Preferences - Check spelling in Padre, The Perl IDE.
+Padre::Plugin::Nopaste::Preferences - Padre, The Perl IDE.
 
 =head1 VERSION
 
@@ -317,7 +188,7 @@ version  0.04
 =head1 DESCRIPTION
 
 This module handles the Preferences dialogue window that is used to set your 
-chosen dictionary and preferred language.
+chosen Nopaste Server and #Channel.
 
 
 =head1 METHODS
@@ -331,13 +202,17 @@ chosen dictionary and preferred language.
 Create and return a new dialogue window. 
 
 =item * on_server_chosen
-event handler
+
+event handler, update selection
 
 =item * on_button_save_clicked
-event handler
+
+event handler, save your choice
 
 =item * on_button_reset_clicked
-event handler, reset for #padre
+
+	Nopaste Server: Shadowcat
+	IRC Channel: #padre
 
 =item * refresh
 
@@ -350,14 +225,16 @@ refresh dialog
 =over 2
 
 =item * _display_channels
+
 =item * _display_servers
+
 =item * _setup
 
 =back
 
 =head1 BUGS AND LIMITATIONS
 
-Throws an info on the status bar if you try to select a language if dictionary not installed
+None known.
 
 =head1 DEPENDENCIES
 
