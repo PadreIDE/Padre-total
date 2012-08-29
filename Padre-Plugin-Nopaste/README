@@ -82,7 +82,9 @@ SEE ALSO
         <http://rt.cpan.org/NoAuth/Bugs.html?Dist=Padre-Plugin-Nopaste>
 
 AUTHOR
-    Jerome Quelin, "<jquelin@cpan.org>"
+    Kevin Dawson <bowtie@cpan.org>
+
+    Jerome Quelin, <jquelin@cpan.org>
 
 COPYRIGHT & LICENSE
     Copyright (c) 2009 Jerome Quelin, all rights reserved.
