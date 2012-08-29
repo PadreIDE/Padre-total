@@ -193,7 +193,7 @@ chosen Nopaste Server and #Channel.
 
 =head1 METHODS
 
-=over 2
+=over 4
 
 =item * new
 
@@ -222,7 +222,7 @@ refresh dialog
 
 =head2 INTERNAL METHODS
 
-=over 2
+=over 4
 
 =item * _display_channels
 

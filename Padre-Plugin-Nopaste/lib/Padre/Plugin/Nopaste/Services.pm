@@ -139,7 +139,7 @@ Channels respectively serviced known to us.
 
 =head1 ATTRIBUTES
 
-=over 2
+=over 4
 
 =item *	Codepeek
 

@@ -1,8 +1,8 @@
 package Padre::Plugin::Nopaste::Task;
 
 use v5.10;
-use strict;
-use warnings;
+use strictures 1;
+
 use Carp qw( croak );
 our $VERSION = '0.04';
 
@@ -33,16 +33,13 @@ sub new {
 sub run {
 	my $self = shift;
 
-	# say 'start task process';
-
 	my $url = nopaste(
 
 		# text => "Full text to paste (the only mandatory argument)",
 		text => $self->{text},
 
-		# desc          => "This is a test no-paste",
+		# desc => "This is a test no-paste",
 		nick => $self->{nick},
-
 		lang => 'perl',
 
 		# chan => '#padre',
@@ -50,26 +47,20 @@ sub run {
 
 		# private       => 1,                        # default: 0
 		# # this is the default, but maybe you want to do something different
+		
 		error_handler => sub {
 			my ( $error, $service ) = @_;
 			$self->{error}   = 1;
 			$self->{message} = "$service: $error";
-
-			# warn "$service: $error";
 		},
 		warn_handler => sub {
 			my ( $warning, $service ) = @_;
 			$self->{error}   = 1;
 			$self->{message} = "$service: $warning";
-
-			# warn "$service: $warning";
 		},
 
 		# you may specify the services to use - but you don't have to
-		# services => [ 'Shadowcat', ],
 		services => [ $self->{services}, ],
-
-		# services => ["Shadowcat", "Gist"],
 	);
 
 	# show result in output section
@@ -79,14 +70,6 @@ sub run {
 		$self->{message} = $text_output;
 	}
 
-	# else {
-	# my $text_output = "Error while nopasting text\n";
-	# $self->{err}     = 1;
-	# $self->{message} = $text_output;
-	# }
-
-	# say 'end of task process';
-
 	return;
 }
 
@@ -94,27 +77,12 @@ sub run {
 
 __END__
 
-#####################
-
-nopaste -L
-Codepeek
-Debian
-Gist
-PastebinCom
-Pastie
-Shadowcat
-Snitch
-Ubuntu
-ssh
-
-
-######################
 
 =pod
 
 =head1 NAME
 
-Padre::Plugin::Nopaste::Task - Padre::Task subclass doing nopaste job
+Padre::Plugin::Nopaste::Task - Padre, The Perl IDE.
 
 =head1 VERSION
 
@@ -122,6 +90,7 @@ version  0.04
 
 =head1 SYNOPSIS
 
+Perform the Nopaste Task as a background Job, help to keep Padre sweet.
 
 =head1 DESCRIPTION
 
@@ -130,10 +99,12 @@ Async thread that does real nopaste
 =head1 Standard Padre::Task API
 
 In order not to freeze Padre during web access, nopasting is done in a thread,
-as implemented by C<Padre::Task>. Refer to this module's documentation for more
+as implemented by L<Padre::Task>. Refer to this module's documentation for more
 information.
 
 The following methods are implemented:
+
+=head1 METHODS
 
 =over 4
 
@@ -141,13 +112,24 @@ The following methods are implemented:
 
 default Padre Task constructor, see Padre::Task POD
 
-=item * prepare()
-
-=item * process()
-
 =item * run()
 
+This is where all the work is done.
+
 =back
+
+=head1 BUGS AND LIMITATIONS
+
+None known.
+
+=head1 DEPENDENCIES
+
+Padre::Task, App::Nopaste
+
+=head1 SEE ALSO
+
+For all related information (bug reporting, source code repository,
+etc.), refer to L<Padre::Plugin::Nopaste>.
 
 =head1 AUTHOR
 
