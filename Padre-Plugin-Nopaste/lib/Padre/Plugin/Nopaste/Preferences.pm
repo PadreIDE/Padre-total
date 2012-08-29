@@ -50,7 +50,7 @@ sub _set_up {
 	#Set nickname
 	$self->{config_nickname}->SetLabel( $config->identity_nickname );
 
-	#get nopaste prefered server and channel from config db
+	#get nopaste preferred server and channel from config db
 	$self->{prefered_server}  = $config_db->{Services};
 	$self->{prefered_channel} = $config_db->{Channel};
 
@@ -159,7 +159,7 @@ sub on_server_chosen {
 }
 
 #######
-# refresh dialog with choices
+# refresh dialogue with choices
 #######
 sub refresh {
 	my $self = shift;

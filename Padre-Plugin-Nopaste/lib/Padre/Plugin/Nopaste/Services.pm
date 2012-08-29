@@ -1,37 +1,13 @@
 package Padre::Plugin::Nopaste::Services;
 
 use v5.10;
-use strict;
-use warnings;
-
 use English qw( -no_match_vars ); # Avoids regex performance penalty
 local $OUTPUT_AUTOFLUSH = 1;
-
-# use feature 'unicode_strings';
 our $VERSION = '0.04';
 
-# use Carp::Always;
 use Padre::Unload ();
 use Moo;
 
-# has 'servers' => (
-	# is      => 'ro',
-	# default => sub {
-		# my $self = shift;
-
-		# return {
-			# Codepeek    => 1,
-			# Debian      => 1,
-			# Gist        => 1,
-			# PastebinCom => 1,
-			# Pastie      => 1,
-			# Shadowcat   => 1,
-			# Snitch      => 1,
-			# Ubuntu      => 1,
-			# ssh         => 1,
-		# };
-	# },
-# );
 has 'servers' => (
 	is      => 'ro',
 	default => sub {
@@ -48,40 +24,6 @@ has 'servers' => (
 			'Ubuntu',
 			'ssh',
 		];
-	},
-);
-
-has 'channels' => (
-	is      => 'ro',
-	default => sub {
-		my $self = shift;
-
-		return {
-			'#angerwhale'      => 1,
-			'#axkit-dahut'     => 1,
-			'#catalyst'        => 1,
-			'#catalyst-dev'    => 1,
-			'#cometd'          => 1,
-			'#dbix-class'      => 1,
-			'#distzilla'       => 1,
-			'#handel'          => 1,
-			'#iusethis'        => 1,
-			'#killtrac'        => 1,
-			'#london.pm'       => 1,
-			'#miltonkeynes.pm' => 1,
-			'#moose'           => 1,
-			'#p5p'             => 1,
-			'#padre'           => 1,
-			'#perl'            => 1,
-			'#perl-help'       => 1,
-			'#perlde'          => 1,
-			'#pita'            => 1,
-			'#poe'             => 1,
-			'#reaction'        => 1,
-			'#rt'              => 1,
-			'#soap-lite'       => 1,
-			'#tt'              => 1,
-		};
 	},
 );
 has 'Codepeek' => (
@@ -183,7 +125,7 @@ __END__
 
 =head1 NAME
 
-Padre::Plugin::Nopaste::Services - Check spelling in Padre, The Perl IDE.
+Padre::Plugin::Nopaste::Services - Padre, The Perl IDE.
 
 =head1 VERSION
 
@@ -191,8 +133,8 @@ version  0.04
 
 =head1 DESCRIPTION
 
-This module handles the Preferences dialogue window that is used to set your 
-chosen dictionary and preferred language.
+This just a utility module with information about App::Nopaste Services and 
+Channels respectively serviced known to us.
 
 
 =head1 ATTRIBUTES
@@ -200,26 +142,36 @@ chosen dictionary and preferred language.
 =over 2
 
 =item *	Codepeek
+
 =item *	Debian
+
 =item *	Gist
+
 =item *	PastebinCom
+
 =item *	Pastie
+
 =item *	Shadowcat
+
 =item *	Snitch
+
 =item *	Ubuntu
+
 =item *	channels
+
 =item *	servers
+
 =item *	ssh
 
 =back
 
 =head1 BUGS AND LIMITATIONS
 
-Throws an info on the status bar if you try to select a language if dictionary not installed
+None known.
 
 =head1 DEPENDENCIES
 
-
+Moo
 
 =head1 SEE ALSO
 
