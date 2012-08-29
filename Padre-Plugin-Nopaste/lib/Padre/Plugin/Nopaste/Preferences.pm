@@ -336,6 +336,9 @@ event handler
 =item * on_button_save_clicked
 event handler
 
+=item * on_button_reset_clicked
+event handler, reset for #padre
+
 =item * refresh
 
 refresh dialog
