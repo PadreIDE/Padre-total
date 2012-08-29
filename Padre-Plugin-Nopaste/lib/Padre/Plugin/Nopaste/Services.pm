@@ -10,7 +10,7 @@ local $OUTPUT_AUTOFLUSH = 1;
 # use feature 'unicode_strings';
 our $VERSION = '0.04';
 
-use Carp::Always;
+# use Carp::Always;
 use Padre::Unload ();
 use Moo;
 
@@ -174,23 +174,11 @@ has 'ssh' => (
 	},
 );
 
-# sub check_server {
-	# my $self   = shift;
-	# my $server = shift;
-	# return $self->servers->{$server};
-# }
-
-# sub shadowcat {
-	# my $self    = shift;
-	# my $channel = shift;
-
-	# return $self->channels->{$channel};
-# }
-
 
 1;
 
 __END__
+
 =pod
 
 =head1 NAME
@@ -199,7 +187,7 @@ Padre::Plugin::Nopaste::Services - Check spelling in Padre, The Perl IDE.
 
 =head1 VERSION
 
-version 1.31_01
+version  0.04
 
 =head1 DESCRIPTION
 

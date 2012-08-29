@@ -349,14 +349,14 @@ __END__
 
 Padre::Plugin::Nopaste - send code on a nopaste website from padre
 
+=head1 VERSION
 
+version  0.04
 
 =head1 SYNOPSIS
 
     $ padre
     Ctrl+Shift+V
-
-
 
 =head1 DESCRIPTION
 

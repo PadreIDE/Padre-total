@@ -116,6 +116,10 @@ ssh
 
 Padre::Plugin::Nopaste::Task - Padre::Task subclass doing nopaste job
 
+=head1 VERSION
+
+version  0.04
+
 =head1 SYNOPSIS
 
 

@@ -312,7 +312,7 @@ Padre::Plugin::SpellCheck::Preferences - Check spelling in Padre, The Perl IDE.
 
 =head1 VERSION
 
-version 1.31_01
+version  0.04
 
 =head1 DESCRIPTION
 
