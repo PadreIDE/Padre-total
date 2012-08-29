@@ -174,20 +174,86 @@ has 'ssh' => (
 	},
 );
 
-sub check_server {
-	my $self   = shift;
-	my $server = shift;
-	return $self->servers->{$server};
-}
+# sub check_server {
+	# my $self   = shift;
+	# my $server = shift;
+	# return $self->servers->{$server};
+# }
 
-sub shadowcat {
-	my $self    = shift;
-	my $channel = shift;
+# sub shadowcat {
+	# my $self    = shift;
+	# my $channel = shift;
 
-	return $self->channels->{$channel};
-}
+	# return $self->channels->{$channel};
+# }
 
 
 1;
 
 __END__
+=pod
+
+=head1 NAME
+
+Padre::Plugin::Nopaste::Services - Check spelling in Padre, The Perl IDE.
+
+=head1 VERSION
+
+version 1.31_01
+
+=head1 DESCRIPTION
+
+This module handles the Preferences dialogue window that is used to set your 
+chosen dictionary and preferred language.
+
+
+=head1 ATTRIBUTES
+
+=over 2
+
+=item *	Codepeek
+=item *	Debian
+=item *	Gist
+=item *	PastebinCom
+=item *	Pastie
+=item *	Shadowcat
+=item *	Snitch
+=item *	Ubuntu
+=item *	channels
+=item *	servers
+=item *	ssh
+
+=back
+
+=head1 BUGS AND LIMITATIONS
+
+Throws an info on the status bar if you try to select a language if dictionary not installed
+
+=head1 DEPENDENCIES
+
+
+
+=head1 SEE ALSO
+
+For all related information (bug reporting, source code repository,
+etc.), refer to L<Padre::Plugin::Nopaste>.
+
+=head1 AUTHOR
+
+Kevin Dawson E<lt>bowtie@cpan.orgE<gt>
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright (c) 2012 kevin dawson, all rights reserved.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut
+
+
+# Copyright 2008-2012 The Padre development team as listed in Padre.pm.
+# LICENSE
+# This program is free software; you can redistribute it and/or
+# modify it under the same terms as Perl 5 itself.
+

@@ -15,7 +15,8 @@ my $trustme = { trustme => [qr/^(TRACE)$/] };
 
 pod_coverage_ok( "Padre::Plugin::Nopaste", $trustme );
 pod_coverage_ok( "Padre::Plugin::Nopaste::Task", $trustme );
-
+pod_coverage_ok( "Padre::Plugin::Nopaste::Services", $trustme );
+pod_coverage_ok( "Padre::Plugin::Nopaste::Preferences", $trustme );
 done_testing();
 
 1;
