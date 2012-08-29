@@ -32,10 +32,22 @@ sub new {
 		Wx::DEFAULT_DIALOG_STYLE | Wx::RESIZE_BORDER,
 	);
 
+	$self->{m_static_nickname} = Wx::StaticText->new(
+		$self,
+		-1,
+		Wx::gettext("Nick Name:"),
+	);
+
 	$self->{config_nickname} = Wx::StaticText->new(
 		$self,
 		-1,
 		Wx::gettext("config_nickname"),
+	);
+
+	$self->{m_static_server} = Wx::StaticText->new(
+		$self,
+		-1,
+		Wx::gettext("Nopaste Server:"),
 	);
 
 	$self->{nopaste_server} = Wx::Choice->new(
@@ -55,6 +67,12 @@ sub new {
 		},
 	);
 
+	$self->{m_static_channel} = Wx::StaticText->new(
+		$self,
+		-1,
+		Wx::gettext("Nopaste Channel:"),
+	);
+
 	$self->{nopaste_channel} = Wx::Choice->new(
 		$self,
 		-1,
@@ -64,64 +82,73 @@ sub new {
 	);
 	$self->{nopaste_channel}->SetSelection(0);
 
-	$self->{m_sdbSizer1_save} = Wx::Button->new(
+	$self->{m_staticline1} = Wx::StaticLine->new(
 		$self,
-		Wx::ID_SAVE,
+		-1,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+		Wx::LI_HORIZONTAL,
+	);
+
+	$self->{m_button_reset} = Wx::Button->new(
+		$self,
+		-1,
+		Wx::gettext("Reset"),
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
 	);
 
 	Wx::Event::EVT_BUTTON(
 		$self,
-		$self->{m_sdbSizer1_save},
+		$self->{m_button_reset},
 		sub {
-			shift->_on_button_save_clicked(@_);
+			shift->on_button_reset_clicked(@_);
 		},
 	);
 
-	$self->{m_sdbSizer1_cancel} = Wx::Button->new(
+	$self->{m_button_cancel} = Wx::Button->new(
 		$self,
 		Wx::ID_CANCEL,
+		Wx::gettext("Cancel"),
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+	);
+	$self->{m_button_cancel}->SetDefault;
+
+	$self->{m_button_save} = Wx::Button->new(
+		$self,
+		-1,
+		Wx::gettext("Save"),
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+	);
+	Wx::Event::EVT_BUTTON(
+
+		$self,
+		$self->{m_button_save},
+		sub {
+			shift->on_button_save_clicked(@_);
+		},
 	);
 
-	my $sbSizer2 = Wx::StaticBoxSizer->new(
-		Wx::StaticBox->new(
-			$self,
-			-1,
-			Wx::gettext("Nick Name"),
-		),
-		Wx::VERTICAL,
-	);
-	$sbSizer2->Add( $self->{config_nickname}, 0, Wx::ALL, 5 );
+	my $gSizer1 = Wx::GridSizer->new( 3, 2, 0, 0 );
+	$gSizer1->Add( $self->{m_static_nickname}, 0, Wx::ALL, 5 );
+	$gSizer1->Add( $self->{config_nickname}, 0, Wx::ALL, 5 );
+	$gSizer1->Add( $self->{m_static_server}, 0, Wx::ALL, 5 );
+	$gSizer1->Add( $self->{nopaste_server}, 0, Wx::ALL, 5 );
+	$gSizer1->Add( $self->{m_static_channel}, 0, Wx::ALL, 5 );
+	$gSizer1->Add( $self->{nopaste_channel}, 0, Wx::ALL, 5 );
 
-	$self->{sbSizer4} = Wx::StaticBoxSizer->new(
-		Wx::StaticBox->new(
-			$self,
-			-1,
-			Wx::gettext("Nopaste Server"),
-		),
-		Wx::VERTICAL,
-	);
-	$self->{sbSizer4}->Add( $self->{nopaste_server}, 0, Wx::ALL, 5 );
-
-	$self->{sbSizer41} = Wx::StaticBoxSizer->new(
-		Wx::StaticBox->new(
-			$self,
-			-1,
-			Wx::gettext("Nopaste Channel"),
-		),
-		Wx::VERTICAL,
-	);
-	$self->{sbSizer41}->Add( $self->{nopaste_channel}, 0, Wx::ALL, 5 );
-
-	$self->{m_sdbSizer1} = Wx::StdDialogButtonSizer->new;
-	$self->{m_sdbSizer1}->AddButton( $self->{m_sdbSizer1_save} );
-	$self->{m_sdbSizer1}->AddButton( $self->{m_sdbSizer1_cancel} );
-	$self->{m_sdbSizer1}->Realize;
+	my $bSizer2 = Wx::BoxSizer->new(Wx::HORIZONTAL);
+	$bSizer2->Add( $self->{m_button_reset}, 0, Wx::ALL, 5 );
+	$bSizer2->Add( 0, 0, 1, Wx::EXPAND, 5 );
+	$bSizer2->Add( $self->{m_button_cancel}, 0, Wx::ALL, 5 );
+	$bSizer2->Add( $self->{m_button_save}, 0, Wx::ALL, 5 );
 
 	my $bSizer1 = Wx::BoxSizer->new(Wx::VERTICAL);
-	$bSizer1->Add( $sbSizer2, 1, Wx::EXPAND, 5 );
-	$bSizer1->Add( $self->{sbSizer4}, 1, Wx::ALL | Wx::EXPAND, 5 );
-	$bSizer1->Add( $self->{sbSizer41}, 1, Wx::ALL | Wx::EXPAND, 5 );
-	$bSizer1->Add( $self->{m_sdbSizer1}, 0, Wx::ALL | Wx::EXPAND, 5 );
+	$bSizer1->Add( $gSizer1, 0, Wx::ALL | Wx::EXPAND, 5 );
+	$bSizer1->Add( $self->{m_staticline1}, 0, Wx::EXPAND | Wx::ALL, 5 );
+	$bSizer1->Add( $bSizer2, 0, Wx::EXPAND, 5 );
 
 	$self->SetSizerAndFit($bSizer1);
 	$self->Layout;
@@ -145,12 +172,12 @@ sub on_server_chosen {
 	$_[0]->main->error('Handler method on_server_chosen for event nopaste_server.OnChoice not implemented');
 }
 
-sub _on_button_ok_clicked {
-	$_[0]->main->error('Handler method _on_button_ok_clicked for event m_sdbSizer1.OnOKButtonClick not implemented');
+sub on_button_reset_clicked {
+	$_[0]->main->error('Handler method on_button_reset_clicked for event m_button_reset.OnButtonClick not implemented');
 }
 
-sub _on_button_save_clicked {
-	$_[0]->main->error('Handler method _on_button_save_clicked for event m_sdbSizer1.OnSaveButtonClick not implemented');
+sub on_button_save_clicked {
+	$_[0]->main->error('Handler method on_button_save_clicked for event m_button_save.OnButtonClick not implemented');
 }
 
 1;
