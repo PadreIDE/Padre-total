@@ -3,7 +3,7 @@ package Padre::Plugin::Nopaste;
 use v5.10;
 use strict;
 use warnings;
-our $VERSION = '0.4';
+our $VERSION = '0.04';
 
 use Try::Tiny;
 use Padre::Unload ();

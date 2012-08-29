@@ -8,7 +8,7 @@ use English qw( -no_match_vars ); # Avoids regex performance penalty
 local $OUTPUT_AUTOFLUSH = 1;
 
 # use feature 'unicode_strings';
-our $VERSION = '0.4';
+our $VERSION = '0.04';
 
 use Carp::Always;
 use Padre::Unload ();
