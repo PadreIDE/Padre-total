@@ -3,10 +3,6 @@ package Padre::Plugin::Nopaste::Preferences;
 use v5.10;
 use strictures 1;
 
-use Try::Tiny;
-use Padre::Logger;
-use Padre::Util                              ();
-use Padre::Locale                            ();
 use Padre::Unload                            ();
 use Padre::Plugin::Nopaste::Services         ();
 use Padre::Plugin::Nopaste::FBP::Preferences ();
