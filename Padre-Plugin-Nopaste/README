@@ -1,7 +1,12 @@
 NAME
-    Padre::Plugin::Nopaste - send code on a nopaste website from padre
+    Padre::Plugin::Nopaste - Padre, The Perl IDE.
+
+VERSION
+    version 0.04
 
 SYNOPSIS
+    Send code to a nopaste website from Padre.
+
         $ padre
         Ctrl+Shift+V
 
@@ -13,30 +18,33 @@ DESCRIPTION
     It is using "App::Nopaste" underneath, so check this module's pod for
     more information.
 
-PUBLIC METHODS
+METHODS
   Standard Padre::Plugin API
     "Padre::Plugin::Nopaste" defines a plugin which follows "Padre::Plugin"
     API. Refer to this module's documentation for more information.
 
     The following methods are implemented:
 
-    paste_it
-        runs nopaste as a padre task
+    *   padre_interfaces()
 
-    on_finish
-        post task, display result
+    *   plugin_icon()
 
-    padre_interfaces()
-    plugin_icon()
-    plugin_name()
-    clean_dialog()
-    menu_plugins()
-    plugin_disable()
-    plugin_enable()
-    plugin_preferences()
+    *   plugin_name()
+
+    *   clean_dialog()
+
+    *   menu_plugins()
+
+    *   plugin_disable()
+
+    *   plugin_enable()
+
+    *   plugin_preferences()
+
         Spelling preferences window normaly access via Plug-in Manager
 
-    event_on_context_menu
+    *   event_on_context_menu()
+
         Add access to spelling preferences window.
 
   Standard Padre::Role::Task API
@@ -46,28 +54,33 @@ PUBLIC METHODS
 
     The following methods are implemented:
 
-    *   nopaste()
+    *   paste_it()
 
-    *   task_response()
+    *   on_finish()
 
         Callback for task runned by nopaste().
 
-BUGS
-    Please report any bugs or feature requests to "padre-plugin-nopaste at
-    rt.cpan.org", or through the web interface at
-    <http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Padre-Plugin-Nopaste>. I
-    will be notified, and then you'll automatically be notified of progress
-    on your bug as I make changes.
+  Internal Methods
+    *   _config()
+
+BUGS AND LIMITATIONS
+    event_on_context_menu() is not supported in Padre 0.96 and below.
 
 SEE ALSO
     Plugin icon courtesy of Mark James, at
     <http://www.famfamfam.com/lab/icons/silk/>.
 
-    Our git repository is located at
-    <git://repo.or.cz/padre-plugin-nopaste.git>, and can be browsed at
-    <http://repo.or.cz/w/padre-plugin-nopaste.git>.
-
     You can also look for information on this module at:
+
+    *   Padre-Plugin-Nopaste web page
+
+        <http://padre.perlide.org/trac/wiki/PadrePluginNopaste>
+
+    *   Our svn repository
+
+        <http://svn.perlide.org/padre/trunk/Padre-Plugin-Nopaste>, and can
+        be browsed at
+        <http://padre.perlide.org/browser/trunk/Padre-Plugin-Nopaste>.
 
     *   AnnoCPAN: Annotated CPAN documentation
 
@@ -76,10 +89,6 @@ SEE ALSO
     *   CPAN Ratings
 
         <http://cpanratings.perl.org/d/Padre-Plugin-Nopaste>
-
-    *   Open bugs
-
-        <http://rt.cpan.org/NoAuth/Bugs.html?Dist=Padre-Plugin-Nopaste>
 
 AUTHOR
     Kevin Dawson <bowtie@cpan.org>
