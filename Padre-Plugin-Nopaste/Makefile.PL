@@ -6,7 +6,8 @@ requires_from lib/Padre/Plugin/Nopaste/Task.pm
 
 requires Padre                    0.96
 requires App::Nopaste             0.35
-requires Moo                      1.00
+requires strictures               1.004001
+requires Moo                      1.000003
 requires Try::Tiny                0.11
 requires Carp                     1.26
 
