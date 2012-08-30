@@ -1,8 +1,10 @@
 package Padre::Plugin::Nopaste;
 
 use v5.10;
-use strict;
-use warnings;
+use strictures 1;
+
+# use strict;
+# use warnings;
 our $VERSION = '0.04';
 
 use Try::Tiny;
@@ -49,17 +51,12 @@ sub plugin_name {
 #######
 sub padre_interfaces {
 	return (
-		'Padre::Plugin' => '0.94',
-		'Padre::Task'   => '0.94',
-		'Padre::Unload' => '0.94',
-
-		# used by my sub packages
-		# 'Padre::Locale'         => '0.96',
-		'Padre::Logger' => '0.94',
-
-		# 'Padre::Wx'             => '0.96',
-		# 'Padre::Wx::Role::Main' => '0.96',
-		# 'Padre::Util'           => '0.97',
+		'Padre::Plugin'         => '0.96',
+		'Padre::Task'           => '0.96',
+		'Padre::Unload'         => '0.96',
+		'Padre::Logger'         => '0.96',
+		'Padre::Wx'             => '0.96',
+		'Padre::Wx::Role::Main' => '0.96',
 	);
 }
 
@@ -93,6 +90,7 @@ sub plugin_enable {
 sub _config {
 	my $self      = shift;
 	my $config_db = $self->config_read;
+
 	# p $config_db;
 	# p $config_db->{Services};
 	# p $config_db->{Channel};
@@ -101,14 +99,14 @@ sub _config {
 	# my $services = Padre::Plugin::Nopaste::Services->new;
 	# p $services->check_server( $config_db->{Services} );
 	# given ( $config_db->{Services} ) {
-		# when ('Shadowcat') { p $services->$_; }
+	# when ('Shadowcat') { p $services->$_; }
 	# }
 
 	# p $services->servers;
 	# p $services->channels;
 	# p $services->Shadowcat;
 	# p $services;
-	
+
 	try {
 		if ( defined $config_db->{Services} ) {
 			my $tmp_services = $config_db->{Services};
@@ -205,12 +203,12 @@ sub plugin_preferences {
 	$self->clean_dialog;
 
 	try {
-	require Padre::Plugin::Nopaste::Preferences;
-	$self->{dialog} = Padre::Plugin::Nopaste::Preferences->new($main);
-	$self->{dialog}->ShowModal;
+		require Padre::Plugin::Nopaste::Preferences;
+		$self->{dialog} = Padre::Plugin::Nopaste::Preferences->new($main);
+		$self->{dialog}->ShowModal;
 	}
 	catch {
-	$self->main->error( sprintf Wx::gettext('Error: %s'), $_ );
+		$self->main->error( sprintf Wx::gettext('Error: %s'), $_ );
 	};
 
 	return;
@@ -347,13 +345,15 @@ __END__
 
 =head1 NAME
 
-Padre::Plugin::Nopaste - send code on a nopaste website from padre
+Padre::Plugin::Nopaste - Padre, The Perl IDE.
 
 =head1 VERSION
 
 version  0.04
 
 =head1 SYNOPSIS
+
+Send code to a nopaste website from Padre.
 
     $ padre
     Ctrl+Shift+V
@@ -368,7 +368,7 @@ It is using C<App::Nopaste> underneath, so check this module's pod for
 more information.
 
 
-=head1 PUBLIC METHODS
+=head1 METHODS
 
 =head2 Standard Padre::Plugin API
 
@@ -379,38 +379,29 @@ The following methods are implemented:
 
 =over 4
 
-=item 	paste_it
+=item * padre_interfaces()
 
-runs nopaste as a padre task
+=item * plugin_icon()
 
-=item 	on_finish
+=item * plugin_name()
 
-post task, display result
+=item * clean_dialog()
 
-=item padre_interfaces()
+=item * menu_plugins()
 
-=item plugin_icon()
+=item * plugin_disable()
 
-=item plugin_name()
+=item * plugin_enable()
 
-=item clean_dialog()
-
-=item menu_plugins()
-
-=item plugin_disable()
-
-=item plugin_enable()
-
-=item plugin_preferences()
+=item * plugin_preferences()
 
 Spelling preferences window normaly access via Plug-in Manager
 
-=item event_on_context_menu
+=item * event_on_context_menu()
 
 Add access to spelling preferences window.
 
 =back
-
 
 
 =head2 Standard Padre::Role::Task API
@@ -423,38 +414,46 @@ The following methods are implemented:
 
 =over 4
 
-=item * nopaste()
+=item * paste_it()
 
-=item * task_response()
+=item * on_finish()
 
 Callback for task runned by nopaste().
 
 =back
 
+=head2 Internal Methods
+
+=over 4
+
+=item * _config()
 
 
-=head1 BUGS
+=back
 
-Please report any bugs or feature requests to C<padre-plugin-nopaste at
-rt.cpan.org>, or through the web interface at
-L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Padre-Plugin-Nopaste>. I will
-be notified, and then you'll automatically be notified of progress on
-your bug as I make changes.
+=head1 BUGS AND LIMITATIONS
 
-
+event_on_context_menu() is not supported in Padre 0.96 and below.
 
 =head1 SEE ALSO
 
 Plugin icon courtesy of Mark James, at
 L<http://www.famfamfam.com/lab/icons/silk/>.
 
-Our git repository is located at L<git://repo.or.cz/padre-plugin-nopaste.git>,
-and can be browsed at L<http://repo.or.cz/w/padre-plugin-nopaste.git>.
-
 
 You can also look for information on this module at:
 
 =over 4
+
+=item * Padre-Plugin-Nopaste web page
+
+L<http://padre.perlide.org/trac/wiki/PadrePluginNopaste>
+
+=item * Our svn repository 
+
+L<http://svn.perlide.org/padre/trunk/Padre-Plugin-Nopaste>, 
+and can be browsed at 
+L<http://padre.perlide.org/browser/trunk/Padre-Plugin-Nopaste>.
 
 =item * AnnoCPAN: Annotated CPAN documentation
 
@@ -463,10 +462,6 @@ L<http://annocpan.org/dist/Padre-Plugin-Nopaste>
 =item * CPAN Ratings
 
 L<http://cpanratings.perl.org/d/Padre-Plugin-Nopaste>
-
-=item * Open bugs
-
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Padre-Plugin-Nopaste>
 
 =back
 
