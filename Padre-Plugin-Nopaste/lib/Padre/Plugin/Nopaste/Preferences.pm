@@ -7,7 +7,7 @@ use Padre::Unload                            ();
 use Padre::Plugin::Nopaste::Services         ();
 use Padre::Plugin::Nopaste::FBP::Preferences ();
 
-our $VERSION = '0.04';
+our $VERSION = '0.40';
 use parent qw(
 	Padre::Plugin::Nopaste::FBP::Preferences
 	Padre::Plugin
@@ -179,7 +179,7 @@ Padre::Plugin::Nopaste::Preferences - Padre, The Perl IDE.
 
 =head1 VERSION
 
-version  0.04
+version  0.40
 
 =head1 DESCRIPTION
 

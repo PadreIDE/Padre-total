@@ -1,6 +1,6 @@
 Revision history for Padre-Plugin-Nopaste
 
-0.04  2012.08.31
+0.40  2012.08.31
      - Update to Padre::Plugin for API 2.2
      - Update to Padre::Task 3.0
      - Update Makefile.PL

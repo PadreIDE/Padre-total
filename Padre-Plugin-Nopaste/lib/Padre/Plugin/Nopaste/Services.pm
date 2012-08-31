@@ -3,7 +3,7 @@ package Padre::Plugin::Nopaste::Services;
 use v5.10;
 use English qw( -no_match_vars ); # Avoids regex performance penalty
 local $OUTPUT_AUTOFLUSH = 1;
-our $VERSION = '0.04';
+our $VERSION = '0.40';
 
 use Padre::Unload ();
 use Moo;
@@ -129,7 +129,7 @@ Padre::Plugin::Nopaste::Services - Padre, The Perl IDE.
 
 =head1 VERSION
 
-version  0.04
+version  0.40
 
 =head1 DESCRIPTION
 
