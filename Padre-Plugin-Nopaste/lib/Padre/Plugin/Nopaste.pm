@@ -5,7 +5,7 @@ use strictures 1;
 
 # use strict;
 # use warnings;
-our $VERSION = '0.40';
+our $VERSION = '0.04';
 
 use Try::Tiny;
 use Padre::Unload ();
@@ -349,7 +349,7 @@ Padre::Plugin::Nopaste - Padre, The Perl IDE.
 
 =head1 VERSION
 
-version  0.40
+version  0.04
 
 =head1 SYNOPSIS
 
