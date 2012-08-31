@@ -1,5 +1,7 @@
 Revision history for Padre-Plugin-Nopaste
-
+0.06 2012.08.31
+     - remove cruff from MANIFEST, azawawi++ (BOWTIE)
+     
 0.05 2012.08.31
      - remove cruff, my bad, POD tweak, azawawi++ (BOWTIE)
 
