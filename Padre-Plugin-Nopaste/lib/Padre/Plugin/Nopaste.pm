@@ -3,9 +3,7 @@ package Padre::Plugin::Nopaste;
 use v5.10;
 use strictures 1;
 
-# use strict;
-# use warnings;
-our $VERSION = '0.04';
+our $VERSION = '0.50';
 
 use Try::Tiny;
 use Padre::Unload ();
@@ -15,15 +13,10 @@ use parent qw{
 	Padre::Role::Task
 };
 use Padre::Plugin::Nopaste::Services;
-use Carp::Always;
+
 
 # Turn on $OUTPUT_AUTOFLUSH
 local $| = 1;
-
-use Data::Printer {
-	caller_info => 1,
-	colored     => 1,
-};
 
 
 # Child modules we need to unload when disabled
@@ -349,7 +342,7 @@ Padre::Plugin::Nopaste - Padre, The Perl IDE.
 
 =head1 VERSION
 
-version  0.04
+version  0.50
 
 =head1 SYNOPSIS
 

@@ -2,7 +2,7 @@ NAME
     Padre::Plugin::Nopaste - Padre, The Perl IDE.
 
 VERSION
-    version 0.04
+    version 0.50
 
 SYNOPSIS
     Send code to a nopaste website from Padre.

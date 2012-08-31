@@ -1,4 +1,6 @@
 Revision history for Padre-Plugin-Nopaste
+0.50 2012.08.31
+     - remove cruff, my bad (BOWTIE)
 
 0.04  2012.08.31
      - Update to Padre::Plugin for API 2.2
