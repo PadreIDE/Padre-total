@@ -3,7 +3,7 @@ package Padre::Plugin::Nopaste;
 use v5.10;
 use strictures 1;
 
-our $VERSION = '0.50';
+our $VERSION = '0.05';
 
 use Try::Tiny;
 use Padre::Unload ();
@@ -338,11 +338,11 @@ __END__
 
 =head1 NAME
 
-Padre::Plugin::Nopaste - Padre, The Perl IDE.
+Padre::Plugin::Nopaste - NoPaste plugin for Padre, The Perl IDE.
 
 =head1 VERSION
 
-version  0.50
+version  0.05
 
 =head1 SYNOPSIS
 

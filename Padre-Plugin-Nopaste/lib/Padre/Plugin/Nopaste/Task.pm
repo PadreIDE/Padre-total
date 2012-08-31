@@ -4,7 +4,7 @@ use v5.10;
 use strictures 1;
 
 use Carp qw( croak );
-our $VERSION = '0.50';
+our $VERSION = '0.05';
 
 use Padre::Task   ();
 use Padre::Unload ();
@@ -82,11 +82,11 @@ __END__
 
 =head1 NAME
 
-Padre::Plugin::Nopaste::Task - Padre, The Perl IDE.
+Padre::Plugin::Nopaste::Task - NoPaste plugin for Padre, The Perl IDE.
 
 =head1 VERSION
 
-version  0.50
+version  0.05
 
 =head1 SYNOPSIS
 
