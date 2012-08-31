@@ -1,15 +1,14 @@
 Revision history for Padre-Plugin-Nopaste
 
-0.4     2012.TBA
+0.04  2012.08.31
      - Update to Padre::Plugin for API 2.2
      - Update to Padre::Task 3.0
      - Update Makefile.PL
      - Added README
      - Tweak tests and POD
-     - Works for #padre only
+     - Defaults to #padre
      - Now with Prefs Dialog
      - improved Dialog with reset (BOWTIE)
-
 
 0.3.1 Aug 14 2010
  - Better pod for Padre::Plugin::Nopaste::Task
