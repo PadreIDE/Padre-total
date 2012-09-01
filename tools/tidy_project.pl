@@ -8,7 +8,7 @@ if ($@) {
 	die "Please install Perl::Tidy (e.g. cpan Perl::Tidy)";
 }
 
-my $ver = '20101217';
+my $ver = '20120714';
 if ( $Perl::Tidy::VERSION ne $ver ) {
 	die "Please install version $ver of Perl::Tidy";
 
