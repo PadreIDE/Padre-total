@@ -112,7 +112,7 @@ sub stc_build_xs {
 		' -c',
 		'-I.',
 		'-I' . $self->stc_get_wx_include_path,
-		'-I' . $Config{archlib} . '/CORE',
+		'-I' . $Config{archlibexp} . '/CORE',
 		Alien::wxWidgets->include_path,
 		Alien::wxWidgets->c_flags,
 		Alien::wxWidgets->defines,
