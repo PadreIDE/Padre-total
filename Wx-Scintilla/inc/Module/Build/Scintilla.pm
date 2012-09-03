@@ -240,9 +240,9 @@ sub build_xs {
 
 	my $perl_lib = $self->config('privlibexp');
 	$perl_lib =~ s/\\/\//g;
-	my $perl_arch_lib = $self->config('archlib');
+	my $perl_arch_lib = $self->config('archlibexp');
 	$perl_arch_lib =~ s/\\/\//g;
-	my $perl_site_arch = $self->config('sitearch');
+	my $perl_site_arch = $self->config('sitearchexp');
 	$perl_site_arch =~ s/\\/\//g;
 
 
