@@ -66,12 +66,12 @@ under the same terms as Perl itself.
 sub padre_interfaces {
 	return (
 		# Default, required
-		'Padre::Plugin' => '0.94',
+		'Padre::Plugin' => '0.96',
 
-		'Padre::Config'     => '0.94',
-		'Padre::Wx'         => '0.94',
-		'Padre::Wx::Action' => '0.94',
-		'Padre::Util'       => '0.94',
+		'Padre::Config'     => '0.96',
+		'Padre::Wx'         => '0.96',
+		'Padre::Wx::Action' => '0.96',
+		'Padre::Util'       => '0.97',
 	);
 }
 
