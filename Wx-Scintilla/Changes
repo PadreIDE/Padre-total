@@ -1,7 +1,69 @@
 Revision history for Wx-Scintilla
 
 0.40_01 2012.9.4
-    - Upgrade scintilla to 3.2.2 (AZAWAWI)
+    - Upgrade scintilla to 3.2.2 (AZAWAWI). Enjoy :)
+
+	** Release 3.2.2 **
+        - Implement INDIC_SQUIGGLEPIXMAP as a faster version of INDIC_SQUIGGLE. Avoid poor 
+          drawing at right of INDIC_SQUIGGLE. Align INDIC_DOTBOX to pixel grid for full intensity.
+        - Implement SCI_GETSELECTIONEMPTY API. Bug #3543121.
+        - Added SCI_VCHOMEDISPLAY and SCI_VCHOMEDISPLAYEXTEND key commands. Feature #3561433.
+        - Fix long XML script tag handling in XML lexer. Bug #3534190.
+        - Fix rectangular selection range after backspace. Bug #3543097.
+        - Send SCN_UPDATEUI with SC_UPDATE_SELECTION for backspace in virtual space. Bug #3543121.
+        - Avoid problems when calltip highlight range is negative. Bug #3545938.
+
+	** Release 3.2.1 ** 
+        - Added character class APIs: SCI_SETPUNCTUATIONCHARS, SCI_GETWORDCHARS, 
+          SCI_GETWHITESPACECHARS, and SCI_GETPUNCTUATIONCHARS. Feature #3529805.
+        - Less/Hss support added to CSS lexer. Feature #3532413.
+        - C++ lexer style SCE_C_PREPROCESSORCOMMENT added for stream comments in preprocessor. Bug #3487406.
+        - Fix incorrect styling of inactive code in C++ lexer. Bug #3533036.
+        - Fix incorrect styling by C++ lexer after empty lines in preprocessor style.
+        - C++ lexer option "lexer.cpp.allow.dollars" fixed so can be turned off after being on. Bug #3541461.
+        - Fortran fixed format lexer fixed to style comments from column 73. Bug #3540486.
+        - Fortran folder folds CRITICAL .. END CRITICAL. Bug #3540486.
+        - Fortran lexer fixes styling after comment line ending with '&'. Bug #3087226.
+        - Fortran lexer styles preprocessor lines so they do not trigger incorrect folding. Bug #2906275.
+        - Fortran folder fixes folding of nested ifs. Bug #2809176.
+        - HTML folder fixes folding of CDATA when fold.html.preprocessor=0. Bug #3540491.
+        - Fixed SCI_MARKERDELETE to only delete one marker per call. Bug #3535806.
+        - Properly position caret after undoing coalesced delete operations. Bug #3523326.
+        - Ensure margin is redrawn when SCI_MARGINSETSTYLE called.
+        - Fix clicks in first pixel of margins to send SCN_MARGINCLICK.
+        - Fix infinite loop when drawing block caret for a zero width space character at document start.
+        - Crash fixed for deleting negative range.
+        - For characters that overlap the beginning of their space such as italics descenders
+          and bold serifs, allow start of text to draw 1 pixel into margin. Bug #699587. Bug #3537799.
+
+	** Release 3.2.0 ** 
+        - Direct access provided to the document bytes for ranges within Scintilla. This is similar to the existing SCI_GETCHARACTERPOINTER API but allows for better performance.
+        - Ctrl+Double Click and Ctrl+Triple Click add the word or line to the set of selections. Feature #3520037.
+        - A SCI_DELETERANGE API was added for deleting a range of text.
+        - Line wrap markers may now be drawn in the line number margin. Feature #3518198.
+        - Lexer added for OScript language. Feature #3523197.
+        - Lexer added for Visual Prolog language. Feature #3523018.
+        - UTF-8 validity is checked more stringently and consistently. All 66 non-characters are now treated as invalid.
+        - HTML lexer bug fixed with inconsistant highlighting for PHP when attribute on separate line from tag. Bug #3520027.
+        - HTML lexer bug fixed for JavaScript block comments. Bug #3520032.
+        - Annotation drawing bug fixed when box displayed with different colours on different lines. Bug #3519872.
+        - Virtual space selection bug fixed for rectangular selections. Bug #3519246.
+        - Replacing multiple selection with newline changed to only affect main selection. Bug #3522251.
+        - Replacing selection with newline changed to group deletion and insertion as a single undo action. Bug #3522250.
+
+    ** Release 3.1.0 **
+        - Option added to allow case-insensitive selection in auto-completion lists. Bug #3516538.
+        - Replace \0 by complete found text in regular expressions. Feature #3510979.
+        - Fixed single quoted strings in bash lexer. Bug #3512208.
+        - Incorrect highlighting fixed in C++ lexer for continued lines. Bug #3509317.
+        - Hang fixed in diff lexer. Bug #3508602.
+        - Folding improved for SQL CASE/MERGE statement. Bug #3503277.
+        - Fix extra drawing of selection inside word wrap indentation. Bug #3515555.
+        - Fix problem with determining the last line that needs styling when drawing. Bug #3514882.
+        - Fix problems with drawing in margins. Bug #3514882.
+        - Fixed the Move Selected Lines command when last line does not end with a line end character. Bug #3511023.
+        - Fix word wrap indentation printing to use printer settings instead of screen settings. Bug #3512961.
+        - Fix column finding method so that tab is counted correctly. Bug #3483713.
 
 0.39  2012.9.4
     - Build fixes for MSVC on Windows and OSX  (MARKD)
