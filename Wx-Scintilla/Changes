@@ -1,5 +1,11 @@
 Revision history for Wx-Scintilla
 
+0.39  2012.9.4
+    - Build fixes for MSVC on Windows and OSX  (MARKD)
+    - Fix 2.9.4 build on Linux (MARKD)
+    - Fixes for expanded Config values (MARKD)
+    - Removed unused vars from inc/Module/Build/Scintilla.pm - build_xs (MARKD)
+
 0.3801 2012.3.26
     - Added MoveSelectedLinesUp and MoveSelectedLinesDown (AZAWAWI)
 
