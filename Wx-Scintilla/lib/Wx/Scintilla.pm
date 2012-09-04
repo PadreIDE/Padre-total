@@ -38,11 +38,11 @@ XSLoader::load 'Wx::Scintilla', $VERSION;
 no strict;
 
 package Wx::ScintillaTextCtrl;
-our $VERSION = '0.3801';
+our $VERSION = '0.39';
 @ISA = qw(Wx::Control);
 
 package Wx::ScintillaTextEvent;
-our $VERSION = '0.3801';
+our $VERSION = '0.39';
 @ISA = qw(Wx::CommandEvent);
 
 use strict;
