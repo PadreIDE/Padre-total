@@ -8,7 +8,7 @@ use Exporter ();
 use XSLoader ();
 use Wx       ();
 
-our $VERSION = '0.3801';
+our $VERSION = '0.39';
 
 # Check for loaded Wx::STC
 BEGIN {
