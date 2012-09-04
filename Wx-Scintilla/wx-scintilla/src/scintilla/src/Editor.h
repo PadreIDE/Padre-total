@@ -133,6 +133,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	ViewStyle vs;
 	int technology;
 	Point sizeRGBAImage;
+	float scaleRGBAImage;
 
 	int printMagnification;
 	int printColourMode;
@@ -264,10 +265,12 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	int wrapVisualFlags;
 	int wrapVisualFlagsLocation;
 	int wrapVisualStartIndent;
-	XYPOSITION wrapAddIndent; // This will be added to initial indent of line
 	int wrapIndentMode; // SC_WRAPINDENT_FIXED, _SAME, _INDENT
 
 	bool convertPastes;
+
+	int marginNumberPadding; // the right-side padding of the number margin
+	int ctrlCharPadding; // the padding around control character text blobs
 
 	Document *pdoc;
 
@@ -470,9 +473,6 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	int KeyDownWithModifiers(int key, int modifiers, bool *consumed);
 	int KeyDown(int key, bool shift, bool ctrl, bool alt, bool *consumed=0);
 
-	int GetWhitespaceVisible();
-	void SetWhitespaceVisible(int view);
-
 	void Indent(bool forwards);
 
 	virtual CaseFolder *CaseFolderForEncoding();
@@ -484,6 +484,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 
 	virtual void CopyToClipboard(const SelectionText &selectedText) = 0;
 	char *CopyRange(int start, int end);
+	std::string RangeText(int start, int end) const;
 	void CopySelectionRange(SelectionText *ss, bool allowLineCopy=false);
 	void CopyRangeToClipboard(int start, int end);
 	void CopyText(int length, const char *text);
@@ -497,6 +498,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	bool PointInSelection(Point pt);
 	bool PointInSelMargin(Point pt);
 	Window::Cursor GetMarginCursor(Point pt);
+	void TrimAndSetSelection(int currentPos_, int anchor_);
 	void LineSelection(int lineCurrentPos_, int lineAnchorPos_, bool wholeLine);
 	void WordSelection(int pos);
 	void DwellEnd(bool mouseMoved);
@@ -573,9 +575,9 @@ class AutoSurface {
 private:
 	Surface *surf;
 public:
-	AutoSurface(Editor *ed) : surf(0) {
+	AutoSurface(Editor *ed, int technology = -1) : surf(0) {
 		if (ed->wMain.GetID()) {
-			surf = Surface::Allocate(ed->technology);
+			surf = Surface::Allocate(technology != -1 ? technology : ed->technology);
 			if (surf) {
 				surf->Init(ed->wMain.GetID());
 				surf->SetUnicodeMode(SC_CP_UTF8 == ed->CodePage());
@@ -583,9 +585,9 @@ public:
 			}
 		}
 	}
-	AutoSurface(SurfaceID sid, Editor *ed) : surf(0) {
+	AutoSurface(SurfaceID sid, Editor *ed, int technology = -1) : surf(0) {
 		if (ed->wMain.GetID()) {
-			surf = Surface::Allocate(ed->technology);
+			surf = Surface::Allocate(technology != -1 ? technology : ed->technology);
 			if (surf) {
 				surf->Init(sid, ed->wMain.GetID());
 				surf->SetUnicodeMode(SC_CP_UTF8 == ed->CodePage());

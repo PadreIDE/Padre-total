@@ -4,7 +4,7 @@ use 5.008;
 use strict;
 use warnings;
 
-our $VERSION = '0.39';
+our $VERSION = '0.40_01';
 our @ISA     = 'Wx::ScintillaTextCtrl';
 
 1;

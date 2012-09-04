@@ -1,5 +1,8 @@
 Revision history for Wx-Scintilla
 
+0.40_01 2012.9.4
+    - Upgrade scintilla to 3.2.2 (AZAWAWI)
+
 0.39  2012.9.4
     - Build fixes for MSVC on Windows and OSX  (MARKD)
     - Fix 2.9.4 build on Linux (MARKD)

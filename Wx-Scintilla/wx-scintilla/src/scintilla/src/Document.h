@@ -298,6 +298,8 @@ public:
 	void SetSavePoint();
 	bool IsSavePoint() { return cb.IsSavePoint(); }
 	const char * SCI_METHOD BufferPointer() { return cb.BufferPointer(); }
+	const char *RangePointer(int position, int rangeLength) { return cb.RangePointer(position, rangeLength); }
+	int GapPosition() const { return cb.GapPosition(); }
 
 	int SCI_METHOD GetLineIndentation(int line);
 	void SetLineIndentation(int line, int indent);
@@ -352,7 +354,6 @@ public:
 	int NextWordEnd(int pos, int delta);
 	int SCI_METHOD Length() const { return cb.Length(); }
 	void Allocate(int newSize) { cb.Allocate(newSize); }
-	size_t ExtractChar(int pos, char *bytes);
 	bool MatchesWordOptions(bool word, bool wordStart, int pos, int length);
 	long FindText(int minPos, int maxPos, const char *search, bool caseSensitive, bool word,
 		bool wordStart, bool regExp, int flags, int *length, CaseFolder *pcf);
@@ -363,6 +364,7 @@ public:
 
 	void SetDefaultCharClasses(bool includeWordClass);
 	void SetCharClasses(const unsigned char *chars, CharClassify::cc newCharClass);
+	int GetCharsOfClass(CharClassify::cc charClass, unsigned char *buffer);
 	void SetStylingBits(int bits);
 	void SCI_METHOD StartStyling(int position, char mask);
 	bool SCI_METHOD SetStyleFor(int length, char style);

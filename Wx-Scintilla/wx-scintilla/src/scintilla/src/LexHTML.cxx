@@ -297,7 +297,7 @@ static int classifyTagHTML(unsigned int start, unsigned int end,
 		if (allowScripts && 0 == strcmp(s, "script")) {
 			// check to see if this is a self-closing tag by sniffing ahead
 			bool isSelfClose = false;
-			for (unsigned int cPos = end; cPos <= end + 100; cPos++) {
+			for (unsigned int cPos = end; cPos <= end + 200; cPos++) {
 				char ch = styler.SafeGetCharAt(cPos, '\0');
 				if (ch == '\0' || ch == '>')
 					break;
@@ -598,11 +598,12 @@ static void ColouriseHyperTextDoc(unsigned int startPos, int length, int initSty
 	char djangoBlockType[2];
 	djangoBlockType[0] = '\0';
 
-	// If inside a tag, it may be a script tag, so reread from the start to ensure any language tags are seen
+	// If inside a tag, it may be a script tag, so reread from the start of line starting tag to ensure any language tags are seen
 	if (InTagState(state)) {
 		while ((startPos > 0) && (InTagState(styler.StyleAt(startPos - 1)))) {
-			startPos--;
-			length++;
+			int backLineStart = styler.LineStart(styler.GetLine(startPos-1));
+			length += startPos - backLineStart;
+			startPos = backLineStart;
 		}
 		state = SCE_H_DEFAULT;
 	}
@@ -1088,7 +1089,7 @@ static void ColouriseHyperTextDoc(unsigned int startPos, int length, int initSty
 				state = SCE_H_SGML_COMMAND; // wait for a pending command
 			}
 			// fold whole tag (-- when closing the tag)
-			if (foldHTMLPreprocessor || (state == SCE_H_COMMENT))
+			if (foldHTMLPreprocessor || state == SCE_H_COMMENT || state == SCE_H_CDATA)
 				levelCurrent++;
 			continue;
 		}
@@ -1584,6 +1585,10 @@ static void ColouriseHyperTextDoc(unsigned int startPos, int length, int initSty
 					state = SCE_HJ_COMMENTDOC;
 				else
 					state = SCE_HJ_COMMENT;
+				if (chNext2 == '/') {
+					// Eat the * so it isn't used for the end of the comment
+					i++;
+				}
 			} else if (ch == '/' && chNext == '/') {
 				styler.ColourTo(i - 1, StateToPrint);
 				state = SCE_HJ_COMMENTLINE;
@@ -2129,7 +2134,8 @@ static void ColouriseHyperTextDoc(unsigned int startPos, int length, int initSty
 		break;
 	default:
 		StateToPrint = statePrintForState(state, inScriptType);
-		styler.ColourTo(lengthDoc - 1, StateToPrint);
+		if (static_cast<int>(styler.GetStartSegment()) < lengthDoc)
+			styler.ColourTo(lengthDoc - 1, StateToPrint);
 		break;
 	}
 
