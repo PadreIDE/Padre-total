@@ -1,5 +1,8 @@
 Revision history for Wx-Scintilla
 
+0.40_02 2012.9.4
+    - Updated Wx::Scintilla::Constant
+
 0.40_01 2012.9.4
     - Upgrade scintilla to 3.2.2 (AZAWAWI). Enjoy :)
 
