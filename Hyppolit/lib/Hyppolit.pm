@@ -44,7 +44,7 @@ use POE qw(
 	Component::IRC::Plugin::FollowTail
 );
 
-use IRC::Utils qw( GREEN LIGHT_CYAN ORANGE YELLOW NORMAL PURPLE RED );
+use IRC::Utils qw( BOLD GREEN LIGHT_CYAN ORANGE YELLOW NORMAL PURPLE RED );
 use DBI;
 
 use Data::Printer {
@@ -563,13 +563,13 @@ sub irc_nick {
 		set_op( $irc, $channel, $nick );
 
 		#this should be left on showing an op after a /nick
-		$irc->yield( privmsg => $channel, YELLOW . 'Welcome ' . $nick . NORMAL );
+		$irc->yield( privmsg => $channel, BOLD . 'Welcome ' . $nick . NORMAL );
 
 	} elsif ( $config->{halfop}{$nick} ) {
 		set_hop( $irc, $channel, $nick );
 
 		#this should be left on showing an hop after a /nick
-		$irc->yield( privmsg => $channel, LIGHT_CYAN . 'Welcome ' . $nick . NORMAL );
+		$irc->yield( privmsg => $channel, BOLD . 'Welcome ' . $nick . NORMAL );
 
 	}
 
@@ -582,7 +582,7 @@ sub irc_nick {
 	}
 
 	else {
-		$irc->yield( privmsg => $channel, LIGHT_CYAN . "Welcome $nick" . NORMAL );
+		$irc->yield( privmsg => $channel, BOLD . 'Welcome ' . $nick . NORMAL );
 	}
 
 	# check if there were any messages and send private message if there were any
