@@ -1,15 +1,35 @@
 #!/usr/bin/env perl
 
-use strict;
-use warnings;
+use strictures 1;
 
 # Turn on $OUTPUT_AUTOFLUSH
-$| = 1;
+local $| = 1;
 
-use t::lib::Get_x_vars;
+use Test::More;
+use Test::Deep;
+plan( tests => 2 );
 
-# run all the test methods in Example::Test
-Test::Class->runtests;
+
+#Top
+use t::lib::Debugger;
+
+start_script('t/eg/14-y_zero.pl');
+my $debugger;
+$debugger = start_debugger();
+$debugger->get;
+$debugger->set_breakpoint( 't/eg/14-y_zero.pl', '14' );
+$debugger->run;
+
+
+#Body
+ok( $debugger->get_x_vars('!(ENV|SIG|INC)') =~ m/14-y_zero.pl/, 'X !(ENV|SIG|INC)' );
+ok( $debugger->get_x_vars()                 =~ m/14-y_zero.pl/, 'X' );
+
+
+#Tail
+$debugger->quit;
+done_testing();
+
 
 1;
 

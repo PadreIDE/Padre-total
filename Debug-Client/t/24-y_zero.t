@@ -31,12 +31,7 @@ foreach ( 1 .. 3 ) {
 	@out = $debugger->get_y_zero();
 	cmp_deeply( \@out, ["\$line = $_"], "y (0) \$line = $_" ) or diag( $debugger->buffer );
 
-	# $out = $debugger->get_value();
-	# ok( $out == $_, "\$_ = $out" );
 }
-
-# ok( $debugger->get_x_vars('!(ENV|SIG|INC)') =~ m/14-y_zero.pl/, 'get_x_vars( !(ENV|SIG|INC) )' );
-# ok( $debugger->get_x_vars()                 =~ m/14-y_zero.pl/, 'get_x_vars()' );
 
 
 #Tail
