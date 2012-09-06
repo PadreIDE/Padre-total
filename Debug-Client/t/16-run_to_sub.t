@@ -1,11 +1,9 @@
 #!/usr/bin/env perl
 
-use strict;
-use warnings;
+use strictures 1;
 
-# no warnings 'once';
 # Turn on $OUTPUT_AUTOFLUSH
-$| = 1;
+local $| = 1;
 
 use t::lib::Debugger;
 

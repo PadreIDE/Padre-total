@@ -4,13 +4,13 @@ plan( tests => 40 );
 
 use_ok( 'Carp',                 '1.20' );
 use_ok( 'IO::Socket::IP',       '0.16' );
+use_ok( 'strictures ',          '1.004001' );
 use_ok( 'PadWalker',            '1.92' );
 use_ok( 'Term::ReadLine',       '1.07' );
 use_ok( 'Term::ReadLine::Perl', '1.0303' );
 
 use_ok( 'Test::More',    '0.98' );
 use_ok( 'Test::Deep',    '0.108' );
-use_ok( 'Test::Class',   '0.36' );
 use_ok( 'File::HomeDir', '0.98' );
 use_ok( 'File::Temp',    '0.22' );
 use_ok( 'File::Spec',    '3.33' );

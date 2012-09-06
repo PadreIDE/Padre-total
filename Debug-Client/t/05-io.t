@@ -1,10 +1,10 @@
 #!/usr/bin/env perl
 
 use v5.10;
-use strict;
-use warnings;
+use strictures 1;
+
 # Turn on $OUTPUT_AUTOFLUSH
-$| = 1;
+local $| = 1;
 
 use Test::More;
 use Test::Deep;
