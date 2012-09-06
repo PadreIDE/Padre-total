@@ -7,7 +7,7 @@ use warnings FATAL => 'all';
 # Turn on $OUTPUT_AUTOFLUSH
 local $| = 1;
 
-use Test::More tests => 12;
+use Test::More tests => 11;
 use Test::Deep;
 use t::lib::Debugger;
 

@@ -4,7 +4,7 @@ use 5.010;
 use strict;
 use warnings FATAL => 'all';
 
-use Test::More tests => 40;
+use Test::More tests => 29;
 use Debug::Client ();
 
 ######
