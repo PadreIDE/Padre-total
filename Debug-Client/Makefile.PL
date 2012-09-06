@@ -14,8 +14,6 @@ test_requires File::Spec          3.33
 test_requires File::Temp          0.22
 test_requires Test::Deep          0.108
 test_requires Test::More          0.98
-test_requires Test::Pod           1.45
-test_requires Test::Pod::Coverage 1.08
 
 homepage                          http://padre.perlide.org/trac/wiki/Features/Perl5Debugger
 bugtracker                        http://padre.perlide.org/trac/wiki/Tickets
