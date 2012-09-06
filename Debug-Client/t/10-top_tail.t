@@ -1,15 +1,30 @@
 #!/usr/bin/env perl
 
-use strict;
-use warnings;
+use strictures 1;
 
 # Turn on $OUTPUT_AUTOFLUSH
-$| = 1;
+local $| = 1;
 
-use t::lib::Top_Tail;
+use Test::More;
+use Test::Deep;
+plan( tests => 7 );
 
-# run all the test methods in Example::Test
-Test::Class->runtests;
+use_ok( 'PadWalker', '1.92' );
+
+use_ok('t::lib::Debugger');
+
+ok( start_script('t/eg/14-y_zero.pl'), 'start script' );
+
+my $debugger;
+ok( $debugger = start_debugger(), 'start debugger' );
+
+ok( $debugger->get, 'get debugger' );
+
+like( $debugger->run, qr/Debugged program terminated/, 'Debugged program terminated' );
+
+like( $debugger->quit, qr/1/, 'debugger quit' );
+
+done_testing();
 
 1;
 
