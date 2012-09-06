@@ -1,10 +1,10 @@
 package t::lib::Debugger;
 
-use strict;
-use warnings;
+use strictures 1;
 
 # Turn on $OUTPUT_AUTOFLUSH
-$| = 1;
+local $| = 1;
+
 
 use File::Temp qw(tempdir);
 
