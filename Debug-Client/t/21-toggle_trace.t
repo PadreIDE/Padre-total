@@ -1,4 +1,4 @@
-#!/usr/bin/env perl
+#!/usr/bin/perl
 use strictures 1;
 
 # Turn on $OUTPUT_AUTOFLUSH
