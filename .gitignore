@@ -99,3 +99,22 @@ Syntax-Highlight-Perl6/blib/
 Syntax-Highlight-Perl6/inc/
 Syntax-Highlight-Perl6/pm_to_blib
 
+Wx-Scintilla/wx-scintilla/src/*.o
+Wx-Scintilla/wx-scintilla/src/*.o.d
+Wx-Scintilla/wx-scintilla/src/scintilla/src/*.o
+Wx-Scintilla/wx-scintilla/src/scintilla/src/*.o.d
+Padre-Plugin-*/share/locale/*.mo
+Padre-Plugin-ReDevel/*
+Padre/config.db
+Padre/winxs/Makefile.old
+Wx-Scintilla/Build
+Wx-Scintilla/MYMETA.json
+Wx-Scintilla/MYMETA.yml
+Wx-Scintilla/Scintilla.c
+Wx-Scintilla/Scintilla.bc
+Wx-Scintilla/Scintilla.o
+Wx-Scintilla/_build/*
+Wx-Scintilla/Scintilla.bs
+Padre/CRASH.txt
+Padre/temp/*
+.gitrebranch
