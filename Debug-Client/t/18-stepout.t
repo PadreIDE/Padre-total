@@ -1,15 +1,51 @@
 #!/usr/bin/env perl
 
-use strict;
-use warnings;
+use strictures 1;
 
 # Turn on $OUTPUT_AUTOFLUSH
-$| = 1;
+local $| = 1;
 
-use t::lib::StepOut;
+use Test::More;
+use Test::Deep;
+plan( tests => 4 );
 
-# run all the test methods in Example::Test
-Test::Class->runtests;
+
+#Top
+use t::lib::Debugger;
+
+start_script('t/eg/02-sub.pl');
+my $debugger;
+$debugger = start_debugger();
+my $out = $debugger->get;
+$out =~ m/(1.\d{2})$/m;
+my $perl5db_ver = $1;
+
+
+#Body
+$debugger->run(18);
+
+my @out = $debugger->step_out;
+SKIP: {
+	skip( "perl5db $] dose not support c [line|sub]", 1 ) if $] =~ m/5.01500(3|4|5)/;
+	SKIP: {
+		skip( "perl5db v$perl5db_ver dose not support list context", 1 ) if $perl5db_ver == 1.35;
+		cmp_deeply( \@out, [ 'main::', 't/eg/02-sub.pl', 9, 'my $z = $x + $y;' ], 'stepover line 9' );
+	}
+}
+$debugger->get_lineinfo;
+SKIP: {
+	skip( "perl5db $] dose not support c [line|sub]", 1 ) if $] =~ m/5.01500(3|4|5)/;
+	ok( $debugger->get_row == 9, 'row = 9' );
+}
+ok( $debugger->get_filename =~ m/02-sub/, 'filename = 02-sub.pl' );
+
+$out = $debugger->step_out;
+like( $out, qr/^Warning:.*list/s, 'Warning: failed to make list call' );
+
+
+#Tail
+$debugger->quit;
+done_testing();
 
 1;
 
