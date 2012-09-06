@@ -1,15 +1,32 @@
 #!/usr/bin/env perl
 
-use strict;
-use warnings;
+use strictures 1;
 
 # Turn on $OUTPUT_AUTOFLUSH
-$| = 1;
+local $| = 1;
 
-use t::lib::Subnames;
+use Test::More;
+use Test::Deep;
+plan( tests => 2 );
 
-# run all the test methods in Example::Test
-Test::Class->runtests;
+
+#Top
+use t::lib::Debugger;
+
+start_script('t/eg/14-y_zero.pl');
+my $debugger;
+$debugger = start_debugger();
+my $out = $debugger->get;
+
+
+#Body
+like( $debugger->list_subroutine_names(),         qr{Term::ReadLine}, 'S module' );
+like( $debugger->list_subroutine_names('strict'), qr{strict},         'S module plus regex' );
+
+
+#Tail
+$debugger->quit;
+done_testing();
 
 1;
 
