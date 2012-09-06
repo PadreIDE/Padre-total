@@ -1,391 +1,57 @@
-NAME
-    Debug::Client - debugger client side code for Padre, The Perl IDE.
+Debug-Client
 
-VERSION
-    This document describes Debug::Client version 0.21_08
+The README is used to introduce the module and provide instructions on
+how to install the module, any machine dependencies it may have (for
+example C compilers and installed libraries) and any other information
+that should be provided before the module is installed.
 
-SYNOPSIS
-      use Debug::Client;
-      my $debugger = Debug::Client->new(host => $host, port => $port);
+A README file is required for CPAN modules since CPAN extracts the README
+file from a module distribution so that people browsing the archive
+can use it to get an idea of the module's uses. It is usually a good idea
+to provide version information here so that people can decide whether
+fixes for the module are worth downloading.
 
-    Where $host is the host-name to be used by the script under test (SUT)
-    to access the machine where Debug::Client runs. If they are on the same
-    machine this should be "localhost". $port can be any port number where
-    the Debug::Client could listen.
 
-    This is the point where the external SUT needs to be launched by first
-    setting
+INSTALLATION
 
-      $ENV{PERLDB_OPTS} = "RemotePort=$host:$port"
+To install this module, run the following commands:
 
-    then running
+	perl Makefile.PL
+	make
+	make test
+	make install
 
-      perl -d script
+SUPPORT AND DOCUMENTATION
 
-    Once the script under test was launched we can call the following:
+After installing, you can find documentation for this module with the
+perldoc command.
 
-      my $out = $debugger->get;
+    perldoc Debug::Client
 
-      $out = $debugger->step_in;
+You can also look for information at:
 
-      $out = $debugger->step_over;
+    RT, CPAN's request tracker (report bugs here)
+        http://rt.cpan.org/NoAuth/Bugs.html?Dist=Debug-Client
 
+    AnnoCPAN, Annotated CPAN documentation
+        http://annocpan.org/dist/Debug-Client
 
-      my ($prompt, $module, $file, $row, $content) = $debugger->step_in;
-      my ($module, $file, $row, $content, $return_value) = $debugger->step_out;
-      my $value = $debugger->get_value('$x');
+    CPAN Ratings
+        http://cpanratings.perl.org/d/Debug-Client
 
-      $debugger->run();         # run till end of breakpoint or watch
-      $debugger->run( 42 );     # run till line 42  (c in the debugger)
-      $debugger->run( 'foo' );  # run till beginning of sub
+    Search CPAN
+        http://search.cpan.org/dist/Debug-Client/
 
-      $debugger->execute_code( '$answer = 42' );
 
-      $debugger->execute_code( '@name = qw(foo bar)' );
+LICENSE AND COPYRIGHT
 
-      my $value = $debugger->get_value('@name');  $value is the dumped data?
+Copyright (C) 2008-2011 Gabor Szabo
 
-      $debugger->execute_code( '%phone_book = (foo => 123, bar => 456)' );
+Some parts copyright (C) 2011-2012 Kevin Dawson
 
-      my $value = $debugger->get_value('%phone_book');  $value is the dumped data?
-  
-  
-      $debugger->set_breakpoint( "file", 23 ); # set breakpoint on file, line
 
-      $debugger->get_stack_trace
+This program is free software; you can redistribute it and/or modify it
+under the terms of either: the GNU General Public License as published
+by the Free Software Foundation; or the Artistic License.
 
-  Example
-      my $script = 'script_to_debug.pl';
-      my @args   = ('param', 'param');
-  
-      my $perl = $^X; # the perl might be a different perl
-      my $host = 'localhost';
-      my $port = 24642;
-      my $pid = fork();
-      die if not defined $pid;
-  
-      if (not $pid) {
-            local $ENV{PERLDB_OPTS} = "RemotePort=$host:$port"
-            exec("$perl -d $script @args");
-      }
-  
-  
-      require Debug::Client;
-      my $debugger = Debug::Client->new(
-        host => $host,
-        port => $port,
-      );
-      $debugger->listener;
-      my $out = $debugger->get;
-      $out = $debugger->step_in;
-      # ...
-
-DESCRIPTION
-    This is a DEVELOPMENT Release only, you have been warned!
-
-    The prime use of this module is to provide debugger functionality for
-    Padre 0.97+,
-
-    This module has been tested against Perl 5.17.2.
-
-METHODS
-    new The constructor can get two parameters: host and port.
-
-          my $debugger = Debug::Client->new;
-
-          my $debugger = Debug::Client->new(host => 'remote.host.com', port => 24642);
-
-    get_buffer
-        Returns the content of the buffer since the last command
-
-          $debugger->get_buffer;
-
-    quit
-         $debugger->quit();
-
-    show_line
-        . (dot)
-
-        Return the internal debugger pointer to the line last executed, and
-        print out that line.
-
-         $debugger->show_line();
-
-    get_lineinfo
-        Return the internal debugger pointer to the line last executed, and
-        generate file-name and row for where are we now. trying to use
-        perl5db line-info in naff way,
-
-         $debugger->get_lineinfo();
-
-        Then use the following as and when.
-
-         $debugger->get_filename;
-         $debugger->get_row;
-
-        to get filename and row for ide due to changes in perl5db v1.35 see
-        perl5156delta
-
-    show_view
-        v [line]
-
-        View a few lines of code around the current line.
-
-         $debugger->show_view();
-
-    step_in
-        s [expr]
-
-        Single step. Executes until the beginning of another statement,
-        descending into subroutine calls. If an expression is supplied that
-        includes function calls, it too will be single-stepped.
-
-         $debugger->step_in();
-
-        Expressions not supported.
-
-    step_over
-         $debugger->step_over();
-
-    step_out
-         my ($prompt, $module, $file, $row, $content, $return_value) = $debugger->step_out();
-
-        Where $prompt is just a number, probably useless
-
-        $return_value will be undef if the function was called in VOID
-        context
-
-        It will hold a scalar value if called in SCALAR context
-
-        It will hold a reference to an array if called in LIST context.
-
-        TODO: check what happens when the return value is a reference to a
-        complex data structure or when some of the elements of the returned
-        array are themselves references
-
-    get_stack_trace
-        Sends the stack trace command "T" to the remote debugger and returns
-        it as a string if called in scalar context. Returns the prompt
-        number and the stack trace string when called in array context.
-
-    toggle_trace
-        Sends the stack trace command "t" Toggle trace mode.
-
-         $debugger->toggle_trace();
-
-    list_subroutine_names
-        Sends the stack trace command "S" [[!]pattern] List subroutine names
-        [not] matching pattern.
-
-    run
-          $debugger->run;
-
-        Will run till the next breakpoint or watch or the end of the script.
-        (Like pressing c in the debugger).
-
-          $debugger->run($param)
-
-    set_breakpoint
-         $debugger->set_breakpoint($file, $line, $condition);
-
-        *$condition is not currently used*
-
-    remove_breakpoint
-         $debugger->remove_breakpoint( $self, $file, $line );
-
-    show_breakpoints
-        The data as (L) prints in the command line debugger.
-
-         $debugger->show_breakpoints();
-
-    get_value
-         my $value = $debugger->get_value($x);
-
-        If $x is a scalar value, $value will contain that value. If it is a
-        reference to a ARRAY or HASH then $value should be the value of that
-        reference?
-
-    get_p_exp
-        p expr
-
-        Same as print {$DB::OUT} expr in the current package. In particular,
-        because this is just Perl's own print function, this means that
-        nested data structures and objects are not dumped, unlike with the x
-        command.
-
-        The DB::OUT filehandle is opened to /dev/tty, regardless of where
-        STDOUT may be redirected to. From perldebug, but defaulted to y 0
-
-          $debugger->get_p_exp();
-
-    get_y_zero
-        From perldebug, but defaulted to y 0
-
-         y [level [vars]]
-
-        Display all (or some) lexical variables (mnemonic: my variables) in
-        the current scope or level scopes higher. You can limit the
-        variables that you see with vars which works exactly as it does for
-        the V and X commands. Requires the PadWalker module version 0.08 or
-        higher; will warn if this isn't installed. Output is pretty-printed
-        in the same style as for V and the format is controlled by the same
-        options.
-
-          $debugger->get_y_zero();
-
-    get_v_vars
-        V [pkg [vars]]
-
-        Display all (or some) variables in package (defaulting to main )
-        using a data pretty-printer (hashes show their keys and values so
-        you see what's what, control characters are made printable, etc.).
-        Make sure you don't put the type specifier (like $ ) there, just the
-        symbol names, like this:
-
-         $debugger->get_v_vars(regex);
-
-    get_x_vars
-        X [vars] Same as V currentpackage [vars]
-
-         $debugger->get_x_vars(regex);
-
-    get_h_var
-        Enter h or `h h' for help, For more help, type h cmd_letter,
-        optional var
-
-         $debugger->get_h_var();
-
-    set_option
-        o booloption ...
-
-        Set each listed Boolean option to the value 1 . o anyoption? ...
-
-        Print out the value of one or more options. o option=value ...
-
-        Set the value of one or more options. If the value has internal
-        white-space, it should be quoted. For example, you could set o
-        pager="less -MQeicsNfr" to call less with those specific options.
-        You may use either single or double quotes, but if you do, you must
-        escape any embedded instances of same sort of quote you began with,
-        as well as any escaping any escapes that immediately precede that
-        quote but which are not meant to escape the quote itself. In other
-        words, you follow single-quoting rules irrespective of the quote;
-        eg: o option='this isn\'t bad' or o option="She said, \"Isn't it?\""
-        .
-
-        For historical reasons, the =value is optional, but defaults to 1
-        only where it is safe to do so--that is, mostly for Boolean options.
-        It is always better to assign a specific value using = . The option
-        can be abbreviated, but for clarity probably should not be. Several
-        options can be set together. See Configurable Options for a list of
-        these.
-
-         $debugger->set_option();
-
-    get_options
-        o
-
-        Display all options.
-
-         $debugger->get_options();
-
-    get Actually I think this is an internal method....
-
-        In SCALAR context will return all the buffer collected since the
-        last command.
-
-        In LIST context will return ($prompt, $module, $file, $row,
-        $content) Where $prompt is the what the standard debugger uses for
-        prompt. Probably not too interesting. $file and $row describe the
-        location of the next instructions. $content is the actual line -
-        this is probably not too interesting as it is in the editor. $module
-        is just the name of the module in which the current execution is.
-
-    get_filename
-         $debugger->get_filename();
-
-    get_row
-         $debugger->get_row();
-
-    module
-         $debugger->module();
-
-  Internal Methods
-    *   _get
-
-    *   _process_line
-
-    *   _prompt
-
-    *   _send
-
-    *   _send_get
-
-BUGS AND LIMITATIONS
-    Warning if you use List request you may get spurious results.
-
-    When using against perl5db.pl v1.35 list mode gives an undef response,
-    also leading single quote now correct. Tests are skipped for list mode
-    against v1.35 now.
-
-    Debug::Client 0.12 tests are failing, due to changes in perl debugger,
-    when using perl5db.pl v1.34
-
-    Debug::Client 0.13_01 skips added to failing tests.
-
-     c [line|sub]
-
-    Continue, optionally inserting a one-time-only breakpoint at the
-    specified line or subroutine.
-
-     c is now ignoring options [line|sub]
-
-    and just performing c on it's own
-
-    *Warning sub listen has bean deprecated*
-
-    Has bean deprecated since 0.13_04 and all future versions starting with
-    v0.14
-
-    Perl::Critic Error Subroutine name is a homonym for built-in function
-
-    Use $debugger->listener instead
-
-AUTHORS
-    Kevin Dawson <bowtie@cpan.org>
-
-    Gabor Szabo <gabor@szabgab.com>
-
-  CONTRIBUTORS
-    Breno G. de Oliveira <garu at cpan.org>
-
-    Ahmad M. Zawawi <ahmad.zawawi@gmail.com>
-
-    Mark Gardner <mjgardner@cpan.org>
-
-    Wolfram Humann <whumann@cpan.org>
-
-COPYRIGHT
-    Copyright 2008-2011 Gabor Szabo
-
-    Some parts copyright 2011-2012 Kevin Dawson
-
-LICENSE
-    This program is free software; you can redistribute it and/or modify it
-    under the same terms as Perl 5 itself.
-
-WARRANTY
-    There is no warranty whatsoever. If you lose data or your hair because
-    of this program, that's your problem.
-
-CREDITS and THANKS
-    Originally started out from the remote-port.pl script from Pro Perl
-    Debugging written by Richard Foley.
-
-See Also
-    GRID::Machine::remotedebugtut
-
-    Devel::ebug
-
-    Devel::Trepan
-
+See http://dev.perl.org/licenses/ for more information.
