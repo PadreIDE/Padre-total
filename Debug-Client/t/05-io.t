@@ -7,12 +7,9 @@ use warnings FATAL => 'all';
 # Turn on $OUTPUT_AUTOFLUSH
 local $| = 1;
 
-use Test::More;
+use Test::More tests => 12;
 use Test::Deep;
-
-plan( tests => 12 );
-
-use_ok('t::lib::Debugger');
+use t::lib::Debugger;
 
 my ( $dir, $pid ) = start_script('t/eg/05-io.pl');
 my $path = $dir;
@@ -98,8 +95,3 @@ my $prefix = ( substr( $], 0, 5 ) eq '5.008006' ) ? "Default die handler restore
 
 $debugger->run;
 $debugger->quit;
-done_testing( );
-
-1;
-
-__END__
