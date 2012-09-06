@@ -1,15 +1,15 @@
 package t::lib::Debugger;
 
-use strictures 1;
+use strict;
+use warnings FATAL => 'all';
 
 # Turn on $OUTPUT_AUTOFLUSH
 local $| = 1;
 
-
+use Exporter ();
 use File::Temp qw(tempdir);
 
-require Exporter;
-use base 'Exporter';
+our @ISA    = 'Exporter';
 our @EXPORT = qw(start_script start_debugger slurp rc_file);
 
 my $host = 'localhost';

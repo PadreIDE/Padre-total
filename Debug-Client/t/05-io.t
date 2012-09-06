@@ -1,7 +1,8 @@
 #!/usr/bin/perl
 
-use v5.10;
-use strictures 1;
+use 5.010;
+use strict;
+use warnings FATAL => 'all';
 
 # Turn on $OUTPUT_AUTOFLUSH
 local $| = 1;
@@ -11,7 +12,7 @@ use Test::Deep;
 
 plan( tests => 12 );
 
-use_ok ('t::lib::Debugger');
+use_ok('t::lib::Debugger');
 
 my ( $dir, $pid ) = start_script('t/eg/05-io.pl');
 my $path = $dir;

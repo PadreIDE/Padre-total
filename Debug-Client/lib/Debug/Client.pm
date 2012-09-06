@@ -1,22 +1,23 @@
 package Debug::Client;
 
-use v5.10;
-use strictures 1;
+use 5.010;
+use strict;
+use warnings FATAL => 'all';
 
 # Turn on $OUTPUT_AUTOFLUSH
 local $| = 1;
 
 our $VERSION = '0.21_10';
+$VERSION = eval $VERSION; # Comment out when we don't have a dev component
 
 use utf8;
-use IO::Socket::IP;
-use Carp qw(carp croak);
+use IO::Socket::IP 0.17;
+use Carp 1.20 qw(carp croak);
 
 use constant {
 	BLANK => qq{ },
 	NONE  => q{},
 };
-
 
 #######
 # new
@@ -28,6 +29,7 @@ sub new {
 	$self->_initialize( @args ); # Call _initialize with remaining args
 	return $self;
 }
+
 #######
 # _initialize
 #######
@@ -99,10 +101,11 @@ sub get_lineinfo {
 
 	$self->_send('.');
 	$self->_get;
-	$self->{buffer} =~ m{^[\w:]*				# module
-						(?:CODE[(].*[)])* 		# catch CODE(0x9b434a8)
-						[(] (?<file>[^\)]*):(?<row>\d+) [)]	# (file):(row)
-                                    }smx;
+	$self->{buffer} =~ m{
+		^[\w:]*                             # module
+		(?:CODE[(].*[)])*                   # catch CODE(0x9b434a8)
+		[(] (?<file>[^\)]*):(?<row>\d+) [)] # (file):(row)
+	}smx;
 	$self->{filename} = $+{file};
 	$self->{row}      = $+{row};
 
