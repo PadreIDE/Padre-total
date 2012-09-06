@@ -1,10 +1,10 @@
 package Debug::Client;
 
 use v5.10;
-use strict;
-use warnings;
+use strictures 1;
 
-local $| = 1; # Turn on $OUTPUT_AUTOFLUSH
+# Turn on $OUTPUT_AUTOFLUSH
+local $| = 1;
 
 our $VERSION = '0.21_08';
 
