@@ -1,10 +1,16 @@
 # Changes for Debug::Client
 
+0.21_11 2012.09.TBA
+    - Removed Test::Pod and Test::Pod::Coverage dependencies (ADAMK)
+    - Switching to #!/usr/bin/perl as the env version is recommended against in
+      tests for reasons I forget but I think were related to tainting (ADAMK)
+    -
+
 0.21_10 2012.09.06
     - Debug::Client's dependency on Test::Class is breaking Strawberry
       Test::Class has Windows problems adamk++ 
     - Remove Test::Class from Debug::Client (BOWTIE)
-    
+
 0.21_09
     - skipped intentionally
 
