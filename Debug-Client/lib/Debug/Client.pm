@@ -7,7 +7,7 @@ use warnings FATAL => 'all';
 # Turn on $OUTPUT_AUTOFLUSH
 local $| = 1;
 
-our $VERSION = '0.21_10';
+our $VERSION = '0.21_11';
 $VERSION = eval $VERSION; # Comment out when we don't have a dev component
 
 use utf8;
@@ -23,10 +23,10 @@ use constant {
 # new
 #######
 sub new {
-	my ( $class, @args ) = @_;   # What class are we constructing?
-	my $self = {};               # Allocate new memory
-	bless $self, $class;         # Mark it of the right type
-	$self->_initialize( @args ); # Call _initialize with remaining args
+	my ( $class, @args ) = @_; # What class are we constructing?
+	my $self = {};             # Allocate new memory
+	bless $self, $class;       # Mark it of the right type
+	$self->_initialize(@args); # Call _initialize with remaining args
 	return $self;
 }
 
@@ -85,7 +85,6 @@ sub quit {
 sub show_line {
 	my $self = shift;
 
-	# say 'inside show_line';
 	$self->_send('.');
 	$self->_get;
 	$self->_prompt;
@@ -205,12 +204,8 @@ sub run {
 	my ( $self, $param ) = @_;
 
 	if ( defined $param ) {
-
-		# say 'inside run with param';
 		return $self->_send_get("c $param");
 	} else {
-
-		# say 'inside run';
 		return $self->_send_get('c');
 	}
 }
@@ -221,7 +216,6 @@ sub run {
 sub set_breakpoint {
 	my ( $self, $file, $line, $cond ) = @_;
 
-	# say 'inside set breakpoint';
 	$self->_send("f $file");
 	$self->_get;
 
@@ -429,17 +423,13 @@ sub get_options {
 sub get {
 	my $self = shift;
 
-	# say 'inside get';
 	$self->_get;
 	if (wantarray) {
 		$self->_prompt;
 		my ( $module, $file, $row, $content ) = $self->_process_line;
-
-		# say 'fin _process_line';
 		return ( $module, $file, $row, $content );
 	} else {
 
-		# $self->_process_line;
 		return $self->{buffer};
 	}
 }
@@ -523,10 +513,6 @@ sub _process_line {
 	my $row     = BLANK;
 	my $content = BLANK;
 
-	# if ( not defined $buffer or not ref $buffer or ref $buffer ne 'SCALAR' ) {
-	# carp('_process_line should be called with a reference to a scalar');
-	# }
-
 	if ( $buffer =~ /Debugged program terminated/ ) {
 		$module = '<TERMINATED>';
 		$self->{module} = $module;
@@ -552,10 +538,10 @@ sub _process_line {
 		}
 	}
 
-	if ($line =~ m{^(?<module>[\w:]*)             # module
+	if ($line =~ m{^(?<module>[\w:]*)                 # module
                   [(] (?<file>[^\)]*):(?<row>\d+) [)] # (file:row)
-                  :\t?              	 # :
-                  (?<content>.*)              	 # content
+                  :\t?                                # :
+                  (?<content>.*)                      # content
                   }mx
 		)
 	{
@@ -568,9 +554,7 @@ sub _process_line {
 
 		# preserve buffer why we check where we are test_1415.pl
 		my $preserve_buffer = $self->{buffer};
-
-		# unless ( defined $module || defined $file || defined $row ) {
-		my $current_file = $self->show_line();
+		my $current_file    = $self->show_line();
 
 		# $current_file =~ m/([\w:]*) \( (.*) : (\d+) .* /mgx;
 		$current_file =~ m/(?<module>[\w:]*) [(] (?<file>.*) : (?<row>\d+) .* /mgxs;
@@ -633,7 +617,7 @@ sub _send {
 #######
 sub _send_get {
 	my ( $self, $input ) = @_;
-	
+
 	$self->_send($input);
 
 	return $self->get;
@@ -678,7 +662,7 @@ Debug::Client - debugger client side code for Padre, The Perl IDE.
 
 =head1 VERSION
 
-This document describes Debug::Client version 0.21_10
+This document describes Debug::Client version 0.21_11
 
 =head1 SYNOPSIS
 
