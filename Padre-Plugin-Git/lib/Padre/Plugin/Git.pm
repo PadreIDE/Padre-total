@@ -19,7 +19,7 @@ use Cwd qw(cwd chdir);
 our $VERSION = '0.04';
 use parent qw(Padre::Plugin);
 
-# use Data::Printer { caller_info => 1, colored => 1, };
+use Data::Printer { caller_info => 1, colored => 1, };
 
 # TODO
 # diff of file/dir/project
