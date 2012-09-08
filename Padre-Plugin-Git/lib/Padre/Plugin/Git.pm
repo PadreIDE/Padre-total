@@ -262,14 +262,18 @@ sub git_status {
 
 	#strip leading #
 	$git_status->{output} =~ s/^(\#)//sxmg;
-
-	$main->message(
-		sprintf(
-			Wx::gettext("Git Status of -> %s \n\n%s"),
-			$path, $git_status->{output}
-		),
-	);
-
+	
+	#used for testing
+	# $main->message(
+		# sprintf(
+			# Wx::gettext("Git Status of -> %s \n\n%s"),
+			# $path, $git_status->{output}
+		# ),
+	# );
+	
+	#ToDo convert to wxFormBuilder Dialog
+	require Padre::Wx::Dialog::Text;
+	Padre::Wx::Dialog::Text->show( $main, "Git Status -> $path", $git_status->{output} );
 	return;
 }
 
@@ -320,10 +324,38 @@ sub git_status_of_project {
 #
 ##################
 
-
-
-
+#######
+# git_diff
+#######
 sub git_diff {
+	my $self     = shift;
+	my $path     = shift;
+	my $main     = $self->main;
+	my $document = $main->current->document;
+
+	require Padre::Util;
+	my $git_status =
+		Padre::Util::run_in_directory_two( cmd => "git diff $path", dir => $document->project_dir, option => 0 );
+
+	#strip leading #
+	# $git_status->{output} =~ s/^(\#)//sxmg;
+	
+	#left for testing instead of naff dialog
+	# $main->message(
+		# sprintf(
+			# Wx::gettext("Git Diff of -> %s \n\n%s"),
+			# $path, $git_status->{output}
+		# ),
+	# );
+	
+	#ToDo convert to wxFormBuilder Dialog
+	require Padre::Wx::Dialog::Text;
+	Padre::Wx::Dialog::Text->show( $main, "Git Diff -> $path", $git_status->{output} );
+	return;
+}
+
+#ToDo look at git_diff_old
+sub git_diff_old {
 	my ( $self, $path ) = @_;
 
 	use Cwd qw/cwd chdir/;
@@ -340,24 +372,34 @@ sub git_diff {
 	return;
 }
 
+#######
+# git_diff_of_file
+#######
 sub git_diff_of_file {
-	my ($self) = @_;
-
-	p _get_current_filename();
-
-	$self->git_diff( _get_current_filename() );
-
+	my $self     = shift;
+	my $main     = $self->main;
+	my $document = $main->current->document;
+	
+	$self->git_diff( $document->filename );
 	return;
 }
 
+#######
+# git_diff_of_dir
+#######
 sub git_diff_of_dir {
-	my ( $self, $path ) = @_;
+	my $self     = shift;
+	my $main     = $self->main;
+	my $document = $main->current->document;
 
+	my $path = shift || File::Basename::dirname( $document->filename );
 	$self->git_diff($path);
-
 	return;
 }
 
+#######
+# git_diff_of_project
+#######
 sub git_diff_of_project {
 	my $self     = shift;
 	my $main     = $self->main;
@@ -374,22 +416,22 @@ sub git_diff_of_project {
 }
 
 #ToDo delete this asap
-sub _get_current_filename {
-	my $main     = Padre->ide->wx->main;
-	my $document = $main->current->document;
+# sub _get_current_filename {
+	# my $main     = Padre->ide->wx->main;
+	# my $document = $main->current->document;
 
-	return $document->filename;
-}
+	# return $document->filename;
+# }
 
 #ToDo delete this asap
-sub _get_current_filedir {
-	my $main = Padre->ide->wx->main;
+# sub _get_current_filedir {
+	# my $main = Padre->ide->wx->main;
 
-	my $document = $main->current->document;
-	return $main->error("No document found") if not $document;
+	# my $document = $main->current->document;
+	# return $main->error("No document found") if not $document;
 
-	return File::Basename::dirname( $document->filename );
-}
+	# return File::Basename::dirname( $document->filename );
+# }
 
 #ToDo this sub breaks Padre 0.96, Padre 0.97+ good to go :), needs to be padre-plugin api v2.2 compatable
 # This thing should just list a few actions
