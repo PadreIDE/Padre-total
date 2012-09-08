@@ -10,20 +10,18 @@ use Padre::Wx         ();
 use Padre::Plugin     ();
 use Padre::Util       ();
 use Padre::Wx::Action ();
-use File::Basename ();
+use File::Basename    ();
 
 our $VERSION = '0.04';
 use parent qw(Padre::Plugin);
 
 # use Data::Printer { caller_info => 1, colored => 1, };
 
-# TODO
-# diff of file/dir/project
-# commit of file/dir/project
 
-
-
-
+# Child modules we need to unload when disabled
+use constant CHILDREN => qw{
+	Padre::Plugin::Git
+};
 
 #######
 # Called by padre to check the required interface
@@ -91,169 +89,9 @@ sub menu_plugins_simple {
 	];
 }
 
-
 #######
-# plugin menu
+# show_about
 #######
-# sub menu_plugins {
-# my $self = shift;
-# my $main = $self->main;
-
-# # Create a manual menu item
-# my $git_menu = Wx::MenuItem->new( undef, -1, $self->plugin_name . "...\tF7", );
-# Wx::Event::EVT_MENU(
-# $main,
-# $git_menu,
-# sub {
-# # $self->spell_check;
-# },
-# );
-# my $about = Wx::MenuItem->new( undef, -1, 'About...', );
-# Wx::Event::EVT_MENU(
-# $git_menu,
-# $about,
-# sub {
-# $self->show_about;
-# },
-# );
-# return $git_menu;
-# }
-#####################################################################
-
-# should be called once when loading the plugin
-# my $ONCE;
-
-# sub define_actions {
-	# my $self = shift;
-	# return if $ONCE;
-	# $ONCE = 1;
-	# Padre::Wx::Action->new(
-		# name        => 'git.about',
-		# label       => Wx::gettext('About'),
-		# comment     => Wx::gettext('Show information about the Git plugin'),
-		# need_editor => 0,
-		# menu_event  => sub {
-			# $self->show_about;
-		# },
-	# );
-
-	# Padre::Wx::Action->new(
-		# name        => 'git.commit_file',
-		# label       => Wx::gettext('Commit File'),
-		# comment     => Wx::gettext('Commit File'),
-		# need_editor => 0,
-		# menu_event  => sub {
-			# $self->git_commit_file;
-		# },
-	# );
-
-	# Padre::Wx::Action->new(
-		# name        => 'git.commit_project',
-		# label       => Wx::gettext('Commit Project'),
-		# comment     => Wx::gettext('Commit Project'),
-		# need_editor => 0,
-		# menu_event  => sub {
-			# $self->git_commit_project;
-		# },
-	# );
-
-	# Padre::Wx::Action->new(
-		# name        => 'git.status_of_file',
-		# label       => Wx::gettext('File Status'),
-		# comment     => Wx::gettext('Show the status of the current file'),
-		# need_editor => 0,
-		# menu_event  => sub {
-			# $self->git_status_of_file;
-		# },
-	# );
-
-	# Padre::Wx::Action->new(
-		# name        => 'git.status_of_dir',
-		# label       => Wx::gettext('Directory Status'),
-		# comment     => Wx::gettext('Show the status of the current directory'),
-		# need_editor => 0,
-		# menu_event  => sub {
-			# $self->git_status_of_dir;
-		# },
-	# );
-
-	# Padre::Wx::Action->new(
-		# name        => 'git.status_of_project',
-		# label       => Wx::gettext('Project Status'),
-		# comment     => Wx::gettext('Show the status of the current project'),
-		# need_editor => 0,
-		# menu_event  => sub {
-			# $self->git_status_of_project;
-		# },
-	# );
-
-	# Padre::Wx::Action->new(
-		# name        => 'git.diff_of_file',
-		# label       => Wx::gettext('Diff of File'),
-		# comment     => Wx::gettext('Diff of File'),
-		# need_editor => 0,
-		# menu_event  => sub {
-			# $self->git_diff_of_file;
-		# },
-	# );
-
-	# Padre::Wx::Action->new(
-		# name        => 'git.diff_of_dir',
-		# label       => Wx::gettext('Diff of Dir'),
-		# comment     => Wx::gettext('Diff of Dir'),
-		# need_editor => 0,
-		# menu_event  => sub {
-			# $self->git_diff_of_dir;
-		# },
-	# );
-
-	# Padre::Wx::Action->new(
-		# name        => 'git.diff_of_project',
-		# label       => Wx::gettext('Diff of Project'),
-		# comment     => Wx::gettext('Diff of Project'),
-		# need_editor => 0,
-		# menu_event  => sub {
-			# $self->git_diff_of_project;
-		# },
-	# );
-
-
-	# return;
-# }
-
-# sub menu_actions {
-	# my $self = shift;
-	# $self->define_actions();
-
-	# return $self->plugin_name => [
-		# 'git.about',
-		# [   'Commit...',
-			# 'git.commit_file',
-			# 'git.commit_project',
-		# ],
-		# [   'Status...',
-			# 'git.status_of_file',
-			# 'git.status_of_dir',
-			# 'git.status_of_project',
-		# ],
-
-		# [   'Diff...',
-			# 'git.diff_of_file',
-			# 'git.diff_of_dir',
-			# 'git.diff_of_project',
-		# ],
-	# ];
-# }
-
-# sub rightclick_actions {
-	# my $self = shift;
-	# return $self->menu_actions;
-# }
-
-
-#####################################################################
-# Custom Methods
-
 sub show_about {
 	my $self = shift;
 
@@ -270,6 +108,7 @@ END_MESSAGE
 
 	return;
 }
+
 
 #######
 # git_commit
@@ -451,24 +290,6 @@ sub git_diff {
 	return;
 }
 
-#ToDo look at git_diff_old, not plugged in at pressent
-# sub git_diff_old {
-	# my ( $self, $path ) = @_;
-
-	# use Cwd qw/cwd chdir/;
-	# my $cwd = cwd;
-	# chdir File::Basename::dirname($path);
-	# my $out = capture_merged( sub { system "git diff $path" } );
-	# chdir $cwd;
-	# require Padre::Wx::Dialog::Text;
-	# my $main = Padre->ide->wx->main;
-	# Padre::Wx::Dialog::Text->show( $main, "Git Diff of $path", $out );
-
-	# #	$main->message($out, "Git Diff of $path");
-
-	# return;
-# }
-
 #######
 # git_diff_of_file
 #######
@@ -531,6 +352,8 @@ sub event_on_context_menu {
 
 		# my $menu_rcs = Wx::Menu->new;
 		my $menu_rcs = $self->menu_plugins_simple;
+
+		#ToDo ask Adam how do we ad a sub menu here?
 		$menu->Append( -1, Wx::gettext('Git'), $menu_rcs );
 	}
 
@@ -574,6 +397,42 @@ sub current_files {
 	return;
 }
 
+########
+# plugin_disable
+########
+sub plugin_disable {
+	my $self = shift;
+
+	# Close the dialog if it is hanging around
+	$self->clean_dialog;
+
+	# Unload all our child classes
+	for my $package (CHILDREN) {
+		require Padre::Unload;
+		Padre::Unload->unload($package);
+	}
+
+	$self->SUPER::plugin_disable(@_);
+
+	return 1;
+}
+
+########
+# Composed Method clean_dialog
+########
+sub clean_dialog {
+	my $self = shift;
+
+	# Close the main dialog if it is hanging around
+	if ( $self->{dialog} ) {
+		$self->{dialog}->Hide;
+		$self->{dialog}->Destroy;
+		delete $self->{dialog};
+	}
+
+	return 1;
+}
+
 1;
 
 __END__
@@ -614,3 +473,182 @@ under the same terms as Perl itself.
 # modify it under the same terms as Perl 5 itself.
 
 
+###########
+cruff store for convience only
+
+#######
+# plugin menu
+#######
+# sub menu_plugins {
+# my $self = shift;
+# my $main = $self->main;
+
+# # Create a manual menu item
+# my $git_menu = Wx::MenuItem->new( undef, -1, $self->plugin_name . "...\tF7", );
+# Wx::Event::EVT_MENU(
+# $main,
+# $git_menu,
+# sub {
+# # $self->spell_check;
+# },
+# );
+# my $about = Wx::MenuItem->new( undef, -1, 'About...', );
+# Wx::Event::EVT_MENU(
+# $git_menu,
+# $about,
+# sub {
+# $self->show_about;
+# },
+# );
+# return $git_menu;
+# }
+#####################################################################
+
+# should be called once when loading the plugin
+my $ONCE;
+
+sub define_actions {
+	my $self = shift;
+	return if $ONCE;
+	$ONCE = 1;
+	Padre::Wx::Action->new(
+		name        => 'git.about',
+		label       => Wx::gettext('About'),
+		comment     => Wx::gettext('Show information about the Git plugin'),
+		need_editor => 0,
+		menu_event  => sub {
+			$self->show_about;
+		},
+	);
+
+	Padre::Wx::Action->new(
+		name        => 'git.commit_file',
+		label       => Wx::gettext('Commit File'),
+		comment     => Wx::gettext('Commit File'),
+		need_editor => 0,
+		menu_event  => sub {
+			$self->git_commit_file;
+		},
+	);
+
+	Padre::Wx::Action->new(
+		name        => 'git.commit_project',
+		label       => Wx::gettext('Commit Project'),
+		comment     => Wx::gettext('Commit Project'),
+		need_editor => 0,
+		menu_event  => sub {
+			$self->git_commit_project;
+		},
+	);
+
+	Padre::Wx::Action->new(
+		name        => 'git.status_of_file',
+		label       => Wx::gettext('File Status'),
+		comment     => Wx::gettext('Show the status of the current file'),
+		need_editor => 0,
+		menu_event  => sub {
+			$self->git_status_of_file;
+		},
+	);
+
+	Padre::Wx::Action->new(
+		name        => 'git.status_of_dir',
+		label       => Wx::gettext('Directory Status'),
+		comment     => Wx::gettext('Show the status of the current directory'),
+		need_editor => 0,
+		menu_event  => sub {
+			$self->git_status_of_dir;
+		},
+	);
+
+	Padre::Wx::Action->new(
+		name        => 'git.status_of_project',
+		label       => Wx::gettext('Project Status'),
+		comment     => Wx::gettext('Show the status of the current project'),
+		need_editor => 0,
+		menu_event  => sub {
+			$self->git_status_of_project;
+		},
+	);
+
+	Padre::Wx::Action->new(
+		name        => 'git.diff_of_file',
+		label       => Wx::gettext('Diff of File'),
+		comment     => Wx::gettext('Diff of File'),
+		need_editor => 0,
+		menu_event  => sub {
+			$self->git_diff_of_file;
+		},
+	);
+
+	Padre::Wx::Action->new(
+		name        => 'git.diff_of_dir',
+		label       => Wx::gettext('Diff of Dir'),
+		comment     => Wx::gettext('Diff of Dir'),
+		need_editor => 0,
+		menu_event  => sub {
+			$self->git_diff_of_dir;
+		},
+	);
+
+	Padre::Wx::Action->new(
+		name        => 'git.diff_of_project',
+		label       => Wx::gettext('Diff of Project'),
+		comment     => Wx::gettext('Diff of Project'),
+		need_editor => 0,
+		menu_event  => sub {
+			$self->git_diff_of_project;
+		},
+	);
+
+
+	return;
+}
+
+sub menu_actions {
+	my $self = shift;
+	$self->define_actions();
+
+	return $self->plugin_name => [
+		'git.about',
+		[   'Commit...',
+			'git.commit_file',
+			'git.commit_project',
+		],
+		[   'Status...',
+			'git.status_of_file',
+			'git.status_of_dir',
+			'git.status_of_project',
+		],
+
+		[   'Diff...',
+			'git.diff_of_file',
+			'git.diff_of_dir',
+			'git.diff_of_project',
+		],
+	];
+}
+
+sub rightclick_actions {
+	my $self = shift;
+	return $self->menu_actions;
+}
+
+
+#ToDo look at git_diff_old, not plugged in at pressent
+sub git_diff_old {
+	my ( $self, $path ) = @_;
+
+	use Cwd qw/cwd chdir/;
+	my $cwd = cwd;
+	chdir File::Basename::dirname($path);
+	my $out = capture_merged( sub { system "git diff $path" } );
+	chdir $cwd;
+	require Padre::Wx::Dialog::Text;
+	my $main = Padre->ide->wx->main;
+	Padre::Wx::Dialog::Text->show( $main, "Git Diff of $path", $out );
+
+	#	$main->message($out, "Git Diff of $path");
+
+	return;
+}
