@@ -18,6 +18,7 @@ use parent qw(Padre::Plugin);
 # Child modules we need to unload when disabled
 use constant CHILDREN => qw{
 	Padre::Plugin::Git
+	Padre::Wx::Dialog::Text
 };
 
 #######
@@ -53,10 +54,13 @@ sub menu_plugins_simple {
 			$self->show_about;
 		},
 		Wx::gettext('Staging') => [
-			Wx::gettext('Add') => sub {
+			Wx::gettext('Add file') => sub {
 				$self->stage_file;
 			},
-			Wx::gettext('reset HEAD') => sub {
+			Wx::gettext('Add all') => sub {
+				$self->stage_all;
+			},			
+			Wx::gettext('reset HEAD file') => sub {
 				$self->unstage_file;
 			},
 		],
@@ -161,6 +165,7 @@ sub git_cmd {
 			),
 		);
 	} elsif ( $git_cmd->{output} ) {
+		#ToDo Padre::Wx::Dialog::Text needs to be updated with FormBuilder
 		require Padre::Wx::Dialog::Text;
 		Padre::Wx::Dialog::Text->show( $main, "Git $action -> $location", $git_cmd->{output} );
 	}
@@ -180,7 +185,17 @@ sub stage_file {
 	$self->git_cmd( 'status', $document->filename );
 	return;
 }
-
+#######
+# stage_file
+#######
+sub stage_all {
+	my $self     = shift;
+	my $main     = $self->main;
+	my $document = $main->current->document;
+	$self->git_cmd( 'add',    $document->project_dir );
+	$self->git_cmd( 'status', $document->project_dir );
+	return;
+}
 #######
 # unstage_file
 #######
