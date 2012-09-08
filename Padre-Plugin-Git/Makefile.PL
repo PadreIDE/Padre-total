@@ -1,22 +1,12 @@
-use inc::Module::Install 0.92;
+use inc::Module::Install::DSL 1.06;
 
-name     'Padre-Plugin-Git';
-all_from 'lib/Padre/Plugin/Git.pm';
-author   'Kaare Rasmussen <kaare@cpan.org>';
-license  'perl';
+all_from lib/Padre/Plugin/Git.pm
+requires_from lib/Padre/Plugin/Git.pm
 
-homepage       'http://padre.perlide.org/';
-repository     'http://svn.perlide.org/padre/trunk/Padre-Plugin-Git/';
+test_requires Test::More      0.98
 
-requires  'Capture::Tiny'  => '0.03';
-requires  'Padre'          => '0.67';
-requires  'File::Basename' => '0';
-requires  'File::Spec'     => '0';
+homepage    http://padre.perlide.org
+bugtracker  http://padre.perlide.org/trac/wiki/Tickets
+repository  http://svn.perlide.org/padre/trunk/Padre-Plugin-Git/
 
-build_requires 'Test::More';
-
-is_padre_plugin; # authors: Install Module::Install::PadrePlugin
-auto_install;
-
-WriteAll;
-
+no_index directory            qw{ t xt eg share inc privinc }
