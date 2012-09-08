@@ -415,23 +415,6 @@ sub git_diff_of_project {
 	return;
 }
 
-#ToDo delete this asap
-# sub _get_current_filename {
-	# my $main     = Padre->ide->wx->main;
-	# my $document = $main->current->document;
-
-	# return $document->filename;
-# }
-
-#ToDo delete this asap
-# sub _get_current_filedir {
-	# my $main = Padre->ide->wx->main;
-
-	# my $document = $main->current->document;
-	# return $main->error("No document found") if not $document;
-
-	# return File::Basename::dirname( $document->filename );
-# }
 
 #ToDo this sub breaks Padre 0.96, Padre 0.97+ good to go :), needs to be padre-plugin api v2.2 compatable
 # This thing should just list a few actions
