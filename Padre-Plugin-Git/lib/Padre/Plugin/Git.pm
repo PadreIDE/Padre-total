@@ -15,9 +15,6 @@ use File::Basename    ();
 our $VERSION = '0.04';
 use parent qw(Padre::Plugin);
 
-# use Data::Printer { caller_info => 1, colored => 1, };
-
-
 # Child modules we need to unload when disabled
 use constant CHILDREN => qw{
 	Padre::Plugin::Git
@@ -392,7 +389,7 @@ __END__
 
 =head1 NAME
 
-Padre::Plugin::Git - Simple Git interface for Padre
+Padre::Plugin::Git - Simple Git interface for Padre, the Perl IDE,
 
 =head1 SYNOPSIS
 
@@ -403,6 +400,8 @@ Access it via Plugin/Git
 
 =head1 AUTHOR
 
+Kevin Dawson E<lt>bowtie@cpan.orgE<gt>
+
 Kaare Rasmussen, C<< <kaare at cpan.org> >>
 
 =head1 BUGS
@@ -412,7 +411,7 @@ Please report any bugs or feature requests to L<http://padre.perlide.org/>
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2008-2009 The Padre development team as listed in Padre.pm in the
+Copyright 2008-2012 The Padre development team as listed in Padre.pm in the
 Padre distribution all rights reserved.
 
 This program is free software; you can redistribute it and/or modify it
@@ -420,7 +419,7 @@ under the same terms as Perl itself.
 
 =cut
 
-# Copyright 2008-2009 The Padre development team as listed in Padre.pm.
+# Copyright 2008-2012 The Padre development team as listed in Padre.pm.
 # LICENSE
 # This program is free software; you can redistribute it and/or
 # modify it under the same terms as Perl 5 itself.
@@ -429,33 +428,6 @@ under the same terms as Perl itself.
 ###########
 cruff store for convience only
 
-#######
-# plugin menu
-#######
-# sub menu_plugins {
-# my $self = shift;
-# my $main = $self->main;
-
-# # Create a manual menu item
-# my $git_menu = Wx::MenuItem->new( undef, -1, $self->plugin_name . "...\tF7", );
-# Wx::Event::EVT_MENU(
-# $main,
-# $git_menu,
-# sub {
-# # $self->spell_check;
-# },
-# );
-# my $about = Wx::MenuItem->new( undef, -1, 'About...', );
-# Wx::Event::EVT_MENU(
-# $git_menu,
-# $about,
-# sub {
-# $self->show_about;
-# },
-# );
-# return $git_menu;
-# }
-#####################################################################
 
 # should be called once when loading the plugin
 my $ONCE;
@@ -587,69 +559,3 @@ sub rightclick_actions {
 	return $self->menu_actions;
 }
 
-
-#ToDo look at git_diff_old, not plugged in at pressent
-sub git_diff_old {
-	my ( $self, $path ) = @_;
-
-	use Cwd qw/cwd chdir/;
-	my $cwd = cwd;
-	chdir File::Basename::dirname($path);
-	my $out = capture_merged( sub { system "git diff $path" } );
-	chdir $cwd;
-	require Padre::Wx::Dialog::Text;
-	my $main = Padre->ide->wx->main;
-	Padre::Wx::Dialog::Text->show( $main, "Git Diff of $path", $out );
-
-	#	$main->message($out, "Git Diff of $path");
-
-	return;
-}
-
-#######
-# git_commit
-#######
-sub git_commit {
-
-	# my ( $self, $path ) = @_;
-	my $self     = shift;
-	my $path     = shift;
-	my $main     = $self->main;
-	my $document = $main->current->document;
-
-	# my $main = Padre->ide->wx->main;
-	my $message = $main->prompt( "Git Commit of $path", "Please type in your message", "MY_GIT_COMMIT" );
-
-	# p $message;
-	return if not $message;
-
-	# if ($message) {
-	# $main->message( $message, 'Filename' );
-
-	# my $cwd = cwd;
-	# chdir File::Basename::dirname($path);
-	# system qq(git commit $path -m"$message");
-	# chdir $cwd;
-
-	require Padre::Util;
-	my $git_status = Padre::Util::run_in_directory_two(
-		cmd    => "git commit $path -m \"$message\"", dir => $document->project_dir,
-		option => 0
-	);
-
-	# p $git_status;
-	if ( $git_status->{error} ) {
-		$main->error(
-			sprintf(
-				Wx::gettext("Git Error follows -> \n\n%s"),
-				$git_status->{error}
-			),
-		);
-	} else {
-		require Padre::Wx::Dialog::Text;
-		Padre::Wx::Dialog::Text->show( $main, "Git Commit -> $path", $git_status->{output} );
-
-	}
-
-	return;
-}
