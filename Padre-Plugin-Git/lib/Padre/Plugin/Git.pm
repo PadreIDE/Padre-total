@@ -55,6 +55,14 @@ sub menu_plugins_simple {
 		Wx::gettext('About...') => sub {
 			$self->show_about;
 		},
+		Wx::gettext('Staging') => [
+			Wx::gettext('Add') => sub {
+				$self->stage_file;
+			},
+			Wx::gettext('reset HEAD') => sub {
+				$self->unstage_file;
+			},
+		],
 		Wx::gettext('Commit') => [
 			Wx::gettext('Commit File') => sub {
 				$self->git_commit_file;
@@ -106,6 +114,86 @@ END_MESSAGE
 	# Show the About dialog
 	Wx::AboutBox($about);
 
+	return;
+}
+
+#######
+# git_commit
+#######
+sub git_cmd {
+
+	# my ( $self, $path ) = @_;
+	my $self     = shift;
+	my $action   = shift;
+	my $location = shift;
+	my $main     = $self->main;
+	my $document = $main->current->document;
+
+	my $message;
+	my $git_cmd;
+	if ( $action eq 'commit' ) {
+		$message = $main->prompt( "Git Commit of $location", "Please type in your message", "MY_GIT_COMMIT" );
+
+		return if not $message;
+
+		require Padre::Util;
+		$git_cmd = Padre::Util::run_in_directory_two(
+			cmd    => "git commit $location -m \"$message\"",
+			dir    => $document->project_dir,
+			option => 0
+		);
+	} else {
+		require Padre::Util;
+		$git_cmd = Padre::Util::run_in_directory_two(
+			cmd    => "git $action $location",
+			dir    => $document->project_dir,
+			option => 0
+		);
+	}
+
+	if ( $action ne 'diff' ) {
+
+		#strip leading #
+		$git_cmd->{output} =~ s/^(\#)//sxmg;
+	}
+
+	#Display correct result
+	if ( $git_cmd->{error} ) {
+		$main->error(
+			sprintf(
+				Wx::gettext("Git Error follows -> \n\n%s"),
+				$git_cmd->{error}
+			),
+		);
+	} elsif ( $git_cmd->{output} ) {
+		require Padre::Wx::Dialog::Text;
+		Padre::Wx::Dialog::Text->show( $main, "Git Commit -> $location", $git_cmd->{output} );
+	}
+
+	return;
+}
+
+#######
+# stage_file
+#######
+sub stage_file {
+	my $self     = shift;
+	my $main     = $self->main;
+	my $document = $main->current->document;
+	$self->git_cmd( 'add',    $document->filename );
+	$self->git_cmd( 'status', $document->filename );
+	return;
+}
+
+#######
+# unstage_file
+#######
+sub unstage_file {
+	my $self     = shift;
+	my $main     = $self->main;
+	my $document = $main->current->document;
+	$self->git_cmd( 'reset HEAD', $document->filename );
+	$self->git_cmd( 'status',     $document->filename );
 	return;
 }
 
@@ -184,37 +272,6 @@ sub git_commit_project {
 	return;
 }
 
-
-#######
-# git_status
-#######
-sub git_status {
-	my $self     = shift;
-	my $path     = shift;
-	my $main     = $self->main;
-	my $document = $main->current->document;
-
-	require Padre::Util;
-	my $git_status =
-		Padre::Util::run_in_directory_two( cmd => "git status $path", dir => $document->project_dir, option => 0 );
-
-	#strip leading #
-	$git_status->{output} =~ s/^(\#)//sxmg;
-
-	#used for testing
-	# $main->message(
-	# sprintf(
-	# Wx::gettext("Git Status of -> %s \n\n%s"),
-	# $path, $git_status->{output}
-	# ),
-	# );
-
-	#ToDo convert to wxFormBuilder Dialog
-	require Padre::Wx::Dialog::Text;
-	Padre::Wx::Dialog::Text->show( $main, "Git Status -> $path", $git_status->{output} );
-	return;
-}
-
 #######
 # git_status_of_file
 #######
@@ -223,8 +280,9 @@ sub git_status_of_file {
 	my $main     = $self->main;
 	my $document = $main->current->document;
 
-	return $main->error("No document found") if not $document;
-	$self->git_status( $document->filename );
+	# return $main->error("No document found") if not $document;
+	# $self->git_status( $document->filename );
+	$self->git_cmd( 'status', $document->filename );
 	return;
 }
 
@@ -236,8 +294,9 @@ sub git_status_of_dir {
 	my $main     = $self->main;
 	my $document = $main->current->document;
 
-	return $main->error("No document found") if not $document;
-	$self->git_status( File::Basename::dirname( $document->filename ) );
+	# return $main->error("No document found") if not $document;
+	# $self->git_status( File::Basename::dirname( $document->filename ) );
+	$self->git_cmd( 'status', File::Basename::dirname( $document->filename ) );
 	return;
 }
 
@@ -249,13 +308,14 @@ sub git_status_of_project {
 	my $main     = $self->main;
 	my $document = $main->current->document;
 
-	return $main->error("No document found") if not $document;
-	my $filename = $document->filename;
+	# return $main->error("No document found") if not $document;
+	# my $filename = $document->filename;
 
-	my $dir = $document->project_dir;
-	return $main->error("Could not find project root") if not $dir;
+	# my $dir = $document->project_dir;
+	# return $main->error("Could not find project root") if not $dir;
 
-	$self->git_status($dir);
+	# $self->git_status($dir);
+	$self->git_cmd( 'status', $document->project_dir );
 	return;
 }
 
@@ -650,5 +710,35 @@ sub git_diff_old {
 
 	#	$main->message($out, "Git Diff of $path");
 
+	return;
+}
+
+#######
+# git_status
+#######
+sub git_status {
+	my $self     = shift;
+	my $path     = shift;
+	my $main     = $self->main;
+	my $document = $main->current->document;
+
+	require Padre::Util;
+	my $git_status =
+		Padre::Util::run_in_directory_two( cmd => "git status $path", dir => $document->project_dir, option => 0 );
+
+	#strip leading #
+	$git_status->{output} =~ s/^(\#)//sxmg;
+
+	#used for testing
+	# $main->message(
+	# sprintf(
+	# Wx::gettext("Git Status of -> %s \n\n%s"),
+	# $path, $git_status->{output}
+	# ),
+	# );
+
+	#ToDo convert to wxFormBuilder Dialog
+	require Padre::Wx::Dialog::Text;
+	Padre::Wx::Dialog::Text->show( $main, "Git Status -> $path", $git_status->{output} );
 	return;
 }
