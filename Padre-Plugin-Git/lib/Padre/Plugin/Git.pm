@@ -19,7 +19,7 @@ use Cwd qw(cwd chdir);
 our $VERSION = '0.04';
 use parent qw(Padre::Plugin);
 
-use Data::Printer { caller_info => 1, colored => 1, };
+# use Data::Printer { caller_info => 1, colored => 1, };
 
 # TODO
 # diff of file/dir/project
@@ -88,7 +88,7 @@ sub define_actions {
 		comment     => Wx::gettext('Commit Project'),
 		need_editor => 0,
 		menu_event  => sub {
-			$self->git_commit_file;
+			$self->git_commit_project;
 		},
 	);
 
@@ -206,46 +206,78 @@ END_MESSAGE
 	return;
 }
 
-
+#######
+# git_commit
+#######
 sub git_commit {
-	my ( $self, $path ) = @_;
 
-	my $main = Padre->ide->wx->main;
+	# my ( $self, $path ) = @_;
+	my $self     = shift;
+	my $path     = shift;
+	my $main     = $self->main;
+	my $document = $main->current->document;
+
+	# my $main = Padre->ide->wx->main;
 	my $message = $main->prompt( "Git Commit of $path", "Please type in your message", "MY_GIT_COMMIT" );
-	if ($message) {
-		$main->message( $message, 'Filename' );
-		my $cwd = cwd;
-		chdir File::Basename::dirname($path);
-		system qq(git commit $path -m"$message");
-		chdir $cwd;
+
+	# p $message;
+	return if not $message;
+
+	# if ($message) {
+	# $main->message( $message, 'Filename' );
+
+	# my $cwd = cwd;
+	# chdir File::Basename::dirname($path);
+	# system qq(git commit $path -m"$message");
+	# chdir $cwd;
+
+	require Padre::Util;
+	my $git_status = Padre::Util::run_in_directory_two(
+		cmd    => "git commit $path -m \"$message\"", dir => $document->project_dir,
+		option => 0
+	);
+
+	# p $git_status;
+	if ( $git_status->{error} ) {
+		$main->error(
+			sprintf(
+				Wx::gettext("Git Error follows -> \n\n%s"),
+				$git_status->{error}
+			),
+		);
+	} else {
+		require Padre::Wx::Dialog::Text;
+		Padre::Wx::Dialog::Text->show( $main, "Git Commit -> $path", $git_status->{output} );
+
 	}
 
 	return;
 }
 
+#######
+# git_commit_file
+#######
 sub git_commit_file {
-	my ($self) = @_;
-
-	my $main     = Padre->ide->wx->main;
+	my $self     = shift;
+	my $main     = $self->main;
 	my $document = $main->current->document;
-	my $filename = $document->filename;
-	$self->git_commit($filename);
+	# p $document->filename;
+	$self->git_commit( $document->filename );
 	return;
 }
 
+#######
+# git_commit_project
+#######
 sub git_commit_project {
-	my ($self) = @_;
-
-	my $main     = Padre->ide->wx->main;
+	my $self     = shift;
+	my $main     = $self->main;
 	my $document = $main->current->document;
-	my $filename = $document->filename;
-	my $dir      = $document->project_dir;
-	$self->git_commit($dir);
+	# p $document->project_dir;
+	$self->git_commit( $document->project_dir );
 	return;
 }
 
-###################
-#
 
 #######
 # git_status
@@ -262,15 +294,15 @@ sub git_status {
 
 	#strip leading #
 	$git_status->{output} =~ s/^(\#)//sxmg;
-	
+
 	#used for testing
 	# $main->message(
-		# sprintf(
-			# Wx::gettext("Git Status of -> %s \n\n%s"),
-			# $path, $git_status->{output}
-		# ),
+	# sprintf(
+	# Wx::gettext("Git Status of -> %s \n\n%s"),
+	# $path, $git_status->{output}
+	# ),
 	# );
-	
+
 	#ToDo convert to wxFormBuilder Dialog
 	require Padre::Wx::Dialog::Text;
 	Padre::Wx::Dialog::Text->show( $main, "Git Status -> $path", $git_status->{output} );
@@ -321,8 +353,6 @@ sub git_status_of_project {
 	return;
 }
 
-#
-##################
 
 #######
 # git_diff
@@ -339,22 +369,22 @@ sub git_diff {
 
 	#strip leading #
 	# $git_status->{output} =~ s/^(\#)//sxmg;
-	
+
 	#left for testing instead of naff dialog
 	# $main->message(
-		# sprintf(
-			# Wx::gettext("Git Diff of -> %s \n\n%s"),
-			# $path, $git_status->{output}
-		# ),
+	# sprintf(
+	# Wx::gettext("Git Diff of -> %s \n\n%s"),
+	# $path, $git_status->{output}
+	# ),
 	# );
-	
+
 	#ToDo convert to wxFormBuilder Dialog
 	require Padre::Wx::Dialog::Text;
 	Padre::Wx::Dialog::Text->show( $main, "Git Diff -> $path", $git_status->{output} );
 	return;
 }
 
-#ToDo look at git_diff_old
+#ToDo look at git_diff_old, not plugged in at pressent
 sub git_diff_old {
 	my ( $self, $path ) = @_;
 
@@ -379,7 +409,7 @@ sub git_diff_of_file {
 	my $self     = shift;
 	my $main     = $self->main;
 	my $document = $main->current->document;
-	
+
 	$self->git_diff( $document->filename );
 	return;
 }
@@ -428,9 +458,7 @@ sub event_on_context_menu {
 	my $tab_id = $self->main->editor_of_file( $document->{filename} );
 
 	# p $self->{open_file_info}->{$tab_id}->{'vcs'};
-
 	if ( $self->{open_file_info}->{$tab_id}->{'vcs'} =~ m/Git/sxm ) {
-
 
 		$menu->AppendSeparator;
 
