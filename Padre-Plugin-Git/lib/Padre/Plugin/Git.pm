@@ -4,6 +4,7 @@ use v5.10;
 use warnings;
 use strict;
 
+use Padre::Unload;
 use Padre::Config     ();
 use Padre::Wx         ();
 use Padre::Plugin     ();
@@ -18,46 +19,14 @@ use Cwd qw(cwd chdir);
 our $VERSION = '0.04';
 use parent qw(Padre::Plugin);
 
-use Data::Printer { caller_info => 1, colored => 1, };
+# use Data::Printer { caller_info => 1, colored => 1, };
 
 # TODO
 # diff of file/dir/project
 # commit of file/dir/project
 
-=head1 NAME
-
-Padre::Plugin::Git - Simple Git interface for Padre
-
-=head1 SYNOPSIS
-
-cpan install Padre::Plugin::Git
-
-Access it via Plugin/Git
 
 
-=head1 AUTHOR
-
-Kaare Rasmussen, C<< <kaare at cpan.org> >>
-
-=head1 BUGS
-
-Please report any bugs or feature requests to L<http://padre.perlide.org/>
-
-
-=head1 COPYRIGHT & LICENSE
-
-Copyright 2008-2009 The Padre development team as listed in Padre.pm in the
-Padre distribution all rights reserved.
-
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
-
-
-=cut
-
-
-#####################################################################
-# Padre::Plugin Methods
 
 
 #######
@@ -68,6 +37,7 @@ sub padre_interfaces {
 		# Default, required
 		'Padre::Plugin' => '0.96',
 
+		'Padre::Unload'     => '0.96',
 		'Padre::Config'     => '0.96',
 		'Padre::Wx'         => '0.96',
 		'Padre::Wx::Action' => '0.96',
@@ -257,8 +227,8 @@ sub git_commit_file {
 	my ($self) = @_;
 
 	my $main     = Padre->ide->wx->main;
-	my $doc      = $main->current->document;
-	my $filename = $doc->filename;
+	my $document = $main->current->document;
+	my $filename = $document->filename;
 	$self->git_commit($filename);
 	return;
 }
@@ -267,58 +237,91 @@ sub git_commit_project {
 	my ($self) = @_;
 
 	my $main     = Padre->ide->wx->main;
-	my $doc      = $main->current->document;
-	my $filename = $doc->filename;
-	my $dir      = Padre::Util::get_project_dir($filename);
+	my $document = $main->current->document;
+	my $filename = $document->filename;
+	my $dir      = $document->project_dir;
 	$self->git_commit($dir);
 	return;
 }
 
+###################
+#
+
+#######
+# git_status
+#######
 sub git_status {
-	my ( $self, $path ) = @_;
+	my $self     = shift;
+	my $path     = shift;
+	my $main     = $self->main;
+	my $document = $main->current->document;
 
-	my $main = Padre->ide->wx->main;
-	my $out = capture_merged( sub { system "git status $path" } );
-	$main->message( $out, "Git Status of $path" );
+	require Padre::Util;
+	my $git_status =
+		Padre::Util::run_in_directory_two( cmd => "git status $path", dir => $document->project_dir, option => 0 );
+
+	#strip leading #
+	$git_status->{output} =~ s/^(\#)//sxmg;
+
+	$main->message(
+		sprintf(
+			Wx::gettext("Git Status of -> %s \n\n%s"),
+			$path, $git_status->{output}
+		),
+	);
+
 	return;
 }
 
+#######
+# git_status_of_file
+#######
 sub git_status_of_file {
-	my ($self) = @_;
+	my $self     = shift;
+	my $main     = $self->main;
+	my $document = $main->current->document;
 
-	#	return $main->error("No document found") if not $doc;
-	$self->git_status( _get_current_filename() );
+	return $main->error("No document found") if not $document;
+	$self->git_status( $document->filename );
 	return;
 }
 
+#######
+# git_status_of_dir
+#######
 sub git_status_of_dir {
-	my ($self) = @_;
+	my $self     = shift;
+	my $main     = $self->main;
+	my $document = $main->current->document;
 
-	my $main = Padre->ide->wx->main;
-	my $doc  = $main->current->document;
-	return $main->error("No document found") if not $doc;
-	my $filename = $doc->filename;
-	$self->git_status( File::Basename::dirname($filename) );
-
+	return $main->error("No document found") if not $document;
+	$self->git_status( File::Basename::dirname( $document->filename ) );
 	return;
 }
 
-# TODO guess current project
+#######
+# git_status_of_project
+#######
 sub git_status_of_project {
-	my ($self) = @_;
+	my $self     = shift;
+	my $main     = $self->main;
+	my $document = $main->current->document;
 
-	my $main = Padre->ide->wx->main;
-	my $doc  = $main->current->document;
-	return $main->error("No document found") if not $doc;
-	my $filename = $doc->filename;
-	my $dir      = Padre::Util::get_project_dir($filename);
+	return $main->error("No document found") if not $document;
+	my $filename = $document->filename;
 
+	my $dir = $document->project_dir;
 	return $main->error("Could not find project root") if not $dir;
 
 	$self->git_status($dir);
-
 	return;
 }
+
+#
+##################
+
+
+
 
 sub git_diff {
 	my ( $self, $path ) = @_;
@@ -340,6 +343,8 @@ sub git_diff {
 sub git_diff_of_file {
 	my ($self) = @_;
 
+	p _get_current_filename();
+
 	$self->git_diff( _get_current_filename() );
 
 	return;
@@ -354,13 +359,12 @@ sub git_diff_of_dir {
 }
 
 sub git_diff_of_project {
-	my ($self) = @_;
-
-	my $main = Padre->ide->wx->main;
-	my $doc  = $main->current->document;
-	return $main->error("No document found") if not $doc;
-	my $filename = $doc->filename;
-	my $dir      = Padre::Util::get_project_dir($filename);
+	my $self     = shift;
+	my $main     = $self->main;
+	my $document = $main->current->document;
+	return $main->error("No document found") if not $document;
+	my $filename = $document->filename;
+	my $dir      = $document->project_dir;
 
 	return $main->error("Could not find project root") if not $dir;
 
@@ -369,52 +373,42 @@ sub git_diff_of_project {
 	return;
 }
 
+#ToDo delete this asap
 sub _get_current_filename {
-	my $main = Padre->ide->wx->main;
-	my $doc  = $main->current->document;
+	my $main     = Padre->ide->wx->main;
+	my $document = $main->current->document;
 
-	return $doc->filename;
+	return $document->filename;
 }
 
-
+#ToDo delete this asap
 sub _get_current_filedir {
 	my $main = Padre->ide->wx->main;
-	my $doc  = $main->current->document;
-	return $main->error("No document found") if not $doc;
 
-	return File::Basename::dirname( $doc->filename );
+	my $document = $main->current->document;
+	return $main->error("No document found") if not $document;
+
+	return File::Basename::dirname( $document->filename );
 }
 
-#ToDo this sub breaks Padre, needs to be padre-plugin api v2.2 compatable
+#ToDo this sub breaks Padre 0.96, Padre 0.97+ good to go :), needs to be padre-plugin api v2.2 compatable
 # This thing should just list a few actions
 sub event_on_context_menu {
 	my ( $self, $document, $editor, $menu, $event ) = @_;
 
 	$self->current_files;
-
-	# Same code for all VCS
-	# my $filename = $document->filename;
-	# return if not $filename;
 	return if not $document->filename;
-
-	#
-	# my $project_dir = Padre::Util::get_project_dir($filename);
-	# return if not $project_dir;
 	return if not $document->project_dir;
-	p $document->project_dir;
+
 	my $tab_id = $self->main->editor_of_file( $document->{filename} );
-	p $tab_id;
 
-	# ( $self->{open_file_info}->{$_}->{'vcs'} =~ /SVN/sxm )
-	p $self->{open_file_info}->{$tab_id}->{'vcs'};
-
-	# my $rcs = Padre::Util::get_project_rcs($project_dir);
-	# return if $rcs ne 'Git';
+	# p $self->{open_file_info}->{$tab_id}->{'vcs'};
 
 	if ( $self->{open_file_info}->{$tab_id}->{'vcs'} =~ m/Git/sxm ) {
 
 
 		$menu->AppendSeparator;
+
 		# my $menu_rcs = Wx::Menu->new;
 		my $menu_rcs = $self->menu_actions;
 		$menu->Append( -1, Wx::gettext('Git'), $menu_rcs );
@@ -462,9 +456,41 @@ sub current_files {
 
 1;
 
+__END__
+
+=head1 NAME
+
+Padre::Plugin::Git - Simple Git interface for Padre
+
+=head1 SYNOPSIS
+
+cpan install Padre::Plugin::Git
+
+Access it via Plugin/Git
+
+
+=head1 AUTHOR
+
+Kaare Rasmussen, C<< <kaare at cpan.org> >>
+
+=head1 BUGS
+
+Please report any bugs or feature requests to L<http://padre.perlide.org/>
+
+
+=head1 COPYRIGHT & LICENSE
+
+Copyright 2008-2009 The Padre development team as listed in Padre.pm in the
+Padre distribution all rights reserved.
+
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
+
+=cut
+
 # Copyright 2008-2009 The Padre development team as listed in Padre.pm.
 # LICENSE
 # This program is free software; you can redistribute it and/or
 # modify it under the same terms as Perl 5 itself.
 
-__END__
+
