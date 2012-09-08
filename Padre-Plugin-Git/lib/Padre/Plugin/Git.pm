@@ -10,12 +10,7 @@ use Padre::Wx         ();
 use Padre::Plugin     ();
 use Padre::Util       ();
 use Padre::Wx::Action ();
-
-# use Capture::Tiny qw(capture_merged);
 use File::Basename ();
-use File::Spec;
-
-# use Cwd qw(cwd chdir);
 
 our $VERSION = '0.04';
 use parent qw(Padre::Plugin);
@@ -52,6 +47,7 @@ sub padre_interfaces {
 sub plugin_name {
 	return Wx::gettext('Git');
 }
+
 #######
 # Add Plugin to Padre Menu
 #######
@@ -456,22 +452,22 @@ sub git_diff {
 }
 
 #ToDo look at git_diff_old, not plugged in at pressent
-sub git_diff_old {
-	my ( $self, $path ) = @_;
+# sub git_diff_old {
+	# my ( $self, $path ) = @_;
 
-	use Cwd qw/cwd chdir/;
-	my $cwd = cwd;
-	chdir File::Basename::dirname($path);
-	my $out = capture_merged( sub { system "git diff $path" } );
-	chdir $cwd;
-	require Padre::Wx::Dialog::Text;
-	my $main = Padre->ide->wx->main;
-	Padre::Wx::Dialog::Text->show( $main, "Git Diff of $path", $out );
+	# use Cwd qw/cwd chdir/;
+	# my $cwd = cwd;
+	# chdir File::Basename::dirname($path);
+	# my $out = capture_merged( sub { system "git diff $path" } );
+	# chdir $cwd;
+	# require Padre::Wx::Dialog::Text;
+	# my $main = Padre->ide->wx->main;
+	# Padre::Wx::Dialog::Text->show( $main, "Git Diff of $path", $out );
 
-	#	$main->message($out, "Git Diff of $path");
+	# #	$main->message($out, "Git Diff of $path");
 
-	return;
-}
+	# return;
+# }
 
 #######
 # git_diff_of_file
