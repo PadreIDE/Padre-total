@@ -3,6 +3,8 @@ Revision history for Padre-Plugin-Git
 0.04    TBA
         start on update to p-p api 2 (BOWTIE)
         event_on_context_menu now works, but menu no (BOWTIE)
+        switch to menu_plugins_simple all items work (BOWTIE)
+        
         
 0.03    2010.08.20
         Compatibility with new Padre (CHORNY)
