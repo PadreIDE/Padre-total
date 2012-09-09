@@ -198,6 +198,7 @@ sub git_cmd {
 			#ToDo Padre::Wx::Dialog::Text needs to be updated with FormBuilder
 			require Padre::Wx::Dialog::Text;
 			Padre::Wx::Dialog::Text->show( $main, "Git $action -> $location", $git_cmd->{output} );
+			return 1;
 		} else {
 			return 0;
 		}
@@ -317,7 +318,7 @@ sub git_diff_of_file {
 	my $main     = $self->main;
 	my $document = $main->current->document;
 	my $result   = $self->git_cmd( 'diff', $document->filename );
-	if ( !$result ) {
+	if ( $result == 0 ) {
 		$self->git_cmd( 'diff --cached', $document->filename );
 	}
 	return;
