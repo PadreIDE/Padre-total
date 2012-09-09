@@ -3,7 +3,10 @@ use inc::Module::Install::DSL 1.06;
 all_from lib/Padre/Plugin/Git.pm
 requires_from lib/Padre/Plugin/Git.pm
 
-test_requires Test::More      0.98
+requires File::Which      1.09
+requires Try::Tiny        0.11
+
+test_requires Test::More  0.98
 
 homepage    http://padre.perlide.org
 bugtracker  http://padre.perlide.org/trac/wiki/Tickets

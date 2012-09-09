@@ -11,9 +11,28 @@ use Padre::Plugin     ();
 use Padre::Util       ();
 use Padre::Wx::Action ();
 use File::Basename    ();
+use File::Which       ();
+use Try::Tiny;
 
 our $VERSION = '0.04';
 use parent qw(Padre::Plugin);
+
+#########
+# We need plugin_enable
+# as we have an external dependency git
+#########
+sub plugin_enable {
+	my $self             = shift;
+	my $local_git_exists = 0;
+
+	try {
+		if ( File::Which::which('git') ) {
+			$local_git_exists = 1;
+		}
+	};
+
+	return $local_git_exists;
+}
 
 # Child modules we need to unload when disabled
 use constant CHILDREN => qw{
@@ -59,7 +78,7 @@ sub menu_plugins_simple {
 			},
 			Wx::gettext('Add all') => sub {
 				$self->stage_all;
-			},			
+			},
 			Wx::gettext('reset HEAD file') => sub {
 				$self->unstage_file;
 			},
@@ -128,46 +147,52 @@ sub git_cmd {
 	my $main     = $self->main;
 	my $document = $main->current->document;
 
-	my $message;
-	my $git_cmd;
-	if ( $action eq 'commit' ) {
-		$message = $main->prompt( "Git Commit of $location", "Please type in your message", "MY_GIT_COMMIT" );
+	$self->current_files;
+	my $tab_id = $self->main->editor_of_file( $document->{filename} );
+	if ( $self->{open_file_info}->{$tab_id}->{'vcs'} =~ m/Git/sxm ) {
 
-		return if not $message;
+		my $message;
+		my $git_cmd;
+		if ( $action eq 'commit' ) {
+			$message = $main->prompt( "Git Commit of $location", "Please type in your message", "MY_GIT_COMMIT" );
 
-		require Padre::Util;
-		$git_cmd = Padre::Util::run_in_directory_two(
-			cmd    => "git commit $location -m \"$message\"",
-			dir    => $document->project_dir,
-			option => 0
-		);
-	} else {
-		require Padre::Util;
-		$git_cmd = Padre::Util::run_in_directory_two(
-			cmd    => "git $action $location",
-			dir    => $document->project_dir,
-			option => 0
-		);
-	}
+			return if not $message;
 
-	if ( $action ne 'diff' ) {
+			require Padre::Util;
+			$git_cmd = Padre::Util::run_in_directory_two(
+				cmd    => "git $action $location -m \"$message\"",
+				dir    => $document->project_dir,
+				option => 0
+			);
+		} else {
+			require Padre::Util;
+			$git_cmd = Padre::Util::run_in_directory_two(
+				cmd    => "git $action $location",
+				dir    => $document->project_dir,
+				option => 0
+			);
+		}
 
-		#strip leading #
-		$git_cmd->{output} =~ s/^(\#)//sxmg;
-	}
+		if ( $action ne 'diff' ) {
 
-	#Display correct result
-	if ( $git_cmd->{error} ) {
-		$main->error(
-			sprintf(
-				Wx::gettext("Git Error follows -> \n\n%s"),
-				$git_cmd->{error}
-			),
-		);
-	} elsif ( $git_cmd->{output} ) {
-		#ToDo Padre::Wx::Dialog::Text needs to be updated with FormBuilder
-		require Padre::Wx::Dialog::Text;
-		Padre::Wx::Dialog::Text->show( $main, "Git $action -> $location", $git_cmd->{output} );
+			#strip leading #
+			$git_cmd->{output} =~ s/^(\#)//sxmg;
+		}
+
+		#Display correct result
+		if ( $git_cmd->{error} ) {
+			$main->error(
+				sprintf(
+					Wx::gettext("Git Error follows -> \n\n%s"),
+					$git_cmd->{error}
+				),
+			);
+		} elsif ( $git_cmd->{output} ) {
+
+			#ToDo Padre::Wx::Dialog::Text needs to be updated with FormBuilder
+			require Padre::Wx::Dialog::Text;
+			Padre::Wx::Dialog::Text->show( $main, "Git $action -> $location", $git_cmd->{output} );
+		}
 	}
 
 	return;
@@ -406,6 +431,10 @@ __END__
 
 Padre::Plugin::Git - Simple Git interface for Padre, the Perl IDE,
 
+=head1 VERSION
+
+version 0.04
+
 =head1 SYNOPSIS
 
 cpan install Padre::Plugin::Git
@@ -438,139 +467,3 @@ under the same terms as Perl itself.
 # LICENSE
 # This program is free software; you can redistribute it and/or
 # modify it under the same terms as Perl 5 itself.
-
-
-###########
-cruff store for convience only
-
-
-# should be called once when loading the plugin
-my $ONCE;
-
-sub define_actions {
-	my $self = shift;
-	return if $ONCE;
-	$ONCE = 1;
-	Padre::Wx::Action->new(
-		name        => 'git.about',
-		label       => Wx::gettext('About'),
-		comment     => Wx::gettext('Show information about the Git plugin'),
-		need_editor => 0,
-		menu_event  => sub {
-			$self->show_about;
-		},
-	);
-
-	Padre::Wx::Action->new(
-		name        => 'git.commit_file',
-		label       => Wx::gettext('Commit File'),
-		comment     => Wx::gettext('Commit File'),
-		need_editor => 0,
-		menu_event  => sub {
-			$self->git_commit_file;
-		},
-	);
-
-	Padre::Wx::Action->new(
-		name        => 'git.commit_project',
-		label       => Wx::gettext('Commit Project'),
-		comment     => Wx::gettext('Commit Project'),
-		need_editor => 0,
-		menu_event  => sub {
-			$self->git_commit_project;
-		},
-	);
-
-	Padre::Wx::Action->new(
-		name        => 'git.status_of_file',
-		label       => Wx::gettext('File Status'),
-		comment     => Wx::gettext('Show the status of the current file'),
-		need_editor => 0,
-		menu_event  => sub {
-			$self->git_status_of_file;
-		},
-	);
-
-	Padre::Wx::Action->new(
-		name        => 'git.status_of_dir',
-		label       => Wx::gettext('Directory Status'),
-		comment     => Wx::gettext('Show the status of the current directory'),
-		need_editor => 0,
-		menu_event  => sub {
-			$self->git_status_of_dir;
-		},
-	);
-
-	Padre::Wx::Action->new(
-		name        => 'git.status_of_project',
-		label       => Wx::gettext('Project Status'),
-		comment     => Wx::gettext('Show the status of the current project'),
-		need_editor => 0,
-		menu_event  => sub {
-			$self->git_status_of_project;
-		},
-	);
-
-	Padre::Wx::Action->new(
-		name        => 'git.diff_of_file',
-		label       => Wx::gettext('Diff of File'),
-		comment     => Wx::gettext('Diff of File'),
-		need_editor => 0,
-		menu_event  => sub {
-			$self->git_diff_of_file;
-		},
-	);
-
-	Padre::Wx::Action->new(
-		name        => 'git.diff_of_dir',
-		label       => Wx::gettext('Diff of Dir'),
-		comment     => Wx::gettext('Diff of Dir'),
-		need_editor => 0,
-		menu_event  => sub {
-			$self->git_diff_of_dir;
-		},
-	);
-
-	Padre::Wx::Action->new(
-		name        => 'git.diff_of_project',
-		label       => Wx::gettext('Diff of Project'),
-		comment     => Wx::gettext('Diff of Project'),
-		need_editor => 0,
-		menu_event  => sub {
-			$self->git_diff_of_project;
-		},
-	);
-
-
-	return;
-}
-
-sub menu_actions {
-	my $self = shift;
-	$self->define_actions();
-
-	return $self->plugin_name => [
-		'git.about',
-		[   'Commit...',
-			'git.commit_file',
-			'git.commit_project',
-		],
-		[   'Status...',
-			'git.status_of_file',
-			'git.status_of_dir',
-			'git.status_of_project',
-		],
-
-		[   'Diff...',
-			'git.diff_of_file',
-			'git.diff_of_dir',
-			'git.diff_of_project',
-		],
-	];
-}
-
-sub rightclick_actions {
-	my $self = shift;
-	return $self->menu_actions;
-}
-
