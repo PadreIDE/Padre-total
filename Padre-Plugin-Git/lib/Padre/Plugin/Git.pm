@@ -90,9 +90,12 @@ sub menu_plugins_simple {
 			Wx::gettext('Commit Project') => sub {
 				$self->git_commit_project;
 			},
+			Wx::gettext('Commit amend') => sub {
+				$self->git_commit_amend;
+			},
 			Wx::gettext('git commit -a') => sub {
 				$self->git_commit_a;
-			},
+			},		
 		],
 		Wx::gettext('Status') => [
 			Wx::gettext('File Status') => sub {
@@ -119,7 +122,17 @@ sub menu_plugins_simple {
 				$self->git_diff_of_project;
 			},
 		],
-
+		Wx::gettext('Log') => [
+			Wx::gettext('log --stat -2') => sub {
+				$self->git_log_stat;
+			},
+			Wx::gettext('log -p -2') => sub {
+				$self->git_log_p;
+			},
+			Wx::gettext('log pretty') => sub {
+				$self->git_log_pretty;
+			},			
+		],
 	];
 }
 
@@ -267,13 +280,23 @@ sub git_commit_project {
 	return;
 }
 #######
+# git_commit_amend
+#######
+sub git_commit_amend {
+	my $self     = shift;	
+	my $main     = $self->main;
+	my $document = $main->current->document;
+	$self->git_cmd( 'commit --amend', '' );
+	return;
+}
+#######
 # git_commit_project
 #######
 sub git_commit_a {
 	my $self     = shift;
 	my $main     = $self->main;
 	my $document = $main->current->document;
-	$self->git_cmd( 'commit -a', '' );
+	$self->git_cmd( 'commit -acd', '' );
 	return;
 }
 
@@ -351,6 +374,35 @@ sub git_diff_of_project {
 	my $main     = $self->main;
 	my $document = $main->current->document;
 	$self->git_cmd( 'diff', $document->project_dir );
+	return;
+}
+
+
+#######
+# git_log_stat
+#######
+sub git_log_stat {
+	my $self     = shift;
+	my $main     = $self->main;
+	$self->git_cmd( 'log --stat -2', '' );
+	return;
+}
+#######
+# git_log_p
+#######
+sub git_log_p {
+	my $self     = shift;
+	my $main     = $self->main;
+	$self->git_cmd( 'log -p -2', '' );
+	return;
+}
+#######
+# git_log_pretty
+#######
+sub git_log_pretty {
+	my $self     = shift;
+	my $main     = $self->main;
+	$self->git_cmd( 'log --pretty=format:"%h %s" --graph', '' );
 	return;
 }
 
