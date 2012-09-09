@@ -109,6 +109,9 @@ sub menu_plugins_simple {
 			Wx::gettext('Diff of File') => sub {
 				$self->git_diff_of_file;
 			},
+			Wx::gettext('Diff of staged File') => sub {
+				$self->git_diff_of_file_staged;
+			},
 			Wx::gettext('Diff of Dir') => sub {
 				$self->git_diff_of_dir;
 			},
@@ -176,7 +179,7 @@ sub git_cmd {
 			);
 		}
 
-		if ( $action ne 'diff' ) {
+		if ( $action !~ m/^diff/ ) {
 
 			#strip leading #
 			$git_cmd->{output} =~ s/^(\#)//sxmg;
@@ -195,6 +198,8 @@ sub git_cmd {
 			#ToDo Padre::Wx::Dialog::Text needs to be updated with FormBuilder
 			require Padre::Wx::Dialog::Text;
 			Padre::Wx::Dialog::Text->show( $main, "Git $action -> $location", $git_cmd->{output} );
+		} else {
+			return 0;
 		}
 	}
 
@@ -311,7 +316,20 @@ sub git_diff_of_file {
 	my $self     = shift;
 	my $main     = $self->main;
 	my $document = $main->current->document;
-	$self->git_cmd( 'diff', $document->filename );
+	my $result   = $self->git_cmd( 'diff', $document->filename );
+	if ( !$result ) {
+		$self->git_cmd( 'diff --cached', $document->filename );
+	}
+	return;
+}
+#######
+# git_diff_of_file_staged
+#######
+sub git_diff_of_file_staged {
+	my $self     = shift;
+	my $main     = $self->main;
+	my $document = $main->current->document;
+	$self->git_cmd( 'diff --cached', $document->filename );
 	return;
 }
 #######
@@ -338,6 +356,9 @@ sub git_diff_of_project {
 
 #ToDo this sub breaks Padre 0.96, Padre 0.97+ good to go :), needs to be padre-plugin api v2.2 compatable
 # This thing should just list a few actions
+#######
+# event_on_context_menu
+#######
 sub event_on_context_menu {
 	my ( $self, $document, $editor, $menu, $event ) = @_;
 
