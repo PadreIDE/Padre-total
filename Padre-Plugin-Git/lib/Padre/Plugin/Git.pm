@@ -74,13 +74,13 @@ sub menu_plugins_simple {
 		},
 		Wx::gettext('Staging') => [
 			Wx::gettext('Add file') => sub {
-				$self->stage_file;
+				$self->git_stage_file;
 			},
 			Wx::gettext('Add all') => sub {
-				$self->stage_all;
+				$self->git_stage_all;
 			},
 			Wx::gettext('reset HEAD file') => sub {
-				$self->unstage_file;
+				$self->git_unstage_file;
 			},
 		],
 		Wx::gettext('Commit') => [
@@ -89,6 +89,9 @@ sub menu_plugins_simple {
 			},
 			Wx::gettext('Commit Project') => sub {
 				$self->git_commit_project;
+			},
+			Wx::gettext('git commit -a') => sub {
+				$self->git_commit_a;
 			},
 		],
 		Wx::gettext('Status') => [
@@ -153,7 +156,7 @@ sub git_cmd {
 
 		my $message;
 		my $git_cmd;
-		if ( $action eq 'commit' ) {
+		if ( $action =~ m/^commit/ ) {
 			$message = $main->prompt( "Git Commit of $location", "Please type in your message", "MY_GIT_COMMIT" );
 
 			return if not $message;
@@ -202,7 +205,7 @@ sub git_cmd {
 #######
 # stage_file
 #######
-sub stage_file {
+sub git_stage_file {
 	my $self     = shift;
 	my $main     = $self->main;
 	my $document = $main->current->document;
@@ -213,7 +216,7 @@ sub stage_file {
 #######
 # stage_file
 #######
-sub stage_all {
+sub git_stage_all {
 	my $self     = shift;
 	my $main     = $self->main;
 	my $document = $main->current->document;
@@ -224,10 +227,13 @@ sub stage_all {
 #######
 # unstage_file
 #######
-sub unstage_file {
+sub git_unstage_file {
 	my $self     = shift;
 	my $main     = $self->main;
 	my $document = $main->current->document;
+
+	#ToDO mj41 should we be using this instead
+	#$self->git_cmd( 'rm --cached', $document->filename );
 	$self->git_cmd( 'reset HEAD', $document->filename );
 	$self->git_cmd( 'status',     $document->filename );
 	return;
@@ -244,7 +250,6 @@ sub git_commit_file {
 	$self->git_cmd( 'commit', $document->filename );
 	return;
 }
-
 #######
 # git_commit_project
 #######
@@ -255,6 +260,17 @@ sub git_commit_project {
 	$self->git_cmd( 'commit', $document->project_dir );
 	return;
 }
+#######
+# git_commit_project
+#######
+sub git_commit_a {
+	my $self     = shift;
+	my $main     = $self->main;
+	my $document = $main->current->document;
+	$self->git_cmd( 'commit -a', '' );
+	return;
+}
+
 
 #######
 # git_status_of_file
@@ -266,7 +282,6 @@ sub git_status_of_file {
 	$self->git_cmd( 'status', $document->filename );
 	return;
 }
-
 #######
 # git_status_of_dir
 #######
@@ -277,7 +292,6 @@ sub git_status_of_dir {
 	$self->git_cmd( 'status', File::Basename::dirname( $document->filename ) );
 	return;
 }
-
 #######
 # git_status_of_project
 #######
@@ -300,7 +314,6 @@ sub git_diff_of_file {
 	$self->git_cmd( 'diff', $document->filename );
 	return;
 }
-
 #######
 # git_diff_of_dir
 #######
@@ -311,7 +324,6 @@ sub git_diff_of_dir {
 	$self->git_cmd( 'diff', File::Basename::dirname( $document->filename ) );
 	return;
 }
-
 #######
 # git_diff_of_project
 #######
@@ -340,11 +352,16 @@ sub event_on_context_menu {
 
 		$menu->AppendSeparator;
 
-		# my $menu_rcs = Wx::Menu->new;
-		my $menu_rcs = $self->menu_plugins_simple;
+		my $item = $menu->Append( -1, Wx::gettext('Git commit -a') );
+		Wx::Event::EVT_MENU(
+			$self->main,
+			$item,
+			sub { $self->git_commit_a },
+		);
 
-		#ToDo ask Adam how do we ad a sub menu here?
-		$menu->Append( -1, Wx::gettext('Git'), $menu_rcs );
+
+
+
 	}
 
 	return;
