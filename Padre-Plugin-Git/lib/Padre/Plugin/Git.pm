@@ -16,7 +16,10 @@ use Try::Tiny;
 
 our $VERSION = '0.04';
 use parent qw(Padre::Plugin);
-
+# use Data::Printer {
+	# caller_info => 1,
+	# colored     => 1,
+# };
 #########
 # We need plugin_enable
 # as we have an external dependency git
@@ -72,66 +75,85 @@ sub menu_plugins_simple {
 		Wx::gettext('About...') => sub {
 			$self->show_about;
 		},
-		Wx::gettext('Staging') => [
-			Wx::gettext('Add file') => sub {
-				$self->git_stage_file;
-			},
-			Wx::gettext('Add all') => sub {
-				$self->git_stage_all;
-			},
-			Wx::gettext('reset HEAD file') => sub {
-				$self->git_unstage_file;
-			},
+		Wx::gettext('Local') => [
+			Wx::gettext('Staging') => [
+				Wx::gettext('Add file') => sub {
+					$self->git_stage_file;
+				},
+				Wx::gettext('Add all') => sub {
+					$self->git_stage_all;
+				},
+				Wx::gettext('reset HEAD file') => sub {
+					$self->git_unstage_file;
+				},
+			],
+			Wx::gettext('Commit') => [
+				Wx::gettext('Commit File') => sub {
+					$self->git_commit_file;
+				},
+				Wx::gettext('Commit Project') => sub {
+					$self->git_commit_project;
+				},
+				Wx::gettext('Commit amend') => sub {
+					$self->git_commit_amend;
+				},
+				Wx::gettext('git commit -a') => sub {
+					$self->git_commit_a;
+				},
+			],
+			Wx::gettext('Checkout') => [
+				Wx::gettext('Checkout File') => sub {
+					$self->git_checkout_file;
+				},
+			],
+			Wx::gettext('Status') => [
+				Wx::gettext('File Status') => sub {
+					$self->git_status_of_file;
+				},
+				Wx::gettext('Directory Status') => sub {
+					$self->git_status_of_dir;
+				},
+				Wx::gettext('Project Status') => sub {
+					$self->git_status_of_project;
+				},
+			],
+			Wx::gettext('Diff') => [
+				Wx::gettext('Diff of File') => sub {
+					$self->git_diff_of_file;
+				},
+				Wx::gettext('Diff of staged File') => sub {
+					$self->git_diff_of_file_staged;
+				},
+				Wx::gettext('Diff of Dir') => sub {
+					$self->git_diff_of_dir;
+				},
+				Wx::gettext('Diff of Project') => sub {
+					$self->git_diff_of_project;
+				},
+			],
+			Wx::gettext('Log') => [
+				Wx::gettext('log --stat -2') => sub {
+					$self->git_log_stat;
+				},
+				Wx::gettext('log -p -2') => sub {
+					$self->git_log_p;
+				},
+				Wx::gettext('log pretty') => sub {
+					$self->git_log_pretty;
+				},
+			],
 		],
-		Wx::gettext('Commit') => [
-			Wx::gettext('Commit File') => sub {
-				$self->git_commit_file;
+		Wx::gettext('Remote') => [
+			Wx::gettext('info') => sub {
+				$self->git_remote_info;
 			},
-			Wx::gettext('Commit Project') => sub {
-				$self->git_commit_project;
+			Wx::gettext('Push to Origin') => sub {
+				$self->git_remote_push_origin;
 			},
-			Wx::gettext('Commit amend') => sub {
-				$self->git_commit_amend;
-			},
-			Wx::gettext('git commit -a') => sub {
-				$self->git_commit_a;
-			},		
-		],
-		Wx::gettext('Status') => [
-			Wx::gettext('File Status') => sub {
-				$self->git_status_of_file;
-			},
-			Wx::gettext('Directory Status') => sub {
-				$self->git_status_of_dir;
-			},
-			Wx::gettext('Project Status') => sub {
-				$self->git_status_of_project;
-			},
-		],
-		Wx::gettext('Diff') => [
-			Wx::gettext('Diff of File') => sub {
-				$self->git_diff_of_file;
-			},
-			Wx::gettext('Diff of staged File') => sub {
-				$self->git_diff_of_file_staged;
-			},
-			Wx::gettext('Diff of Dir') => sub {
-				$self->git_diff_of_dir;
-			},
-			Wx::gettext('Diff of Project') => sub {
-				$self->git_diff_of_project;
-			},
-		],
-		Wx::gettext('Log') => [
-			Wx::gettext('log --stat -2') => sub {
-				$self->git_log_stat;
-			},
-			Wx::gettext('log -p -2') => sub {
-				$self->git_log_p;
-			},
-			Wx::gettext('log pretty') => sub {
-				$self->git_log_pretty;
-			},			
+
+			# Wx::gettext('reset HEAD file') => sub {
+			# $self->git_unstage_file;
+			# },
 		],
 	];
 }
@@ -198,23 +220,34 @@ sub git_cmd {
 			$git_cmd->{output} =~ s/^(\#)//sxmg;
 		}
 
-		#Display correct result
-		if ( $git_cmd->{error} ) {
-			$main->error(
-				sprintf(
-					Wx::gettext("Git Error follows -> \n\n%s"),
-					$git_cmd->{error}
-				),
-			);
-		} elsif ( $git_cmd->{output} ) {
-
-			#ToDo Padre::Wx::Dialog::Text needs to be updated with FormBuilder
-			require Padre::Wx::Dialog::Text;
-			Padre::Wx::Dialog::Text->show( $main, "Git $action -> $location", $git_cmd->{output} );
-			return 1;
-		} else {
-			return 0;
+		#ToDo sort out Fudge, why O why do we not get correct response	
+		# p $git_cmd;
+		if ( $action =~ m/^push/ ) {
+			$git_cmd->{output} = $git_cmd->{error};
+			$git_cmd->{error} = undef;
 		}
+		# p $git_cmd;
+		
+		#Display correct result
+		try {
+			if ( $git_cmd->{error} ) {
+				$main->error(
+					sprintf(
+						Wx::gettext("Git Error follows -> \n\n%s"),
+						$git_cmd->{error}
+					),
+				);
+			}
+			if ( $git_cmd->{output} ) {
+
+				#ToDo Padre::Wx::Dialog::Text needs to be updated with FormBuilder
+				require Padre::Wx::Dialog::Text;
+				Padre::Wx::Dialog::Text->show( $main, "Git $action -> $location", $git_cmd->{output} );
+				return 1;
+			} else {
+				return 0;
+			}
+		};
 	}
 
 	return;
@@ -283,7 +316,7 @@ sub git_commit_project {
 # git_commit_amend
 #######
 sub git_commit_amend {
-	my $self     = shift;	
+	my $self     = shift;
 	my $main     = $self->main;
 	my $document = $main->current->document;
 	$self->git_cmd( 'commit --amend', '' );
@@ -296,7 +329,19 @@ sub git_commit_a {
 	my $self     = shift;
 	my $main     = $self->main;
 	my $document = $main->current->document;
-	$self->git_cmd( 'commit -acd', '' );
+	$self->git_cmd( 'commit -a', '' );
+	return;
+}
+
+
+#######
+# git_checkout_file
+#######
+sub git_checkout_file {
+	my $self     = shift;
+	my $main     = $self->main;
+	my $document = $main->current->document;
+	$self->git_cmd( 'checkout --', $document->filename );
 	return;
 }
 
@@ -382,8 +427,8 @@ sub git_diff_of_project {
 # git_log_stat
 #######
 sub git_log_stat {
-	my $self     = shift;
-	my $main     = $self->main;
+	my $self = shift;
+	my $main = $self->main;
 	$self->git_cmd( 'log --stat -2', '' );
 	return;
 }
@@ -391,8 +436,8 @@ sub git_log_stat {
 # git_log_p
 #######
 sub git_log_p {
-	my $self     = shift;
-	my $main     = $self->main;
+	my $self = shift;
+	my $main = $self->main;
 	$self->git_cmd( 'log -p -2', '' );
 	return;
 }
@@ -400,11 +445,37 @@ sub git_log_p {
 # git_log_pretty
 #######
 sub git_log_pretty {
-	my $self     = shift;
-	my $main     = $self->main;
+	my $self = shift;
+	my $main = $self->main;
 	$self->git_cmd( 'log --pretty=format:"%h %s" --graph', '' );
 	return;
 }
+
+
+#######
+# git_remote_info
+#######
+sub git_remote_info {
+	my $self   = shift;
+	my $main   = $self->main;
+	my $result = $self->git_cmd( 'remote -v', '' );
+	if ( $result == 0 ) {
+		$main->message(
+			Wx::gettext("Info: Git ORGIN Not Found \nLooks like you are not configured as part of a Git Remote Master"),
+		);
+	}
+	return;
+}
+#######
+# git_remote_push_origin
+#######
+sub git_remote_push_origin {
+	my $self = shift;
+	my $main = $self->main;
+	$self->git_cmd( 'push origin master', '' );
+	return;
+}
+
 
 
 #ToDo this sub breaks Padre 0.96, Padre 0.97+ good to go :), needs to be padre-plugin api v2.2 compatable
@@ -432,12 +503,7 @@ sub event_on_context_menu {
 			$item,
 			sub { $self->git_commit_a },
 		);
-
-
-
-
 	}
-
 	return;
 }
 

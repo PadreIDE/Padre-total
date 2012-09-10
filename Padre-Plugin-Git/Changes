@@ -1,19 +1,21 @@
 Revision history for Padre-Plugin-Git
 
-0.04    TBA
-        start on update to p-p api 2 (BOWTIE)
-        event_on_context_menu now works, but menu no (BOWTIE)
-        switch to menu_plugins_simple all items work (BOWTIE)
-        
-        
-0.03    2010.08.20
-        Compatibility with new Padre (CHORNY)
-        chdir to file directory before commit (CHORNY)
+0.04  2012-TBA
+    - Update to Padre-Plugin Api 2.2 (BOWTIE)
+    - event_on_context_menu now works, short cut (BOWTIE)
+    - switch to menu_plugins_simple all items work (BOWTIE)
+    - git local functions, done (BOWTIE)
+    - git remote functions
+    - 
 
-0.02    2009.03.25
-        Add necessary diff methods for file and dir (kaare)
-        Add inc/* and META.yml to MANIFEST (and therefor the tarball) (ryan52)
+0.03  2010.08.20
+    - Compatibility with new Padre (CHORNY)
+    - chdir to file directory before commit (CHORNY)
 
-0.01    2009.03.13
-        First version, released on an unsuspecting world.
-        Based on Padre-Plugin-SVK
+0.02  2009.03.25
+    - Add necessary diff methods for file and dir (kaare)
+    - Add inc/* and META.yml to MANIFEST (and therefor the tarball) (ryan52)
+
+0.01  2009.03.13
+    - First version, released on an unsuspecting world.
+    - Based on Padre-Plugin-SVK
