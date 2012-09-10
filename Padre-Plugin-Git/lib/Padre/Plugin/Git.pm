@@ -15,11 +15,12 @@ use File::Which       ();
 use Try::Tiny;
 
 our $VERSION = '0.04';
-use parent qw(Padre::Plugin);
-# use Data::Printer {
-	# caller_info => 1,
-	# colored     => 1,
-# };
+use parent qw(
+	Padre::Plugin
+	Padre::Role::Task
+);
+
+
 #########
 # We need plugin_enable
 # as we have an external dependency git
@@ -40,6 +41,7 @@ sub plugin_enable {
 # Child modules we need to unload when disabled
 use constant CHILDREN => qw{
 	Padre::Plugin::Git
+	Padre::Plugin::Git::Task
 	Padre::Wx::Dialog::Text
 };
 
@@ -49,8 +51,8 @@ use constant CHILDREN => qw{
 sub padre_interfaces {
 	return (
 		# Default, required
-		'Padre::Plugin' => '0.96',
-
+		'Padre::Plugin'     => '0.96',
+		'Padre::Task'       => '0.96',
 		'Padre::Unload'     => '0.96',
 		'Padre::Config'     => '0.96',
 		'Padre::Wx'         => '0.96',
@@ -133,27 +135,36 @@ sub menu_plugins_simple {
 			],
 			Wx::gettext('Log') => [
 				Wx::gettext('log --stat -2') => sub {
-					$self->git_log_stat;
+					# $self->git_log_stat;
+					$self->git_cmd( 'log --stat -2', '' );
 				},
 				Wx::gettext('log -p -2') => sub {
-					$self->git_log_p;
+					# $self->git_log_p;
+					$self->git_cmd( 'log -p -2', '' );
 				},
 				Wx::gettext('log pretty') => sub {
-					$self->git_log_pretty;
+					# $self->git_log_pretty;
+					$self->git_cmd( 'log --pretty=format:"%h %s" --graph', '' );
 				},
 			],
 		],
-		Wx::gettext('Remote') => [
-			Wx::gettext('info') => sub {
-				$self->git_remote_info;
+		Wx::gettext('Origin (Remote)') => [
+			Wx::gettext('Show info about Origin') => sub {
+				# $self->git_remote_show_origin;
+				$self->git_cmd_task( 'remote show origin', '' );
 			},
 			Wx::gettext('Push to Origin') => sub {
-				$self->git_remote_push_origin;
+				# $self->git_remote_push_origin;
+				$self->git_cmd_task( 'push origin master', '' );
 			},
-
-			# Wx::gettext('reset HEAD file') => sub {
-			# $self->git_unstage_file;
-			# },
+			Wx::gettext('Fetch from Origin') => sub {
+				# $self->git_remote_fetch_origin;
+				$self->git_cmd_task( 'fetch origin master', '' );
+			},
+			Wx::gettext('Pull from Origin') => sub {
+				# $self->git_remote_pull_origin;
+				$self->git_cmd_task( 'pull origin master', '' );
+			},
 		],
 	];
 }
@@ -220,14 +231,15 @@ sub git_cmd {
 			$git_cmd->{output} =~ s/^(\#)//sxmg;
 		}
 
-		#ToDo sort out Fudge, why O why do we not get correct response	
+		#ToDo sort out Fudge, why O why do we not get correct response
 		# p $git_cmd;
 		if ( $action =~ m/^push/ ) {
 			$git_cmd->{output} = $git_cmd->{error};
-			$git_cmd->{error} = undef;
+			$git_cmd->{error}  = undef;
 		}
+
 		# p $git_cmd;
-		
+
 		#Display correct result
 		try {
 			if ( $git_cmd->{error} ) {
@@ -252,6 +264,59 @@ sub git_cmd {
 
 	return;
 }
+
+
+#######
+# git_cmd_task
+#######
+sub git_cmd_task {
+	my $self     = shift;
+	my $action   = shift;
+	my $location = shift;
+	my $main     = $self->main;
+	my $document = $main->current->document;
+
+	require Padre::Plugin::Git::Task;
+
+	# Fire the task
+	$self->task_request(
+		task        => 'Padre::Plugin::Git::Task',
+		action      => $action,
+		location    => $location,
+		project_dir => $document->project_dir,
+		on_finish   => 'on_finish',
+	);
+
+	return;
+}
+
+#######
+# on compleation of task do this
+#######
+sub on_finish {
+	my $self = shift;
+	my $task = shift;
+	my $main = $self->main;
+
+	if ( $task->{error} ) {
+		$main->error(
+			sprintf(
+				Wx::gettext("Git Error follows -> \n\n%s"),
+				$task->{error}
+			),
+		);
+	}
+	if ( $task->{output} ) {
+
+		#ToDo Padre::Wx::Dialog::Text needs to be updated with FormBuilder
+		require Padre::Wx::Dialog::Text;
+		Padre::Wx::Dialog::Text->show( $main, "Git $task->{action} -> $task->{location}", $task->{output} );
+	}
+	return;
+}
+
+
+
 
 
 #######
@@ -426,56 +491,64 @@ sub git_diff_of_project {
 #######
 # git_log_stat
 #######
-sub git_log_stat {
-	my $self = shift;
-	my $main = $self->main;
-	$self->git_cmd( 'log --stat -2', '' );
-	return;
-}
+# sub git_log_stat {
+	# my $self = shift;
+	# my $main = $self->main;
+	# $self->git_cmd( 'log --stat -2', '' );
+	# return;
+# }
 #######
 # git_log_p
 #######
-sub git_log_p {
-	my $self = shift;
-	my $main = $self->main;
-	$self->git_cmd( 'log -p -2', '' );
-	return;
-}
+# sub git_log_p {
+	# my $self = shift;
+	# my $main = $self->main;
+	# $self->git_cmd( 'log -p -2', '' );
+	# return;
+# }
 #######
 # git_log_pretty
 #######
-sub git_log_pretty {
-	my $self = shift;
-	my $main = $self->main;
-	$self->git_cmd( 'log --pretty=format:"%h %s" --graph', '' );
-	return;
-}
+# sub git_log_pretty {
+	# my $self = shift;
+	# my $main = $self->main;
+	# $self->git_cmd( 'log --pretty=format:"%h %s" --graph', '' );
+	# return;
+# }
 
 
 #######
-# git_remote_info
+# git_remote_show_origin
 #######
-sub git_remote_info {
-	my $self   = shift;
-	my $main   = $self->main;
-	my $result = $self->git_cmd( 'remote -v', '' );
-	if ( $result == 0 ) {
-		$main->message(
-			Wx::gettext("Info: Git ORGIN Not Found \nLooks like you are not configured as part of a Git Remote Master"),
-		);
-	}
-	return;
-}
+# sub git_remote_show_origin {
+	# my $self = shift;
+	# $self->git_cmd_task( 'remote show origin', '' );
+	# return;
+# }
 #######
 # git_remote_push_origin
 #######
-sub git_remote_push_origin {
-	my $self = shift;
-	my $main = $self->main;
-	$self->git_cmd( 'push origin master', '' );
-	return;
-}
-
+# sub git_remote_push_origin {
+	# my $self = shift;
+	# $self->git_cmd_task( 'push origin master', '' );
+	# return;
+# }
+#######
+# git_remote_fetch_origin
+#######
+# sub git_remote_fetch_origin {
+	# my $self = shift;
+	# $self->git_cmd_task( 'fetch origin master', '' );
+	# return;
+# }
+#######
+# git_remote_pull_origin
+#######
+# sub git_remote_pull_origin {
+	# my $self = shift;
+	# $self->git_cmd_task( 'pull origin master', '' );
+	# return;
+# }
 
 
 #ToDo this sub breaks Padre 0.96, Padre 0.97+ good to go :), needs to be padre-plugin api v2.2 compatable
