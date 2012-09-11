@@ -1,4 +1,4 @@
-package Padre::Plugin::Git::Task;
+package Padre::Plugin::Git::Task::Git_cmd;
 
 use v5.10;
 use strictures 1;
