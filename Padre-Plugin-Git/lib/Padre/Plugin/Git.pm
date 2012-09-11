@@ -314,7 +314,7 @@ sub git_cmd_task {
 	# my $tab_id = $self->main->editor_of_file( $document->{filename} );
 	# if ( $self->{open_file_info}->{$tab_id}->{'vcs'} =~ m/Git/sxm ) {
 
-	require Padre::Plugin::Git::Task;
+	require Padre::Plugin::Git::Task::Git_cmd;
 
 	# Fire the task
 	$self->task_request(
