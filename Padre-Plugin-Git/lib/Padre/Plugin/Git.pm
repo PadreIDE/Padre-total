@@ -21,8 +21,8 @@ use parent qw(
 );
 
 # use Data::Printer {
-	# caller_info => 1,
-	# colored     => 1,
+# caller_info => 1,
+# colored     => 1,
 # };
 
 
@@ -46,8 +46,9 @@ sub plugin_enable {
 # Child modules we need to unload when disabled
 use constant CHILDREN => qw{
 	Padre::Plugin::Git
-	Padre::Plugin::Git::Task
-	Padre::Wx::Dialog::Text
+	Padre::Plugin::Git::Task::Git_cmd
+	Padre::Plugin::Git::Output
+	Padre::Plugin::Git::FBP::Output
 };
 
 #######
@@ -80,98 +81,125 @@ sub menu_plugins_simple {
 	my $self     = shift;
 	my $main     = $self->main;
 	my $document = $main->current->document;
-	return $self->plugin_name => [
-		Wx::gettext('About...') => sub {
-			$self->show_about;
-		},
-		Wx::gettext('Local') => [
-			Wx::gettext('Staging') => [
-				Wx::gettext('Add file') => sub {
-					$self->git_cmd( 'add',    $document->filename );
-					$self->git_cmd( 'status', $document->filename );
-				},
-				Wx::gettext('Add all') => sub {
-					$self->git_cmd( 'add',    $document->project_dir );
-					$self->git_cmd( 'status', $document->project_dir );
-				},
-				Wx::gettext('reset HEAD file') => sub {
-					#ToDO mj41 should we be using this instead
-					#$self->git_cmd( 'rm --cached', $document->filename );
-					$self->git_cmd( 'reset HEAD', $document->filename );
-					$self->git_cmd( 'status',     $document->filename );
-				},
-			],
-			Wx::gettext('Commit') => [
-				Wx::gettext('Commit File') => sub {
-					$self->git_cmd( 'commit', $document->filename );
-				},
-				Wx::gettext('Commit Project') => sub {
-					$self->git_cmd( 'commit', $document->project_dir );
-				},
-				Wx::gettext('Commit amend') => sub {
-					$self->git_cmd( 'commit --amend', '' );
-				},
-				Wx::gettext('git commit -a') => sub {
-					$self->git_cmd( 'commit -a', '' );
-				},
-			],
-			Wx::gettext('Checkout') => [
-				Wx::gettext('Checkout File') => sub {
-					$self->git_cmd( 'checkout --', $document->filename );
-				},
-			],
-			Wx::gettext('Status') => [
-				Wx::gettext('File Status') => sub {
-					$self->git_cmd( 'status', $document->filename );
-				},
-				Wx::gettext('Directory Status') => sub {
-					self->git_cmd( 'status', File::Basename::dirname( $document->filename ) );
-				},
-				Wx::gettext('Project Status') => sub {
-					$self->git_cmd( 'status', $document->project_dir );
-				},
-			],
-			Wx::gettext('Diff') => [
-				Wx::gettext('Diff of File') => sub {
-					my $result = $self->git_cmd( 'diff', $document->filename );
-				},
-				Wx::gettext('Diff of staged File') => sub {
-					$self->git_cmd( 'diff --cached', $document->filename );
-				},
-				Wx::gettext('Diff of Dir') => sub {
-					$self->git_cmd( 'diff', File::Basename::dirname( $document->filename ) );
-				},
-				Wx::gettext('Diff of Project') => sub {
-					$self->git_cmd( 'diff', $document->project_dir );
-				},
-			],
-			Wx::gettext('Log') => [
-				Wx::gettext('log --stat -2') => sub {
-					$self->git_cmd( 'log --stat -2', '' );
-				},
-				Wx::gettext('log -p -2') => sub {
-					$self->git_cmd( 'log -p -2', '' );
-				},
-				Wx::gettext('log pretty') => sub {
-					$self->git_cmd( 'log --pretty=format:"%h %s" --graph', '' );
-				},
-			],
-		],
-		Wx::gettext('Origin (Remote)') => [
-			Wx::gettext('Show info about Origin') => sub {
-				$self->git_cmd_task( 'remote show origin', '' );
-			},
-			Wx::gettext('Push to Origin') => sub {
-				$self->git_cmd_task( 'push origin master', '' );
-			},
-			Wx::gettext('Fetch from Origin') => sub {
-				$self->git_cmd_task( 'fetch origin master', '' );
-			},
-			Wx::gettext('Pull from Origin') => sub {
-				$self->git_cmd_task( 'pull origin master', '' );
-			},
-		],
-	];
+
+	#Hide Git on Tools menu if current file is not in a Git controled dir
+	$self->current_files;
+	my $tab_id = $self->main->editor_of_file( $document->{filename} );
+	try {
+		if ( defined $tab_id ) {
+			if ( $self->{open_file_info}->{$tab_id}->{'vcs'} =~ m/Git/sxm ) {
+
+				return $self->plugin_name => [
+					Wx::gettext('About...') => sub {
+						$self->show_about;
+					},
+					Wx::gettext('Local') => [
+						Wx::gettext('Staging') => [
+							Wx::gettext('Add file') => sub {
+								$self->git_cmd( 'add',    $document->filename );
+								$self->git_cmd( 'status', $document->filename );
+							},
+							Wx::gettext('Add all') => sub {
+								$self->git_cmd( 'add',    $document->project_dir );
+								$self->git_cmd( 'status', $document->project_dir );
+							},
+							Wx::gettext('reset HEAD file') => sub {
+
+								#ToDo mj41 should we be using this instead
+								#$self->git_cmd( 'rm --cached', $document->filename );
+								$self->git_cmd( 'reset HEAD', $document->filename );
+								$self->git_cmd( 'status',     $document->filename );
+							},
+						],
+						Wx::gettext('Commit') => [
+							Wx::gettext('Commit File') => sub {
+								$self->git_cmd( 'commit', $document->filename );
+							},
+							Wx::gettext('Commit Project') => sub {
+								$self->git_cmd( 'commit', $document->project_dir );
+							},
+							Wx::gettext('Commit amend') => sub {
+								$self->git_cmd( 'commit --amend', '' );
+							},
+							Wx::gettext('git commit -a') => sub {
+								$self->git_cmd( 'commit -a', '' );
+							},
+						],
+						Wx::gettext('Checkout') => [
+							Wx::gettext('Checkout File') => sub {
+								$self->git_cmd( 'checkout --', $document->filename );
+							},
+						],
+						Wx::gettext('Status') => [
+							Wx::gettext('File Status') => sub {
+								$self->git_cmd( 'status', $document->filename );
+							},
+							Wx::gettext('Directory Status') => sub {
+								self->git_cmd( 'status', File::Basename::dirname( $document->filename ) );
+							},
+							Wx::gettext('Project Status') => sub {
+								$self->git_cmd( 'status', $document->project_dir );
+							},
+						],
+						Wx::gettext('Diff') => [
+							Wx::gettext('Diff of File') => sub {
+								my $result = $self->git_cmd( 'diff', $document->filename );
+							},
+							Wx::gettext('Diff of staged File') => sub {
+								$self->git_cmd( 'diff --cached', $document->filename );
+							},
+							Wx::gettext('Diff of Dir') => sub {
+								$self->git_cmd( 'diff', File::Basename::dirname( $document->filename ) );
+							},
+							Wx::gettext('Diff of Project') => sub {
+								$self->git_cmd( 'diff', $document->project_dir );
+							},
+						],
+						Wx::gettext('Log') => [
+							Wx::gettext('log --stat -2') => sub {
+								$self->git_cmd( 'log --stat -2', '' );
+							},
+							Wx::gettext('log -p -2') => sub {
+								$self->git_cmd( 'log -p -2', '' );
+							},
+							Wx::gettext('log pretty') => sub {
+								$self->git_cmd( 'log --pretty=format:"%h %s" --graph', '' );
+							},
+						],
+					],
+					Wx::gettext('Origin (Remote/Your GitHub Fork)') => [
+						Wx::gettext('Show info about Origin') => sub {
+							$self->git_cmd_task( 'remote show origin', '' );
+						},
+						Wx::gettext('Push to Origin') => sub {
+							$self->git_cmd_task( 'push origin master', '' );
+						},
+						Wx::gettext('Fetch from Origin') => sub {
+							$self->git_cmd_task( 'fetch origin master', '' );
+						},
+						Wx::gettext('Pull from Origin') => sub {
+							$self->git_cmd_task( 'pull origin master', '' );
+						},
+					],
+					Wx::gettext('Upstream (GitHub Master)') => [
+						Wx::gettext('Show Upstream Info.') => sub {
+							$self->git_cmd_task( 'remote show upstream', '' );
+						},
+						Wx::gettext('Fetch Upstream') => sub {
+							$self->git_cmd_task( 'fetch upstream', '' );
+						},
+						Wx::gettext('Merge Upstream Master') => sub {
+							$self->git_cmd_task( 'merge upstream/master', '' );
+						},
+
+						# Wx::gettext('Pull from Origin') => sub {
+						# $self->git_cmd_task( 'pull origin master', '' );
+						# },
+					],
+				];
+			}
+		}
+	};
 }
 
 #######
@@ -204,68 +232,69 @@ sub git_cmd {
 	my $main     = $self->main;
 	my $document = $main->current->document;
 
-	$self->current_files;
-	my $tab_id = $self->main->editor_of_file( $document->{filename} );
-	if ( $self->{open_file_info}->{$tab_id}->{'vcs'} =~ m/Git/sxm ) {
+	# $self->current_files;
+	# my $tab_id = $self->main->editor_of_file( $document->{filename} );
+	# if ( $self->{open_file_info}->{$tab_id}->{'vcs'} =~ m/Git/sxm ) {
 
-		my $message;
-		my $git_cmd;
-		if ( $action =~ m/^commit/ ) {
-			$message = $main->prompt( "Git Commit of $location", "Please type in your message", "MY_GIT_COMMIT" );
+	my $message;
+	my $git_cmd;
+	if ( $action =~ m/^commit/ ) {
+		$message = $main->prompt( "Git Commit of $location", "Please type in your message", "MY_GIT_COMMIT" );
 
-			return if not $message;
+		return if not $message;
 
-			require Padre::Util;
-			$git_cmd = Padre::Util::run_in_directory_two(
-				cmd    => "git $action $location -m \"$message\"",
-				dir    => $document->project_dir,
-				option => 0
-			);
-		} else {
-			require Padre::Util;
-			$git_cmd = Padre::Util::run_in_directory_two(
-				cmd    => "git $action $location",
-				dir    => $document->project_dir,
-				option => 0
-			);
-		}
-
-		if ( $action !~ m/^diff/ ) {
-
-			#strip leading #
-			$git_cmd->{output} =~ s/^(\#)//sxmg;
-		}
-
-		#ToDo sort out Fudge, why O why do we not get correct response
-		# p $git_cmd;
-		if ( $action =~ m/^push/ ) {
-			$git_cmd->{output} = $git_cmd->{error};
-			$git_cmd->{error}  = undef;
-		}
-
-		# p $git_cmd;
-
-		#Display correct result
-		try {
-			if ( $git_cmd->{error} ) {
-				$main->error(
-					sprintf(
-						Wx::gettext("Git Error follows -> \n\n%s"),
-						$git_cmd->{error}
-					),
-				);
-			}
-			if ( $git_cmd->{output} ) {
-
-				#ToDo Padre::Wx::Dialog::Text needs to be updated with FormBuilder
-				require Padre::Wx::Dialog::Text;
-				Padre::Wx::Dialog::Text->show( $main, "Git $action -> $location", $git_cmd->{output} );
-			} else {
-				$main->info(
-					Wx::gettext( 'Info: There is no response, just as if you had run it on the cmd yourself.' ) );
-			}
-		};
+		require Padre::Util;
+		$git_cmd = Padre::Util::run_in_directory_two(
+			cmd    => "git $action $location -m \"$message\"",
+			dir    => $document->project_dir,
+			option => 0
+		);
+	} else {
+		require Padre::Util;
+		$git_cmd = Padre::Util::run_in_directory_two(
+			cmd    => "git $action $location",
+			dir    => $document->project_dir,
+			option => 0
+		);
 	}
+
+	if ( $action !~ m/^diff/ ) {
+
+		#strip leading #
+		$git_cmd->{output} =~ s/^(\#)//sxmg;
+	}
+
+	#ToDo sort out Fudge, why O why do we not get correct response
+	# p $git_cmd;
+	if ( $action =~ m/^push/ ) {
+		$git_cmd->{output} = $git_cmd->{error};
+		$git_cmd->{error}  = undef;
+	}
+
+	# p $git_cmd;
+
+	#Display correct result
+	try {
+		if ( $git_cmd->{error} ) {
+			$main->error(
+				sprintf(
+					Wx::gettext("Git Error follows -> \n\n%s"),
+					$git_cmd->{error}
+				),
+			);
+		}
+		if ( $git_cmd->{output} ) {
+
+			#ToDo Padre::Wx::Dialog::Text needs to be updated with FormBuilder
+			# require Padre::Wx::Dialog::Text;
+			# Padre::Wx::Dialog::Text->show( $main, "Git $action -> $location", $git_cmd->{output} );
+			$self->load_dialog_output( "Git $action -> $location", $git_cmd->{output} );
+		} else {
+			$main->info( Wx::gettext('Info: There is no response, just as if you had run it on the cmd yourself.') );
+		}
+	};
+
+	# }
 
 	return;
 }
@@ -281,16 +310,22 @@ sub git_cmd_task {
 	my $main     = $self->main;
 	my $document = $main->current->document;
 
+	# $self->current_files;
+	# my $tab_id = $self->main->editor_of_file( $document->{filename} );
+	# if ( $self->{open_file_info}->{$tab_id}->{'vcs'} =~ m/Git/sxm ) {
+
 	require Padre::Plugin::Git::Task;
 
 	# Fire the task
 	$self->task_request(
-		task        => 'Padre::Plugin::Git::Task',
+		task        => 'Padre::Plugin::Git::Task::Git_cmd',
 		action      => $action,
 		location    => $location,
 		project_dir => $document->project_dir,
 		on_finish   => 'on_finish',
 	);
+
+	# }
 
 	return;
 }
@@ -313,12 +348,38 @@ sub on_finish {
 	if ( $task->{output} ) {
 
 		#ToDo Padre::Wx::Dialog::Text needs to be updated with FormBuilder
-		require Padre::Wx::Dialog::Text;
-		Padre::Wx::Dialog::Text->show( $main, "Git $task->{action} -> $task->{location}", $task->{output} );
+		# require Padre::Wx::Dialog::Text;
+		# Padre::Wx::Dialog::Text->show( $main, "Git $task->{action} -> $task->{location}", $task->{output} );
+		$self->load_dialog_output( "Git task->{action} -> $task->{location}", $task->{output} );
+
+	} else {
+		$main->info( Wx::gettext('Info: There is no response, just as if you had run it on the cmd yourself.') );
 	}
 	return;
 }
 
+########
+# Composed Method,
+# Load Output dialog, only once
+#######
+sub load_dialog_output {
+	my $self  = shift;
+	my $title = shift;
+	my $text  = shift;
+
+	# Padre main window integration
+	my $main = $self->main;
+
+	# Close the dialog if it is hanging around
+	$self->clean_dialog;
+
+	# Create the new dialog
+	require Padre::Plugin::Git::Output;
+	$self->{dialog} = Padre::Plugin::Git::Output->new( $main, $title, $text );
+	$self->{dialog}->Show;
+
+	return;
+}
 
 #######
 # event_on_context_menu
