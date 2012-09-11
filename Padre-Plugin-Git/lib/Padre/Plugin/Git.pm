@@ -87,20 +87,14 @@ sub menu_plugins_simple {
 		Wx::gettext('Local') => [
 			Wx::gettext('Staging') => [
 				Wx::gettext('Add file') => sub {
-
-					# $self->git_stage_file;
 					$self->git_cmd( 'add',    $document->filename );
 					$self->git_cmd( 'status', $document->filename );
 				},
 				Wx::gettext('Add all') => sub {
-
-					# $self->git_stage_all;
 					$self->git_cmd( 'add',    $document->project_dir );
 					$self->git_cmd( 'status', $document->project_dir );
 				},
 				Wx::gettext('reset HEAD file') => sub {
-
-					# $self->git_unstage_file;
 					#ToDO mj41 should we be using this instead
 					#$self->git_cmd( 'rm --cached', $document->filename );
 					$self->git_cmd( 'reset HEAD', $document->filename );
@@ -109,109 +103,71 @@ sub menu_plugins_simple {
 			],
 			Wx::gettext('Commit') => [
 				Wx::gettext('Commit File') => sub {
-
-					# $self->git_commit_file;
 					$self->git_cmd( 'commit', $document->filename );
 				},
 				Wx::gettext('Commit Project') => sub {
-
-					# $self->git_commit_project;
 					$self->git_cmd( 'commit', $document->project_dir );
 				},
 				Wx::gettext('Commit amend') => sub {
-
-					# $self->git_commit_amend;
 					$self->git_cmd( 'commit --amend', '' );
 				},
 				Wx::gettext('git commit -a') => sub {
-
-					# $self->git_commit_a;
 					$self->git_cmd( 'commit -a', '' );
 				},
 			],
 			Wx::gettext('Checkout') => [
 				Wx::gettext('Checkout File') => sub {
-
-					# $self->git_checkout_file;
 					$self->git_cmd( 'checkout --', $document->filename );
 				},
 			],
 			Wx::gettext('Status') => [
 				Wx::gettext('File Status') => sub {
-
-					# $self->git_status_of_file;
 					$self->git_cmd( 'status', $document->filename );
 				},
 				Wx::gettext('Directory Status') => sub {
-
-					# $self->git_status_of_dir;
 					self->git_cmd( 'status', File::Basename::dirname( $document->filename ) );
 				},
 				Wx::gettext('Project Status') => sub {
-
-					# $self->git_status_of_project;
 					$self->git_cmd( 'status', $document->project_dir );
 				},
 			],
 			Wx::gettext('Diff') => [
 				Wx::gettext('Diff of File') => sub {
-
-					# $self->git_diff_of_file;
 					my $result = $self->git_cmd( 'diff', $document->filename );
 				},
 				Wx::gettext('Diff of staged File') => sub {
-
-					# $self->git_diff_of_file_staged;
 					$self->git_cmd( 'diff --cached', $document->filename );
 				},
 				Wx::gettext('Diff of Dir') => sub {
-
-					# $self->git_diff_of_dir;
 					$self->git_cmd( 'diff', File::Basename::dirname( $document->filename ) );
 				},
 				Wx::gettext('Diff of Project') => sub {
-
-					# $self->git_diff_of_project;
 					$self->git_cmd( 'diff', $document->project_dir );
 				},
 			],
 			Wx::gettext('Log') => [
 				Wx::gettext('log --stat -2') => sub {
-
-					# $self->git_log_stat;
 					$self->git_cmd( 'log --stat -2', '' );
 				},
 				Wx::gettext('log -p -2') => sub {
-
-					# $self->git_log_p;
 					$self->git_cmd( 'log -p -2', '' );
 				},
 				Wx::gettext('log pretty') => sub {
-
-					# $self->git_log_pretty;
 					$self->git_cmd( 'log --pretty=format:"%h %s" --graph', '' );
 				},
 			],
 		],
 		Wx::gettext('Origin (Remote)') => [
 			Wx::gettext('Show info about Origin') => sub {
-
-				# $self->git_remote_show_origin;
 				$self->git_cmd_task( 'remote show origin', '' );
 			},
 			Wx::gettext('Push to Origin') => sub {
-
-				# $self->git_remote_push_origin;
 				$self->git_cmd_task( 'push origin master', '' );
 			},
 			Wx::gettext('Fetch from Origin') => sub {
-
-				# $self->git_remote_fetch_origin;
 				$self->git_cmd_task( 'fetch origin master', '' );
 			},
 			Wx::gettext('Pull from Origin') => sub {
-
-				# $self->git_remote_pull_origin;
 				$self->git_cmd_task( 'pull origin master', '' );
 			},
 		],
@@ -338,7 +294,6 @@ sub git_cmd_task {
 
 	return;
 }
-
 #######
 # on compleation of task do this
 #######
@@ -365,8 +320,156 @@ sub on_finish {
 }
 
 
+#######
+# event_on_context_menu
+#######
+sub event_on_context_menu {
+	my ( $self, $document, $editor, $menu, $event ) = @_;
+
+	$self->current_files;
+	return if not $document->filename;
+	return if not $document->project_dir;
+
+	my $tab_id = $self->main->editor_of_file( $document->{filename} );
+
+	# p $self->{open_file_info}->{$tab_id}->{'vcs'};
+	if ( $self->{open_file_info}->{$tab_id}->{'vcs'} =~ m/Git/sxm ) {
+
+		$menu->AppendSeparator;
+
+		my $item = $menu->Append( -1, Wx::gettext('Git commit -a') );
+		Wx::Event::EVT_MENU(
+			$self->main,
+			$item,
+			sub { $self->git_cmd( 'commit -a', '' ) },
+		);
+	}
+	return;
+}
+
+#######
+# Method current_files hacked from wx-dialog-patch
+#######
+sub current_files {
+	my $self     = shift;
+	my $main     = $self->main;
+	my $current  = $main->current;
+	my $notebook = $current->notebook;
+	my @label    = $notebook->labels;
+
+	# get last element # not size
+	$self->{tab_cardinality} = $#label;
+
+	# thanks Alias
+	my @file_vcs = map { $_->project->vcs } $self->main->documents;
+
+	# create a bucket for open file info, as only a current file bucket exist
+	for ( 0 .. $self->{tab_cardinality} ) {
+		$self->{open_file_info}->{$_} = (
+			{   'index'    => $_,
+				'URL'      => $label[$_][1],
+				'filename' => $notebook->GetPageText($_),
+				'changed'  => 0,
+				'vcs'      => $file_vcs[$_],
+			},
+		);
+
+		if ( $notebook->GetPageText($_) =~ /^\*/sxm ) {
+
+			# TRACE("Found an unsaved file, will ignore: $notebook->GetPageText($_)") if DEBUG;
+			$self->{open_file_info}->{$_}->{'changed'} = 1;
+		}
+	}
+
+	return;
+}
+
+########
+# plugin_disable
+########
+sub plugin_disable {
+	my $self = shift;
+
+	# Close the dialog if it is hanging around
+	$self->clean_dialog;
+
+	# Unload all our child classes
+	for my $package (CHILDREN) {
+		require Padre::Unload;
+		Padre::Unload->unload($package);
+	}
+
+	$self->SUPER::plugin_disable(@_);
+
+	return 1;
+}
+
+########
+# Composed Method clean_dialog
+########
+sub clean_dialog {
+	my $self = shift;
+
+	# Close the main dialog if it is hanging around
+	if ( $self->{dialog} ) {
+		$self->{dialog}->Hide;
+		$self->{dialog}->Destroy;
+		delete $self->{dialog};
+	}
+
+	return 1;
+}
+
+1;
+
+__END__
+
+=head1 NAME
+
+Padre::Plugin::Git - Simple Git interface for Padre, the Perl IDE,
+
+=head1 VERSION
+
+version 0.04
+
+=head1 SYNOPSIS
+
+cpan install Padre::Plugin::Git
+
+Access it via Plugin/Git
 
 
+=head1 AUTHOR
+
+Kevin Dawson E<lt>bowtie@cpan.orgE<gt>
+
+Kaare Rasmussen, C<< <kaare at cpan.org> >>
+
+=head1 BUGS
+
+Please report any bugs or feature requests to L<http://padre.perlide.org/>
+
+
+=head1 COPYRIGHT & LICENSE
+
+Copyright 2008-2012 The Padre development team as listed in Padre.pm in the
+Padre distribution all rights reserved.
+
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
+
+=cut
+
+# Copyright 2008-2012 The Padre development team as listed in Padre.pm.
+# LICENSE
+# This program is free software; you can redistribute it and/or
+# modify it under the same terms as Perl 5 itself.
+
+
+
+
+
+#####################
 
 #######
 # stage_file
@@ -598,151 +701,3 @@ sub on_finish {
 # $self->git_cmd_task( 'pull origin master', '' );
 # return;
 # }
-
-
-#ToDo this sub breaks Padre 0.96, Padre 0.97+ good to go :), needs to be padre-plugin api v2.2 compatable
-# This thing should just list a few actions
-#######
-# event_on_context_menu
-#######
-sub event_on_context_menu {
-	my ( $self, $document, $editor, $menu, $event ) = @_;
-
-	$self->current_files;
-	return if not $document->filename;
-	return if not $document->project_dir;
-
-	my $tab_id = $self->main->editor_of_file( $document->{filename} );
-
-	# p $self->{open_file_info}->{$tab_id}->{'vcs'};
-	if ( $self->{open_file_info}->{$tab_id}->{'vcs'} =~ m/Git/sxm ) {
-
-		$menu->AppendSeparator;
-
-		my $item = $menu->Append( -1, Wx::gettext('Git commit -a') );
-		Wx::Event::EVT_MENU(
-			$self->main,
-			$item,
-			sub { $self->git_cmd( 'commit -a', '' ) },
-		);
-	}
-	return;
-}
-
-#######
-# Method current_files hacked from wx-dialog-patch
-#######
-sub current_files {
-	my $self     = shift;
-	my $main     = $self->main;
-	my $current  = $main->current;
-	my $notebook = $current->notebook;
-	my @label    = $notebook->labels;
-
-	# get last element # not size
-	$self->{tab_cardinality} = $#label;
-
-	# thanks Alias
-	my @file_vcs = map { $_->project->vcs } $self->main->documents;
-
-	# create a bucket for open file info, as only a current file bucket exist
-	for ( 0 .. $self->{tab_cardinality} ) {
-		$self->{open_file_info}->{$_} = (
-			{   'index'    => $_,
-				'URL'      => $label[$_][1],
-				'filename' => $notebook->GetPageText($_),
-				'changed'  => 0,
-				'vcs'      => $file_vcs[$_],
-			},
-		);
-
-		if ( $notebook->GetPageText($_) =~ /^\*/sxm ) {
-
-			# TRACE("Found an unsaved file, will ignore: $notebook->GetPageText($_)") if DEBUG;
-			$self->{open_file_info}->{$_}->{'changed'} = 1;
-		}
-	}
-
-	return;
-}
-
-########
-# plugin_disable
-########
-sub plugin_disable {
-	my $self = shift;
-
-	# Close the dialog if it is hanging around
-	$self->clean_dialog;
-
-	# Unload all our child classes
-	for my $package (CHILDREN) {
-		require Padre::Unload;
-		Padre::Unload->unload($package);
-	}
-
-	$self->SUPER::plugin_disable(@_);
-
-	return 1;
-}
-
-########
-# Composed Method clean_dialog
-########
-sub clean_dialog {
-	my $self = shift;
-
-	# Close the main dialog if it is hanging around
-	if ( $self->{dialog} ) {
-		$self->{dialog}->Hide;
-		$self->{dialog}->Destroy;
-		delete $self->{dialog};
-	}
-
-	return 1;
-}
-
-1;
-
-__END__
-
-=head1 NAME
-
-Padre::Plugin::Git - Simple Git interface for Padre, the Perl IDE,
-
-=head1 VERSION
-
-version 0.04
-
-=head1 SYNOPSIS
-
-cpan install Padre::Plugin::Git
-
-Access it via Plugin/Git
-
-
-=head1 AUTHOR
-
-Kevin Dawson E<lt>bowtie@cpan.orgE<gt>
-
-Kaare Rasmussen, C<< <kaare at cpan.org> >>
-
-=head1 BUGS
-
-Please report any bugs or feature requests to L<http://padre.perlide.org/>
-
-
-=head1 COPYRIGHT & LICENSE
-
-Copyright 2008-2012 The Padre development team as listed in Padre.pm in the
-Padre distribution all rights reserved.
-
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
-
-=cut
-
-# Copyright 2008-2012 The Padre development team as listed in Padre.pm.
-# LICENSE
-# This program is free software; you can redistribute it and/or
-# modify it under the same terms as Perl 5 itself.
