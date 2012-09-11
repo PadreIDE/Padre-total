@@ -20,6 +20,11 @@ use parent qw(
 	Padre::Role::Task
 );
 
+# use Data::Printer {
+	# caller_info => 1,
+	# colored     => 1,
+# };
+
 
 #########
 # We need plugin_enable
@@ -72,7 +77,9 @@ sub plugin_name {
 # Add Plugin to Padre Menu
 #######
 sub menu_plugins_simple {
-	my $self = shift;
+	my $self     = shift;
+	my $main     = $self->main;
+	my $document = $main->current->document;
 	return $self->plugin_name => [
 		Wx::gettext('About...') => sub {
 			$self->show_about;
@@ -80,69 +87,107 @@ sub menu_plugins_simple {
 		Wx::gettext('Local') => [
 			Wx::gettext('Staging') => [
 				Wx::gettext('Add file') => sub {
-					$self->git_stage_file;
+
+					# $self->git_stage_file;
+					$self->git_cmd( 'add',    $document->filename );
+					$self->git_cmd( 'status', $document->filename );
 				},
 				Wx::gettext('Add all') => sub {
-					$self->git_stage_all;
+
+					# $self->git_stage_all;
+					$self->git_cmd( 'add',    $document->project_dir );
+					$self->git_cmd( 'status', $document->project_dir );
 				},
 				Wx::gettext('reset HEAD file') => sub {
-					$self->git_unstage_file;
+
+					# $self->git_unstage_file;
+					#ToDO mj41 should we be using this instead
+					#$self->git_cmd( 'rm --cached', $document->filename );
+					$self->git_cmd( 'reset HEAD', $document->filename );
+					$self->git_cmd( 'status',     $document->filename );
 				},
 			],
 			Wx::gettext('Commit') => [
 				Wx::gettext('Commit File') => sub {
-					$self->git_commit_file;
+
+					# $self->git_commit_file;
+					$self->git_cmd( 'commit', $document->filename );
 				},
 				Wx::gettext('Commit Project') => sub {
-					$self->git_commit_project;
+
+					# $self->git_commit_project;
+					$self->git_cmd( 'commit', $document->project_dir );
 				},
 				Wx::gettext('Commit amend') => sub {
-					$self->git_commit_amend;
+
+					# $self->git_commit_amend;
+					$self->git_cmd( 'commit --amend', '' );
 				},
 				Wx::gettext('git commit -a') => sub {
-					$self->git_commit_a;
+
+					# $self->git_commit_a;
+					$self->git_cmd( 'commit -a', '' );
 				},
 			],
 			Wx::gettext('Checkout') => [
 				Wx::gettext('Checkout File') => sub {
-					$self->git_checkout_file;
+
+					# $self->git_checkout_file;
+					$self->git_cmd( 'checkout --', $document->filename );
 				},
 			],
 			Wx::gettext('Status') => [
 				Wx::gettext('File Status') => sub {
-					$self->git_status_of_file;
+
+					# $self->git_status_of_file;
+					$self->git_cmd( 'status', $document->filename );
 				},
 				Wx::gettext('Directory Status') => sub {
-					$self->git_status_of_dir;
+
+					# $self->git_status_of_dir;
+					self->git_cmd( 'status', File::Basename::dirname( $document->filename ) );
 				},
 				Wx::gettext('Project Status') => sub {
-					$self->git_status_of_project;
+
+					# $self->git_status_of_project;
+					$self->git_cmd( 'status', $document->project_dir );
 				},
 			],
 			Wx::gettext('Diff') => [
 				Wx::gettext('Diff of File') => sub {
-					$self->git_diff_of_file;
+
+					# $self->git_diff_of_file;
+					my $result = $self->git_cmd( 'diff', $document->filename );
 				},
 				Wx::gettext('Diff of staged File') => sub {
-					$self->git_diff_of_file_staged;
+
+					# $self->git_diff_of_file_staged;
+					$self->git_cmd( 'diff --cached', $document->filename );
 				},
 				Wx::gettext('Diff of Dir') => sub {
-					$self->git_diff_of_dir;
+
+					# $self->git_diff_of_dir;
+					$self->git_cmd( 'diff', File::Basename::dirname( $document->filename ) );
 				},
 				Wx::gettext('Diff of Project') => sub {
-					$self->git_diff_of_project;
+
+					# $self->git_diff_of_project;
+					$self->git_cmd( 'diff', $document->project_dir );
 				},
 			],
 			Wx::gettext('Log') => [
 				Wx::gettext('log --stat -2') => sub {
+
 					# $self->git_log_stat;
 					$self->git_cmd( 'log --stat -2', '' );
 				},
 				Wx::gettext('log -p -2') => sub {
+
 					# $self->git_log_p;
 					$self->git_cmd( 'log -p -2', '' );
 				},
 				Wx::gettext('log pretty') => sub {
+
 					# $self->git_log_pretty;
 					$self->git_cmd( 'log --pretty=format:"%h %s" --graph', '' );
 				},
@@ -150,18 +195,22 @@ sub menu_plugins_simple {
 		],
 		Wx::gettext('Origin (Remote)') => [
 			Wx::gettext('Show info about Origin') => sub {
+
 				# $self->git_remote_show_origin;
 				$self->git_cmd_task( 'remote show origin', '' );
 			},
 			Wx::gettext('Push to Origin') => sub {
+
 				# $self->git_remote_push_origin;
 				$self->git_cmd_task( 'push origin master', '' );
 			},
 			Wx::gettext('Fetch from Origin') => sub {
+
 				# $self->git_remote_fetch_origin;
 				$self->git_cmd_task( 'fetch origin master', '' );
 			},
 			Wx::gettext('Pull from Origin') => sub {
+
 				# $self->git_remote_pull_origin;
 				$self->git_cmd_task( 'pull origin master', '' );
 			},
@@ -255,9 +304,9 @@ sub git_cmd {
 				#ToDo Padre::Wx::Dialog::Text needs to be updated with FormBuilder
 				require Padre::Wx::Dialog::Text;
 				Padre::Wx::Dialog::Text->show( $main, "Git $action -> $location", $git_cmd->{output} );
-				return 1;
 			} else {
-				return 0;
+				$main->info(
+					Wx::gettext( 'Info: There is no response, just as if you had run it on the cmd yourself.' ) );
 			}
 		};
 	}
@@ -322,198 +371,198 @@ sub on_finish {
 #######
 # stage_file
 #######
-sub git_stage_file {
-	my $self     = shift;
-	my $main     = $self->main;
-	my $document = $main->current->document;
-	$self->git_cmd( 'add',    $document->filename );
-	$self->git_cmd( 'status', $document->filename );
-	return;
-}
+# sub git_stage_file {
+# my $self     = shift;
+# my $main     = $self->main;
+# my $document = $main->current->document;
+# $self->git_cmd( 'add',    $document->filename );
+# $self->git_cmd( 'status', $document->filename );
+# return;
+# }
 #######
 # stage_file
 #######
-sub git_stage_all {
-	my $self     = shift;
-	my $main     = $self->main;
-	my $document = $main->current->document;
-	$self->git_cmd( 'add',    $document->project_dir );
-	$self->git_cmd( 'status', $document->project_dir );
-	return;
-}
+# sub git_stage_all {
+# my $self     = shift;
+# my $main     = $self->main;
+# my $document = $main->current->document;
+# $self->git_cmd( 'add',    $document->project_dir );
+# $self->git_cmd( 'status', $document->project_dir );
+# return;
+# }
 #######
 # unstage_file
 #######
-sub git_unstage_file {
-	my $self     = shift;
-	my $main     = $self->main;
-	my $document = $main->current->document;
+# sub git_unstage_file {
+# my $self     = shift;
+# my $main     = $self->main;
+# my $document = $main->current->document;
 
-	#ToDO mj41 should we be using this instead
-	#$self->git_cmd( 'rm --cached', $document->filename );
-	$self->git_cmd( 'reset HEAD', $document->filename );
-	$self->git_cmd( 'status',     $document->filename );
-	return;
-}
+# #ToDO mj41 should we be using this instead
+# #$self->git_cmd( 'rm --cached', $document->filename );
+# $self->git_cmd( 'reset HEAD', $document->filename );
+# $self->git_cmd( 'status',     $document->filename );
+# return;
+# }
 
 
 #######
 # git_commit_file
 #######
-sub git_commit_file {
-	my $self     = shift;
-	my $main     = $self->main;
-	my $document = $main->current->document;
-	$self->git_cmd( 'commit', $document->filename );
-	return;
-}
+# sub git_commit_file {
+# my $self     = shift;
+# my $main     = $self->main;
+# my $document = $main->current->document;
+# $self->git_cmd( 'commit', $document->filename );
+# return;
+# }
 #######
 # git_commit_project
 #######
-sub git_commit_project {
-	my $self     = shift;
-	my $main     = $self->main;
-	my $document = $main->current->document;
-	$self->git_cmd( 'commit', $document->project_dir );
-	return;
-}
+# sub git_commit_project {
+# my $self     = shift;
+# my $main     = $self->main;
+# my $document = $main->current->document;
+# $self->git_cmd( 'commit', $document->project_dir );
+# return;
+# }
 #######
 # git_commit_amend
 #######
-sub git_commit_amend {
-	my $self     = shift;
-	my $main     = $self->main;
-	my $document = $main->current->document;
-	$self->git_cmd( 'commit --amend', '' );
-	return;
-}
+# sub git_commit_amend {
+# my $self     = shift;
+# my $main     = $self->main;
+# my $document = $main->current->document;
+# $self->git_cmd( 'commit --amend', '' );
+# return;
+# }
 #######
 # git_commit_project
 #######
-sub git_commit_a {
-	my $self     = shift;
-	my $main     = $self->main;
-	my $document = $main->current->document;
-	$self->git_cmd( 'commit -a', '' );
-	return;
-}
+# sub git_commit_a {
+# my $self     = shift;
+# my $main     = $self->main;
+# my $document = $main->current->document;
+# $self->git_cmd( 'commit -a', '' );
+# return;
+# }
 
 
 #######
 # git_checkout_file
 #######
-sub git_checkout_file {
-	my $self     = shift;
-	my $main     = $self->main;
-	my $document = $main->current->document;
-	$self->git_cmd( 'checkout --', $document->filename );
-	return;
-}
+# sub git_checkout_file {
+# my $self     = shift;
+# my $main     = $self->main;
+# my $document = $main->current->document;
+# $self->git_cmd( 'checkout --', $document->filename );
+# return;
+# }
 
 
 #######
 # git_status_of_file
 #######
-sub git_status_of_file {
-	my $self     = shift;
-	my $main     = $self->main;
-	my $document = $main->current->document;
-	$self->git_cmd( 'status', $document->filename );
-	return;
-}
+# sub git_status_of_file {
+# my $self     = shift;
+# my $main     = $self->main;
+# my $document = $main->current->document;
+# $self->git_cmd( 'status', $document->filename );
+# return;
+# }
 #######
 # git_status_of_dir
 #######
-sub git_status_of_dir {
-	my $self     = shift;
-	my $main     = $self->main;
-	my $document = $main->current->document;
-	$self->git_cmd( 'status', File::Basename::dirname( $document->filename ) );
-	return;
-}
+# sub git_status_of_dir {
+# my $self     = shift;
+# my $main     = $self->main;
+# my $document = $main->current->document;
+# $self->git_cmd( 'status', File::Basename::dirname( $document->filename ) );
+# return;
+# }
 #######
 # git_status_of_project
 #######
-sub git_status_of_project {
-	my $self     = shift;
-	my $main     = $self->main;
-	my $document = $main->current->document;
-	$self->git_cmd( 'status', $document->project_dir );
-	return;
-}
+# sub git_status_of_project {
+# my $self     = shift;
+# my $main     = $self->main;
+# my $document = $main->current->document;
+# $self->git_cmd( 'status', $document->project_dir );
+# return;
+# }
 
 
 #######
 # git_diff_of_file
 #######
-sub git_diff_of_file {
-	my $self     = shift;
-	my $main     = $self->main;
-	my $document = $main->current->document;
-	my $result   = $self->git_cmd( 'diff', $document->filename );
-	if ( $result == 0 ) {
-		$self->git_cmd( 'diff --cached', $document->filename );
-	}
-	return;
-}
+# sub git_diff_of_file {
+# my $self     = shift;
+# my $main     = $self->main;
+# my $document = $main->current->document;
+# my $result   = $self->git_cmd( 'diff', $document->filename );
+# if ( $result == 0 ) {
+# $self->git_cmd( 'diff --cached', $document->filename );
+# }
+# return;
+# }
 #######
 # git_diff_of_file_staged
 #######
-sub git_diff_of_file_staged {
-	my $self     = shift;
-	my $main     = $self->main;
-	my $document = $main->current->document;
-	$self->git_cmd( 'diff --cached', $document->filename );
-	return;
-}
+# sub git_diff_of_file_staged {
+# my $self     = shift;
+# my $main     = $self->main;
+# my $document = $main->current->document;
+# $self->git_cmd( 'diff --cached', $document->filename );
+# return;
+# }
 #######
 # git_diff_of_dir
 #######
-sub git_diff_of_dir {
-	my $self     = shift;
-	my $main     = $self->main;
-	my $document = $main->current->document;
-	$self->git_cmd( 'diff', File::Basename::dirname( $document->filename ) );
-	return;
-}
+# sub git_diff_of_dir {
+# my $self     = shift;
+# my $main     = $self->main;
+# my $document = $main->current->document;
+# $self->git_cmd( 'diff', File::Basename::dirname( $document->filename ) );
+# return;
+# }
 #######
 # git_diff_of_project
 #######
-sub git_diff_of_project {
-	my $self     = shift;
-	my $main     = $self->main;
-	my $document = $main->current->document;
-	$self->git_cmd( 'diff', $document->project_dir );
-	return;
-}
+# sub git_diff_of_project {
+# my $self     = shift;
+# my $main     = $self->main;
+# my $document = $main->current->document;
+# $self->git_cmd( 'diff', $document->project_dir );
+# return;
+# }
 
 
 #######
 # git_log_stat
 #######
 # sub git_log_stat {
-	# my $self = shift;
-	# my $main = $self->main;
-	# $self->git_cmd( 'log --stat -2', '' );
-	# return;
+# my $self = shift;
+# my $main = $self->main;
+# $self->git_cmd( 'log --stat -2', '' );
+# return;
 # }
 #######
 # git_log_p
 #######
 # sub git_log_p {
-	# my $self = shift;
-	# my $main = $self->main;
-	# $self->git_cmd( 'log -p -2', '' );
-	# return;
+# my $self = shift;
+# my $main = $self->main;
+# $self->git_cmd( 'log -p -2', '' );
+# return;
 # }
 #######
 # git_log_pretty
 #######
 # sub git_log_pretty {
-	# my $self = shift;
-	# my $main = $self->main;
-	# $self->git_cmd( 'log --pretty=format:"%h %s" --graph', '' );
-	# return;
+# my $self = shift;
+# my $main = $self->main;
+# $self->git_cmd( 'log --pretty=format:"%h %s" --graph', '' );
+# return;
 # }
 
 
@@ -521,33 +570,33 @@ sub git_diff_of_project {
 # git_remote_show_origin
 #######
 # sub git_remote_show_origin {
-	# my $self = shift;
-	# $self->git_cmd_task( 'remote show origin', '' );
-	# return;
+# my $self = shift;
+# $self->git_cmd_task( 'remote show origin', '' );
+# return;
 # }
 #######
 # git_remote_push_origin
 #######
 # sub git_remote_push_origin {
-	# my $self = shift;
-	# $self->git_cmd_task( 'push origin master', '' );
-	# return;
+# my $self = shift;
+# $self->git_cmd_task( 'push origin master', '' );
+# return;
 # }
 #######
 # git_remote_fetch_origin
 #######
 # sub git_remote_fetch_origin {
-	# my $self = shift;
-	# $self->git_cmd_task( 'fetch origin master', '' );
-	# return;
+# my $self = shift;
+# $self->git_cmd_task( 'fetch origin master', '' );
+# return;
 # }
 #######
 # git_remote_pull_origin
 #######
 # sub git_remote_pull_origin {
-	# my $self = shift;
-	# $self->git_cmd_task( 'pull origin master', '' );
-	# return;
+# my $self = shift;
+# $self->git_cmd_task( 'pull origin master', '' );
+# return;
 # }
 
 
@@ -574,7 +623,7 @@ sub event_on_context_menu {
 		Wx::Event::EVT_MENU(
 			$self->main,
 			$item,
-			sub { $self->git_commit_a },
+			sub { $self->git_cmd( 'commit -a', '' ) },
 		);
 	}
 	return;
