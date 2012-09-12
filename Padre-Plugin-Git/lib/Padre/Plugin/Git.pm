@@ -95,15 +95,15 @@ sub menu_plugins_simple {
 					},
 					Wx::gettext('Local') => [
 						Wx::gettext('Staging') => [
-							Wx::gettext('Add file') => sub {
+							Wx::gettext('Stage File') => sub {
 								$self->git_cmd( 'add',    $document->filename );
 								$self->git_cmd( 'status', $document->filename );
 							},
-							Wx::gettext('Add all') => sub {
+							Wx::gettext('Stage All') => sub {
 								$self->git_cmd( 'add',    $document->project_dir );
 								$self->git_cmd( 'status', $document->project_dir );
 							},
-							Wx::gettext('reset HEAD file') => sub {
+							Wx::gettext('Unstage File') => sub {
 
 								#ToDo mj41 should we be using this instead
 								#$self->git_cmd( 'rm --cached', $document->filename );
@@ -118,10 +118,10 @@ sub menu_plugins_simple {
 							Wx::gettext('Commit Project') => sub {
 								$self->git_cmd( 'commit', $document->project_dir );
 							},
-							Wx::gettext('Commit amend') => sub {
+							Wx::gettext('Commit Amend') => sub {
 								$self->git_cmd( 'commit --amend', '' );
 							},
-							Wx::gettext('git commit -a') => sub {
+							Wx::gettext('Commit All') => sub {
 								$self->git_cmd( 'commit -a', '' );
 							},
 						],
@@ -145,10 +145,10 @@ sub menu_plugins_simple {
 							Wx::gettext('Diff of File') => sub {
 								my $result = $self->git_cmd( 'diff', $document->filename );
 							},
-							Wx::gettext('Diff of staged File') => sub {
+							Wx::gettext('Diff of Staged File') => sub {
 								$self->git_cmd( 'diff --cached', $document->filename );
 							},
-							Wx::gettext('Diff of Dir') => sub {
+							Wx::gettext('Diff of Directory') => sub {
 								$self->git_cmd( 'diff', File::Basename::dirname( $document->filename ) );
 							},
 							Wx::gettext('Diff of Project') => sub {
@@ -167,8 +167,8 @@ sub menu_plugins_simple {
 							},
 						],
 					],
-					Wx::gettext('Origin (Remote/Your GitHub Fork)') => [
-						Wx::gettext('Show info about Origin') => sub {
+					Wx::gettext('Origin') => [
+						Wx::gettext('Show Origin Info.') => sub {
 							$self->git_cmd_task( 'remote show origin', '' );
 						},
 						Wx::gettext('Push to Origin') => sub {
@@ -181,7 +181,7 @@ sub menu_plugins_simple {
 							$self->git_cmd_task( 'pull origin master', '' );
 						},
 					],
-					Wx::gettext('Upstream (GitHub Master)') => [
+					Wx::gettext('Upstream') => [
 						Wx::gettext('Show Upstream Info.') => sub {
 							$self->git_cmd_task( 'remote show upstream', '' );
 						},
