@@ -6,7 +6,7 @@ use strictures 1;
 use Padre::Unload                            ();
 use Padre::Plugin::Git::FBP::Output ();
 
-our $VERSION = '0.06';
+our $VERSION = '0.04';
 use parent qw(
 	Padre::Plugin::Git::FBP::Output
 	Padre::Plugin
@@ -28,145 +28,9 @@ sub new {
 	$self->CenterOnParent;
 	$self->SetTitle( $title );
 	$self->text->SetValue( $text );
-	# $self->_set_up;
 
 	return $self;
 }
-
-# #######
-# # Method _set_up
-# #######
-# sub _set_up {
-	# my $self      = shift;
-	# my $main      = $self->main;
-	# my $config    = $main->config;
-	# my $config_db = $self->config_read;
-
-	# my $services = Padre::Plugin::Nopaste::Services->new;
-	# $self->{nopaste_services} = $services;
-
-	# #Set nickname
-	# $self->{config_nickname}->SetLabel( $config->identity_nickname );
-
-	# #get nopaste preferred server and channel from config db
-	# $self->{prefered_server}  = $config_db->{Services};
-	# $self->{prefered_channel} = $config_db->{Channel};
-
-	# # update dialogue
-	# $self->_display_servers;
-	# $self->_display_channels;
-
-	# return;
-# }
-
-# #######
-# # Method _display_servers
-# #######
-# sub _display_servers {
-	# my $self = shift;
-
-	# my $servers = $self->{nopaste_services}->servers;
-
-	# # set local_server_index to zero in case predefined not found
-	# my $local_server_index = 0;
-
-	# for ( 0 .. $#{$servers} ) {
-		# if ( $servers->[$_] eq $self->{prefered_server} ) {
-			# $local_server_index = $_;
-		# }
-	# }
-
-	# $self->{nopaste_server}->Clear;
-	# $self->{nopaste_server}->Append($servers);
-	# $self->{nopaste_server}->SetSelection($local_server_index);
-
-	# return;
-# }
-
-# #######
-# # Method _display_channels
-# #######
-# sub _display_channels {
-	# my $self = shift;
-
-	# my $channels = $self->{nopaste_services}->{ $self->{prefered_server} };
-
-	# # set local_server_index to zero in case predefined not found
-	# my $local_channel_index = 0;
-
-	# for ( 0 .. $#{$channels} ) {
-		# if ( $channels->[$_] eq $self->{prefered_channel} ) {
-			# $local_channel_index = $_;
-		# }
-	# }
-
-	# $self->{nopaste_channel}->Clear;
-	# $self->{nopaste_channel}->Append($channels);
-	# $self->{nopaste_channel}->SetSelection($local_channel_index);
-
-	# return;
-# }
-
-# #######
-# # event handler on_button_ok_clicked
-# #######
-# sub on_button_save_clicked {
-	# my $self      = shift;
-	# my $config_db = $self->config_read;
-
-	# $config_db->{Services} = $self->{nopaste_services}->servers->[ $self->{nopaste_server}->GetSelection() ];
-	# $config_db->{Channel} =
-		# $self->{nopaste_services}->{ $self->{prefered_server} }->[ $self->{nopaste_channel}->GetSelection() ];
-
-	# $self->config_write($config_db);
-
-	# $self->Hide;
-	# return;
-# }
-
-# #######
-# # event handler on_button_ok_clicked
-# #######
-# sub on_button_reset_clicked {
-	# my $self      = shift;
-	# my $config_db = $self->config_read;
-
-	# $config_db->{Services} = 'Shadowcat';
-	# $config_db->{Channel}  = '#padre';
-	# $self->config_write($config_db);
-
-	# $self->{prefered_server}  = 'Shadowcat';
-	# $self->{prefered_channel} = '#padre';
-
-	# $self->refresh;
-	# return;
-# }
-
-# #######
-# # event handler on_server_chosen, save choices and close
-# #######
-# sub on_server_chosen {
-	# my $self = shift;
-
-	# $self->{prefered_server}  = $self->{nopaste_services}->servers->[ $self->{nopaste_server}->GetSelection() ];
-	# $self->{prefered_channel} = 0;
-
-	# $self->refresh;
-
-	# return;
-# }
-
-# #######
-# # refresh dialogue with choices
-# #######
-# sub refresh {
-	# my $self = shift;
-
-	# $self->_display_servers;
-	# $self->_display_channels;
-
-	# return;
-# }
 
 
 1;
@@ -177,11 +41,11 @@ __END__
 
 =head1 NAME
 
-Padre::Plugin::Nopaste::Preferences - NoPaste plugin for Padre, The Perl IDE.
+Padre::Plugin::Git::Output - Git plugin for Padre, The Perl IDE.
 
 =head1 VERSION
 
-version  0.06
+version  0.04
 
 =head1 DESCRIPTION
 
@@ -195,40 +59,11 @@ chosen Nopaste Server and #Channel.
 
 =item * new
 
-	$self->{dialog} = Padre::Plugin::SpellCheck::Preferences->new( $self );
+	$self->{dialog} = Padre::Plugin::Git::Output->new( $main, "Git $action -> $location", $git_cmd->{output} );
 
-Create and return a new dialogue window. 
-
-=item * on_server_chosen
-
-event handler, update selection
-
-=item * on_button_save_clicked
-
-event handler, save your choice
-
-=item * on_button_reset_clicked
-
-	Nopaste Server: Shadowcat
-	IRC Channel: #padre
-
-=item * refresh
-
-refresh dialog
 
 =back
 
-=head2 INTERNAL METHODS
-
-=over 4
-
-=item * _display_channels
-
-=item * _display_servers
-
-=item * _setup
-
-=back
 
 =head1 BUGS AND LIMITATIONS
 
@@ -236,12 +71,12 @@ None known.
 
 =head1 DEPENDENCIES
 
-Padre, Padre::Plugin::Nopaste::FBP::Preferences
+Padre, Padre::Plugin::Git::FBP::Output
 
 =head1 SEE ALSO
 
 For all related information (bug reporting, source code repository,
-etc.), refer to L<Padre::Plugin::Nopaste>.
+etc.), refer to L<Padre::Plugin::Git>.
 
 =head1 AUTHOR
 
