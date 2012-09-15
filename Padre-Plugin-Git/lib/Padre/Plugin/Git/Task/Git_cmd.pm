@@ -70,7 +70,7 @@ __END__
 
 =head1 NAME
 
-Padre::Plugin::Git::Task - Git plugin for Padre, The Perl IDE.
+Padre::Plugin::Git::Task::Git_cmd - Git plugin for Padre, The Perl IDE.
 
 =head1 VERSION
 
@@ -82,7 +82,7 @@ Perform the Git Task as a background Job, help to keep Padre sweet.
 
 =head1 DESCRIPTION
 
-Async thread that does real nopaste
+git cmd actions in a padre task
 
 =head1 Standard Padre::Task API
 
