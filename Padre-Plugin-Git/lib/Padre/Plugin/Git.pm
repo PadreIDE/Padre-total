@@ -20,10 +20,10 @@ use parent qw(
 	Padre::Role::Task
 );
 
-# use Data::Printer {
-# caller_info => 1,
-# colored     => 1,
-# };
+use Data::Printer {
+	caller_info => 1,
+	colored     => 1,
+};
 
 
 #########
@@ -47,8 +47,11 @@ sub plugin_enable {
 use constant CHILDREN => qw{
 	Padre::Plugin::Git
 	Padre::Plugin::Git::Task::Git_cmd
+	Padre::Plugin::Git::Task::GitHub
 	Padre::Plugin::Git::Output
 	Padre::Plugin::Git::FBP::Output
+	Pithub
+	Pithub::PullRequests
 };
 
 #######
@@ -191,10 +194,13 @@ sub menu_plugins_simple {
 						Wx::gettext('Merge Upstream Master') => sub {
 							$self->git_cmd_task( 'merge upstream/master', '' );
 						},
+					],
+					Wx::gettext('GitHub') => [
+						Wx::gettext('GitHub Pull Request') => sub {
 
-						# Wx::gettext('Pull from Origin') => sub {
-						# $self->git_cmd_task( 'pull origin master', '' );
-						# },
+							# $self->github_task();
+							$self->github_pull_request();
+						},
 					],
 				];
 			}
@@ -299,7 +305,132 @@ sub git_cmd {
 	return;
 }
 
+#######
+# github_pull_request
+#######
+sub github_pull_request {
+	my $self     = shift;
+	my $main     = $self->main;
+	my $document = $main->current->document;
 
+	# Lets start with username and token being external to pp-git
+	my $user  = $ENV{GITHUB_USER};
+	my $token = $ENV{GITHUB_TOKEN};
+
+	unless ( $user && $token ) {
+		$main->error(
+			Wx::gettext(
+				      'Error: missing $ENV{GITHUB_USER} and $ENV{GITHUB_TOKEN}' . "\n"
+					. 'See http://padre.perlide.org/trac/wiki/PadrePluginGit' . "\n"
+					. 'Wiki page for more info.'
+			)
+		);
+		return;
+	}
+
+	my $message = $main->prompt( "GitHub Pull Request", "Please type in your message" );
+	return if not $message;
+
+	#Use first 32 chars of message as pull request title
+	my $title = substr $message, 0, 32;
+
+
+	my $git_cmd;
+	require Padre::Util;
+	$git_cmd = Padre::Util::run_in_directory_two(
+		cmd    => "git remote show upstream",
+		dir    => $document->project_dir,
+		option => 0
+	);
+
+	try {
+
+		if ( defined $git_cmd->{error} ) {
+			if ( $git_cmd->{error} =~ m/^fatal/ ) {
+
+				# $self->{error} = 'dose not have an upstream componet';
+				say 'dose not have an upstream componet';
+				$main->error( Wx::gettext('Error: this repo dose not have an upstream componet') );
+				return;
+			}
+		}
+	};
+
+	my $test_output = $git_cmd->{output};
+	$test_output =~ m{(?<=https://github.com/)(?<author>.*)(?:/)(?<repo>.*)(?:.git)};
+	my $author = $+{author};
+	my $repo   = $+{repo};
+
+	require Pithub;
+	my $github = Pithub->new(
+		repo  => $repo,
+		token => $token,
+		user  => $user,
+	);
+
+	my $status = $github->pull_requests->create(
+		repo => $repo,
+		user => $author,
+		data => {
+			base  => "$author:master",
+			body  => $message,
+			head  => "$user:master",
+			title => $title,
+		}
+	);
+
+	if ( $status->success eq 1 ) {
+		$main->message(
+			sprintf(
+				Wx::gettext("Info: Cool we got a: %s \nNow you should check your GitHub repo\n https://github.com/%s"),
+				$status->response->{_rc},
+				$user,
+			)
+		);
+	} else {
+		$main->error(
+			sprintf(
+				Wx::gettext("Error: %s\n%s"),
+				$status->response->{_rc},
+				$status->response->{_content},
+			)
+		);
+	}
+
+	return;
+}
+
+
+#######
+# github_task
+#######
+sub github_task {
+	my $self = shift;
+
+	# my $action   = shift;
+	# my $location = shift;
+	my $main     = $self->main;
+	my $document = $main->current->document;
+
+	my $message = $main->prompt( "GitHub Pull Request", "Please type in your message" );
+	return if not $message;
+
+	require Padre::Plugin::Git::Task::GitHub;
+
+	# Fire the task
+	$self->task_request(
+		task        => 'Padre::Plugin::Git::Task::GitHub',
+		message     => $message,
+		action      => 'remote show upstream',
+		location    => '',
+		project_dir => $document->project_dir,
+		on_finish   => 'on_finish',
+	);
+
+	# }
+
+	return;
+}
 #######
 # git_cmd_task
 #######
@@ -337,6 +468,9 @@ sub on_finish {
 	my $task = shift;
 	my $main = $self->main;
 
+	p $task->{error};
+	p $task->{output};
+
 	if ( $task->{error} ) {
 		$main->error(
 			sprintf(
@@ -344,8 +478,7 @@ sub on_finish {
 				$task->{error}
 			),
 		);
-	}
-	if ( $task->{output} ) {
+	} elsif ( $task->{output} ) {
 
 		#ToDo Padre::Wx::Dialog::Text needs to be updated with FormBuilder
 		# require Padre::Wx::Dialog::Text;
