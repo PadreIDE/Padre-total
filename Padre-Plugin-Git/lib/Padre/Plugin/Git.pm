@@ -20,10 +20,10 @@ use parent qw(
 	Padre::Role::Task
 );
 
-use Data::Printer {
-	caller_info => 1,
-	colored     => 1,
-};
+# use Data::Printer {
+	# caller_info => 1,
+	# colored     => 1,
+# };
 
 
 #########
@@ -468,8 +468,8 @@ sub on_finish {
 	my $task = shift;
 	my $main = $self->main;
 
-	p $task->{error};
-	p $task->{output};
+	# p $task->{error};
+	# p $task->{output};
 
 	if ( $task->{error} ) {
 		$main->error(
