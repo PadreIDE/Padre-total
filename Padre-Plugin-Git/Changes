@@ -5,7 +5,8 @@ Revision history for Padre-Plugin-Git
     - event_on_context_menu now works, short cut (BOWTIE)
     - switch to menu_plugins_simple all items work (BOWTIE)
     - git local functions, done (BOWTIE)
-    - git remote functions, using padr-task (BOWTIE)
+    - git remote functions, using padre-task (BOWTIE)
+    - enable git-hub pull request with external credentials (BOWTIE)
     - 
 
 0.03  2010.08.20
