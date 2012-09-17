@@ -20,11 +20,6 @@ use parent qw(
 	Padre::Role::Task
 );
 
-# use Data::Printer {
-	# caller_info => 1,
-	# colored     => 1,
-# };
-
 
 #########
 # We need plugin_enable
@@ -234,10 +229,6 @@ sub git_cmd {
 	my $main     = $self->main;
 	my $document = $main->current->document;
 
-	# $self->current_files;
-	# my $tab_id = $self->main->editor_of_file( $document->{filename} );
-	# if ( $self->{open_file_info}->{$tab_id}->{'vcs'} =~ m/Git/sxm ) {
-
 	my $message;
 	my $git_cmd;
 	if ( $action =~ m/^commit/ ) {
@@ -273,8 +264,6 @@ sub git_cmd {
 		$git_cmd->{error}  = undef;
 	}
 
-	# p $git_cmd;
-
 	#Display correct result
 	try {
 		if ( $git_cmd->{error} ) {
@@ -286,17 +275,11 @@ sub git_cmd {
 			);
 		}
 		if ( $git_cmd->{output} ) {
-
-			#ToDo Padre::Wx::Dialog::Text needs to be updated with FormBuilder
-			# require Padre::Wx::Dialog::Text;
-			# Padre::Wx::Dialog::Text->show( $main, "Git $action -> $location", $git_cmd->{output} );
 			$self->load_dialog_output( "Git $action -> $location", $git_cmd->{output} );
 		} else {
 			$main->info( Wx::gettext('Info: There is no response, just as if you had run it on the cmd yourself.') );
 		}
 	};
-
-	# }
 
 	return;
 }
@@ -406,10 +389,6 @@ sub git_cmd_task {
 	my $main     = $self->main;
 	my $document = $main->current->document;
 
-	# $self->current_files;
-	# my $tab_id = $self->main->editor_of_file( $document->{filename} );
-	# if ( $self->{open_file_info}->{$tab_id}->{'vcs'} =~ m/Git/sxm ) {
-
 	require Padre::Plugin::Git::Task::Git_cmd;
 
 	# Fire the task
@@ -421,8 +400,6 @@ sub git_cmd_task {
 		on_finish   => 'on_finish',
 	);
 
-	# }
-
 	return;
 }
 #######
@@ -433,9 +410,6 @@ sub on_finish {
 	my $task = shift;
 	my $main = $self->main;
 
-	# p $task->{error};
-	# p $task->{output};
-
 	if ( $task->{error} ) {
 		$main->error(
 			sprintf(
@@ -444,12 +418,7 @@ sub on_finish {
 			),
 		);
 	} elsif ( $task->{output} ) {
-
-		#ToDo Padre::Wx::Dialog::Text needs to be updated with FormBuilder
-		# require Padre::Wx::Dialog::Text;
-		# Padre::Wx::Dialog::Text->show( $main, "Git $task->{action} -> $task->{location}", $task->{output} );
 		$self->load_dialog_output( "Git task->{action} -> $task->{location}", $task->{output} );
-
 	} else {
 		$main->info( Wx::gettext('Info: There is no response, just as if you had run it on the cmd yourself.') );
 	}
@@ -491,7 +460,6 @@ sub event_on_context_menu {
 
 	my $tab_id = $self->main->editor_of_file( $document->{filename} );
 
-	# p $self->{open_file_info}->{$tab_id}->{'vcs'};
 	if ( $self->{open_file_info}->{$tab_id}->{'vcs'} =~ m/Git/sxm ) {
 
 		$menu->AppendSeparator;
