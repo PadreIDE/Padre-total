@@ -668,7 +668,7 @@ sub new_user {
 	push @info, 'Example: /nick new-nickname (limit 9 characters) ' . GREEN . ' Thank You' . NORMAL;
 	$irc->yield( privmsg => $nick => $_ ) for @info;
 
-	$irc->yield( privmsg => $channel, ORANGE . "Welcome $nick" . NORMAL );
+	$irc->yield( privmsg => $channel, BOLD . "Welcome $nick" . NORMAL );
 	return;
 }
 
