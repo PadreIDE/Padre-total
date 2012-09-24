@@ -39,5 +39,5 @@
 \bPadre-[\d\.\_]+
 
 \B\.padre
-dev.pl
+dev
 

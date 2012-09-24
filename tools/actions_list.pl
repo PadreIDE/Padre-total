@@ -21,7 +21,7 @@ and outputs it in text or HTML-format. The default is text format.
 Set the environment variable PADRE_EXPORT_ACTIONS to 1 and then
 run Padre.
 
-	PADRE_EXPORT_ACTIONS=1 ./dev.pl
+	PADRE_EXPORT_ACTIONS=1 ./dev
 
 It will create a actions.dump - file in your config dir
 (usually ~/.padre on Linux). Just pass this file to actions_list.pl

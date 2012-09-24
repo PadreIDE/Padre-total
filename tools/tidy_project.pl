@@ -47,7 +47,7 @@ my @examples =
 
 my @files = ( @pmfiles, @tfiles, @incfiles, @examples );
 
-my @extras = ( 'Makefile.PL', 'Build.PL', 'dev.pl', 'script/padre', );
+my @extras = ( 'Makefile.PL', 'Build.PL', 'dev', 'script/padre', );
 for my $extra (@extras) {
 	push @files, $extra if -f $extra;
 }
