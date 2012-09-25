@@ -37,4 +37,7 @@
 \B\._
 # Avoid archives of this distribution
 \bPadre-[\d\.\_]+
+\bxt
+\bscripts
+Debian_CPANTS.txt
 

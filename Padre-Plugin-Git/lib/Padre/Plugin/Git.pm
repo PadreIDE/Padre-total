@@ -82,7 +82,7 @@ sub menu_plugins_simple {
 	$self->current_files;
 	my $tab_id = $self->main->editor_of_file( $document->{filename} );
 	try {
-		if ( defined $tab_id ) {
+		if ( defined $tab_id && defined $self->{open_file_info}->{$tab_id}->{'vcs'} ) {
 			if ( $self->{open_file_info}->{$tab_id}->{'vcs'} =~ m/Git/sxm ) {
 
 				return $self->plugin_name => [
@@ -565,6 +565,39 @@ cpan install Padre::Plugin::Git
 
 Access it via Plugin/Git
 
+=head1 METHODS
+
+=over 4
+
+=item * clean_dialog
+
+=item * current_files
+
+=item * event_on_context_menu
+
+=item * git_cmd
+
+=item * git_cmd_task
+
+=item * github_pull_request 
+ 
+=item * load_dialog_output 
+ 
+=item * menu_plugins_simple 
+	
+=item *	on_finish
+
+=item *	padre_interfaces
+
+=item *	plugin_disable
+
+=item *	plugin_enable
+
+=item *	plugin_name
+
+=item *	show_about
+
+=back
 
 =head1 AUTHOR
 
