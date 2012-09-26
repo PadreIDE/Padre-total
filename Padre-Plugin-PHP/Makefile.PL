@@ -7,7 +7,7 @@ name 'Padre-Plugin-PHP';
 license 'perl';
 author 'Gabor Szabo <szabgab@gmail.com>';
 all_from 'lib/Padre/Plugin/PHP.pm';
-requires 'Padre' => '0.50';
+requires 'Padre' => '0.94';
 
 test_requires 'Test::More' => '0.47';
 

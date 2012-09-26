@@ -263,5 +263,29 @@ sub newline_keep_column {
 	return 1;
 }
 
+#####################################################################
+# Padre::Document Task Integration
+
+sub task_functions {
+        return 'Padre::Document::PHP::FunctionList';
+}
+
+#sub task_outline {
+#        return 'Padre::Document::Perl::Outline';
+#}
+
+#sub task_syntax {
+#        return 'Padre::Document::Perl::Syntax';
+#}
+
+# This emulates qr/(?<=^|[\012\015])sub\s$name\b/ but without
+# triggering a "Variable length lookbehind not implemented" error.
+# return qr/(?:(?<=^)\s*sub\s+$_[1]|(?<=[\012\015])\s*sub\s+$_[1])\b/;
+sub get_function_regex {
+        my $name = quotemeta $_[1];
+        return qr/(?:^|[^# \t-])[ \t]*((?:function)\s+$name\b|\*$name\s*=\s*(?:sub\b|\\\&))/;
+}
+
+
 
 1;
