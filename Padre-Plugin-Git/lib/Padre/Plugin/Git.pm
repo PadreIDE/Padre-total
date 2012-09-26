@@ -14,7 +14,7 @@ use File::Basename    ();
 use File::Which       ();
 use Try::Tiny;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 use parent qw(
 	Padre::Plugin
 	Padre::Role::Task
@@ -557,13 +557,15 @@ Padre::Plugin::Git - Simple Git interface for Padre, the Perl IDE,
 
 =head1 VERSION
 
-version 0.04
+version  0.05
 
 =head1 SYNOPSIS
 
 cpan install Padre::Plugin::Git
 
 Access it via Plugin/Git
+
+For more info see L<wiki|http://padre.perlide.org/trac/wiki/PadrePluginGit>
 
 =head1 METHODS
 

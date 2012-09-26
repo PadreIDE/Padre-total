@@ -1,13 +1,15 @@
 Revision history for Padre-Plugin-Git
 
-0.04  2012-TBA
+0.05 2012.09.26
+    - Add missing dependencies (BOWTIE)
+
+0.04  2012.09.08
     - Update to Padre-Plugin Api 2.2 (BOWTIE)
     - event_on_context_menu now works, short cut (BOWTIE)
     - switch to menu_plugins_simple all items work (BOWTIE)
     - git local functions, done (BOWTIE)
     - git remote functions, using padre-task (BOWTIE)
     - enable git-hub pull request with external credentials (BOWTIE)
-    - 
 
 0.03  2010.08.20
     - Compatibility with new Padre (CHORNY)
