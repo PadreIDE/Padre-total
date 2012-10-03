@@ -13,7 +13,7 @@ use warnings;
 use Padre::Wx ();
 use Padre::Wx::Role::Main ();
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 our @ISA     = qw{
 	Padre::Wx::Role::Main
 	Wx::Dialog
@@ -40,7 +40,7 @@ sub new {
 		Wx::DefaultSize,
 		Wx::TE_MULTILINE,
 	);
-	$self->{text}->SetMinSize( [ 480, 240 ] );
+	$self->{text}->SetMinSize( [ 540, 240 ] );
 
 	$self->{m_staticline1} = Wx::StaticLine->new(
 		$self,
