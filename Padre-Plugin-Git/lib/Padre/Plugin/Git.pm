@@ -188,6 +188,14 @@ sub menu_plugins_simple {
 							$self->git_cmd_task( 'merge upstream/master', '' );
 						},
 					],
+					Wx::gettext('Branching') => [
+						Wx::gettext('Branch Info') => sub {
+							$self->git_cmd( 'branch -r -a -v', '' );
+						},
+						Wx::gettext('Fetch All Branches from Origin') => sub {
+							$self->git_cmd_task( 'fetch --all', '' );
+						},
+					],
 					Wx::gettext('GitHub') => [
 						Wx::gettext('GitHub Pull Request') => sub {
 							$self->github_pull_request();
