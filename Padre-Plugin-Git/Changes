@@ -1,5 +1,9 @@
 Revision history for Padre-Plugin-Git
 
+0.06 2012.TBA
+    - Add some Branching 
+    - Make Dialog Bigger (BOWTIE)
+
 0.05 2012.09.26
     - Add missing dependencies (BOWTIE)
 
