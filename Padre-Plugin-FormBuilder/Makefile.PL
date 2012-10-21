@@ -1,4 +1,4 @@
-use inc::Module::Install::DSL 1.04;
+use inc::Module::Install::DSL 1.06;
 
 all_from      lib/Padre/Plugin/FormBuilder.pm
 requires_from lib/Padre/Plugin/FormBuilder.pm
