@@ -4,7 +4,7 @@ use v5.10;
 use strictures 1;
 
 use Carp qw( croak );
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 use Padre::Task   ();
 use Padre::Unload ;

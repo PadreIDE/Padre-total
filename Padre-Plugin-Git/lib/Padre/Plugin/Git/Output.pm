@@ -6,7 +6,7 @@ use strictures 1;
 use Padre::Unload                            ();
 use Padre::Plugin::Git::FBP::Output ();
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 use parent qw(
 	Padre::Plugin::Git::FBP::Output
 	Padre::Plugin

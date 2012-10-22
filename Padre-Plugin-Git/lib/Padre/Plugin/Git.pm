@@ -14,7 +14,7 @@ use File::Basename    ();
 use File::Which       ();
 use Try::Tiny;
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 use parent qw(
 	Padre::Plugin
 	Padre::Role::Task
@@ -240,6 +240,7 @@ sub git_cmd {
 	my $message;
 	my $git_cmd;
 	if ( $action =~ m/^commit/ ) {
+		#ToDo this needs to be replaced with a dedicated dialog, as all it dose is dump in to DB::History for no good reasion
 		$message = $main->prompt( "Git Commit of $location", "Please type in your message", "MY_GIT_COMMIT" );
 
 		return if not $message;
@@ -565,7 +566,7 @@ Padre::Plugin::Git - Simple Git interface for Padre, the Perl IDE,
 
 =head1 VERSION
 
-version  0.05
+version  0.06
 
 =head1 SYNOPSIS
 
@@ -609,6 +610,17 @@ For more info see L<wiki|http://padre.perlide.org/trac/wiki/PadrePluginGit>
 
 =back
 
+=head1 CONFIGURATION AND ENVIRONMENT
+
+=for author to fill in:
+    A full explanation of any configuration system(s) used by the
+    module, including the names and locations of any configuration
+    files, and the meaning of any environment variables or properties
+    that can be set. These descriptions must also include details of any
+    configuration language used.
+  
+ToDo Bullwinkle::Server requires no configuration files or environment variables.
+
 =head1 AUTHOR
 
 Kevin Dawson E<lt>bowtie@cpan.orgE<gt>
@@ -622,7 +634,7 @@ Please report any bugs or feature requests to L<http://padre.perlide.org/>
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2008-2012 The Padre development team as listed in Padre.pm in the
+Copyright E<copy> E<beta> 2008-2012 The Padre development team as listed in Padre.pm in the
 Padre distribution all rights reserved.
 
 This program is free software; you can redistribute it and/or modify it
