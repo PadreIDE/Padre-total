@@ -13,6 +13,8 @@ use Padre::Wx::Action ();
 use File::Basename    ();
 use File::Which       ();
 use Try::Tiny;
+use File::Slurp;
+use CPAN::Changes;
 
 our $VERSION = '0.06';
 use parent qw(
@@ -20,6 +22,10 @@ use parent qw(
 	Padre::Role::Task
 );
 
+use Data::Printer {
+	caller_info => 0,
+	colored     => 1,
+};
 
 #########
 # We need plugin_enable
@@ -240,7 +246,12 @@ sub git_cmd {
 	my $message;
 	my $git_cmd;
 	if ( $action =~ m/^commit/ ) {
-		#ToDo this needs to be replaced with a dedicated dialog, as all it dose is dump in to DB::History for no good reasion
+
+		#ToDo this needs to be replaced with a dedicated dialogue, as all it dose is dump in to DB::History for no good reason
+		my $commit_editmsg = read_file( $document->project_dir . '/.git/COMMIT_EDITMSG' );
+		chomp $commit_editmsg;
+		p $commit_editmsg;
+
 		$message = $main->prompt( "Git Commit of $location", "Please type in your message", "MY_GIT_COMMIT" );
 
 		return if not $message;
@@ -251,6 +262,11 @@ sub git_cmd {
 			dir    => $document->project_dir,
 			option => 0
 		);
+
+		#update Changes file
+
+		$self->write_changes( $document->project_dir, $message );
+
 	} else {
 		require Padre::Util;
 		$git_cmd = Padre::Util::run_in_directory_two(
@@ -555,6 +571,44 @@ sub clean_dialog {
 
 	return 1;
 }
+
+########
+# Composed Method write_changes under {{$NEXT}}
+########
+sub write_changes {
+	my $self    = shift;
+	my $dir     = shift;
+	my $message = shift;
+
+	require File::Spec;
+	my $change_file = File::Spec->catfile( $dir, 'Changes' );
+	say $change_file;
+
+	if ( -e $change_file ) {
+		say 'found Changes';
+		say $change_file;
+
+		my $changes = CPAN::Changes->load(
+			$change_file,
+			next_token => qr/{{\$NEXT}}/,
+		);
+
+		my @releases = $changes->releases;
+
+		if ( $releases[-1]->version eq '{{$NEXT}}' ) {
+			$releases[-1]->add_changes($message);
+		}
+
+		# print $changes->serialize;
+
+		write_file( $change_file, { binmode => ':utf8' }, $changes->serialize );
+	}
+
+}
+
+
+
+
 
 1;
 
