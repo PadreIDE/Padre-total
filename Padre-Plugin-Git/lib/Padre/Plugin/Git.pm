@@ -305,9 +305,9 @@ sub git_cmd {
 			$self->load_dialog_output( "Git $action -> $location", $git_cmd->{output} );
 
 			if ( $action =~ m/^commit/ ) {
-				p $git_cmd->{output};
+				# p $git_cmd->{output};
 				$git_cmd->{output} =~ m/master\s(?<nr>[\w|\d]{7})/;
-				say $+{nr};
+				# say $+{nr};
 
 				#update Changes file
 				$self->write_changes( $document->project_dir, $message, $+{nr} );
@@ -595,11 +595,11 @@ sub write_changes {
 
 	require File::Spec;
 	my $change_file = File::Spec->catfile( $dir, 'Changes' );
-	say $change_file;
+	# say $change_file;
 
 	if ( -e $change_file ) {
-		say 'found Changes';
-		say $change_file;
+		# say 'found Changes';
+		# say $change_file;
 
 		my $changes = CPAN::Changes->load(
 			$change_file,
