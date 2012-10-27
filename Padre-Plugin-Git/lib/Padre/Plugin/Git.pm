@@ -675,18 +675,21 @@ For more info see L<wiki|http://padre.perlide.org/trac/wiki/PadrePluginGit>
 
 =item *	show_about
 
+=item * write_changes
+
+use CPAN::Changes to write git commits to project Change file, 
+this abuses the {{$NEXT}} token as a valid version, 
+see CPAN::Changes::Spec for format
+
 =back
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-=for author to fill in:
-    A full explanation of any configuration system(s) used by the
-    module, including the names and locations of any configuration
-    files, and the meaning of any environment variables or properties
-    that can be set. These descriptions must also include details of any
-    configuration language used.
+To be able to do a GitHub Pull request, the following need to be configured.
+
+	$ENV{GITHUB_USER}
+	$ENV{GITHUB_TOKEN}
   
-ToDo Bullwinkle::Server requires no configuration files or environment variables.
 
 =head1 AUTHOR
 
