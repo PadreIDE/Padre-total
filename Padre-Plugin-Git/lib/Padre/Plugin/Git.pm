@@ -250,7 +250,8 @@ sub git_cmd {
 		#ToDo this needs to be replaced with a dedicated dialogue, as all it dose is dump in to DB::History for no good reason
 		my $commit_editmsg = read_file( $document->project_dir . '/.git/COMMIT_EDITMSG' );
 		chomp $commit_editmsg;
-		p $commit_editmsg;
+
+		# p $commit_editmsg;
 
 		$message = $main->prompt( "Git Commit of $location", "Please type in your message", "MY_GIT_COMMIT" );
 
@@ -263,9 +264,10 @@ sub git_cmd {
 			option => 0
 		);
 
-		#update Changes file
+		# p $git_cmd
 
-		$self->write_changes( $document->project_dir, $message );
+		# #update Changes file
+		# $self->write_changes( $document->project_dir, $message );
 
 	} else {
 		require Padre::Util;
@@ -301,6 +303,16 @@ sub git_cmd {
 		}
 		if ( $git_cmd->{output} ) {
 			$self->load_dialog_output( "Git $action -> $location", $git_cmd->{output} );
+
+			if ( $action =~ m/^commit/ ) {
+				p $git_cmd->{output};
+				$git_cmd->{output} =~ m/master\s(?<nr>[\w|\d]{7})/;
+				say $+{nr};
+
+				#update Changes file
+				$self->write_changes( $document->project_dir, $message, $+{nr} );
+			}
+
 		} else {
 			$main->info( Wx::gettext('Info: There is no response, just as if you had run it on the cmd yourself.') );
 		}
@@ -579,6 +591,7 @@ sub write_changes {
 	my $self    = shift;
 	my $dir     = shift;
 	my $message = shift;
+	my $nr_code = shift;
 
 	require File::Spec;
 	my $change_file = File::Spec->catfile( $dir, 'Changes' );
@@ -596,7 +609,7 @@ sub write_changes {
 		my @releases = $changes->releases;
 
 		if ( $releases[-1]->version eq '{{$NEXT}}' ) {
-			$releases[-1]->add_changes($message);
+			$releases[-1]->add_changes( $message . " [$nr_code]" );
 		}
 
 		# print $changes->serialize;
