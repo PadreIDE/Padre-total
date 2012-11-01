@@ -211,6 +211,7 @@ sub menu_plugins_simple {
 			}
 		}
 	};
+	return;
 }
 
 #######
@@ -616,7 +617,7 @@ sub write_changes {
 
 		write_file( $change_file, { binmode => ':utf8' }, $changes->serialize );
 	}
-
+	return;
 }
 
 
@@ -633,16 +634,29 @@ Padre::Plugin::Git - Simple Git interface for Padre, the Perl IDE,
 
 =head1 VERSION
 
-version  0.06
+version 0.06
 
 =head1 SYNOPSIS
 
 cpan install Padre::Plugin::Git
 
-Access it via Plugin/Git
+Enable it via Padre->Tools->Plugin Manager
 
 For more info see L<wiki|http://padre.perlide.org/trac/wiki/PadrePluginGit>
 
+=head1 DESCRIPTION
+
+Basic git cmd commands, plus a bit more, which is a bit E<beta>etaish
+
+=over 4
+
+=item * if you configure your local ENV's with GitHuB Access you can also do GitHub Pull requests,
+
+=item * plus if you use {{$NEXT}} in your Changes file it will append commit messages below.
+see L<wiki|http://padre.perlide.org/trac/wiki/PadrePluginGit> for more info.
+
+=back
+    
 =head1 METHODS
 
 =over 4
@@ -678,7 +692,7 @@ For more info see L<wiki|http://padre.perlide.org/trac/wiki/PadrePluginGit>
 =item * write_changes
 
 use CPAN::Changes to write git commits to project Change file, 
-this abuses the {{$NEXT}} token as a valid version, 
+this abuses the {{$NEXT}} token as a valid version 0.06
 see CPAN::Changes::Spec for format
 
 =back
@@ -696,6 +710,7 @@ To be able to do a GitHub Pull request, the following need to be configured.
 Kevin Dawson E<lt>bowtie@cpan.orgE<gt>
 
 Kaare Rasmussen, C<< <kaare at cpan.org> >>
+
 
 =head1 BUGS
 
