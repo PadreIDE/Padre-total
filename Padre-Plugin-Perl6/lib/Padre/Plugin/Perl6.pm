@@ -38,11 +38,11 @@ sub plugin_name {
 
 sub padre_interfaces {
 	return (
-		'Padre::Plugin'   => '0.91',
-		'Padre::Wx'       => '0.91',
-		'Padre::Constant' => '0.91',
-		'Padre::Util'     => '0.91',
-		'Padre::Current'  => '0.91',
+		'Padre::Plugin'   => '0.96',
+		'Padre::Wx'       => '0.96',
+		'Padre::Constant' => '0.96',
+		'Padre::Util'     => '0.97',
+		'Padre::Current'  => '0.96',
 	);
 }
 
