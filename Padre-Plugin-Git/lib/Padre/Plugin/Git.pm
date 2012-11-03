@@ -22,10 +22,6 @@ use parent qw(
 	Padre::Role::Task
 );
 
-use Data::Printer {
-	caller_info => 0,
-	colored     => 1,
-};
 
 #########
 # We need plugin_enable
@@ -87,6 +83,7 @@ sub menu_plugins_simple {
 	#Hide Git on Tools menu if current file is not in a Git controled dir
 	$self->current_files;
 	my $tab_id = $self->main->editor_of_file( $document->{filename} );
+
 	try {
 		if ( defined $tab_id && defined $self->{open_file_info}->{$tab_id}->{'vcs'} ) {
 			if ( $self->{open_file_info}->{$tab_id}->{'vcs'} =~ m/Git/sxm ) {
@@ -211,7 +208,8 @@ sub menu_plugins_simple {
 			}
 		}
 	};
-	return;
+
+	# return; #do not enable this return as it Fucks-up the menu
 }
 
 #######
@@ -306,8 +304,10 @@ sub git_cmd {
 			$self->load_dialog_output( "Git $action -> $location", $git_cmd->{output} );
 
 			if ( $action =~ m/^commit/ ) {
+
 				# p $git_cmd->{output};
 				$git_cmd->{output} =~ m/master\s(?<nr>[\w|\d]{7})/;
+
 				# say $+{nr};
 
 				#update Changes file
@@ -596,9 +596,11 @@ sub write_changes {
 
 	require File::Spec;
 	my $change_file = File::Spec->catfile( $dir, 'Changes' );
+
 	# say $change_file;
 
 	if ( -e $change_file ) {
+
 		# say 'found Changes';
 		# say $change_file;
 
