@@ -1,6 +1,8 @@
 Revision history for Padre-Plugin-Git
 
 {{$NEXT}}
+0.07 2012-11-03
+ - Fix-typo use of pbp return in sub cause a clocaking effect of menu (BOWTIE)
 
 0.06 2012-11-01
  - Add some Branching 
