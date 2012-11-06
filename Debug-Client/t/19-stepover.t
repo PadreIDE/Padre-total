@@ -19,9 +19,8 @@ start_script('t/eg/02-sub.pl');
 my $debugger;
 $debugger = start_debugger();
 my $out = $debugger->get;
-$out =~ m/(1.\d{2})$/m;
-my $perl5db_ver = $1;
-
+$out =~ m/(?<=[version])\s*(?<ver>1.\d{2})/m;
+my $perl5db_ver = $+{ver};
 
 #Body
 $debugger->run(8);
