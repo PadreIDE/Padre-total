@@ -7,7 +7,7 @@ use warnings FATAL => 'all';
 # Turn on $OUTPUT_AUTOFLUSH
 local $| = 1;
 
-our $VERSION = '0.21_11';
+our $VERSION = '0.21_12';
 $VERSION = eval $VERSION; # Comment out when we don't have a dev component
 
 use utf8;
@@ -662,7 +662,7 @@ Debug::Client - debugger client side code for Padre, The Perl IDE.
 
 =head1 VERSION
 
-This document describes Debug::Client version 0.21_11
+This document describes Debug::Client version 0.21_12
 
 =head1 SYNOPSIS
 
@@ -909,7 +909,7 @@ From perldebug, but defaulted to y 0
 Display all (or some) lexical variables (mnemonic: my variables) in the current 
 scope or level scopes higher. You can limit the variables that you see with vars 
 which works exactly as it does for the V and X commands. Requires the PadWalker 
-module version 0.08 or higher; will warn if this isn't installed. 
+module version 0.21_12
 Output is pretty-printed in the same style as for V and the format is controlled by the same options.
 
   $debugger->get_y_zero();
@@ -1037,7 +1037,7 @@ and just performing c on it's own
 
 I<Warning sub listen has bean deprecated>
 
-Has bean deprecated since 0.13_04 and all future versions starting with v0.14
+Has bean deprecated since 0.13_04 and all future version 0.21_12
 
 Perl::Critic Error Subroutine name is a homonym for built-in function
 
