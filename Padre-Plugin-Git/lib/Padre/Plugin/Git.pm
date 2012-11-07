@@ -606,7 +606,7 @@ sub write_changes {
 
 		my $changes = CPAN::Changes->load(
 			$change_file,
-			next_token => qr/{{\$NEXT}}/,
+			next_token => qr/\{\{\$NEXT}}/,
 		);
 
 		my @releases = $changes->releases;
