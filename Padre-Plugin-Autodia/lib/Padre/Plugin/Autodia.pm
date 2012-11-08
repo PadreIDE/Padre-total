@@ -1,61 +1,69 @@
 package Padre::Plugin::Autodia;
 
 # ABSTRACT: Autodia UML creator plugin for Padre
+use v5.10;
 
 use strict;
 use warnings;
+our $VERSION = '0.02';
 
-=head1 DESCRIPTION
-
-Note: Before installing this plugin, you need to install L<GraphViz>
-(C<apt-get install graphviz> or get a binary from http://www.graphviz.org/).
-
-Padre plugin to integrate Autodia.
-
-Provides an Autodia menu under 'plugins' with options to create UML diagrams for the current or selected files.
-
-=cut
-
-use base 'Padre::Plugin';
+use Padre::Wx ();
+use Padre::Constant ();
+use Padre::Current  ();
+use Try::Tiny;
 
 use Cwd;
 use Autodia;
+use GraphViz;
 
-use Padre::Wx         ();
-use Padre::Wx::Dialog ();
-use Padre::Constant   ();
-use Padre::Current    ();
+use parent qw(
+	Padre::Plugin
+);
 
-our $VERSION = '0.02';
+use Data::Printer {
+	caller_info => 1,
+	colored     => 1,
+};
 
-our $language_handlers;
-
-=head1 METHODS
-
-=head2 plugin_name
-
-=cut
-
+#######
+# Called by padre to know the plugin name
+#######
 sub plugin_name {
-	Wx::gettext('Autodia UML Support');
+	return Wx::gettext('Autodia UML Support');
 }
 
-=head2 padre_interfaces
+#########
+# We need plugin_enable
+# as we have an external dependency autodia
+#########
+sub plugin_enable {
+	my $self           = shift;
+	my $autodia_exists = 0;
 
-Declare the Padre interfaces this plugin uses
+	try {
+		if ( File::Which::which('autodia.pl') ) {
+			$autodia_exists = 1;
+		}
+	};
 
-=cut
+	return $autodia_exists;
+}
 
+#######
+# Called by padre to check the required interface
+#######
 sub padre_interfaces {
-	'Padre::Plugin' => '0.91', 'Padre::Wx' => '0.91',;
+	return (
+		# Default, required
+		'Padre::Plugin' => '0.96',
+		'Padre::Wx'     => '0.96',
+		'Padre::Util'   => '0.97',
+	);
 }
 
-=head2 menu_plugins_simple
-
-The command structure to show in the Plugins menu
-
-=cut
-
+#######
+# Add Plugin to Padre Menu
+#######
 sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
@@ -67,66 +75,6 @@ sub menu_plugins_simple {
 	];
 }
 
-=head2 show_about
-
-show 'about' dialog
-
-=cut
-
-sub show_about {
-	my ($main) = @_;
-
-	my $about = Wx::AboutDialogInfo->new;
-	$about->SetName('Padre::Plugin::Autodia');
-	$about->SetDescription( Wx::gettext('Integrating automated documentation into Padre IDE') );
-	$about->SetVersion($Padre::Plugin::Autodia::VERSION);
-	$about->SetCopyright( Wx::gettext('Copyright 2010') . ' Aaron Trevena' );
-
-	# Only Unix/GTK native about box supports websites
-	if (Padre::Constant::UNIX) {
-		$about->SetWebSite('http://padre.perlide.org/');
-	}
-
-	$about->AddDeveloper('Aaron Trevena: teejay at cpan dot org');
-
-	Wx::AboutBox($about);
-	return;
-}
-
-=head2 draw_this_file
-
-parse and diagram this file, displaying the UML Chart in a new window
-
-=cut
-
-sub draw_this_file {
-	my $self = shift;
-
-	my $document = $self->current->document or return;
-
-	my $filename = $document->filename || $document->tempfile;
-
-	my $outfile = "${filename}.draw_this_file.jpg";
-
-	( my $language = lc( $document->mimetype ) ) =~ s|application/[x\-]*||;
-
-	my $autodia_handler =
-		$self->_get_handler( { filenames => [$filename], outfile => $outfile, graphviz => 1, language => $language } );
-
-	my $processed_files = $autodia_handler->process();
-
-	$autodia_handler->output();
-
-	Padre::Wx::launch_browser("file://$outfile");
-
-	return;
-}
-
-=head2 draw_all_files
-
-parse and diagram selected files from dialog, displaying the UML Chart in a new window
-
-=cut
 
 # http://docs.wxwidgets.org/stable/wx_wxfiledialog.html
 my $orig_wildcards = join(
@@ -165,6 +113,29 @@ my $wildcards = join(
 $wildcards .= (Padre::Constant::WIN32) ? Wx::gettext("All Files") . "|*.*|" : Wx::gettext("All Files") . "|*|";
 
 
+sub draw_this_file {
+	my $self = shift;
+
+	my $document = $self->current->document or return;
+
+	my $filename = $document->filename || $document->tempfile;
+
+	my $outfile = "${filename}.draw_this_file.jpg";
+
+	( my $language = lc( $document->mimetype ) ) =~ s|application/[x\-]*||;
+
+	my $autodia_handler =
+		$self->_get_handler( { filenames => [$filename], outfile => $outfile, graphviz => 1, language => $language } );
+
+	my $processed_files = $autodia_handler->process();
+
+	$autodia_handler->output();
+
+	Padre::Wx::launch_browser("file://$outfile");
+
+	return;
+}
+
 sub draw_all_files {
 	my $self = shift;
 
@@ -181,7 +152,7 @@ sub draw_all_files {
 
 	$directory = $dialog->GetDirectory;
 	my @filenames = map {"$directory/$_"} $dialog->GetFilenames;
-
+	p @filenames;
 
 	# get language for first file
 	my $language = 'perl';
@@ -196,6 +167,7 @@ sub draw_all_files {
 	my $outfile = Cwd::getcwd() . "/padre.draw_these_files.jpg";
 	my $autodia_handler =
 		$self->_get_handler( { filenames => \@filenames, outfile => $outfile, graphviz => 1, language => $language } );
+
 	my $processed_files = $autodia_handler->process();
 	$autodia_handler->output();
 
@@ -216,15 +188,75 @@ sub _get_handler {
 	$config->{templatefile} = $args->{template} || undef;
 	$config->{outputfile}   = $args->{outfile}  || "autodia-plugin.out";
 
-	unless ($language_handlers) {
-		$language_handlers = Autodia->getHandlers();
-	}
+	# unless ($language_handlers) {
+	my $language_handlers = Autodia->getHandlers();
+
+	# }
 	my $handler_module = $language_handlers->{ lc( $args->{language} ) };
 	eval "require $handler_module" or die "can't run '$handler_module' : $@\n";
 	my $handler = "$handler_module"->new($config);
-
+	p $handler;
 	return $handler;
 }
+
+sub show_about {
+	my ($main) = @_;
+
+	my $about = Wx::AboutDialogInfo->new;
+	$about->SetName('Padre::Plugin::Autodia');
+	$about->SetDescription( Wx::gettext('Integrating automated documentation into Padre IDE') );
+	$about->SetVersion($Padre::Plugin::Autodia::VERSION);
+	$about->SetCopyright( Wx::gettext('Copyright 2010') . ' Aaron Trevena' );
+
+	# Only Unix/GTK native about box supports websites
+	if (Padre::Constant::UNIX) {
+		$about->SetWebSite('http://padre.perlide.org/');
+	}
+
+	$about->AddDeveloper('Aaron Trevena: teejay at cpan dot org');
+
+	Wx::AboutBox($about);
+	return;
+}
+
+1;
+
+__END__
+
+=pod
+
+=head1 DESCRIPTION
+
+Note: Before installing this plugin, you need to install L<GraphViz>
+(C<apt-get install graphviz> or get a binary from http://www.graphviz.org/).
+
+Padre plugin to integrate Autodia.
+
+Provides an Autodia menu under 'plugins' with options to create UML diagrams for the current or selected files.
+
+=head1 METHODS
+
+=head2 plugin_name
+
+=head2 padre_interfaces
+
+Declare the Padre interfaces this plugin uses
+
+=head2 menu_plugins_simple
+
+The command structure to show in the Plugins menu
+
+=head2 show_about
+
+show 'about' dialog
+
+=head2 draw_this_file
+
+parse and diagram this file, displaying the UML Chart in a new window
+
+=head2 draw_all_files
+
+parse and diagram selected files from dialog, displaying the UML Chart in a new window
 
 =head1 SEE ALSO
 
@@ -235,5 +267,3 @@ L<Autodia>, L<GraphViz>, L<Padre>
 Development sponsered by Connected-uk
 
 =cut
-
-1;

@@ -10,9 +10,10 @@ author 'Ahmad M. Zawawi <ahmad.zawawi@gmail.com>';
 
 all_from 'lib/Padre/Plugin/Autodia.pm';
 
-requires 'Padre'   => '0.65';
-requires 'Cwd'     => 0;
-requires 'Autodia' => 0;
+requires 'Padre'   => '0.97';
+requires 'Cwd'     => '3.39_02';
+requires 'Autodia' => '2.14';
+requires 'GraphViz' => '2.11';
 
 test_requires 'Test::More' => '0.47';
 no_index 'directory'       => qw{ t xt eg share inc};
