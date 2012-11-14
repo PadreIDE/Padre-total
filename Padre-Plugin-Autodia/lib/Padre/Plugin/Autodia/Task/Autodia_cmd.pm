@@ -10,8 +10,8 @@ use Padre::Task ();
 use Padre::Unload;
 use parent qw{ Padre::Task };
 
-use Autodia;
-use GraphViz;
+# use Autodia;
+# use GraphViz;
 
 
 #######

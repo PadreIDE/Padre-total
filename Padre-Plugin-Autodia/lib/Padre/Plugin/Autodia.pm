@@ -29,10 +29,6 @@ use Data::Printer {
 	colored     => 1,
 };
 
-
-
-
-
 #######
 # Called by padre to know the plugin name
 #######
@@ -75,6 +71,9 @@ sub padre_interfaces {
 use constant CHILDREN => qw{
 	Padre::Plugin::Autodia
 	Padre::Plugin::Autodia::Task::Autodia_cmd
+	Padre::Plugin::Autodia::Task::Autodia_dia
+	Autodia
+	GraphViz
 };
 
 #######
@@ -250,6 +249,8 @@ sub show_about {
 	return;
 }
 
+#####
+
 sub class_dia {
 	my $self     = shift;
 	my $main     = $self->main;
@@ -262,31 +263,16 @@ sub project_jpg {
 	my $self     = shift;
 	my $main     = $self->main;
 	my $document = $main->current->document;
-	my $action   = shift;
-	my $location = shift;
 
-
-	my @directories_to_search = File::Spec->catfile( $document->project_dir, 'lib' );
-	find( \&project_files, @directories_to_search );
-	p @files_found;
-	my @filenames = @files_found;
-
-	# get language for first file
 	my $language = 'perl';
 
-	say 'Project ' . __PACKAGE__;
-	p $document->project_dir;
-	$document->project_dir =~ /\W(?<project>\w+)$/;
-	p $+{project};
+	# $document->project_dir =~ /\/(?<project>\w+)$/;
 
+	# my $outfile = File::Spec->catfile( $document->project_dir, "$+{project}.jpg" );
+	my @project_dir = File::Spec->splitdir( $document->project_dir );
 
-	# run autodia on files
-	# my $outfile = Cwd::getcwd() . "/padre.draw_these_files.jpg";
-	# my $outfile = File::Spec->catfile( $document->project_dir, 'padre.draw_this.jpg' );
-
-	my $outfile = File::Spec->catfile( $document->project_dir, "$+{project}.jpg" );
-	p $outfile;
-
+	my $outfile = File::Spec->catfile( $document->project_dir, "$project_dir[-1].jpg" );
+	
 	require Padre::Plugin::Autodia::Task::Autodia_cmd;
 
 	# # Fire the task
@@ -299,60 +285,34 @@ sub project_jpg {
 		on_finish   => 'on_finish',
 	);
 
-
-	# display generated output in browser
-	# Padre::Wx::launch_browser("file://$outfile");
-
-	say 'done';
-
-
 	return;
 
-	# $document->project_dir
 }
 
 sub project_dia {
 	my $self     = shift;
 	my $main     = $self->main;
 	my $document = $main->current->document;
-	my $action   = shift;
-	my $location = shift;
-
-
-	my @directories_to_search = File::Spec->catfile( $document->project_dir, 'lib' );
-	find( \&project_files, @directories_to_search );
-	p @files_found;
-	my @filenames = @files_found;
 
 	# get language for first file
 	my $language = 'perl';
 
-	say 'Project ' . __PACKAGE__;
-	p $document->project_dir;
-	$document->project_dir =~ /\W(?<project>\w+)$/;
-	p $+{project};
+	# $document->project_dir =~ /\/(?<project>\w+)$/;
+	# my @project_dir = File::Spec->splitdir( $document->project_dir );
 
+	my $outfile = File::Spec->catfile( $document->project_dir, "autodia.out.dia" );
 
-	# run autodia on files
-	# my $outfile = Cwd::getcwd() . "/padre.draw_these_files.jpg";
-	# my $outfile = File::Spec->catfile( $document->project_dir, 'padre.draw_this.jpg' );
+	require Padre::Plugin::Autodia::Task::Autodia_dia;
 
-	my $outfile = File::Spec->catfile( $document->project_dir, "$+{project}.dia" );
-	p $outfile;
-
-	require Padre::Plugin::Autodia::Task::Autodia_cmd;
-
-	# # Fire the task
+	# Fire the task
 	$self->task_request(
-		task        => 'Padre::Plugin::Autodia::Task::Autodia_cmd',
-		action      => 'autodia.pl -d lib -r ',
+		task        => 'Padre::Plugin::Autodia::Task::Autodia_dia',
+		action      => 'autodia.pl -d lib -r -K -o',
 		outfile     => $outfile,
 		language    => $language,
 		project_dir => $document->project_dir,
 		on_finish   => 'on_finish',
 	);
-
-	say 'done';
 
 	return;
 }
@@ -379,24 +339,17 @@ sub on_finish {
 	my $main   = $self->main;
 	my $output = $main->output;
 
-	# p $task->{outfile};
-
-
 	$main->show_output(1);
 	$output->clear;
 	$output->AppendText( $task->{output} );
 	$output->AppendText( "Ouput written to -> $task->{outfile}" );
 
-
 	given ( $task->{outfile} ) {
 		when (/.jpg$/) { Padre::Wx::launch_browser("file://$task->{outfile}") }
 		when (/.dia$/) { system "dia", $task->{outfile} }
 	}
-
-
-	# p $task;
-	# p $task->{output};
-	# p $task->{error};
+	
+	p $task;
 
 	return;
 }
