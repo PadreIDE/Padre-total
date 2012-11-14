@@ -7,7 +7,7 @@ use strict;
 use warnings;
 our $VERSION = '0.02';
 
-use Padre::Wx ();
+use Padre::Wx       ();
 use Padre::Constant ();
 use Padre::Current  ();
 use Try::Tiny;
@@ -16,14 +16,22 @@ use Cwd;
 use Autodia;
 use GraphViz;
 
+use File::Find qw(find);
+use File::Spec;
+
 use parent qw(
 	Padre::Plugin
+	Padre::Role::Task
 );
 
 use Data::Printer {
 	caller_info => 1,
 	colored     => 1,
 };
+
+
+
+
 
 #######
 # Called by padre to know the plugin name
@@ -41,7 +49,7 @@ sub plugin_enable {
 	my $autodia_exists = 0;
 
 	try {
-		if ( File::Which::which('autodia.pl') ) {
+		if ( File::Which::which('dia') ) {
 			$autodia_exists = 1;
 		}
 	};
@@ -56,10 +64,18 @@ sub padre_interfaces {
 	return (
 		# Default, required
 		'Padre::Plugin' => '0.96',
-		'Padre::Wx'     => '0.96',
+		'Padre::Task'   => '0.96',
+		'Padre::Unload' => '0.96',
 		'Padre::Util'   => '0.97',
+		'Padre::Wx'     => '0.96',
 	);
 }
+
+# Child modules we need to unload when disabled
+use constant CHILDREN => qw{
+	Padre::Plugin::Autodia
+	Padre::Plugin::Autodia::Task::Autodia_cmd
+};
 
 #######
 # Add Plugin to Padre Menu
@@ -67,14 +83,29 @@ sub padre_interfaces {
 sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
-		Wx::gettext('About') => sub { $self->show_about },
-		Wx::gettext('UML')   => [
-			Wx::gettext('Class Diagram (Current File)') => sub { $self->draw_this_file },
-			Wx::gettext('Class Diagram...')             => sub { $self->draw_all_files },
+		Wx::gettext('About') => sub {
+			$self->show_about;
+		},
+		Wx::gettext('UML jpg') => [
+			Wx::gettext('Class Diagram (Current File jpg)') => sub {
+				$self->draw_this_file;
+			},
+			Wx::gettext('Class Diagram (select file jpg)') => sub {
+				$self->draw_all_files;
+			},
+		],
+		Wx::gettext('UML dia') => [
+			Wx::gettext('Project Class Diagram (jpg)') => sub {
+				$self->project_jpg;
+			},
+			Wx::gettext('Project Class Diagram (dia)') => sub {
+				$self->project_dia;
+			},
 		],
 	];
 }
 
+my @files_found = ();
 
 # http://docs.wxwidgets.org/stable/wx_wxfiledialog.html
 my $orig_wildcards = join(
@@ -217,6 +248,177 @@ sub show_about {
 
 	Wx::AboutBox($about);
 	return;
+}
+
+sub class_dia {
+	my $self     = shift;
+	my $main     = $self->main;
+	my $document = $main->current->document;
+
+	# $document->filename
+}
+
+sub project_jpg {
+	my $self     = shift;
+	my $main     = $self->main;
+	my $document = $main->current->document;
+	my $action   = shift;
+	my $location = shift;
+
+
+	my @directories_to_search = File::Spec->catfile( $document->project_dir, 'lib' );
+	find( \&project_files, @directories_to_search );
+	p @files_found;
+	my @filenames = @files_found;
+
+	# get language for first file
+	my $language = 'perl';
+
+	say 'Project ' . __PACKAGE__;
+	p $document->project_dir;
+	$document->project_dir =~ /\W(?<project>\w+)$/;
+	p $+{project};
+
+
+	# run autodia on files
+	# my $outfile = Cwd::getcwd() . "/padre.draw_these_files.jpg";
+	# my $outfile = File::Spec->catfile( $document->project_dir, 'padre.draw_this.jpg' );
+
+	my $outfile = File::Spec->catfile( $document->project_dir, "$+{project}.jpg" );
+	p $outfile;
+
+	require Padre::Plugin::Autodia::Task::Autodia_cmd;
+
+	# # Fire the task
+	$self->task_request(
+		task        => 'Padre::Plugin::Autodia::Task::Autodia_cmd',
+		action      => 'autodia.pl -d lib -r -z ',
+		outfile     => $outfile,
+		language    => $language,
+		project_dir => $document->project_dir,
+		on_finish   => 'on_finish',
+	);
+
+
+	# display generated output in browser
+	# Padre::Wx::launch_browser("file://$outfile");
+
+	say 'done';
+
+
+	return;
+
+	# $document->project_dir
+}
+
+sub project_dia {
+	my $self     = shift;
+	my $main     = $self->main;
+	my $document = $main->current->document;
+	my $action   = shift;
+	my $location = shift;
+
+
+	my @directories_to_search = File::Spec->catfile( $document->project_dir, 'lib' );
+	find( \&project_files, @directories_to_search );
+	p @files_found;
+	my @filenames = @files_found;
+
+	# get language for first file
+	my $language = 'perl';
+
+	say 'Project ' . __PACKAGE__;
+	p $document->project_dir;
+	$document->project_dir =~ /\W(?<project>\w+)$/;
+	p $+{project};
+
+
+	# run autodia on files
+	# my $outfile = Cwd::getcwd() . "/padre.draw_these_files.jpg";
+	# my $outfile = File::Spec->catfile( $document->project_dir, 'padre.draw_this.jpg' );
+
+	my $outfile = File::Spec->catfile( $document->project_dir, "$+{project}.dia" );
+	p $outfile;
+
+	require Padre::Plugin::Autodia::Task::Autodia_cmd;
+
+	# # Fire the task
+	$self->task_request(
+		task        => 'Padre::Plugin::Autodia::Task::Autodia_cmd',
+		action      => 'autodia.pl -d lib -r ',
+		outfile     => $outfile,
+		language    => $language,
+		project_dir => $document->project_dir,
+		on_finish   => 'on_finish',
+	);
+
+	say 'done';
+
+	return;
+}
+
+sub project_files {
+	my $self = shift;
+
+	my $file = $File::Find::name;
+	return if $file =~ /\.[svn|git]/;
+	return if $file !~ /\.p[lm]$/;
+
+	push @files_found, $file;
+
+	return;
+}
+
+
+#######
+# on compleation of task do this
+#######
+sub on_finish {
+	my $self   = shift;
+	my $task   = shift;
+	my $main   = $self->main;
+	my $output = $main->output;
+
+	# p $task->{outfile};
+
+
+	$main->show_output(1);
+	$output->clear;
+	$output->AppendText( $task->{output} );
+	$output->AppendText( "Ouput written to -> $task->{outfile}" );
+
+
+	given ( $task->{outfile} ) {
+		when (/.jpg$/) { Padre::Wx::launch_browser("file://$task->{outfile}") }
+		when (/.dia$/) { system "dia", $task->{outfile} }
+	}
+
+
+	# p $task;
+	# p $task->{output};
+	# p $task->{error};
+
+	return;
+}
+
+########
+# plugin_disable
+########
+sub plugin_disable {
+	my $self = shift;
+
+	# Close the dialog if it is hanging around
+	# $self->clean_dialog;
+
+	# Unload all our child classes
+	for my $package (CHILDREN) {
+		require Padre::Unload;
+		Padre::Unload->unload($package);
+	}
+
+	$self->SUPER::plugin_disable(@_);
+
+	return 1;
 }
 
 1;
