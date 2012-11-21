@@ -380,6 +380,15 @@ __END__
 
 =pod
 
+=head1 NAME
+
+Padre::Plugin::Autodia - Draw UML Class diagrams from Padre, the Perl IDE,
+
+=head1 VERSION
+
+version 0.03
+
+
 =head1 DESCRIPTION
 
 Note: Before installing this plugin, you need to install L<GraphViz>
@@ -419,6 +428,38 @@ L<Autodia>, L<GraphViz>, L<Padre>
 
 =head1 CREDITS
 
-Development sponsered by Connected-uk
+Initial Development of version 0.01 sponsered by Connected-uk
+
+
+=head1 AUTHORS
+
+Kevin Dawson E<lt>bowtie@cpan.orgE<gt>
+
+Ahmad M. Zawawi E<lt>ahmad.zawawi@gmail.comE<gt>
+
+=head2 CONTRIBUTORS
+
+Dirk De Nijs
+
+ZENOG
+
+GARU
+
+Damyan Ivanov
+
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright E<copy> E<beta> 2008-2012 The Padre development team as listed in Padre.pm in the
+Padre distribution all rights reserved.
+
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
+
 
 =cut
+
+# Copyright 2008-2012 The Padre development team as listed in Padre.pm.
+# LICENSE
+# This program is free software; you can redistribute it and/or
+# modify it under the same terms as Perl 5 itself.
