@@ -1,7 +1,12 @@
 Revision history for Perl extension Padre::Plugin::Autodia.
 
 {{$NEXT}}
+ -
+ 
+0.03 2012-11-21
  - Make Padre API v2 compatable (BOWTIE)
+ - Added Tasks for background working (BOWTIE)
+ - Added Project diagrams, jpg and dia with auto loading of App (BOWTIE)
 
 0.02 2010-09-09
  - Restored missing POT/PO translation sources (Damyan Ivanov, AZAWAWI)
