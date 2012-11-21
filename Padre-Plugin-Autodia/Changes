@@ -1,7 +1,7 @@
 Revision history for Perl extension Padre::Plugin::Autodia.
 
 {{$NEXT}}
- -
+ - Update Makefile.PL (BOWTIE)
  
 0.03 2012-11-21
  - Make Padre API v2 compatable (BOWTIE)
