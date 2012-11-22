@@ -354,6 +354,18 @@ sub on_finish {
 	return;
 }
 
+#######
+# Add icon to Plugin
+#######
+sub plugin_icon {
+	my $class = shift;
+	my $share = $class->plugin_directory_share or return;
+	my $file  = File::Spec->catfile( $share, 'icons', '16x16', 'autodia.png' );
+	return unless -f $file;
+	return unless -r $file;
+	return Wx::Bitmap->new( $file, Wx::wxBITMAP_TYPE_PNG );
+}
+
 ########
 # plugin_disable
 ########
@@ -400,27 +412,48 @@ Provides an Autodia menu under 'plugins' with options to create UML diagrams for
 
 =head1 METHODS
 
-=head2 plugin_name
+=over 4
 
-=head2 padre_interfaces
+=item * _get_handler
 
-Declare the Padre interfaces this plugin uses
+=item * class_dia
 
-=head2 menu_plugins_simple
+=item * draw_all_files
 
-The command structure to show in the Plugins menu
+parse and diagram selected files from dialog, displaying the UML Chart in a new window
 
-=head2 show_about
-
-show 'about' dialog
-
-=head2 draw_this_file
+=item * draw_this_file
 
 parse and diagram this file, displaying the UML Chart in a new window
 
-=head2 draw_all_files
+=item * menu_plugins_simple
 
-parse and diagram selected files from dialog, displaying the UML Chart in a new window
+The command structure to show in the Plugins menu
+
+=item * on_finish
+
+=item * padre_interfaces
+
+=item * plugin_disable
+
+=item * plugin_enable
+
+=item * padre_name
+
+Declare the Padre interfaces this plugin uses
+
+=item * project_dia
+
+=item * project_files
+
+=item * project_jpg
+
+=item * show_about
+
+show 'about' dialog
+
+
+=back
 
 =head1 SEE ALSO
 
@@ -438,6 +471,10 @@ Kevin Dawson E<lt>bowtie@cpan.orgE<gt>
 Ahmad M. Zawawi E<lt>ahmad.zawawi@gmail.comE<gt>
 
 =head2 CONTRIBUTORS
+
+Ahmad M. Zawawi E<lt>ahmad.zawawi@gmail.comE<gt>
+
+Aaron Trevena, <aaron.trevena@gmail.com>
 
 Dirk De Nijs
 
