@@ -1,8 +1,9 @@
-use 5.010001;
 use inc::Module::Install::DSL 1.06;
 
 all_from lib/Padre/Plugin/Autodia.pm
 requires_from lib/Padre/Plugin/Autodia.pm
+
+perl_version 5.010_001
 
 requires Autodia         2.14
 requires Carp            1.26
