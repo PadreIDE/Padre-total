@@ -4,7 +4,7 @@ use 5.010;
 use strict;
 use warnings FATAL => 'all';
 
-use Test::More tests => 18;
+use Test::More tests => 19;
 use Padre::Plugin::Git ();
 
 ######
@@ -14,7 +14,7 @@ use Padre::Plugin::Git ();
 my @subs = qw( clean_dialog current_files event_on_context_menu git_cmd
 	git_cmd_task github_pull_request load_dialog_output menu_plugins_simple 
 	on_finish padre_interfaces plugin_disable plugin_enable plugin_name 
-	show_about write_changes);
+	plugin_about plugin_icon write_changes);
 
 use_ok( 'Padre::Plugin::Git', @subs );
 
