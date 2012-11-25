@@ -1,7 +1,11 @@
 Revision history for Padre-Plugin-Git
 
-{{$NEXT}}
+0.08 2012-11-25
  - Unescaped left brace in regex is deprecated, passed through in regex (BOWTIE)
+ - Add a plugin icon for use in Plugin Manager (BOWTIE)
+ - Add blame for current file for dod++ (BOWTIE)
+ - Add a git icon to About Dialog (BOWTIE)
+ - Add Perl programming -> TIOBE (BOWTIE)
 
 0.07 2012-11-03
  - Fix-typo use of pbp return in sub cause a clocaking effect of menu (BOWTIE)
