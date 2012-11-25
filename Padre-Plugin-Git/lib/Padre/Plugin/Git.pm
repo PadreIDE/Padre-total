@@ -16,16 +16,12 @@ use Try::Tiny;
 use File::Slurp;
 use CPAN::Changes;
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 use parent qw(
 	Padre::Plugin
 	Padre::Role::Task
 );
 
-use Data::Printer {
-	caller_info => 1,
-	colored     => 1,
-};
 
 #########
 # We need plugin_enable
@@ -667,7 +663,7 @@ Padre::Plugin::Git - A Simple Git interface for Padre, the Perl IDE,
 
 =head1 VERSION
 
-version 0.07
+version 0.08
 
 =head1 SYNOPSIS
 
@@ -729,7 +725,7 @@ see L<wiki|http://padre.perlide.org/trac/wiki/PadrePluginGit> for more info.
 =item * write_changes
 
 use CPAN::Changes to write git commits to project Change file, 
-this abuses the {{$NEXT}} token as a valid version 0.07
+this abuses the {{$NEXT}} token as a valid version 0.08
 see CPAN::Changes::Spec for format
 
 =back
