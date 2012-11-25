@@ -49,6 +49,11 @@ use constant CHILDREN => qw{
 	Pithub
 };
 
+use constant {
+	BLANK => qq{ },
+	NONE  => q{},
+};
+
 #######
 # Called by padre to check the required interface
 #######
@@ -118,10 +123,10 @@ sub menu_plugins_simple {
 								$self->git_cmd( 'commit', $document->project_dir );
 							},
 							Wx::gettext('Commit Amend') => sub {
-								$self->git_cmd( 'commit --amend', '' );
+								$self->git_cmd( 'commit --amend', NONE );
 							},
 							Wx::gettext('Commit All') => sub {
-								$self->git_cmd( 'commit -a', '' );
+								$self->git_cmd( 'commit -a', NONE );
 							},
 						],
 						Wx::gettext('Checkout') => [
@@ -156,13 +161,13 @@ sub menu_plugins_simple {
 						],
 						Wx::gettext('Log') => [
 							Wx::gettext('log --stat -2') => sub {
-								$self->git_cmd( 'log --stat -2', '' );
+								$self->git_cmd( 'log --stat -2', NONE );
 							},
 							Wx::gettext('log -p -2') => sub {
-								$self->git_cmd( 'log -p -2', '' );
+								$self->git_cmd( 'log -p -2', NONE );
 							},
 							Wx::gettext('log pretty') => sub {
-								$self->git_cmd( 'log --pretty=format:"%h %s" --graph', '' );
+								$self->git_cmd( 'log --pretty=format:"%h %s" --graph', NONE );
 							},
 						],
 						Wx::gettext('Blame') => [
@@ -173,35 +178,35 @@ sub menu_plugins_simple {
 					],
 					Wx::gettext('Origin') => [
 						Wx::gettext('Show Origin Info.') => sub {
-							$self->git_cmd_task( 'remote show origin', '' );
+							$self->git_cmd_task( 'remote show origin', NONE );
 						},
 						Wx::gettext('Push to Origin') => sub {
-							$self->git_cmd_task( 'push origin master', '' );
+							$self->git_cmd_task( 'push origin master', NONE );
 						},
 						Wx::gettext('Fetch from Origin') => sub {
-							$self->git_cmd_task( 'fetch origin master', '' );
+							$self->git_cmd_task( 'fetch origin master', NONE );
 						},
 						Wx::gettext('Pull from Origin') => sub {
-							$self->git_cmd_task( 'pull origin master', '' );
+							$self->git_cmd_task( 'pull origin master', NONE );
 						},
 					],
 					Wx::gettext('Upstream') => [
 						Wx::gettext('Show Upstream Info.') => sub {
-							$self->git_cmd_task( 'remote show upstream', '' );
+							$self->git_cmd_task( 'remote show upstream', NONE );
 						},
 						Wx::gettext('Fetch Upstream') => sub {
-							$self->git_cmd_task( 'fetch upstream', '' );
+							$self->git_cmd_task( 'fetch upstream', NONE );
 						},
 						Wx::gettext('Merge Upstream Master') => sub {
-							$self->git_cmd_task( 'merge upstream/master', '' );
+							$self->git_cmd_task( 'merge upstream/master', NONE );
 						},
 					],
 					Wx::gettext('Branching') => [
 						Wx::gettext('Branch Info') => sub {
-							$self->git_cmd( 'branch -r -a -v', '' );
+							$self->git_cmd( 'branch -r -a -v', NONE );
 						},
 						Wx::gettext('Fetch All Branches from Origin') => sub {
-							$self->git_cmd_task( 'fetch --all', '' );
+							$self->git_cmd_task( 'fetch --all', NONE );
 						},
 					],
 					Wx::gettext('GitHub') => [
@@ -241,6 +246,7 @@ sub plugin_about {
 	$info->AddDeveloper('Kevin Dawson <bowtie@cpan.org>');
 
 	Wx::AboutBox($info);
+	return;
 }
 
 
@@ -264,7 +270,7 @@ sub git_cmd {
 
 		# p $commit_editmsg;
 
-		$message = $main->prompt( "Git Commit of $location", "Please type in your message", "MY_GIT_COMMIT" );
+		$message = $main->prompt( "Git Commit of $location", 'Please type in your message', 'MY_GIT_COMMIT' );
 
 		return if not $message;
 
@@ -518,7 +524,7 @@ sub event_on_context_menu {
 		Wx::Event::EVT_MENU(
 			$self->main,
 			$item,
-			sub { $self->git_cmd( 'commit -a', '' ) },
+			sub { $self->git_cmd( 'commit -a', NONE ) },
 		);
 	}
 	return;
