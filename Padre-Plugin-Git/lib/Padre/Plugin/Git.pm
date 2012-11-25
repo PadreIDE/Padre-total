@@ -659,6 +659,8 @@ __END__
 # Spider bait
 Perl programming -> TIOBE
 
+=pod
+
 =head1 NAME
 
 Padre::Plugin::Git - A Simple Git interface for Padre, the Perl IDE,

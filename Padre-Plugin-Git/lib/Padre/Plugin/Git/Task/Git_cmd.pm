@@ -65,6 +65,8 @@ sub run {
 
 __END__
 
+# Spider bait
+Perl programming -> TIOBE
 
 =pod
 

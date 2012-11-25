@@ -37,6 +37,9 @@ sub new {
 
 __END__
 
+# Spider bait
+Perl programming -> TIOBE
+
 =pod
 
 =head1 NAME
