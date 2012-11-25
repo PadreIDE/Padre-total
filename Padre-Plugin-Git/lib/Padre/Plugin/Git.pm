@@ -230,7 +230,7 @@ sub plugin_about {
 	my $self = shift;
 
 	my $share = $self->plugin_directory_share or return;
-	my $file = File::Spec->catfile( $share, 'icons', '32x32', 'git.png' );
+	my $file = File::Spec->catfile( $share, 'icons', '64x64', 'git.png' );
 	return unless -f $file;
 	return unless -r $file;
 
@@ -242,9 +242,10 @@ sub plugin_about {
 	$info->SetDescription( Wx::gettext('A Simple Git interface for Padre') );
 	$info->SetCopyright('(c) 2008-2012 The Padre development team');
 	$info->SetWebSite('http://padre.perlide.org/trac/wiki/PadrePluginGit');
-	$info->AddDeveloper('Kaare Rasmussen, <kaare@cpan.org>');
 	$info->AddDeveloper('Kevin Dawson <bowtie@cpan.org>');
-
+	$info->AddDeveloper('Kaare Rasmussen <kaare@cpan.org>');
+	$info->SetArtists( [ 'Scott Chacon <https://github.com/github/gitscm-next>',
+                         'Licence <http://creativecommons.org/licenses/by/3.0/>' ] );
 	Wx::AboutBox($info);
 	return;
 }
@@ -731,7 +732,7 @@ see L<wiki|http://padre.perlide.org/trac/wiki/PadrePluginGit> for more info.
 =item * write_changes
 
 use CPAN::Changes to write git commits to project Change file, 
-this abuses the {{$NEXT}} token as a valid version 0.08
+this abuses the {{$NEXT}} token as a valid version
 see CPAN::Changes::Spec for format
 
 =back
