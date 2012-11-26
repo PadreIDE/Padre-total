@@ -94,9 +94,6 @@ sub menu_plugins_simple {
 			if ( $self->{open_file_info}->{$tab_id}->{'vcs'} =~ m/Git/sxm ) {
 
 				return $self->plugin_name => [
-					Wx::gettext('About...') => sub {
-						$self->plugin_about;
-					},
 					Wx::gettext('Local') => [
 						Wx::gettext('Staging') => [
 							Wx::gettext('Stage File') => sub {
@@ -217,6 +214,9 @@ sub menu_plugins_simple {
 							$self->github_pull_request();
 						},
 					],
+					Wx::gettext('About...') => sub {
+						$self->plugin_about;
+					},
 				];
 			}
 		}
@@ -225,6 +225,53 @@ sub menu_plugins_simple {
 	# return; #do not enable this return as it Fucks-up the menu
 }
 
+########
+# Composed Method clean_dialog
+########
+sub clean_dialog {
+	my $self = shift;
+
+	# Close the main dialog if it is hanging around
+	if ( $self->{dialog} ) {
+		$self->{dialog}->Hide;
+		$self->{dialog}->Destroy;
+		delete $self->{dialog};
+	}
+
+	return 1;
+}
+
+########
+# plugin_disable
+########
+sub plugin_disable {
+	my $self = shift;
+
+	# Close the dialog if it is hanging around
+	$self->clean_dialog;
+
+	# Unload all our child classes
+	for my $package (CHILDREN) {
+		require Padre::Unload;
+		Padre::Unload->unload($package);
+	}
+
+	$self->SUPER::plugin_disable(@_);
+
+	return 1;
+}
+
+#######
+# Add icon to Plugin
+#######
+sub plugin_icon {
+	my $self  = shift;
+	my $share = $self->plugin_directory_share or return;
+	my $file  = File::Spec->catfile( $share, 'icons', '16x16', 'git.png' );
+	return unless -f $file;
+	return unless -r $file;
+	return Wx::Bitmap->new( $file, Wx::wxBITMAP_TYPE_PNG );
+}
 
 #######
 # plugin_about
@@ -256,6 +303,9 @@ sub plugin_about {
 	return;
 }
 
+###
+# End of Padre API Methods
+######
 
 #######
 # git_commit
@@ -275,8 +325,6 @@ sub git_cmd {
 		my $commit_editmsg = read_file( $document->project_dir . '/.git/COMMIT_EDITMSG' );
 		chomp $commit_editmsg;
 
-		# p $commit_editmsg;
-
 		$message = $main->prompt( "Git Commit of $location", 'Please type in your message', 'MY_GIT_COMMIT' );
 
 		return if not $message;
@@ -287,8 +335,6 @@ sub git_cmd {
 			dir    => $document->project_dir,
 			option => 0
 		);
-
-		# p $git_cmd
 
 		# #update Changes file
 		# $self->write_changes( $document->project_dir, $message );
@@ -330,10 +376,7 @@ sub git_cmd {
 
 			if ( $action =~ m/^commit/ ) {
 
-				# p $git_cmd->{output};
 				$git_cmd->{output} =~ m/master\s(?<nr>[\w|\d]{7})/;
-
-				# say $+{nr};
 
 				#update Changes file
 				$self->write_changes( $document->project_dir, $message, $+{nr} );
@@ -574,41 +617,6 @@ sub current_files {
 	return;
 }
 
-########
-# plugin_disable
-########
-sub plugin_disable {
-	my $self = shift;
-
-	# Close the dialog if it is hanging around
-	$self->clean_dialog;
-
-	# Unload all our child classes
-	for my $package (CHILDREN) {
-		require Padre::Unload;
-		Padre::Unload->unload($package);
-	}
-
-	$self->SUPER::plugin_disable(@_);
-
-	return 1;
-}
-
-########
-# Composed Method clean_dialog
-########
-sub clean_dialog {
-	my $self = shift;
-
-	# Close the main dialog if it is hanging around
-	if ( $self->{dialog} ) {
-		$self->{dialog}->Hide;
-		$self->{dialog}->Destroy;
-		delete $self->{dialog};
-	}
-
-	return 1;
-}
 
 ########
 # Composed Method write_changes under {{$NEXT}}
@@ -647,52 +655,20 @@ sub write_changes {
 	return;
 }
 
-#######
-# Add icon to Plugin
-#######
-sub plugin_icon {
-	my $self  = shift;
-	my $share = $self->plugin_directory_share or return;
-	my $file  = File::Spec->catfile( $share, 'icons', '16x16', 'git.png' );
-	return unless -f $file;
-	return unless -r $file;
-	return Wx::Bitmap->new( $file, Wx::wxBITMAP_TYPE_PNG );
-}
 
 
+#######
+# stage_patch
+#######
 sub stage_patch {
 	my $self     = shift;
 	my $main     = $self->main;
 	my $document = $main->current->document;
-	# my $config   = $main->config;
-
-	# say $config->run_use_external_window;
-	# my $stash = $config->run_use_external_window;
-
-	# $config->set( 'run_use_external_window', 1 );
-	# say $config->run_use_external_window;
-
-	# my $cmd = File::Spec->catfile( $document->project_dir, 'git' );
-
-	# $main->run_command( $cmd . ' add -p ' . $document->filename );
 
 	my $cmd = 'git add -p ' . $document->filename;
-	say $cmd;
-	# require Padre::Plugin::Git::Task::Git_patch;
+	my $system;
 
-	# # Fire the task
-	# $self->task_request(
-		# task        => 'Padre::Plugin::Git::Task::Git_cmd',
-		# action      => $cmd,
-		# project_dir => $document->project_dir,
-
-		# # on_finish   => 'on_finish',
-	# );
-
-my $system;
-
-# hacked from Padre-Wx-Main->run_command
-
+	# hacked from Padre-Wx-Main->run_command
 	if (Padre::Constant::WIN32) {
 		my $title = $cmd;
 		$title =~ s/"//g;
@@ -721,26 +697,17 @@ my $system;
 	} else {
 		$system = qq(xterm -sb -e "$cmd ; sleep 1000" &);
 	}
-	
-	say $system;
 
-
-
-	my $git_patch;
+	# run 'git add -p file-name' in terminal
 	require Padre::Util;
-	$git_patch = Padre::Util::run_in_directory_two(
+	Padre::Util::run_in_directory_two(
 		cmd    => $system,
 		dir    => $document->project_dir,
 		option => 0
 	);
 
-
-	# $config->set( 'run_use_external_window', $stash );
-	# say $config->run_use_external_window;
-
 	return;
 }
-
 
 
 1;
