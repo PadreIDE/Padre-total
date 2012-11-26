@@ -2,7 +2,8 @@ Revision history for Padre-Plugin-Git
 
 {{$NEXT}}
  - Opps Add Arstic accreditation (BOWTIE)
- - us 64bit in About Dialog (BOWTIE)
+ - use 64bit in About Dialog (BOWTIE)
+ - Add Local Stage Patch for dod++ (BOWTIE)
 
 0.08 2012-11-25
  - Unescaped left brace in regex is deprecated, passed through in regex (BOWTIE)
