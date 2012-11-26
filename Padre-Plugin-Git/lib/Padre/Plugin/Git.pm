@@ -114,6 +114,9 @@ sub menu_plugins_simple {
 								$self->git_cmd( 'reset HEAD', $document->filename );
 								$self->git_cmd( 'status',     $document->filename );
 							},
+							Wx::gettext('Stage Patch') => sub {
+								$self->stage_patch();
+							},
 						],
 						Wx::gettext('Commit') => [
 							Wx::gettext('Commit File') => sub {
@@ -244,8 +247,11 @@ sub plugin_about {
 	$info->SetWebSite('http://padre.perlide.org/trac/wiki/PadrePluginGit');
 	$info->AddDeveloper('Kevin Dawson <bowtie@cpan.org>');
 	$info->AddDeveloper('Kaare Rasmussen <kaare@cpan.org>');
-	$info->SetArtists( [ 'Scott Chacon <https://github.com/github/gitscm-next>',
-                         'Licence <http://creativecommons.org/licenses/by/3.0/>' ] );
+	$info->SetArtists(
+		[   'Scott Chacon <https://github.com/github/gitscm-next>',
+			'Licence <http://creativecommons.org/licenses/by/3.0/>'
+		]
+	);
 	Wx::AboutBox($info);
 	return;
 }
@@ -461,7 +467,7 @@ sub git_cmd_task {
 }
 #######
 # on completion of task do this
-#######
+#######patch->{output};
 sub on_finish {
 	my $self = shift;
 	my $task = shift;
@@ -651,6 +657,88 @@ sub plugin_icon {
 	return unless -f $file;
 	return unless -r $file;
 	return Wx::Bitmap->new( $file, Wx::wxBITMAP_TYPE_PNG );
+}
+
+
+sub stage_patch {
+	my $self     = shift;
+	my $main     = $self->main;
+	my $document = $main->current->document;
+	# my $config   = $main->config;
+
+	# say $config->run_use_external_window;
+	# my $stash = $config->run_use_external_window;
+
+	# $config->set( 'run_use_external_window', 1 );
+	# say $config->run_use_external_window;
+
+	# my $cmd = File::Spec->catfile( $document->project_dir, 'git' );
+
+	# $main->run_command( $cmd . ' add -p ' . $document->filename );
+
+	my $cmd = 'git add -p ' . $document->filename;
+	say $cmd;
+	# require Padre::Plugin::Git::Task::Git_patch;
+
+	# # Fire the task
+	# $self->task_request(
+		# task        => 'Padre::Plugin::Git::Task::Git_cmd',
+		# action      => $cmd,
+		# project_dir => $document->project_dir,
+
+		# # on_finish   => 'on_finish',
+	# );
+
+my $system;
+
+# hacked from Padre-Wx-Main->run_command
+
+	if (Padre::Constant::WIN32) {
+		my $title = $cmd;
+		$title =~ s/"//g;
+		$system = qq(start "$title" cmd /C "$cmd  & pause");
+	} elsif (Padre::Constant::UNIX) {
+
+		if ( defined $ENV{COLORTERM} ) {
+			if ( $ENV{COLORTERM} eq 'gnome-terminal' ) {
+
+				#Gnome-Terminal line format:
+				#gnome-terminal -e "bash -c \"prove -lv t/96_edit_patch.t; exec bash\""
+				$system = qq($ENV{COLORTERM} -e "bash -c \\\"$cmd ; exec bash\\\"" & );
+			} else {
+				$system = qq(xterm -sb -e "$cmd ; sleep 1000" &);
+			}
+		}
+	} elsif (Padre::Constant::MAC) {
+
+		# tome
+		my $pwd = $self->current->document->project_dir();
+		$cmd =~ s/"/\\"/g;
+
+		# Applescript can throw spurious errors on STDERR: http://helpx.adobe.com/photoshop/kb/unit-type-conversion-error-applescript.html
+		$system = qq(osascript -e 'tell app "Terminal"\n\tdo script "cd $pwd; clear; $cmd ;"\nend tell'\n);
+
+	} else {
+		$system = qq(xterm -sb -e "$cmd ; sleep 1000" &);
+	}
+	
+	say $system;
+
+
+
+	my $git_patch;
+	require Padre::Util;
+	$git_patch = Padre::Util::run_in_directory_two(
+		cmd    => $system,
+		dir    => $document->project_dir,
+		option => 0
+	);
+
+
+	# $config->set( 'run_use_external_window', $stash );
+	# say $config->run_use_external_window;
+
+	return;
 }
 
 
