@@ -769,6 +769,8 @@ see L<wiki|http://padre.perlide.org/trac/wiki/PadrePluginGit> for more info.
 
 =item * git_cmd_task
 
+=item * git_patch
+
 =item * github_pull_request 
  
 =item * load_dialog_output 
