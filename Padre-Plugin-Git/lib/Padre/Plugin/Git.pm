@@ -112,7 +112,7 @@ sub menu_plugins_simple {
 								$self->git_cmd( 'status',     $document->filename );
 							},
 							Wx::gettext('Stage Patch') => sub {
-								$self->stage_patch();
+								$self->git_patch( 'git add -p ' . $document->filename );
 							},
 						],
 						Wx::gettext('Commit') => [
@@ -127,6 +127,9 @@ sub menu_plugins_simple {
 							},
 							Wx::gettext('Commit All') => sub {
 								$self->git_cmd( 'commit -a', NONE );
+							},
+							Wx::gettext('Commit Patch') => sub {
+								$self->git_patch( 'git commit -p ' . $document->filename );
 							},
 						],
 						Wx::gettext('Checkout') => [
@@ -658,14 +661,14 @@ sub write_changes {
 
 
 #######
-# stage_patch
+# git_patch
 #######
-sub stage_patch {
+sub git_patch {
 	my $self     = shift;
+	my $cmd      = shift;
 	my $main     = $self->main;
 	my $document = $main->current->document;
 
-	my $cmd = 'git add -p ' . $document->filename;
 	my $system;
 
 	# hacked from Padre-Wx-Main->run_command
@@ -736,6 +739,8 @@ cpan install Padre::Plugin::Git
 Enable it via Padre->Tools->Plugin Manager
 
 For more info see L<wiki|http://padre.perlide.org/trac/wiki/PadrePluginGit>
+
+Padre::Plugin::Git is a Perl programming plug-in for Padre
 
 =head1 DESCRIPTION
 
