@@ -5,6 +5,7 @@ Changes for Perl extension Padre-Plugin-FormBuilder
 	- add padre_icon (BOWTIE)
 	- Remove Padre::Util from interface (BOWTIE)
 	- Bump Module::Install -> 1.06 (BOWTIE)
+	- Add trailing ellipsis to menu (BOWTIE)
 
 0.04 Mon 23 Jan 2012
 	- Updated to Module::Install::DSL 1.04

@@ -84,7 +84,7 @@ sub menu_plugins {
 	my $item = Wx::MenuItem->new(
 		undef,
 		-1,
-		$self->plugin_name,
+		$self->plugin_name.'...',
 	);
 	Wx::Event::EVT_MENU(
 		$main,
