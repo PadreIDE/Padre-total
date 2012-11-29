@@ -22,4 +22,6 @@ homepage    http://padre.perlide.org/trac/wiki/PadrePluginGit
 bugtracker  http://padre.perlide.org/trac/wiki/Tickets
 repository  http://svn.perlide.org/padre/trunk/Padre-Plugin-Git/
 
+install_share
+
 no_index directory  qw{ t xt eg share inc privinc }
