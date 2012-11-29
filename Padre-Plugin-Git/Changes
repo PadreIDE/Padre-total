@@ -1,8 +1,8 @@
 Revision history for Padre-Plugin-Git
 
-{{$NEXT}}
+0.09 2012-11-29
  - Oops Add Artistic accreditation (BOWTIE)
- - use 64bit in About Dialogue (BOWTIE)
+ - use 64x64 in About Dialogue (BOWTIE)
  - Add Local Stage Patch for dod++ (BOWTIE)
  - Add Local Commit Patch to complement the Stage Patch (BOWTIE)
  - Add Message Dialogue for commit messages, 
