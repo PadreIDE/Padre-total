@@ -17,7 +17,7 @@ use Try::Tiny;
 use File::Slurp;
 use CPAN::Changes;
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 use parent qw(
 	Padre::Plugin
 	Padre::Role::Task
@@ -709,7 +709,7 @@ sub git_patch {
 		my $pwd = $self->current->document->project_dir();
 		$cmd =~ s/"/\\"/g;
 
-		# Applescript can throw spurious errors on STDERR: http://helpx.adobe.com/photoshop/kb/unit-type-conversion-error-applescript.html
+		# Applescript can throw spurious errors on STDERR: http://helpx.adobe.com/photoshop/kb/unit-type-conversion 0.09
 		$system = qq(osascript -e 'tell app "Terminal"\n\tdo script "cd $pwd; clear; $cmd ;"\nend tell'\n);
 
 	} else {
@@ -775,7 +775,7 @@ Padre::Plugin::Git - A Simple Git interface for Padre, the Perl IDE,
 
 =head1 VERSION
 
-version 0.08
+version 0.09
 
 =head1 SYNOPSIS
 
