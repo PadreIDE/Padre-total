@@ -37,15 +37,22 @@ sub plugin_enable {
 		}
 	};
 
+	#ReSet Config data
+	my $config = $self->config_read;
+	$config = {};
+	$self->config_write($config);
+
 	return $local_git_exists;
 }
 
 # Child modules we need to unload when disabled
 use constant CHILDREN => qw{
-	Padre::Plugin::Git
-	Padre::Plugin::Git::Task::Git_cmd
 	Padre::Plugin::Git::Output
 	Padre::Plugin::Git::FBP::Output
+	Padre::Plugin::Git::Message
+	Padre::Plugin::Git::FBP::Message
+	Padre::Plugin::Git::Task::Git_cmd
+	Padre::Plugin::Git
 	Pithub
 };
 
@@ -117,7 +124,7 @@ sub menu_plugins_simple {
 						],
 						Wx::gettext('Commit') => [
 							Wx::gettext('Commit File') => sub {
-								$self->git_cmd( 'commit', $document->filename );
+								$self->git_cmd( 'commit', $document->filename, $document->filename );
 							},
 							Wx::gettext('Commit Project') => sub {
 								$self->git_cmd( 'commit', $document->project_dir );
@@ -220,6 +227,11 @@ sub menu_plugins_simple {
 					Wx::gettext('About...') => sub {
 						$self->plugin_about;
 					},
+					Wx::gettext('Test Commit Message...') => sub {
+
+						# $self->commit_message();
+						$self->commit_message( $document->filename );
+					},
 				];
 			}
 		}
@@ -317,6 +329,7 @@ sub git_cmd {
 	my $self     = shift;
 	my $action   = shift;
 	my $location = shift;
+	my $filename = shift;
 	my $main     = $self->main;
 	my $document = $main->current->document;
 
@@ -325,11 +338,11 @@ sub git_cmd {
 	if ( $action =~ m/^commit/ ) {
 
 		#ToDo this needs to be replaced with a dedicated dialogue, as all it dose is dump in to DB::History for no good reason
-		my $commit_editmsg = read_file( $document->project_dir . '/.git/COMMIT_EDITMSG' );
-		chomp $commit_editmsg;
+		# my $commit_editmsg = read_file( $document->project_dir . '/.git/COMMIT_EDITMSG' );
+		# chomp $commit_editmsg;
 
-		$message = $main->prompt( "Git Commit of $location", 'Please type in your message', 'MY_GIT_COMMIT' );
-
+		# $message = $main->prompt( "Git Commit of $location", 'Please type in your message', 'MY_GIT_COMMIT' );
+		$message = $self->commit_message( 'Git Commit message', $filename );
 		return if not $message;
 
 		require Padre::Util;
@@ -416,7 +429,8 @@ sub github_pull_request {
 		return;
 	}
 
-	my $message = $main->prompt( "GitHub Pull Request", "Please type in your message" );
+	# my $message = $main->prompt( "GitHub Pull Request", "Please type in your message" );
+	my $message = $self->commit_message('GitHub Pull Request message');
 	return if not $message;
 
 	#Use first 32 chars of message as pull request title
@@ -709,6 +723,38 @@ sub git_patch {
 		option => 0
 	);
 
+	return;
+}
+
+#######
+# new commit message dialog that dos not dump into DB::History
+#######
+sub commit_message {
+	my $self     = shift;
+	my $title    = shift;
+	my $filename = shift;
+
+	# Padre main window integration
+	my $main     = $self->main;
+	my $document = $main->current->document;
+
+	# Close the dialog if it is hanging around
+	$self->clean_dialog;
+
+	# Create the new dialog
+	require Padre::Plugin::Git::Message;
+	$self->{dialog} = Padre::Plugin::Git::Message->new( $main, $title, $document->project_dir, $filename );
+	$self->{dialog}->ShowModal;
+	$self->{dialog}->Destroy;
+	delete $self->{dialog};
+
+	my $config = $self->config_read;
+	if ( $config->{message} ) {
+		my $message = $config->{message};
+		chomp $message;
+		say $message;
+		return $message;
+	}
 	return;
 }
 

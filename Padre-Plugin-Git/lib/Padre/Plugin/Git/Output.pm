@@ -3,7 +3,7 @@ package Padre::Plugin::Git::Output;
 use v5.10;
 use strictures 1;
 
-use Padre::Unload                            ();
+use Padre::Unload ();
 use Padre::Plugin::Git::FBP::Output ();
 
 our $VERSION = '0.08';
