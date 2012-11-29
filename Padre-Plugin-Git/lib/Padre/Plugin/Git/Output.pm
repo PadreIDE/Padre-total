@@ -52,8 +52,7 @@ version 0.08
 
 =head1 DESCRIPTION
 
-This module handles the Preferences dialogue window that is used to set your 
-chosen Nopaste Server and #Channel.
+This module handles the Output dialogue that is used to show git response.
 
 
 =head1 METHODS

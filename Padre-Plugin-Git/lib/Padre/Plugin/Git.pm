@@ -1,8 +1,9 @@
 package Padre::Plugin::Git;
 
-use v5.10;
-use warnings;
-use strict;
+use 5.010001;
+use strictures 1;
+# use warnings;
+# use strict;
 
 use Padre::Unload;
 use Padre::Config     ();
@@ -295,7 +296,7 @@ sub plugin_about {
 	my $self = shift;
 
 	my $share = $self->plugin_directory_share or return;
-	my $file = File::Spec->catfile( $share, 'icons', '64x64', 'git.png' );
+	my $file = File::Spec->catfile( $share, 'icons', '48x48', 'git.png' );
 	return unless -f $file;
 	return unless -r $file;
 
@@ -806,6 +807,8 @@ see L<wiki|http://padre.perlide.org/trac/wiki/PadrePluginGit> for more info.
 =over 4
 
 =item * clean_dialog
+
+=item * commit_message
 
 =item * current_files
 
