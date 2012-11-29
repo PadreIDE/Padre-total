@@ -17,7 +17,7 @@ use Try::Tiny;
 use File::Slurp;
 use CPAN::Changes;
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 use parent qw(
 	Padre::Plugin
 	Padre::Role::Task
@@ -709,7 +709,7 @@ sub git_patch {
 		my $pwd = $self->current->document->project_dir();
 		$cmd =~ s/"/\\"/g;
 
-		# Applescript can throw spurious errors on STDERR: http://helpx.adobe.com/photoshop/kb/unit-type-conversion 0.10
+		# Applescript can throw spurious errors on STDERR: http://helpx.adobe.com/photoshop/kb/unit-type-conversion 0.11
 		$system = qq(osascript -e 'tell app "Terminal"\n\tdo script "cd $pwd; clear; $cmd ;"\nend tell'\n);
 
 	} else {
@@ -775,7 +775,7 @@ Padre::Plugin::Git - A Simple Git interface for Padre, the Perl IDE,
 
 =head1 VERSION
 
-version 0.10
+version 0.11
 
 =head1 SYNOPSIS
 
@@ -843,7 +843,7 @@ see L<wiki|http://padre.perlide.org/trac/wiki/PadrePluginGit> for more info.
 =item * write_changes
 
 use CPAN::Changes to write git commits to project Change file, 
-this abuses the {{$NEXT}} token as a valid version 
+this abuses the {{$NEXT}} token as a valid version
 see CPAN::Changes::Spec for format
 
 =back

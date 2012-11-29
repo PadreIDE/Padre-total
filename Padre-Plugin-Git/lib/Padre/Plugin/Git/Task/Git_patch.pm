@@ -4,7 +4,7 @@ use v5.10;
 use strictures 1;
 
 use Carp qw( croak );
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 use Padre::Task ();
 use Padre::Unload;
@@ -56,7 +56,7 @@ sub run {
 		my $pwd = $self->current->document->project_dir();
 		$cmd =~ s/"/\\"/g;
 
-		# Applescript can throw spurious errors on STDERR: http://helpx.adobe.com/photoshop/kb/unit-type-conversion 0.10
+		# Applescript can throw spurious errors on STDERR: http://helpx.adobe.com/photoshop/kb/unit-type-conversion 0.11
 		$system = qq(osascript -e 'tell app "Terminal"\n\tdo script "cd $pwd; clear; $cmd ;"\nend tell'\n);
 
 	} else {
@@ -111,7 +111,7 @@ Padre::Plugin::Git::Task::Git_cmd - Git plugin for Padre, The Perl IDE.
 
 =head1 VERSION
 
-version 0.10
+version 0.11
 
 =head1 SYNOPSIS
 
