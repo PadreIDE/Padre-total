@@ -4,7 +4,7 @@ use v5.10;
 use strictures 1;
 
 use Carp qw( croak );
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 use Padre::Task   ();
 use Padre::Unload ;
@@ -76,7 +76,7 @@ Padre::Plugin::Git::Task::Git_cmd - Git plugin for Padre, The Perl IDE.
 
 =head1 VERSION
 
-version 0.09
+version 0.10
 
 =head1 SYNOPSIS
 

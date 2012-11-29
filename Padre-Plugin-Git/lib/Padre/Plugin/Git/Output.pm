@@ -6,7 +6,7 @@ use strictures 1;
 use Padre::Unload ();
 use Padre::Plugin::Git::FBP::Output ();
 
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 use parent qw(
 	Padre::Plugin::Git::FBP::Output
 	Padre::Plugin
@@ -48,7 +48,7 @@ Padre::Plugin::Git::Output - Git plugin for Padre, The Perl IDE.
 
 =head1 VERSION
 
-version 0.09
+version 0.10
 
 =head1 DESCRIPTION
 
