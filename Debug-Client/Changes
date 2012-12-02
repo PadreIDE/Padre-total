@@ -1,5 +1,8 @@
 # Changes for Debug::Client
 
+{{$NEXT}}
+ - Grammer tweak rindolf++ (BOWTIE)
+
 0.21_12 2012-11-06
  - Update Changes to CPAN::Changes::Spec
  - Tweak tests to handle perl5db version 1.39_04 (perl - 5.17.5) (BOWTIE)
