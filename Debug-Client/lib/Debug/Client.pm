@@ -746,7 +746,7 @@ Once the script under test was launched we can call the following:
 
 This is a DEVELOPMENT Release only, you have been warned!
 
-The prime use of this module is to provide debugger functionality for Padre 0.97+, 
+The primary use of this module is to provide debugger functionality for Padre 0.97+, 
 
 This module has been tested against Perl 5.17.2.
 
