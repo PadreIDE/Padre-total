@@ -2,6 +2,7 @@
 
 {{$NEXT}}
  - Grammer tweak rindolf++ (BOWTIE)
+ - y=o is now y=1 for >= 5.017006 (BOWTIE)
 
 0.21_12 2012-11-06
  - Update Changes to CPAN::Changes::Spec
