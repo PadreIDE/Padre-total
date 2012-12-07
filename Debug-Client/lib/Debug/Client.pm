@@ -4,10 +4,12 @@ use 5.010;
 use strict;
 use warnings FATAL => 'all';
 
+use English qw( -no_match_vars ) ;
+local $OUTPUT_AUTOFLUSH = 1;
 # Turn on $OUTPUT_AUTOFLUSH
-local $| = 1;
+# local $| = 1;
 
-our $VERSION = '0.21_12';
+our $VERSION = '0.21_13';
 $VERSION = eval $VERSION; # Comment out when we don't have a dev component
 
 use utf8;
@@ -323,8 +325,16 @@ sub get_p_exp {
 #######
 sub get_y_zero {
 	my $self = shift;
+	
+	# say 'running on perl '. $PERL_VERSION;
+	if ( $PERL_VERSION >= 5.017006 ){
+		say 'using y=1 instead as running on perl '. $PERL_VERSION;
+		$self->_send('y 1');
+	} else {
+		$self->_send('y 0');
+		}
 
-	$self->_send('y 0');
+	# $self->_send('y 0');
 	$self->_get;
 	$self->_prompt;
 
@@ -662,7 +672,7 @@ Debug::Client - debugger client side code for Padre, The Perl IDE.
 
 =head1 VERSION
 
-This document describes Debug::Client version 0.21_12
+This document describes Debug::Client version 0.21_13
 
 =head1 SYNOPSIS
 
