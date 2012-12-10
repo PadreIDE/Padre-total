@@ -56,7 +56,7 @@ sub run {
 		my $pwd = $self->current->document->project_dir();
 		$cmd =~ s/"/\\"/g;
 
-		# Applescript can throw spurious errors on STDERR: http://helpx.adobe.com/photoshop/kb/unit-type-conversion 0.11
+		# Applescript can throw spurious errors on STDERR: http://helpx.adobe.com/photoshop/kb/unit-type-conversion
 		$system = qq(osascript -e 'tell app "Terminal"\n\tdo script "cd $pwd; clear; $cmd ;"\nend tell'\n);
 
 	} else {
