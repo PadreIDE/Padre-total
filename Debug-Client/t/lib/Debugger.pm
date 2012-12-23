@@ -27,6 +27,7 @@ sub start_script {
 		sleep 1;
 
 		system( 1, qq($^X -d $file > "$path/out" 2> "$path/err") );
+		#spawns an external process and immediately returns its process designator, without waiting for it to terminate
 
 	} else {
 

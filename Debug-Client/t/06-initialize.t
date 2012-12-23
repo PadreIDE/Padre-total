@@ -9,6 +9,7 @@ local $| = 1;
 
 use Test::More tests => 4;
 use Test::Deep;
+use Time::HiRes 'sleep';
 
 use File::Temp qw(tempdir);
 my ( $host, $port, $porto, $listen, $reuse_addr );
@@ -31,6 +32,7 @@ SCOPE: {
 		'initialize with prams'
 	);
 	$debugger->run;
+	sleep(0.01) if $^O eq 'MSWin32'; #helps against extra processes after exit
 	ok( $debugger->quit, 'quit with prams' );
 }
 
@@ -41,6 +43,7 @@ SCOPE: {
 	require Debug::Client;
 	ok( my $debugger = Debug::Client->new(), 'initialize without prams' );
 	$debugger->run;
+	sleep(0.01) if $^O eq 'MSWin32'; #helps against extra processes after exit
 	ok( $debugger->quit, 'quit witout prams' );
 }
 
