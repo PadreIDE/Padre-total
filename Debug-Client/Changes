@@ -3,6 +3,8 @@
 {{$NEXT}}
  - #This all relates to #1469
  - fix Windows hangings (CHORNY) 
+ - split and sort out hack into each dev release
+ - the switch to time hiRes & win32::Precess (BOWTIE)
 
 0.21_13
  - #not released
