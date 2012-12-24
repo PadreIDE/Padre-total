@@ -31,16 +31,16 @@ sub start_script {
 	my $path = $dir;
 	my $pid;
 	if ( $OSNAME eq 'MSWin32' ) {
-		# require Win32;
+
 		$path = Win32::GetLongPathName($path);
 		local $ENV{PERLDB_OPTS} = "RemotePort=$host:$port";
-		# sleep 1;
+
 		sleep(0.080);
 		Win32::Process::Create(
 			$pid,
 			$EXECUTABLE_NAME,
-			qq(perl -d $file ),
-			# qq(perl -d $file > "$path/out" 2> "$path/err"),
+			# qq(perl -d $file ),
+			qq(perl -d $file > "$path/out" 2> "$path/err"),
 			1,
 			NORMALPRIORITYCLASS,
 			'.',
@@ -55,10 +55,9 @@ sub start_script {
 
 		if ( not $pid ) {
 			local $ENV{PERLDB_OPTS} = "RemotePort=$host:$port";
-			# sleep 1;
 			sleep(0.080);
-			exec qq($EXECUTABLE_NAME -d $file );
-			# exec qq($^X -d $file > "$path/out" 2> "$path/err");
+			# exec qq($EXECUTABLE_NAME -d $file );
+			exec qq($EXECUTABLE_NAME -d $file > "$path/out" 2> "$path/err");
 			exit 0;
 		}
 	}
