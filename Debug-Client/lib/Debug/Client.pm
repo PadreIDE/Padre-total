@@ -13,7 +13,7 @@ our $VERSION = '0.21_13';
 $VERSION = eval $VERSION; # Comment out when we don't have a dev component
 
 use utf8;
-use IO::Socket::IP 0.17;
+use IO::Socket::IP 0.18;
 use Carp 1.20 qw(carp croak);
 
 use constant {
