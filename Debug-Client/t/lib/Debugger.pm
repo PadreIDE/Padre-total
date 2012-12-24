@@ -36,16 +36,16 @@ sub start_script {
 		local $ENV{PERLDB_OPTS} = "RemotePort=$host:$port";
 
 		sleep(0.080);
-		Win32::Process::Create(
-			$pid,
-			$EXECUTABLE_NAME,
-			# qq(perl -d $file ),
-			qq(perl -d $file > "$path/out" 2> "$path/err"),
-			1,
-			NORMALPRIORITYCLASS,
-			'.',
-		) or die Win32::FormatMessage( Win32::GetLastError() );
-		# system( 1, qq($^X -d $file > "$path/out" 2> "$path/err") );
+		# Win32::Process::Create(
+			# $pid,
+			# $EXECUTABLE_NAME,
+			# # qq(perl -d $file ),
+			# qq(perl -d $file > "$path/out" 2> "$path/err"),
+			# 1,
+			# NORMALPRIORITYCLASS,
+			# '.',
+		# ) or die Win32::FormatMessage( Win32::GetLastError() );
+		system( 1, qq($^X -d $file > "$path/out" 2> "$path/err") );
 		#spawns an external process and immediately returns its process designator, without waiting for it to terminate
 
 	} else {
