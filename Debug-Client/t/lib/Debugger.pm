@@ -3,11 +3,20 @@ package t::lib::Debugger;
 use strict;
 use warnings FATAL => 'all';
 
+use English qw( -no_match_vars ); # Avoids regex performance penalty
+local $OUTPUT_AUTOFLUSH = 1;
+
+if ( $OSNAME eq 'MSWin32' ) {
+	require Win32::Process;
+	require Win32;
+	use constant NORMALPRIORITYCLASS => 0x00000020;
+}
 # Turn on $OUTPUT_AUTOFLUSH
-local $| = 1;
+# local $| = 1;
 
 use Exporter ();
 use File::Temp qw(tempdir);
+use Time::HiRes 'sleep';
 
 our @ISA    = 'Exporter';
 our @EXPORT = qw(start_script start_debugger slurp rc_file);
@@ -20,13 +29,23 @@ sub start_script {
 
 	my $dir = tempdir( CLEANUP => 0 );
 	my $path = $dir;
-	if ( $^O =~ /Win32/i ) {
-		require Win32;
+	my $pid;
+	if ( $OSNAME eq 'MSWin32' ) {
+		# require Win32;
 		$path = Win32::GetLongPathName($path);
 		local $ENV{PERLDB_OPTS} = "RemotePort=$host:$port";
-		sleep 1;
-
-		system( 1, qq($^X -d $file > "$path/out" 2> "$path/err") );
+		# sleep 1;
+		sleep(0.080);
+		Win32::Process::Create(
+			$pid,
+			$EXECUTABLE_NAME,
+			# qq(perl -d $file ),
+			qq(perl -d $file > "$path/out" 2> "$path/err"),
+			1,
+			NORMALPRIORITYCLASS,
+			'.',
+		) or die Win32::FormatMessage( Win32::GetLastError() );
+		# system( 1, qq($^X -d $file > "$path/out" 2> "$path/err") );
 		#spawns an external process and immediately returns its process designator, without waiting for it to terminate
 
 	} else {
@@ -36,8 +55,8 @@ sub start_script {
 
 		if ( not $pid ) {
 			local $ENV{PERLDB_OPTS} = "RemotePort=$host:$port";
-			sleep 1;
-
+			# sleep 1;
+			sleep(0.080);
 			exec qq($^X -d $file > "$path/out" 2> "$path/err");
 			exit 0;
 		}
