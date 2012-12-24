@@ -1,9 +1,16 @@
 # Changes for Debug::Client
 
 {{$NEXT}}
+ - #This all relates to #1469
+ - fix Windows hangings (CHORNY) 
+
+0.21_13
+ - #not released
+ - #This all relates to perl 5.017006
  - Grammer tweak rindolf++ (BOWTIE)
  - y=o is now y=1 for >= 5.017006 (BOWTIE)
- - fix Windows hangings (CHORNY)
+ - https://github.com/shlomif/perl/commit/7a0fe8d157063a5d4017c60814c1ea577f105a72
+   tweak to t/40-test_1415.t to better check if watches are working in 5.017006 (BOWTIE)
 
 0.21_12 2012-11-06
  - Update Changes to CPAN::Changes::Spec

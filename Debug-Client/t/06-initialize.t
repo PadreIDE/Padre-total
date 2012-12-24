@@ -4,8 +4,14 @@ use 5.010;
 use strict;
 use warnings FATAL => 'all';
 
-# Turn on $OUTPUT_AUTOFLUSH
-local $| = 1;
+use English qw( -no_match_vars ); # Avoids regex performance penalty
+local $OUTPUT_AUTOFLUSH = 1;
+
+if ( $OSNAME eq 'MSWin32' ) {
+	require Win32::Process;
+	require Win32;
+	use constant NORMALPRIORITYCLASS => 0x00000020;
+}
 
 use Test::More tests => 4;
 use Test::Deep;
@@ -32,8 +38,11 @@ SCOPE: {
 		'initialize with prams'
 	);
 	$debugger->run;
-	sleep(0.01) if $^O eq 'MSWin32'; #helps against extra processes after exit
+	# sleep(0.01) if $OSNAME eq 'MSWin32'; #helps against extra processes after exit
 	ok( $debugger->quit, 'quit with prams' );
+	if ( $OSNAME eq 'MSWin32' ) {
+		$pid->Kill(0) or die "Cannot kill '$pid'";
+	}
 }
 
 SCOPE: {
@@ -43,29 +52,52 @@ SCOPE: {
 	require Debug::Client;
 	ok( my $debugger = Debug::Client->new(), 'initialize without prams' );
 	$debugger->run;
-	sleep(0.01) if $^O eq 'MSWin32'; #helps against extra processes after exit
+	# sleep(0.01) if $OSNAME eq 'MSWin32'; #helps against extra processes after exit
 	ok( $debugger->quit, 'quit witout prams' );
+	if ( $OSNAME eq 'MSWin32' ) {
+		$pid->Kill(0) or die "Cannot kill '$pid'";
+	}	
 }
 
 sub run_perl5db {
 	my ( $file, $host, $port ) = @_;
 	my $dir = tempdir( CLEANUP => 0 );
 	my $path = $dir;
-	if ( $^O =~ /Win32/i ) {
-		require Win32;
+	my $pid;
+	if ( $OSNAME eq 'MSWin32' ) {
+		# require Win32;
 		$path = Win32::GetLongPathName($path);
 		local $ENV{PERLDB_OPTS} = "RemotePort=$host:$port";
-		sleep 1;
-		system( 1, qq($^X -d $file > "$path/out" 2> "$path/err") );
+		# sleep 1;
+		sleep(0.080);
+		Win32::Process::Create(
+			$pid,
+			$EXECUTABLE_NAME,
+			# qq(perl -d $file ),
+			qq(perl -d $file > "$path/out" 2> "$path/err"),
+			1,
+			NORMALPRIORITYCLASS,
+			'.',
+		) or die Win32::FormatMessage( Win32::GetLastError() );
+		# system( 1, qq($OSNAME -d $file > "$path/out" 2> "$path/err") );
 	} else {
 		my $pid = fork();
 		die if not defined $pid;
 		if ( not $pid ) {
 			local $ENV{PERLDB_OPTS} = "RemotePort=$host:$port";
-			sleep 1;
-			exec qq($^X -d $file > "$path/out" 2> "$path/err");
+			# sleep 1;
+			sleep(0.080);
+			# exec qq($EXECUTABLE_NAME -d $file );
+			exec qq($EXECUTABLE_NAME -d $file > "$path/out" 2> "$path/err");
 			exit 0;
 		}
 	}
-	return ($dir);
+	# return ($dir);
+	return ( $dir, $pid );
 }
+
+done_testing();
+
+__END__
+
+Info: 06-initialize.t is effectively testing the win32/(linux, osx) bits of t/lib/Debugger.pm
