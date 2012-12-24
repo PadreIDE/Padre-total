@@ -73,8 +73,8 @@ sub run_perl5db {
 		Win32::Process::Create(
 			$pid,
 			$EXECUTABLE_NAME,
-			# qq(perl -d $file ),
-			qq(perl -d $file > "$path/out" 2> "$path/err"),
+			qq(perl -d $file ),
+			# qq(perl -d $file > "$path/out" 2> "$path/err"),
 			1,
 			NORMALPRIORITYCLASS,
 			'.',
@@ -87,8 +87,8 @@ sub run_perl5db {
 			local $ENV{PERLDB_OPTS} = "RemotePort=$host:$port";
 			# sleep 1;
 			sleep(0.080);
-			# exec qq($EXECUTABLE_NAME -d $file );
-			exec qq($EXECUTABLE_NAME -d $file > "$path/out" 2> "$path/err");
+			exec qq($EXECUTABLE_NAME -d $file );
+			# exec qq($EXECUTABLE_NAME -d $file > "$path/out" 2> "$path/err");
 			exit 0;
 		}
 	}
