@@ -1037,8 +1037,6 @@ when using perl5db.pl v1.34
 
 Debug::Client 0.13_01 skips added to failing tests.
 
-It will work against perl 5.17.6-7 with rindolf patch 7a0fe8d applied for watches
-
  c [line|sub]
 
 Continue, optionally inserting a one-time-only breakpoint at the specified line or subroutine.
@@ -1054,6 +1052,8 @@ Has bean deprecated since 0.13_04 and all future version 0.21_14
 Perl::Critic Error Subroutine name is a homonym for built-in function
 
 Use $debugger->listener instead
+
+It will work against perl 5.17.6-7 with rindolf patch 7a0fe8d applied for watches
 
 =head1 AUTHORS
 
