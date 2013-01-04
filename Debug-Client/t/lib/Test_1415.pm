@@ -17,7 +17,7 @@ sub load_debugger : Test(setup) {
 sub t1415 : Test(12) {
 	my $self = shift;
 
-	$self->{debugger}->__send( 'w' . '@fonts' );
+	$self->{debugger}->__send( 'w ' . '@fonts' );
 
 	like( $self->{debugger}->__send('L w'), qr/fonts/, 'set watchpoints for @fonts' );
 
