@@ -9,7 +9,7 @@ local $OUTPUT_AUTOFLUSH = 1;
 # Turn on $OUTPUT_AUTOFLUSH
 # local $| = 1;
 
-our $VERSION = '0.21_13';
+our $VERSION = '0.21_14';
 $VERSION = eval $VERSION; # Comment out when we don't have a dev component
 
 use utf8;
@@ -672,7 +672,7 @@ Debug::Client - debugger client side code for Padre, The Perl IDE.
 
 =head1 VERSION
 
-This document describes Debug::Client version 0.21_13
+This document describes Debug::Client version 0.21_14
 
 =head1 SYNOPSIS
 
@@ -758,7 +758,7 @@ This is a DEVELOPMENT Release only, you have been warned!
 
 The primary use of this module is to provide debugger functionality for Padre 0.97+, 
 
-This module has been tested against Perl 5.17.2.
+This module has been tested against Perl 5.17.5.
 
 =head1 METHODS
 
@@ -919,7 +919,7 @@ From perldebug, but defaulted to y 0
 Display all (or some) lexical variables (mnemonic: my variables) in the current 
 scope or level scopes higher. You can limit the variables that you see with vars 
 which works exactly as it does for the V and X commands. Requires the PadWalker 
-module version 0.21_12
+module version 0.21_14
 Output is pretty-printed in the same style as for V and the format is controlled by the same options.
 
   $debugger->get_y_zero();
@@ -1037,6 +1037,8 @@ when using perl5db.pl v1.34
 
 Debug::Client 0.13_01 skips added to failing tests.
 
+It will work against perl 5.17.6-7 with rindolf patch 7a0fe8d applied for watches
+
  c [line|sub]
 
 Continue, optionally inserting a one-time-only breakpoint at the specified line or subroutine.
@@ -1047,7 +1049,7 @@ and just performing c on it's own
 
 I<Warning sub listen has bean deprecated>
 
-Has bean deprecated since 0.13_04 and all future version 0.21_12
+Has bean deprecated since 0.13_04 and all future version 0.21_14
 
 Perl::Critic Error Subroutine name is a homonym for built-in function
 
@@ -1071,11 +1073,13 @@ Wolfram Humann E<lt>whumann@cpan.orgE<gt>
 
 Adam Kennedy E<lt>adamk@cpan.orgE<gt>
 
+Alexandr Ciornii E<lt>alexchorny@gmail.comE<gt>
+
 =head1 COPYRIGHT
 
 Copyright 2008-2011 Gabor Szabo
 
-Some parts copyright 2011-2012 Kevin Dawson
+Some parts copyright 2011-2013 Kevin Dawson and "CONTRIBUTORS" as listed above.
 
 =head1 LICENSE
 

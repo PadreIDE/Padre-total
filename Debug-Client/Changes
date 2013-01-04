@@ -1,10 +1,12 @@
 # Changes for Debug::Client
 
 {{$NEXT}}
+0.21_14 2013-01-04
  - #This all relates to #1469
  - fix Windows hangings (CHORNY) 
  - split and sort out hack into each dev release
  - the switch to time hiRes & win32::Precess (BOWTIE)
+ - add some tests backin using Test::Class to see what CPAN::Reportor go to say (BOWTIE)
 
 0.21_13
  - #not released
