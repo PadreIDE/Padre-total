@@ -12,6 +12,7 @@ requires Term::ReadLine::Perl 1.0303
 test_requires File::HomeDir   0.98
 test_requires File::Spec      3.33
 test_requires File::Temp      0.22
+test_requires Test::Class     0.38
 test_requires Test::Deep      0.110
 test_requires Test::More      0.98
 test_requires Time::HiRes     1.9725
