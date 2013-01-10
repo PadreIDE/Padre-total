@@ -753,7 +753,7 @@ sub commit_message {
 	if ( $config->{message} ) {
 		my $message = $config->{message};
 		chomp $message;
-		say $message;
+		# say $message;
 		return $message;
 	}
 	return;
