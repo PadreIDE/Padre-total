@@ -3,6 +3,11 @@ Revision history for Padre-Plugin-Git
 {{$NEXT}}
  - remove an unwanted 0.11, that crepped in from an update-version script,
    this is also a test [ab199ae](BOWTIE)
+ - remove an unwanted 0.11, that crepped in from an update-version script,
+   this is also a test [38fcebf]
+ - turn off message echo to term [0e2335e]
+ - tweak contents, remove core modules [cd5db46]
+ - Update Changes [fd26605]
 
 0.11 2012-11-29
  - silly me forgot to add install share to Makrfile.PL (BOWTIE)
