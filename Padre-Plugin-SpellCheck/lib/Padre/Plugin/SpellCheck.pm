@@ -1,6 +1,6 @@
 package Padre::Plugin::SpellCheck;
 
-use v5.10;
+use 5.012005;
 use strict;
 use warnings;
 
@@ -9,7 +9,7 @@ use Padre::Unload ();
 use File::Which   ();
 use Try::Tiny;
 
-our $VERSION = '1.31_01';
+our $VERSION = '1.31_02';
 use parent qw( Padre::Plugin );
 
 # Child modules we need to unload when disabled
@@ -297,7 +297,7 @@ Padre::Plugin::SpellCheck - Check spelling in Padre, The Perl IDE.
 
 =head1 VERSION
 
-version 1.31_01
+version 1.31_02
 
 =head1 DESCRIPTION
 
@@ -449,7 +449,8 @@ Jerome Quelin E<lt>jquelin@gmail.comE<gt>
 
 =head1 COPYRIGHT
 
-This software is copyright (c) 2010 by Fayland Lam, Jerome Quelin.
+This software is Copyright E<copy> 2010 by Fayland Lam, Jerome Quelin.
+Also Copyright E<copy> 2012-2013 AUTHORS and "CONTRIBUTORS" as listed above.
 
 =head1 LICENSE
 
@@ -458,7 +459,7 @@ modify it under the same terms as Perl 5 itself.
 
 =cut
 
-# Copyright 2008-2012 The Padre development team as listed in Padre.pm.
+# Copyright 2008-2013 The Padre development team as listed in Padre.pm.
 # LICENSE
 # This program is free software; you can redistribute it and/or
 # modify it under the same terms as Perl 5 itself.

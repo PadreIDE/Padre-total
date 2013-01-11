@@ -1,10 +1,10 @@
 package Padre::Plugin::SpellCheck::Engine;
 
-use v5.10;
+use v5.12;
 use warnings;
 use strict;
 
-our $VERSION = '1.31_01';
+our $VERSION = '1.31_02';
 
 use Padre::Logger;
 use Padre::Unload ();
@@ -14,7 +14,7 @@ has _ignore  => ( is => 'rw', isa => 'Str' ); # list of words to ignore
 has _speller => ( is => 'rw', isa => 'Str' ); # real text::aspell object
 
 # FIXME: as soon as wxWidgets/wxPerl supports
-# newer version of STC:
+# newer version 1.31_02
 # number of UTF8 characters
 # used in calculating current possition
 has _utf_chars => ( is => 'rw', isa => 'Str' );
@@ -167,7 +167,7 @@ Padre::Plugin::SpellCheck::Engine - Check spelling in Padre, The Perl IDE.
 
 =head1 VERSION
 
-version 1.31_01
+version 1.31_02
 
 =head1 PUBLIC METHODS
 
@@ -237,6 +237,7 @@ Jerome Quelin E<lt>jquelin@gmail.comE<gt>
 =head1 COPYRIGHT AND LICENSE
 
 This software is copyright (c) 2010 by Fayland Lam, Jerome Quelin.
+Also Copyright E<copy> 2012-2013 AUTHORS and "CONTRIBUTORS" as listed above.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
