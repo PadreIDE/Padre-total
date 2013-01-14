@@ -1,10 +1,10 @@
 package Padre::Plugin::SpellCheck::Engine;
 
-use v5.12;
+use v5.10;
 use warnings;
 use strict;
 
-our $VERSION = '1.31_02';
+our $VERSION = '1.31_03';
 
 use Padre::Logger;
 use Padre::Unload ();
@@ -14,7 +14,7 @@ has _ignore  => ( is => 'rw', isa => 'Str' ); # list of words to ignore
 has _speller => ( is => 'rw', isa => 'Str' ); # real text::aspell object
 
 # FIXME: as soon as wxWidgets/wxPerl supports
-# newer version 1.31_02
+# newer version 1.31_03
 # number of UTF8 characters
 # used in calculating current possition
 has _utf_chars => ( is => 'rw', isa => 'Str' );
@@ -167,7 +167,7 @@ Padre::Plugin::SpellCheck::Engine - Check spelling in Padre, The Perl IDE.
 
 =head1 VERSION
 
-version 1.31_02
+version 1.31_03
 
 =head1 PUBLIC METHODS
 

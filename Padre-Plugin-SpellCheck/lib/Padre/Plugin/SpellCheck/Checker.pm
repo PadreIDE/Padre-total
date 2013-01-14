@@ -1,6 +1,6 @@
 package Padre::Plugin::SpellCheck::Checker;
 
-use v5.12;
+use v5.10;
 use warnings;
 use strict;
 
@@ -10,7 +10,7 @@ use Padre::Locale                           ();
 use Padre::Unload                           ();
 use Padre::Plugin::SpellCheck::FBP::Checker ();
 
-our $VERSION = '1.31_02';
+our $VERSION = '1.31_03';
 use parent qw(
 	Padre::Plugin::SpellCheck::FBP::Checker
 	Padre::Plugin
@@ -342,7 +342,7 @@ Padre::Plugin::SpellCheck::Checker - Check spelling in Padre, The Perl IDE.
 
 =head1 VERSION
 
-version 1.31_02
+version 1.31_03
 
 =head1 DESCRIPTION
 

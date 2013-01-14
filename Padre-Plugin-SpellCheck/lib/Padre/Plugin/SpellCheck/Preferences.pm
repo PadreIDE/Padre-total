@@ -1,6 +1,6 @@
 package Padre::Plugin::SpellCheck::Preferences;
 
-use v5.12;
+use v5.10;
 use warnings;
 use strict;
 
@@ -11,7 +11,7 @@ use Padre::Locale                               ();
 use Padre::Unload                               ();
 use Padre::Plugin::SpellCheck::FBP::Preferences ();
 
-our $VERSION = '1.31_02';
+our $VERSION = '1.31_03';
 use parent qw(
 	Padre::Plugin::SpellCheck::FBP::Preferences
 	Padre::Plugin
@@ -273,7 +273,7 @@ Padre::Plugin::SpellCheck::Preferences - Check spelling in Padre, The Perl IDE.
 
 =head1 VERSION
 
-version 1.31_02
+version 1.31_03
 
 =head1 DESCRIPTION
 

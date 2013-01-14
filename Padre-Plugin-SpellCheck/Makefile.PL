@@ -10,7 +10,7 @@ requires Class::Accessor 0.34
 requires File::Which     1.09
 requires Moo             1.000007
 requires Padre           0.96
-requires Text::Aspell    0.09 if win32
+requires Text::Aspell    0.09
 requires Text::Hunspell  2.05 if !win32
 requires Try::Tiny       0.12
 

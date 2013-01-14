@@ -1,5 +1,9 @@
 Revision history for Padre-Plugin-SpellCheck
 
+{{$NEXT}}
+1.31_03 2013-01-14
+ - Tweak perl version dependancy and Makefile (BOWTIE)
+
 1.31_02 2013-01-11
  - Bumped perl dependancie to 5.12.5 as test 05-Checker.t was failing under 
    perl 5.10.1 with Class::Accessor (BOWTIE)
