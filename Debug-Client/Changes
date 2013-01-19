@@ -4,7 +4,6 @@
  - add reset to buffer in show help (BOWTIE)
  - fix bug in set breakpoint that was being confused by 'Already in file-x' (BOWTIE)
 
-
 0.21_14 2013-01-04
  - #This all relates to #1469
  - fix Windows hangings (CHORNY) 
