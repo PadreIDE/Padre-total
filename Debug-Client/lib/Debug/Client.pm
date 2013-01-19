@@ -4,12 +4,10 @@ use 5.010;
 use strict;
 use warnings FATAL => 'all';
 
-use English qw( -no_match_vars ) ;
+use English qw( -no_match_vars );
 local $OUTPUT_AUTOFLUSH = 1;
-# Turn on $OUTPUT_AUTOFLUSH
-# local $| = 1;
 
-our $VERSION = '0.21_14';
+our $VERSION = '0.21_15';
 $VERSION = eval $VERSION; # Comment out when we don't have a dev component
 
 use utf8;
@@ -20,6 +18,7 @@ use constant {
 	BLANK => qq{ },
 	NONE  => q{},
 };
+
 
 #######
 # new
@@ -227,23 +226,27 @@ sub set_breakpoint {
 	$self->_prompt;
 
 	# if it was successful no reply
-
-	if ( $self->{buffer} =~ /^Subroutine [\w:]+ not found[.]/sxm ) {
-
-		# failed
-		return 0;
-	} elsif ( $self->{buffer} =~ /^Line \d+ not breakable[.]/sxm ) {
-
-		# failed to set on line number
-		return 0;
-	} elsif ( $self->{buffer} =~ /^\d+ levels deep in subroutine calls!/sxm ) {
-
-		# failed
-		return 0;
-	} elsif ( $self->{buffer} =~ /\S/sxm ) {
-		return 0;
+	given ( $self->{buffer} ) {
+		when ( $_ =~ /^Subroutine [\w:]+ not found[.]/sxm ) {
+			return 0;
+		}
+		when ( $_ =~ /^Line \d+ not breakable[.]/sxm ) {
+			return 0;
+		}
+		when ( $_ =~ /^\d+ levels deep in subroutine calls!/sxm ) {
+			return 0;
+		}
+		when ( $_ =~ /^Already in/m ) {
+			return 1;
+		}
+		when ( $_ =~ /\S/sxm ) {
+			# say 'Non-whitespace charter found';
+			return 0;
+		}
+		default {
+			return 1;
+		}
 	}
-	return 1;
 }
 
 #######
@@ -325,14 +328,16 @@ sub get_p_exp {
 #######
 sub get_y_zero {
 	my $self = shift;
-	
+
+	require PadWalker if 0; #forces PadWalker to be a requires not a test_requires
+
 	# say 'running on perl '. $PERL_VERSION;
-	if ( $PERL_VERSION >= 5.017006 ){
-		say 'using y=1 instead as running on perl '. $PERL_VERSION;
+	if ( $PERL_VERSION >= 5.017006 ) {
+		say 'using y=1 instead as running on perl ' . $PERL_VERSION;
 		$self->_send('y 1');
 	} else {
 		$self->_send('y 0');
-		}
+	}
 
 	# $self->_send('y 0');
 	$self->_get;
@@ -381,7 +386,10 @@ sub get_x_vars {
 #######
 sub get_h_var {
 	my ( $self, $var ) = @_;
-
+	
+	#added a flush buffer to stop help appending in an initional case
+	$self->{buffer} = undef;
+	
 	if ( defined $var ) {
 		$self->_send("h $var");
 	} else {
@@ -598,7 +606,7 @@ sub _process_line {
 # See 00-internal.t for test cases
 sub _prompt {
 	my $self = shift;
-
+	
 	my $prompt;
 	if ( $self->{buffer} =~ s/\s*DB<(?<prompt>\d+)>\s*$// ) {
 		$prompt = $+{prompt};
@@ -672,7 +680,7 @@ Debug::Client - debugger client side code for Padre, The Perl IDE.
 
 =head1 VERSION
 
-This document describes Debug::Client version 0.21_14
+This document describes Debug::Client version 0.21_15
 
 =head1 SYNOPSIS
 
@@ -919,7 +927,7 @@ From perldebug, but defaulted to y 0
 Display all (or some) lexical variables (mnemonic: my variables) in the current 
 scope or level scopes higher. You can limit the variables that you see with vars 
 which works exactly as it does for the V and X commands. Requires the PadWalker 
-module version 0.21_14
+module version 0.21_15
 Output is pretty-printed in the same style as for V and the format is controlled by the same options.
 
   $debugger->get_y_zero();
@@ -1047,7 +1055,7 @@ and just performing c on it's own
 
 I<Warning sub listen has bean deprecated>
 
-Has bean deprecated since 0.13_04 and all future version 0.21_14
+Has bean deprecated since 0.13_04 and all future version 0.21_15
 
 Perl::Critic Error Subroutine name is a homonym for built-in function
 
