@@ -1,6 +1,8 @@
 #!/usr/bin/env perl
 
 use strict;
+use warnings FATAL => 'all';
+
 use Test::More;
 
 eval "use Test::Pod 1.45";

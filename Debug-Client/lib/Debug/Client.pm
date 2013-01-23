@@ -8,7 +8,7 @@ use English qw( -no_match_vars );
 local $OUTPUT_AUTOFLUSH = 1;
 
 our $VERSION = '0.21_15';
-$VERSION = eval $VERSION; # Comment out when we don't have a dev component
+$VERSION = eval $VERSION; # Comment out when we don't have a dev component, eg 0.21_15
 
 use utf8;
 use IO::Socket::IP 0.18;
@@ -333,7 +333,7 @@ sub get_y_zero {
 
 	# say 'running on perl '. $PERL_VERSION;
 	if ( $PERL_VERSION >= 5.017006 ) {
-		say 'using y=1 instead as running on perl ' . $PERL_VERSION;
+		# say 'using y=1 instead as running on perl ' . $PERL_VERSION;
 		$self->_send('y 1');
 	} else {
 		$self->_send('y 0');
@@ -674,6 +674,8 @@ __END__
 
 =pod
 
+=encoding utf8
+
 =head1 NAME
 
 Debug::Client - debugger client side code for Padre, The Perl IDE.
@@ -926,8 +928,8 @@ From perldebug, but defaulted to y 0
 
 Display all (or some) lexical variables (mnemonic: my variables) in the current 
 scope or level scopes higher. You can limit the variables that you see with vars 
-which works exactly as it does for the V and X commands. Requires the PadWalker 
-module version 0.21_15
+which works exactly as it does for the V and X commands. Requires that the PadWalker 
+module be installed
 Output is pretty-printed in the same style as for V and the format is controlled by the same options.
 
   $debugger->get_y_zero();
@@ -1087,7 +1089,7 @@ Alexandr Ciornii E<lt>alexchorny@gmail.comE<gt>
 
 Copyright 2008-2011 Gabor Szabo
 
-Some parts copyright 2011-2013 Kevin Dawson and "CONTRIBUTORS" as listed above.
+Some parts copyright 2011-2013 Kevin Dawson and CONTRIBUTORS as listed above.
 
 =head1 LICENSE
 

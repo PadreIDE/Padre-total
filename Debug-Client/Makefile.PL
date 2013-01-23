@@ -6,7 +6,7 @@ requires_from lib/Debug/Client.pm
 requires IO::Socket::IP       0.18
 requires PadWalker            1.96
 
-test_requires File::HomeDir   0.98
+test_requires File::HomeDir   1.00
 test_requires Test::Class     0.38
 test_requires Test::Deep      0.110
 test_requires Test::More      0.98
