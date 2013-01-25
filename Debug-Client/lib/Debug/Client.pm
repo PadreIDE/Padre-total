@@ -7,7 +7,7 @@ use warnings FATAL => 'all';
 use English qw( -no_match_vars );
 local $OUTPUT_AUTOFLUSH = 1;
 
-our $VERSION = '0.21_15';
+our $VERSION = '0.21_16';
 $VERSION = eval $VERSION; # Comment out when we don't have a dev component, eg 0.21_15
 
 use utf8;
@@ -682,7 +682,7 @@ Debug::Client - debugger client side code for Padre, The Perl IDE.
 
 =head1 VERSION
 
-This document describes Debug::Client version 0.21_15
+This document describes Debug::Client version 0.21_16
 
 =head1 SYNOPSIS
 
@@ -1057,7 +1057,7 @@ and just performing c on it's own
 
 I<Warning sub listen has bean deprecated>
 
-Has bean deprecated since 0.13_04 and all future version 0.21_15
+Has bean deprecated since 0.13_04 and all future version 0.21_16
 
 Perl::Critic Error Subroutine name is a homonym for built-in function
 
