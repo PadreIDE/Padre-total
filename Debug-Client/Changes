@@ -1,5 +1,8 @@
 # Changes for Debug::Client
 
+0.21_16 2013-01-22
+ - Remove test for a no-longer required module, causing CPAN failures (BOWTIE)
+ 
 0.21_15 2013-01-22
  - add reset to buffer in show help (BOWTIE)
  - fix bug in set breakpoint that was being confused by 'Already in file-x' (BOWTIE)
@@ -9,12 +12,12 @@
  - fix Windows hangings (CHORNY) 
  - split and sort out hack into each dev release
  - the switch to time hiRes & win32::Precess (BOWTIE)
- - add some tests backin using Test::Class to see what CPAN::Reportor go to say (BOWTIE)
+ - add some tests backin using Test::Class to see what CPAN::Reporter go to say (BOWTIE)
 
 0.21_13
  - #not released
  - #This all relates to perl 5.017006
- - Grammer tweak rindolf++ (BOWTIE)
+ - Crammer tweak rindolf++ (BOWTIE)
  - y=o is now y=1 for >= 5.017006 (BOWTIE)
  - https://github.com/shlomif/perl/commit/7a0fe8d157063a5d4017c60814c1ea577f105a72
    tweak to t/40-test_1415.t to better check if watches are working in 5.017006 (BOWTIE)
@@ -53,7 +56,7 @@
 0.21_05 2012-07-26
  - remove comments (BOWTIE)
  - remove un-required dependants from Makefile (BOWTIE)
- - tweak version requirments for IO::Socket::IP (BOWTIE)
+ - tweak version requirements for IO::Socket::IP (BOWTIE)
     
 0.21_04 2012-06-23
  - re-factor initialize plus test (BOWTIE)
@@ -77,7 +80,7 @@
  - keep instep with Padre and use perl 5.10 (BOWTIE)
 
 0.20 2012.04.09
- - change carp dependancy to 1.20 in test (BOWTIE)
+ - change carp dependency to 1.20 in test (BOWTIE)
 
 0.19 2012-04-08
  - fix for #1415 (WHUMANN, BOWTIE)
