@@ -768,7 +768,7 @@ This is a DEVELOPMENT Release only, you have been warned!
 
 The primary use of this module is to provide debugger functionality for Padre 0.97+, 
 
-This module has been tested against Perl 5.17.5.
+This module has been tested against Perl 5.17.8.
 
 =head1 METHODS
 
@@ -934,6 +934,8 @@ Output is pretty-printed in the same style as for V and the format is controlled
 
   $debugger->get_y_zero();
 
+which is now y=1 since perl 5.17.6, 
+
 =item get_v_vars
 
 V [pkg [vars]]
@@ -1057,7 +1059,7 @@ and just performing c on it's own
 
 I<Warning sub listen has bean deprecated>
 
-Has bean deprecated since 0.13_04 and all future version 0.21_16
+Has bean deprecated since 0.13_04 and all future version starting with v0.14
 
 Perl::Critic Error Subroutine name is a homonym for built-in function
 
