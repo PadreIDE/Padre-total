@@ -724,11 +724,11 @@ Once the script under test was launched we can call the following:
 
   $debugger->execute_code( '@name = qw(foo bar)' );
 
-  my $value = $debugger->get_value('@name');  $value is the dumped data?
+  my $value = $debugger->get_value('@name'); # $value is the dumped data?
 
   $debugger->execute_code( '%phone_book = (foo => 123, bar => 456)' );
 
-  my $value = $debugger->get_value('%phone_book');  $value is the dumped data?
+  my $value = $debugger->get_value('%phone_book'); # $value is the dumped data?
   
   
   $debugger->set_breakpoint( "file", 23 ); # set breakpoint on file, line

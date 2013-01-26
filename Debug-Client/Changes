@@ -1,5 +1,8 @@
 # Changes for Debug::Client
 
+{{NEXT}}
+ - POD tweaks, missing # azawawi++ (BOWTIE)
+
 0.21_16 2013-01-22
  - Remove test for a no-longer required module, causing CPAN failures (BOWTIE)
  
