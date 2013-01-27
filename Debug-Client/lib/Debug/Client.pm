@@ -7,7 +7,7 @@ use warnings FATAL => 'all';
 use English qw( -no_match_vars );
 local $OUTPUT_AUTOFLUSH = 1;
 
-our $VERSION = '0.21_16';
+our $VERSION = '0.21_17';
 $VERSION = eval $VERSION; # Comment out when we don't have a dev component, eg 0.21_15
 
 use utf8;
@@ -682,7 +682,7 @@ Debug::Client - debugger client side code for Padre, The Perl IDE.
 
 =head1 VERSION
 
-This document describes Debug::Client version 0.21_16
+This document describes Debug::Client version 0.21_17
 
 =head1 SYNOPSIS
 

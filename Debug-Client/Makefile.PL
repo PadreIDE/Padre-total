@@ -5,6 +5,7 @@ requires_from lib/Debug/Client.pm
 
 requires IO::Socket::IP       0.18
 requires PadWalker            1.96
+requires Term::ReadLine       1.07
 
 test_requires File::HomeDir   1.00
 test_requires Test::Class     0.38

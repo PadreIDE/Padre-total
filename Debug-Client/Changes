@@ -1,7 +1,8 @@
 # Changes for Debug::Client
 
-{{NEXT}}
+0.21_17 2013-01-27
  - POD tweaks, missing # azawawi++ (BOWTIE)
+ - Add back a requirmet to Makefile after being heavey handed (BOWTIE)
 
 0.21_16 2013-01-22
  - Remove test for a no-longer required module, causing CPAN failures (BOWTIE)
