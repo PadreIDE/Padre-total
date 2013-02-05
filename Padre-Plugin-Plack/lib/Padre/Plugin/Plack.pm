@@ -7,10 +7,11 @@ use strict;
 
 use utf8;
 
-use Padre::Util ('_T');
+use Padre::Plugin ();
+use Padre::Util   ('_T');
 use Padre::Logger;
 
-our $VERSION = "0.01";
+our $VERSION = "0.02";
 our @ISA     = 'Padre::Plugin';
 
 =method padre_interfaces
@@ -19,15 +20,26 @@ Declare the Padre interfaces this plugin uses
 
 =cut
 
+#######
+# Define Padre Interfaces required
+#######
 sub padre_interfaces {
-    'Padre::Plugin'     => 0.43,
-      'Padre::Document' => 0.82;
+	return (
+		'Padre::Plugin'         => '0.97',
+		'Padre::Document'       => '0.97',
+		'Padre::Wx'             => '0.97',
+		'Padre::Wx::Main'       => '0.97',
+		'Padre::Wx::Role::Main' => '0.97',
+		'Padre::Logger'         => '0.97',
+	);
 }
+
 
 
 sub plugin_name {
-    'Plack';
+	return Wx::gettext('Plack');
 }
+
 =method registered_documents
 
 Declare ourselves as the handler for .psgi files
@@ -35,7 +47,7 @@ Declare ourselves as the handler for .psgi files
 =cut
 
 sub registered_documents {
-    'application/x-psgi' => 'Padre::Document::PSGI';
+	'application/x-psgi' => 'Padre::Document::PSGI';
 }
 
 # Static cache for the dot-psgi examples (read off disk)
@@ -48,48 +60,48 @@ Create the plugin menu
 =cut
 
 sub menu_plugins {
-    my $self = shift;
-    my $main = shift;
+	my $self = shift;
+	my $main = shift;
 
-    my $menu = Wx::Menu->new;
+	my $menu = Wx::Menu->new;
 
-    my $app_menu = Wx::Menu->new;
-    $menu->Append( -1, _T('New PSGI App'), $app_menu );
+	my $app_menu = Wx::Menu->new;
+	$menu->Append( -1, _T('New PSGI App'), $app_menu );
 
-    for my $basename ( sort keys %PSGI_EXAMPLES ) {
-        Wx::Event::EVT_MENU(
-            $main,
-            $app_menu->Append( -1, $basename ),
-            sub {
-                $self->on_app_load( $PSGI_EXAMPLES{$basename} );
-                return;
-            },
-        );
-    }
+	for my $basename ( sort keys %PSGI_EXAMPLES ) {
+		Wx::Event::EVT_MENU(
+			$main,
+			$app_menu->Append( -1, $basename ),
+			sub {
+				$self->on_app_load( $PSGI_EXAMPLES{$basename} );
+				return;
+			},
+		);
+	}
 
-    my $docs_menu = Wx::Menu->new;
-    $menu->Append( -1, _T('Online References'), $docs_menu );
+	my $docs_menu = Wx::Menu->new;
+	$menu->Append( -1, _T('Online References'), $docs_menu );
 
-    Wx::Event::EVT_MENU(
-        $main,
-        $docs_menu->Append( -1, 'plackperl.org' ),
-        sub {
-            Padre::Wx::launch_browser('http://plackperl.org');
-        }
-    );
+	Wx::Event::EVT_MENU(
+		$main,
+		$docs_menu->Append( -1, 'plackperl.org' ),
+		sub {
+			Padre::Wx::launch_browser('http://plackperl.org');
+		}
+	);
 
-    Wx::Event::EVT_MENU(
-        $main,
-        $docs_menu->Append( -1, _T('Plack Advent Calendar') ),
-        sub {
-            Padre::Wx::launch_browser('http://advent.plackperl.org');
-        },
-    );
+	Wx::Event::EVT_MENU(
+		$main,
+		$docs_menu->Append( -1, _T('Plack Advent Calendar') ),
+		sub {
+			Padre::Wx::launch_browser('http://advent.plackperl.org');
+		},
+	);
 
-    Wx::Event::EVT_MENU( $main, $menu->Append( -1, _T('About') ), sub { $self->on_about_load }, );
+	Wx::Event::EVT_MENU( $main, $menu->Append( -1, _T('About') ), sub { $self->on_about_load }, );
 
-    # Return it and the label for our plug-in
-    return ( $self->plugin_name => $menu );
+	# Return it and the label for our plug-in
+	return ( $self->plugin_name => $menu );
 }
 
 =method on_app_load
@@ -99,33 +111,33 @@ Called when Padre loads
 =cut
 
 sub on_app_load {
-    my $self = shift;
-    my $file = shift;
+	my $self = shift;
+	my $file = shift;
 
-    my $main = $self->main;
+	my $main = $self->main;
 
-    # Slurp in the new app content from the template file
-    my $template = Padre::Util::slurp($file);
-    unless ($template) {
+	# Slurp in the new app content from the template file
+	my $template = Padre::Util::slurp($file);
+	unless ($template) {
 
-        # Rare failure, no need to translate
-        $self->main->error( sprintf( _T('Failed to open template file %s'), $file ) );
-        return;
-    }
+		# Rare failure, no need to translate
+		$self->main->error( sprintf( _T('Failed to open template file %s'), $file ) );
+		return;
+	}
 
-    # Create new document editor tab
-    $main->new_document_from_string( $$template, 'application/x-psgi' );
-    my $editor = $main->current->editor;
-    my $doc    = $editor->{Document};
+	# Create new document editor tab
+	$main->new_document_from_string( $$template, 'application/x-psgi' );
+	my $editor = $main->current->editor;
+	my $doc    = $editor->{Document};
 
-    # N.B. It used to be necessary to deliberately use application/x-perl mime type and then rebless as
-    # a hack to make syntax highlighting work off the bat, but it seems to work now
-    #    $doc->set_mimetype('application/x-psgi');
-    #    $doc->rebless;
-    $self->on_doc_load($doc);
+	# N.B. It used to be necessary to deliberately use application/x-perl mime type and then rebless as
+	# a hack to make syntax highlighting work off the bat, but it seems to work now
+	#    $doc->set_mimetype('application/x-psgi');
+	#    $doc->rebless;
+	$self->on_doc_load($doc);
 
-    # The tab exists, so trigger set_tab_icon
-    $doc->set_tab_icon;
+	# The tab exists, so trigger set_tab_icon
+	$doc->set_tab_icon;
 }
 
 =method is_psgi_doc
@@ -133,10 +145,10 @@ sub on_app_load {
 =cut
 
 sub is_psgi_doc {
-    my $self = shift;
-    my $doc  = shift;
+	my $self = shift;
+	my $doc  = shift;
 
-    return $doc->isa('Padre::Document::PSGI') && $doc->can('mimetype') && $doc->mimetype eq 'application/x-psgi';
+	return $doc->isa('Padre::Document::PSGI') && $doc->can('mimetype') && $doc->mimetype eq 'application/x-psgi';
 }
 
 =method editor_enable
@@ -144,19 +156,19 @@ sub is_psgi_doc {
 =cut
 
 sub editor_enable {
-    my $self   = shift;
-    my $editor = shift;
-    my $doc    = shift;
+	my $self   = shift;
+	my $editor = shift;
+	my $doc    = shift;
 
-    # Only respond to event on psgi docs
-    return unless $self->is_psgi_doc($doc);
+	# Only respond to event on psgi docs
+	return unless $self->is_psgi_doc($doc);
 
-    TRACE('->editor_enable') if DEBUG;
+	TRACE('->editor_enable') if DEBUG;
 
-    $self->on_doc_load($doc);
+	$self->on_doc_load($doc);
 
-    # Deliberately don't trigger Padre::Document::PSGI::set_tab_icon here because the tab doesn't exist yet
-    # (it gets triggered by our tomfoolery in Padre::Document::PSGI::restore_cursor_position)
+	# Deliberately don't trigger Padre::Document::PSGI::set_tab_icon here because the tab doesn't exist yet
+	# (it gets triggered by our tomfoolery in Padre::Document::PSGI::restore_cursor_position)
 }
 
 =method editor_changed
@@ -164,19 +176,19 @@ sub editor_enable {
 =cut
 
 sub editor_changed {
-    my $self = shift;
+	my $self = shift;
 
-    my $main   = $self->main            or return;
-    my $editor = $main->current->editor or return;
-    my $doc    = $editor->{Document}    or return;
+	my $main   = $self->main            or return;
+	my $editor = $main->current->editor or return;
+	my $doc    = $editor->{Document}    or return;
 
-    # Only respond to event on psgi docs
-    return unless $self->is_psgi_doc($doc);
+	# Only respond to event on psgi docs
+	return unless $self->is_psgi_doc($doc);
 
-    TRACE('->editor_changed') if DEBUG;
+	TRACE('->editor_changed') if DEBUG;
 
-    ## TODO: add check that doc is now selected (for safety)..
-    $self->on_panel_load($doc);
+	## TODO: add check that doc is now selected (for safety)..
+	$self->on_panel_load($doc);
 }
 
 =method on_panel_load
@@ -184,32 +196,32 @@ sub editor_changed {
 =cut
 
 sub on_panel_load {
-    my $self = shift;
-    my $doc  = shift;
+	my $self = shift;
+	my $doc  = shift;
 
-    if ( !$doc->panel ) {
-        TRACE('->on_panel_load creating panel') if DEBUG;
-        require Padre::Plugin::Plack::Panel;
-        $doc->panel( Padre::Plugin::Plack::Panel->new($doc) );
-    }
+	if ( !$doc->panel ) {
+		TRACE('->on_panel_load creating panel') if DEBUG;
+		require Padre::Plugin::Plack::Panel;
+		$doc->panel( Padre::Plugin::Plack::Panel->new($doc) );
+	}
 
-    # Show the panel, and pass an onclose callback
-    Padre::Current->main->bottom->show(
-        $doc->panel,
-        sub {
+	# Show the panel, and pass an onclose callback
+	Padre::Current->main->bottom->show(
+		$doc->panel,
+		sub {
 
-            # Closing the panel causes bad things to happen
-            $self->main->error(
-                _T(q{'Sorry Dave, I can't do that - you need to close the corresponding file tab to close this panel})
-            );
+			# Closing the panel causes bad things to happen
+			$self->main->error(
+				_T(q{'Sorry Dave, I can't do that - you need to close the corresponding file tab to close this panel})
+			);
 
-            # We can't actually cancel the close, so re-create it
-            $self->plackdown($doc);
-            $doc->panel(undef);
-            $self->on_panel_load($doc);
-        }
-    );
-    Padre::Current->main->refresh;
+			# We can't actually cancel the close, so re-create it
+			$self->plackdown($doc);
+			$doc->panel(undef);
+			$self->on_panel_load($doc);
+		}
+	);
+	Padre::Current->main->refresh;
 }
 
 =method on_panel_close
@@ -217,16 +229,16 @@ sub on_panel_load {
 =cut
 
 sub on_panel_close {
-    my $self = shift;
-    my $doc  = shift;
+	my $self = shift;
+	my $doc  = shift;
 
-    return unless $doc && $doc->panel;
+	return unless $doc && $doc->panel;
 
-    if ( my $panel = $doc->panel ) {
-        $self->plackdown($doc);
-        $self->main->bottom->hide($panel);
-        $doc->panel(undef);
-    }
+	if ( my $panel = $doc->panel ) {
+		$self->plackdown($doc);
+		$self->main->bottom->hide($panel);
+		$doc->panel(undef);
+	}
 }
 
 =method on_doc_load
@@ -238,25 +250,25 @@ Whereas, when triggered by user creating new app from template, tab exists
 =cut
 
 sub on_doc_load {
-    my $self = shift;
-    my $doc  = shift;
+	my $self = shift;
+	my $doc  = shift;
 
-    TRACE('->on_doc_load') if DEBUG;
+	TRACE('->on_doc_load') if DEBUG;
 
-    if ( !$doc->isa('Padre::Document::PSGI') ) {
-        $self->error( sprintf( _T('Expected a PSGI document, but instead got: %s'), ref $doc ) );
-        return;
-    }
+	if ( !$doc->isa('Padre::Document::PSGI') ) {
+		$self->error( sprintf( _T('Expected a PSGI document, but instead got: %s'), ref $doc ) );
+		return;
+	}
 
-    # Set the icon path, but don't actually trigger set_icon_tab() just yet
-    $doc->icon_path( $self->plugin_directory_share . "/icons/16x16/logo.png" );
-    $doc->plugin($self);
+	# Set the icon path, but don't actually trigger set_icon_tab() just yet
+	$doc->icon_path( $self->plugin_directory_share . "/icons/16x16/logo.png" );
+	$doc->plugin($self);
 
-    # Trigger the Document's general setup event
-    $doc->on_load;
+	# Trigger the Document's general setup event
+	$doc->on_load;
 
-    # Show the panel
-    $self->on_panel_load($doc);
+	# Show the panel
+	$self->on_panel_load($doc);
 }
 
 =method on_doc_close
@@ -264,17 +276,17 @@ sub on_doc_load {
 =cut
 
 sub on_doc_close {
-    my $self = shift;
-    my $doc  = shift;
+	my $self = shift;
+	my $doc  = shift;
 
-    TRACE('->on_doc_close') if DEBUG;
+	TRACE('->on_doc_close') if DEBUG;
 
-    if ( !$doc->isa('Padre::Document::PSGI') ) {
-        $self->error( sprintf( _T('Expected a PSGI document, but instead got: %s'), ref $doc ) );
-        return;
-    }
+	if ( !$doc->isa('Padre::Document::PSGI') ) {
+		$self->error( sprintf( _T('Expected a PSGI document, but instead got: %s'), ref $doc ) );
+		return;
+	}
 
-    $self->on_panel_close($doc);
+	$self->on_panel_close($doc);
 }
 
 =method on_about_load
@@ -282,21 +294,21 @@ sub on_doc_close {
 =cut
 
 sub on_about_load {
-    require Plack;
-    require Class::Unload;
-    my $about = Wx::AboutDialogInfo->new;
-    $about->SetName("Padre::Plugin::Plack");
-    $about->SetDescription( _T('PSGI/Plack support for Padre') . "\n"
-          . _T('by') . "\n"
-          . 'Patrick Donelan (pat@patspam.com)' . "\n\n"
-          . _T('This system is running Plack version')
-          . " $Plack::VERSION\n"
-          . 'http://plackperl.org' );
-    $about->SetVersion($Padre::Plugin::Plack::VERSION);
-    Class::Unload->unload('Plack');
+	require Plack;
+	require Class::Unload;
+	my $about = Wx::AboutDialogInfo->new;
+	$about->SetName("Padre::Plugin::Plack");
+	$about->SetDescription( _T('PSGI/Plack support for Padre') . "\n"
+			. _T('by') . "\n"
+			. 'Patrick Donelan (pat@patspam.com)' . "\n\n"
+			. _T('This system is running Plack version')
+			. " $Plack::VERSION\n"
+			. 'http://plackperl.org' );
+	$about->SetVersion($Padre::Plugin::Plack::VERSION);
+	Class::Unload->unload('Plack');
 
-    Wx::AboutBox($about);
-    return;
+	Wx::AboutBox($about);
+	return;
 }
 
 =method load_dot_psgi_examples
@@ -304,12 +316,12 @@ sub on_about_load {
 =cut
 
 sub load_dot_psgi_examples {
-    my $self = shift;
+	my $self = shift;
 
-    require File::Find::Rule;
-    %PSGI_EXAMPLES =
-      map { File::Basename::basename($_) => $_ }
-      File::Find::Rule->file()->name('*.psgi')->in( $self->plugin_directory_share . '/dot-psgi' );
+	require File::Find::Rule;
+	%PSGI_EXAMPLES =
+		map { File::Basename::basename($_) => $_ }
+		File::Find::Rule->file()->name('*.psgi')->in( $self->plugin_directory_share . '/dot-psgi' );
 }
 
 =method plugin_enable
@@ -319,9 +331,9 @@ sub load_dot_psgi_examples {
 
 
 sub plugin_enable {
-    my $self = shift;
+	my $self = shift;
 
-    $self->load_dot_psgi_examples;
+	$self->load_dot_psgi_examples;
 }
 
 =method plugin_enable
@@ -329,14 +341,21 @@ sub plugin_enable {
 =cut
 
 sub plugin_disable {
-    my $self = shift;
+	my $self = shift;
 
-    # TODO: Loop over all docs and turn off their psgi goodies: panel, stop server, etc..
+	# TODO: Loop over all docs and turn off their psgi goodies: panel, stop server, etc..
 
-    # cleanup loaded classes
-    require Class::Unload;
-    Class::Unload->unload('Padre::Document::PSGI');
-    Class::Unload->unload('Padre::Plugin::Plack::Panel');
+	# Unload all our child classes
+	$self->unload(
+		qw{
+			Padre::Document::PSGI
+			Padre::Plugin::Plack::Panel
+			}
+	);
+
+	$self->SUPER::plugin_disable(@_);
+
+	return;
 }
 
 =method plackup
@@ -344,48 +363,48 @@ sub plugin_disable {
 =cut
 
 sub plackup {
-    my $self = shift;
-    my $doc  = shift;
+	my $self = shift;
+	my $doc  = shift;
 
-    return unless $doc;
-    TRACE('->plackup') if DEBUG;
+	return unless $doc;
+	TRACE('->plackup') if DEBUG;
 
-    my $main     = $self->main;
-    my $filename = $doc->filename;
+	my $main     = $self->main;
+	my $filename = $doc->filename;
 
-    if ( !$filename ) {
-        $main->on_save;
-        $filename = $doc->filename;
-        return unless $filename;
-    }
+	if ( !$filename ) {
+		$main->on_save;
+		$filename = $doc->filename;
+		return unless $filename;
+	}
 
-    my $pwd = Cwd::cwd();
-    chdir $doc->dirname;
+	my $pwd = Cwd::cwd();
+	chdir $doc->dirname;
 
-    # Server ("Let plackup guess" means leave as unspecified)
-    my $server = $doc->panel->{server}->GetValue;
-    $server = $server eq _T('Let plackup guess') ? '' : "-s $server";
+	# Server ("Let plackup guess" means leave as unspecified)
+	my $server = $doc->panel->{server}->GetValue;
+	$server = $server eq _T('Let plackup guess') ? '' : "-s $server";
 
-    # Port (required for browser url)
-    my $port = $doc->panel->{port}->GetValue || 5000;
-    $port = "-p $port";
+	# Port (required for browser url)
+	my $port = $doc->panel->{port}->GetValue || 5000;
+	$port = "-p $port";
 
-    my $restart = $doc->panel->{restart}->GetValue ? '-r' : '';
-    my $plackup_options = $doc->panel->{plackup_options}->GetValue;
+	my $restart = $doc->panel->{restart}->GetValue ? '-r' : '';
+	my $plackup_options = $doc->panel->{plackup_options}->GetValue;
 
-    require File::Which;
-    my $plackup = File::Which::which('plackup');
-    if ( !$plackup ) {
-        $main->error( _T('plackup command not found, please check your Plack installation and $PATH') );
-        return;
-    }
+	require File::Which;
+	my $plackup = File::Which::which('plackup');
+	if ( !$plackup ) {
+		$main->error( _T('plackup command not found, please check your Plack installation and $PATH') );
+		return;
+	}
 
-    my $cmd = qq{$plackup $port $restart $server $plackup_options "$filename"};
-    TRACE("->plackup $cmd") if DEBUG;
-    $self->run_command( $doc, $cmd );
+	my $cmd = qq{$plackup $port $restart $server $plackup_options "$filename"};
+	TRACE("->plackup $cmd") if DEBUG;
+	$self->run_command( $doc, $cmd );
 
-    # restore previous dir
-    chdir $pwd;
+	# restore previous dir
+	chdir $pwd;
 }
 
 =method plackdown
@@ -393,44 +412,43 @@ sub plackup {
 =cut
 
 sub plackdown {
-    my $self = shift;
-    my $doc  = shift;
+	my $self = shift;
+	my $doc  = shift;
 
-    return unless $doc;
+	return unless $doc;
 
-    TRACE('->plackdown') if DEBUG;
+	TRACE('->plackdown') if DEBUG;
 
-    my $process = $doc->process;
-    return unless $process;
+	my $process = $doc->process;
+	return unless $process;
 
-    # sanity check
-    if ( !$process->IsAlive ) {
-        TRACE('->plackdown process was dead but not undef, strange') if DEBUG;
-        $doc->process(undef);
-    }
+	# sanity check
+	if ( !$process->IsAlive ) {
+		TRACE('->plackdown process was dead but not undef, strange') if DEBUG;
+		$doc->process(undef);
+	}
 
-    my $processid = $process->GetProcessId();
-    my $panel     = $doc->panel;
+	my $processid = $process->GetProcessId();
+	my $panel     = $doc->panel;
 
-    require Proc::Killfam;
-    my @signals = qw(INT TERM QUIT KILL STOP);
-    for my $sig (@signals) {
-        TRACE("Sending $sig to PID: $processid") if DEBUG;
-        my $signalled = Proc::Killfam::killfam( $sig, $processid );
+	require Proc::Killfam;
+	my @signals = qw(INT TERM QUIT KILL STOP);
+	for my $sig (@signals) {
+		TRACE("Sending $sig to PID: $processid") if DEBUG;
+		my $signalled = Proc::Killfam::killfam( $sig, $processid );
 
-        if ( $panel->{restart}->GetValue ) {
+		if ( $panel->{restart}->GetValue ) {
 
-            # with auto-restart, we expect 3 processes
-            return if $signalled > 1;
-        }
-        else {
+			# with auto-restart, we expect 3 processes
+			return if $signalled > 1;
+		} else {
 
-            # otherwise, just one
-            return if $signalled > 0;
-        }
-    }
+			# otherwise, just one
+			return if $signalled > 0;
+		}
+	}
 
-    $panel->output->AppendText( "\n" . "Process PID $processid did not respond, you may need to kill it manually\n" );
+	$panel->output->AppendText( "\n" . "Process PID $processid did not respond, you may need to kill it manually\n" );
 }
 
 =method run_command
@@ -438,89 +456,87 @@ sub plackdown {
 =cut
 
 sub run_command {
-    my ( $self, $doc, $command ) = (@_);
+	my ( $self, $doc, $command ) = (@_);
 
-    my $panel = $doc->panel;
+	my $panel = $doc->panel;
 
-    # clear the panel
-    $panel->output->Remove( 0, $panel->output->GetLastPosition );
+	# clear the panel
+	$panel->output->Remove( 0, $panel->output->GetLastPosition );
 
-    # If this is the first time a command has been run, set up the ProcessStream bindings.
-    unless ( $panel->{bound} ) {
-        TRACE(' setting up ProcessStream bindings') if DEBUG;
+	# If this is the first time a command has been run, set up the ProcessStream bindings.
+	unless ( $panel->{bound} ) {
+		TRACE(' setting up ProcessStream bindings') if DEBUG;
 
-        require Wx::Perl::ProcessStream;
-        if ( $Wx::Perl::ProcessStream::VERSION < .20 ) {
-            $self->main->error(
-                sprintf(
-                    _T(
-                            'Wx::Perl::ProcessStream is version %s'
-                          . ' which is known to cause problems. Get at least 0.20 by typing'
-                          . "\ncpan Wx::Perl::ProcessStream"
-                    ),
-                    $Wx::Perl::ProcessStream::VERSION
-                )
-            );
-            return 1;
-        }
+		require Wx::Perl::ProcessStream;
+		if ( $Wx::Perl::ProcessStream::VERSION < .20 ) {
+			$self->main->error(
+				sprintf(
+					_T(       'Wx::Perl::ProcessStream is version %s'
+							. ' which is known to cause problems. Get at least 0.20 by typing'
+							. "\ncpan Wx::Perl::ProcessStream"
+					),
+					$Wx::Perl::ProcessStream::VERSION
+				)
+			);
+			return 1;
+		}
 
-        Wx::Perl::ProcessStream::EVT_WXP_PROCESS_STREAM_STDOUT(
-            $panel->output,
-            sub {
-                $_[1]->Skip(1);
-                my $outpanel = $_[0];
-                $outpanel->style_good;
-                $outpanel->AppendText( $_[1]->GetLine . "\n" );
-                return;
-            },
-        );
-        Wx::Perl::ProcessStream::EVT_WXP_PROCESS_STREAM_STDERR(
-            $panel->output,
-            sub {
-                $_[1]->Skip(1);
-                my $outpanel = $_[0];
-                $outpanel->style_neutral;
-                $outpanel->AppendText( $_[1]->GetLine . "\n" );
+		Wx::Perl::ProcessStream::EVT_WXP_PROCESS_STREAM_STDOUT(
+			$panel->output,
+			sub {
+				$_[1]->Skip(1);
+				my $outpanel = $_[0];
+				$outpanel->style_good;
+				$outpanel->AppendText( $_[1]->GetLine . "\n" );
+				return;
+			},
+		);
+		Wx::Perl::ProcessStream::EVT_WXP_PROCESS_STREAM_STDERR(
+			$panel->output,
+			sub {
+				$_[1]->Skip(1);
+				my $outpanel = $_[0];
+				$outpanel->style_neutral;
+				$outpanel->AppendText( $_[1]->GetLine . "\n" );
 
-                return;
-            },
-        );
-        Wx::Perl::ProcessStream::EVT_WXP_PROCESS_STREAM_EXIT(
-            $panel->output,
-            sub {
-                $_[1]->Skip(1);
-                $_[1]->GetProcess->Destroy;
+				return;
+			},
+		);
+		Wx::Perl::ProcessStream::EVT_WXP_PROCESS_STREAM_EXIT(
+			$panel->output,
+			sub {
+				$_[1]->Skip(1);
+				$_[1]->GetProcess->Destroy;
 
-                TRACE(' PROCESS_STREAM_EXIT') if DEBUG;
+				TRACE(' PROCESS_STREAM_EXIT') if DEBUG;
 
-                my $outpanel = $_[0];
-                $outpanel->style_neutral;
-                $outpanel->AppendText("\nProcess terminated\n");
-                $panel->set_as_stopped;
+				my $outpanel = $_[0];
+				$outpanel->style_neutral;
+				$outpanel->AppendText("\nProcess terminated\n");
+				$panel->set_as_stopped;
 
-                $doc->process(undef);
-            },
-        );
-        $panel->{bound} = 1;
-    }
+				$doc->process(undef);
+			},
+		);
+		$panel->{bound} = 1;
+	}
 
-    # Start the command
-    my $process = Wx::Perl::ProcessStream::Process->new( $command, "Run $command", $panel->output );
-    $doc->process( $process->Run );
+	# Start the command
+	my $process = Wx::Perl::ProcessStream::Process->new( $command, "Run $command", $panel->output );
+	$doc->process( $process->Run );
 
-    # Check if we started the process or not
-    if ( $doc->process ) {
-        $panel->set_as_started;
+	# Check if we started the process or not
+	if ( $doc->process ) {
+		$panel->set_as_started;
 
-    }
-    else {
+	} else {
 
-        # Failed to start the command. Clean up.
-        $panel->set_as_stopped;    # should already be stopped, but just in case
-        Wx::MessageBox( sprintf( _T("Failed to start server via '%s'"), $command ), _T("Error"), Wx::wxOK, $self );
-    }
+		# Failed to start the command. Clean up.
+		$panel->set_as_stopped; # should already be stopped, but just in case
+		Wx::MessageBox( sprintf( _T("Failed to start server via '%s'"), $command ), _T("Error"), Wx::wxOK, $self );
+	}
 
-    return;
+	return;
 }
 
 =method build_panel
@@ -531,124 +547,124 @@ to speed up the dev edit-reload cycle
 =cut
 
 sub build_panel {
-    my $self  = shift;
-    my $doc   = shift;
-    my $panel = shift;
+	my $self  = shift;
+	my $doc   = shift;
+	my $panel = shift;
 
-    require Scalar::Util;
-    $panel->{doc} = $doc;
-    Scalar::Util::weaken( $panel->{doc} );
+	require Scalar::Util;
+	$panel->{doc} = $doc;
+	Scalar::Util::weaken( $panel->{doc} );
 
-    # main container
-    my $box = Wx::BoxSizer->new(Wx::wxVERTICAL);
+	# main container
+	my $box = Wx::BoxSizer->new(Wx::wxVERTICAL);
 
-    # top box, holding buttons, icons and checkboxes
-    my $top_box = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
+	# top box, holding buttons, icons and checkboxes
+	my $top_box = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
 
-    # LED showing process status
-    $panel->{led} = Wx::StaticBitmap->new( $panel, -1, Wx::wxNullBitmap );
-    $top_box->Add( $panel->{led}, 0, Wx::wxALIGN_CENTER_VERTICAL );
+	# LED showing process status
+	$panel->{led} = Wx::StaticBitmap->new( $panel, -1, Wx::wxNullBitmap );
+	$top_box->Add( $panel->{led}, 0, Wx::wxALIGN_CENTER_VERTICAL );
 
-    # Servers
-    my @servers = sort qw(
-      Standalone
-      Apache1
-      Apache2
-      Apache2::RegistryAnyEvent
-      AnyEvent::HTTPD
-      AnyEvent::ReverseHTTP
-      AnyEvent::SCGI
-      AnyEvent::Server::Starter
-      CGI
-      Corona
-      FCGI
-      FCGI::Engine
-      HTTP::Server::PSGI
-      HTTP::Server::Simple
-      Server::Simple
-      SCGI
-      Starman
-      Starlet
-      Twiggy
-      POE
-      ReverseHTTP
-    );
-    unshift @servers, _T('Let plackup guess');
-    $top_box->AddSpacer(5);
-    $top_box->Add( Wx::StaticText->new( $panel, -1, _T('Server') . ':' ), 0, Wx::wxALIGN_CENTER_VERTICAL );
-    $panel->{server} =
-      Wx::ComboBox->new( $panel, -1, 'Standalone', Wx::wxDefaultPosition, Wx::wxDefaultSize, [@servers],
-        Wx::wxCB_DROPDOWN );
-    $top_box->Add( $panel->{server}, 0, Wx::wxALIGN_CENTER_VERTICAL );
+	# Servers
+	my @servers = sort qw(
+		Standalone
+		Apache1
+		Apache2
+		Apache2::RegistryAnyEvent
+		AnyEvent::HTTPD
+		AnyEvent::ReverseHTTP
+		AnyEvent::SCGI
+		AnyEvent::Server::Starter
+		CGI
+		Corona
+		FCGI
+		FCGI::Engine
+		HTTP::Server::PSGI
+		HTTP::Server::Simple
+		Server::Simple
+		SCGI
+		Starman
+		Starlet
+		Twiggy
+		POE
+		ReverseHTTP
+	);
+	unshift @servers, _T('Let plackup guess');
+	$top_box->AddSpacer(5);
+	$top_box->Add( Wx::StaticText->new( $panel, -1, _T('Server') . ':' ), 0, Wx::wxALIGN_CENTER_VERTICAL );
+	$panel->{server} = Wx::ComboBox->new(
+		$panel, -1, 'Standalone', Wx::wxDefaultPosition, Wx::wxDefaultSize, [@servers],
+		Wx::wxCB_DROPDOWN
+	);
+	$top_box->Add( $panel->{server}, 0, Wx::wxALIGN_CENTER_VERTICAL );
 
-    # Port
-    $top_box->AddSpacer(5);
-    $top_box->Add( Wx::StaticText->new( $panel, -1, _T('Port') . ':' ), 0, Wx::wxALIGN_CENTER_VERTICAL );
-    $panel->{port} = Wx::TextCtrl->new( $panel, -1, '5000' );
-    $top_box->Add( $panel->{port}, 0, Wx::wxALIGN_CENTER_VERTICAL );
+	# Port
+	$top_box->AddSpacer(5);
+	$top_box->Add( Wx::StaticText->new( $panel, -1, _T('Port') . ':' ), 0, Wx::wxALIGN_CENTER_VERTICAL );
+	$panel->{port} = Wx::TextCtrl->new( $panel, -1, '5000' );
+	$top_box->Add( $panel->{port}, 0, Wx::wxALIGN_CENTER_VERTICAL );
 
-    # Plackup Options
-    $top_box->AddSpacer(5);
-    $top_box->Add( Wx::StaticText->new( $panel, -1, _T('Options') . ':' ), 0, Wx::wxALIGN_CENTER_VERTICAL );
-    $panel->{plackup_options} = Wx::TextCtrl->new( $panel, -1, '' );
-    $top_box->Add( $panel->{plackup_options}, 0, Wx::wxALIGN_CENTER_VERTICAL );
+	# Plackup Options
+	$top_box->AddSpacer(5);
+	$top_box->Add( Wx::StaticText->new( $panel, -1, _T('Options') . ':' ), 0, Wx::wxALIGN_CENTER_VERTICAL );
+	$panel->{plackup_options} = Wx::TextCtrl->new( $panel, -1, '' );
+	$top_box->Add( $panel->{plackup_options}, 0, Wx::wxALIGN_CENTER_VERTICAL );
 
-    # Restart
-    $top_box->AddSpacer(5);
-    $panel->{restart} = Wx::CheckBox->new( $panel, -1, _T('Auto-Restart') );
-    $panel->{restart}->SetValue(1);
-    $top_box->Add( $panel->{restart}, 0, Wx::wxALIGN_CENTER_VERTICAL );
+	# Restart
+	$top_box->AddSpacer(5);
+	$panel->{restart} = Wx::CheckBox->new( $panel, -1, _T('Auto-Restart') );
+	$panel->{restart}->SetValue(1);
+	$top_box->Add( $panel->{restart}, 0, Wx::wxALIGN_CENTER_VERTICAL );
 
-    # Start/stop button
-    $top_box->AddSpacer(5);
-    $panel->{start_stop} = Wx::Button->new( $panel, -1, '' );
-    Wx::Event::EVT_BUTTON(
-        $panel,
-        $panel->{start_stop},
-        sub {
-            my $panel = shift;
+	# Start/stop button
+	$top_box->AddSpacer(5);
+	$panel->{start_stop} = Wx::Button->new( $panel, -1, '' );
+	Wx::Event::EVT_BUTTON(
+		$panel,
+		$panel->{start_stop},
+		sub {
+			my $panel = shift;
 
-            # Trigger plackup/down
-            if ( $panel->{start_stop}->GetLabel eq _T('Start') ) {
-                $doc->plugin->plackup($doc);
-            }
-            else {
-                $doc->plugin->plackdown($doc);
-            }
-        },
-    );
-    $top_box->Add( $panel->{start_stop}, 0, Wx::wxALIGN_CENTER_VERTICAL );
+			# Trigger plackup/down
+			if ( $panel->{start_stop}->GetLabel eq _T('Start') ) {
+				$doc->plugin->plackup($doc);
+			} else {
+				$doc->plugin->plackdown($doc);
+			}
+		},
+	);
+	$top_box->Add( $panel->{start_stop}, 0, Wx::wxALIGN_CENTER_VERTICAL );
 
-    # Browser
-    $top_box->AddSpacer(5);
-    $panel->{browse} = Wx::Button->new( $panel, -1, _T('View in Browser') );
-    Wx::Event::EVT_BUTTON(
-        $panel,
-        $panel->{browse},
-        sub {
-            my $panel = shift;
-            my $port = $panel->{port}->GetValue || 5000;
-            Padre::Wx::launch_browser("http://0:$port");
-        },
-    );
-    $top_box->Add( $panel->{browse}, 0, Wx::wxALIGN_CENTER_VERTICAL );
+	# Browser
+	$top_box->AddSpacer(5);
+	$panel->{browse} = Wx::Button->new( $panel, -1, _T('View in Browser') );
+	Wx::Event::EVT_BUTTON(
+		$panel,
+		$panel->{browse},
+		sub {
+			my $panel = shift;
+			my $port = $panel->{port}->GetValue || 5000;
+			Padre::Wx::launch_browser("http://0:$port");
+		},
+	);
+	$top_box->Add( $panel->{browse}, 0, Wx::wxALIGN_CENTER_VERTICAL );
 
-    # finishing up the top_box
-    $box->Add( $top_box, 0, Wx::wxALIGN_LEFT | Wx::wxALIGN_CENTER_VERTICAL );
+	# finishing up the top_box
+	$box->Add( $top_box, 0, Wx::wxALIGN_LEFT | Wx::wxALIGN_CENTER_VERTICAL );
 
-    # output panel for server
-    require Padre::Wx::Output;
-    my $output = Padre::Wx::Output->new( $self->main, $panel );
+	# output panel for server
+	require Padre::Wx::Output;
+	my $output = Padre::Wx::Output->new( $self->main, $panel );
 
-    $box->Add( $output, 1, Wx::wxGROW );
+	$box->Add( $output, 1, Wx::wxGROW );
 
-    # wrapping it up
-    $panel->SetSizer($box);
+	# wrapping it up
+	$panel->SetSizer($box);
 
-    # holding on to some objects we'll need to manipulate later on
-    $panel->{output} = $output;
+	# holding on to some objects we'll need to manipulate later on
+	$panel->{output} = $output;
 
-    $panel->set_as_stopped;
+	$panel->set_as_stopped;
 }
 
 =method TRACE
