@@ -2,6 +2,9 @@ Revision history for {{ $dist->name }}
 
 {{ $NEXT }}
 
+1.201     2013-02-13
+    * fixed crashes with current Padre - requires 0.97
+
 1.200     2010-11-06 01:31:48 America/New_York
     * Added Arabic translation (azawawi++)
     * Added Turkish translation (burak++)
