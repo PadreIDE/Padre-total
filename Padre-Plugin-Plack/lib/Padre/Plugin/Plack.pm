@@ -294,15 +294,15 @@ sub on_doc_close {
 =cut
 
 sub on_about_load {
-	require Plack;
+	my $version_string = "Plack module failed to load - maybe you need to install it\n\n";
+	eval { require Plack; $version_string = _T('This system is running Plack version'). " $Plack::VERSION\n";};
 	require Class::Unload;
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName("Padre::Plugin::Plack");
 	$about->SetDescription( _T('PSGI/Plack support for Padre') . "\n"
 			. _T('by') . "\n"
 			. 'Patrick Donelan (pat@patspam.com)' . "\n\n"
-			. _T('This system is running Plack version')
-			. " $Plack::VERSION\n"
+			. $version_string
 			. 'http://plackperl.org' );
 	$about->SetVersion($Padre::Plugin::Plack::VERSION);
 	Class::Unload->unload('Plack');

@@ -21,7 +21,9 @@ sub new {
     my $doc   = shift;
     my $self  = $class->SUPER::new( Padre::Current->main->bottom );
 
-    $doc->plugin->build_panel( $doc, $self );
+    if ($doc->plugin) {
+        $doc->plugin->build_panel( $doc, $self );
+    }
 
     return $self;
 }
@@ -56,7 +58,7 @@ sub output { return shift->{output} }
 
 =cut
 
-sub gettext_label {
+sub view_label {
     my $self = shift;
 
     require File::Basename;
