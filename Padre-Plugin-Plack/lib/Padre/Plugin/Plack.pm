@@ -205,6 +205,9 @@ sub on_panel_load {
 		$doc->panel( Padre::Plugin::Plack::Panel->new($doc) );
 	}
 
+	#TODO: I don't know how to make the bottom panel show, so force things
+	Padre::Current->main->show_output();
+
 	# Show the panel, and pass an onclose callback
 	Padre::Current->main->bottom->show(
 		$doc->panel,
