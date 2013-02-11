@@ -1,5 +1,9 @@
 This is the change log for the Padre::Plugin::SSH module:
 
+0.02 2013-0211
+ - apply patch from lackita++
+   also some plugin api v2.2 bits, now loads (BOWTIE)
+
 0.01 2009-11-21
     First version unleashed on the unsuspecting world.
 

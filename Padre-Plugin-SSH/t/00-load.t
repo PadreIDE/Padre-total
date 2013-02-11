@@ -2,8 +2,9 @@ use strict;
 use warnings;
 
 use Test::More;
-plan tests => 1;
+plan tests => 2;
 
+use_ok('Padre::Plugin::SSH');
+use_ok('Padre::Plugin::SSH::File');
 
-use_ok('Padre::Plugin::SSHFile');
-
+done_testing
