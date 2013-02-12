@@ -7,8 +7,7 @@ use warnings FATAL => 'all';
 use English qw( -no_match_vars );
 local $OUTPUT_AUTOFLUSH = 1;
 
-our $VERSION = '0.21_18';
-$VERSION = eval $VERSION; # Comment out when we don't have a dev component, eg 0.21_15
+our $VERSION = '0.22';
 
 use utf8;
 use IO::Socket::IP 0.18;
@@ -682,7 +681,7 @@ Debug::Client - debugger client side code for Padre, The Perl IDE.
 
 =head1 VERSION
 
-This document describes Debug::Client version 0.21_18
+This document describes Debug::Client version 0.22
 
 =head1 SYNOPSIS
 
@@ -766,7 +765,7 @@ Once the script under test was launched we can call the following:
 
 This is a DEVELOPMENT Release only, you have been warned!
 
-The primary use of this module is to provide debugger functionality for Padre 0.97+, 
+The primary use of this module is to provide debugger functionality for Padre 0.98 and beyond, 
 
 This module has been tested against Perl 5.17.8.
 
