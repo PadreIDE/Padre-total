@@ -13,7 +13,7 @@ use parent qw{
 	Padre::Role::Task
 };
 use Padre::Plugin::Nopaste::Services;
-
+use Carp;
 
 # Turn on $OUTPUT_AUTOFLUSH
 local $| = 1;
@@ -66,6 +66,8 @@ sub plugin_enable {
 	# Tests for externals used by Preference's
 	if ( $config->identity_nickname ) {
 		$nick = 1;
+	} else {
+		croak "\nYou need to set 'identity_nickname' \n Look in Tools -> Preferences -> Advance\n\n";
 	}
 
 	#Set/ReSet Config data
