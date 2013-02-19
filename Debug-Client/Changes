@@ -1,5 +1,11 @@
 Changes for Debug::Client
 
+0.24 2013-02-19
+ - Take two tweak for production release to co-inside with Padre 0.98 (BOWTIE)
+
+0.23 2013-02-19
+ - Add perltidy.LOG to MANIFEST.SKIP (BOWTIE)
+
 0.22 2013-02-08
  - Tweak for production release to co-inside with Padre 0.98 (BOWTIE)
 

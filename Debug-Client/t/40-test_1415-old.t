@@ -6,10 +6,7 @@ use warnings FATAL => 'all';
 
 # Turn on $OUTPUT_AUTOFLUSH
 local $| = 1;
-# use Data::Printer {
-	# caller_info => 1,
-	# colored     => 1,
-# };
+
 use Test::More;
 use Test::Deep;
 plan( tests => 12 );
