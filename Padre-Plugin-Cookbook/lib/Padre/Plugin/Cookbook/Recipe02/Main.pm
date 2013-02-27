@@ -182,7 +182,7 @@ It's a basic example of a Padre plug-in using a WxDialog.
 
 =head1 VERSION
 
-This document describes Padre::Plugin::Cookbook::Recipe02::Main version 0.23
+version: 0.23
 
 =head1 SUBROUTINES/METHODS
 
@@ -228,7 +228,7 @@ BOWTIE E<lt>kevin.dawson@btclick.comE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (c) 2008-2012 The Padre development team as listed in Padre.pm.
+Copyright (c) 2008-2013 The Padre development team as listed in Padre.pm.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself.

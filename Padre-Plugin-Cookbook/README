@@ -1,12 +1,11 @@
 NAME
     Padre::Plugin::Cookbook
 
-    Cookbook contains recipes to assist you in makeing your own
-    Padre::Plugins You will find more info in the companion wiki
-    <http://padre.perlide.org/trac/wiki/PadrePluginDialog/> pages.
+    Cookbook contains recipes to assist you in making your own Plug-ins for
+    Padre, The Perl IDE.
 
 VERSION
-    This document describes Padre::Plugin::Cookbook version 0.14
+    This document describes Padre::Plugin::Cookbook version 0.23
 
 DESCRIPTION
     Cookbook is just an example Padre::Plugin using a WxDialog, showing
@@ -14,13 +13,17 @@ DESCRIPTION
 
     *   Recipe 01, Hello World what else could it be.
 
-    *   Recipe 02, Fun with widgets and a Dialog (method modifiers and event
-        handlers).
+    *   Recipe 02, Fun with widgets and a Dialogue (method modifiers and
+        event handlers).
 
     *   Recipe 03, Every Plug-in needs an About Dialogue or Multiple
         Dialogues.
 
     *   Recipe 04, ListCtrl or ConfigDB.
+
+  Example
+    You will find more info in the companion wiki
+    <http://padre.perlide.org/trac/wiki/PadrePluginDialog/> pages.
 
 METHODS
     padre_interfaces
@@ -132,7 +135,7 @@ DEPENDENCIES
             Padre::Plugin::Cookbook::Recipe03::About, Padre::Plugin::Cookbook::Recipe03::FBP::AboutFB, 
             Padre::Plugin::Cookbook::Recipe04::FBP::Main, Padre::Plugin::Cookbook::Recipe04::FBP::MainFB, 
             Padre::Plugin::Cookbook::Recipe04::About, Padre::Plugin::Cookbook::Recipe04::FBP::AboutFB, 
-            Moose, namespace::autoclean, Data::Printer
+            Moose, namespace::autoclean, Data::Printer, POSIX,
 
 AUTHOR
     Kevin Dawson <bowtie@cpan.org>

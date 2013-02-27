@@ -14,7 +14,7 @@ use Padre::Wx             ();
 use Padre::Wx::Role::Main ();
 
 our $VERSION = '0.23';
-use parent-norequire, qw(
+use parent -norequire, qw(
 	Padre::Wx::Role::Main
 	Wx::Dialog
 );
@@ -249,7 +249,7 @@ L<Padre>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (c) 2008-2011 The Padre development team as listed in Padre.pm.
+Copyright (c) 2008-2013 The Padre development team as listed in Padre.pm.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself.
