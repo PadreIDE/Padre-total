@@ -129,7 +129,7 @@ Padre::Plugin::Nopaste::Services - NoPaste plugin for Padre, The Perl IDE.
 
 =head1 VERSION
 
-version  0.06
+version: 0.06
 
 =head1 DESCRIPTION
 
