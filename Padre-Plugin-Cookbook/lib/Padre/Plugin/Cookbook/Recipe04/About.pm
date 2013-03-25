@@ -9,7 +9,7 @@ use warnings;
 # use autodie;
 
 # Version required
-our $VERSION = '0.23';
+our $VERSION = '0.24';
 use parent qw( Padre::Plugin::Cookbook::Recipe04::FBP::AboutFB );
 
 use Data::Dumper ();
@@ -107,7 +107,7 @@ Padre::Plugin::Cookbook::Recipe04::About
 
 =head1 VERSION
 
-version: 0.23
+version: 0.24
 
 =head1 DESCRIPTION
 

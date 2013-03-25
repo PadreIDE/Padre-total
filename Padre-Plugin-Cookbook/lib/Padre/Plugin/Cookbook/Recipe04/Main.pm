@@ -11,7 +11,7 @@ use Padre::Logger;
 use Padre::Wx             ();
 use Padre::Wx::Role::Main ();
 
-our $VERSION = '0.23';
+our $VERSION = '0.24';
 
 use Moose;
 use namespace::autoclean;
@@ -822,7 +822,7 @@ Padre::Plugin::Cookbook::Recipe04::Main
 
 =head1 VERSION
 
-version: 0.23
+version: 0.24
 
 =head1 DESCRIPTION
 

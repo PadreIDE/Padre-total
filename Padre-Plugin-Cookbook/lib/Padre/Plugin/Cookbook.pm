@@ -1,6 +1,6 @@
 package Padre::Plugin::Cookbook;
 
-use v5.10.1;
+use 5.010001;
 use strict;
 use warnings;
 
@@ -8,7 +8,7 @@ use Padre::Plugin;
 use Padre::Util;
 use Padre::Wx;
 
-our $VERSION = '0.23';
+our $VERSION = '0.24';
 use parent qw(Padre::Plugin);
 
 # Child modules we need to unload when disabled
@@ -223,7 +223,7 @@ Cookbook contains recipes to assist you in making your own Plug-ins for Padre, T
 
 =head1 VERSION
 
-version: 0.23
+version: 0.24
   
 =head1 DESCRIPTION
 

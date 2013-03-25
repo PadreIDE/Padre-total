@@ -9,7 +9,7 @@ use warnings;
 # use autodie;
 
 # Version required
-our $VERSION = '0.23';
+our $VERSION = '0.24';
 use parent qw( Padre::Plugin::Cookbook::Recipe02::FBP::MainFB );
 
 #######
@@ -182,7 +182,7 @@ It's a basic example of a Padre plug-in using a WxDialog.
 
 =head1 VERSION
 
-version: 0.23
+version: 0.24
 
 =head1 SUBROUTINES/METHODS
 

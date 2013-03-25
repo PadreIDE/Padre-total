@@ -5,7 +5,7 @@ use strict;
 use warnings;
 
 # Version required
-our $VERSION = '0.23';
+our $VERSION = '0.24';
 use parent qw( Padre::Plugin::Cookbook::Recipe03::FBP::MainFB );
 
 
@@ -105,7 +105,7 @@ Padre::Plugin::Cookbook::Recipe03::Main
 
 =head1 VERSION
 
-version: 0.23
+version: 0.24
 
 =head1 DESCRIPTION
 

@@ -1,12 +1,12 @@
 use Test::More tests => 26;
 
-use_ok( 'Padre',                 '0.84' );
-use_ok( 'Padre::Plugin',         '0.84' );
-use_ok( 'Padre::Wx::Role::Main', '0.84' );
+use_ok( 'Padre',                 '0.96' );
+use_ok( 'Padre::Plugin',         '0.96' );
+use_ok( 'Padre::Wx::Role::Main', '0.96' );
 
 TODO: {
 	local $TODO = "Error: Can't locate Wx/Dialog.pm in \@INC";
-	use_ok( 'Wx::Dialog', '0.84' );
+	use_ok( 'Wx::Dialog', '0.96' );
 }
 
 ######

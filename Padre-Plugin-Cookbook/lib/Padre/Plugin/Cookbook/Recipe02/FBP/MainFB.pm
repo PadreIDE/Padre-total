@@ -13,7 +13,7 @@ use warnings;
 use Padre::Wx             ();
 use Padre::Wx::Role::Main ();
 
-our $VERSION = '0.23';
+our $VERSION = '0.24';
 use parent -norequire, qw(
 	Padre::Wx::Role::Main
 	Wx::Dialog
