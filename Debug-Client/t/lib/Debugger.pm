@@ -18,7 +18,7 @@ use File::Temp qw(tempdir);
 our @ISA    = 'Exporter';
 our @EXPORT = qw(start_script start_debugger slurp rc_file);
 
-my $host = 'localhost';
+my $host = '127.0.0.1';
 my $port = 24642 + int rand(1000);
 
 sub start_script {

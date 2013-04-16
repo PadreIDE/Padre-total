@@ -1,5 +1,9 @@
 Changes for Debug::Client
 
+0.24_03 2013-04-16
+ - my $host = '127.0.0.1'; # instead of localhost (AZAWAWI)
+ - 
+
 0.24_02 2013-04-16
  - lets remove Time-HiRes completely (BOWTIE)
 
