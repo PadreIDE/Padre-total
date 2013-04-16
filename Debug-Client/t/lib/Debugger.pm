@@ -28,7 +28,7 @@ sub start_script {
 	my $path = $dir;
 	my $pid;
 	if ( $OSNAME eq 'MSWin32' ) {
-
+		$pid = 'fudge'; # as we don't get one from win32
 		$path = Win32::GetLongPathName($path);
 		local $ENV{PERLDB_OPTS} = "RemotePort=$host:$port";
 
