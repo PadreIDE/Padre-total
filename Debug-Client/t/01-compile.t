@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 use strict;
-use Test::More tests => 18;
+use Test::More tests => 17;
 
 use_ok('Debug::Client');
 use_ok('t::lib::Debugger');
@@ -20,7 +20,6 @@ use_ok('File::Temp',    '0.2301');
 use_ok('Test::Class',   '0.39');
 use_ok('Test::Deep',    '0.11');
 use_ok('Test::More',    '0.98');
-use_ok('Time::HiRes',   '1.9725');
 use_ok('parent',        '0.225');
 use_ok('version',       '0.9902');
 

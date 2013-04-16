@@ -15,7 +15,6 @@ if ( $OSNAME eq 'MSWin32' ) {
 
 use Test::More tests => 4;
 use Test::Deep;
-use Time::HiRes 'sleep';
 
 use File::Temp qw(tempdir);
 my ( $host, $port, $porto, $listen, $reuse_addr );
@@ -68,8 +67,7 @@ sub run_perl5db {
 		# require Win32;
 		$path = Win32::GetLongPathName($path);
 		local $ENV{PERLDB_OPTS} = "RemotePort=$host:$port";
-		# sleep 1;
-		sleep(0.080);
+		sleep 1;
 		Win32::Process::Create(
 			$pid,
 			$EXECUTABLE_NAME,
@@ -85,8 +83,7 @@ sub run_perl5db {
 		die if not defined $pid;
 		if ( not $pid ) {
 			local $ENV{PERLDB_OPTS} = "RemotePort=$host:$port";
-			# sleep 1;
-			sleep(0.080);
+			sleep 1;
 			exec qq($EXECUTABLE_NAME -d $file );
 			# exec qq($EXECUTABLE_NAME -d $file > "$path/out" 2> "$path/err");
 			exit 0;

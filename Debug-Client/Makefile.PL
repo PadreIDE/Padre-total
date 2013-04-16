@@ -17,7 +17,6 @@ test_requires File::Temp     0.2301
 test_requires Test::Class    0.39
 test_requires Test::Deep     0.11
 test_requires Test::More     0.98
-test_requires Time::HiRes    1.9725
 test_requires Win32          0.47 if win32
 test_requires Win32::Process 0.14 if win32
 test_requires parent         0.225

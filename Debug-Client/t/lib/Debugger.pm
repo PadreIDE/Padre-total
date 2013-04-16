@@ -14,7 +14,6 @@ if ( $OSNAME eq 'MSWin32' ) {
 #use Data::Printer { caller_info => 1, colored => 1, };
 use Exporter ();
 use File::Temp qw(tempdir);
-#use Time::HiRes qw ( time sleep );
 
 our @ISA    = 'Exporter';
 our @EXPORT = qw(start_script start_debugger slurp rc_file);
