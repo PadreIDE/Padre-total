@@ -1,6 +1,6 @@
 package t::lib::Test_1415;
 
-use base qw(Test::Class);
+use parent qw(Test::Class);
 use Test::More;
 use Test::Deep;
 

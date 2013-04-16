@@ -1,5 +1,9 @@
 Changes for Debug::Client
 
+0.24_01 2013-04-16
+ - tweak t-lib-debugger, adjust sleep to 1 sec (BOWTIE)
+ - update Makefile requirments (BOWTIE)
+
 0.24 2013-02-19
  - Take two tweak for production release to co-inside with Padre 0.98 (BOWTIE)
 

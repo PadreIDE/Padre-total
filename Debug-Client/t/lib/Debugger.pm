@@ -3,7 +3,7 @@ package t::lib::Debugger;
 use strict;
 use warnings FATAL => 'all';
 
-use English qw( -no_match_vars ); # Avoids regex performance penalty
+use English qw( -no_match_vars );
 local $OUTPUT_AUTOFLUSH = 1;
 
 if ( $OSNAME eq 'MSWin32' ) {
@@ -11,12 +11,10 @@ if ( $OSNAME eq 'MSWin32' ) {
 	require Win32;
 	use constant NORMALPRIORITYCLASS => 0x00000020;
 }
-# Turn on $OUTPUT_AUTOFLUSH
-# local $| = 1;
-
+#use Data::Printer { caller_info => 1, colored => 1, };
 use Exporter ();
 use File::Temp qw(tempdir);
-use Time::HiRes 'sleep';
+#use Time::HiRes qw ( time sleep );
 
 our @ISA    = 'Exporter';
 our @EXPORT = qw(start_script start_debugger slurp rc_file);
@@ -35,40 +33,30 @@ sub start_script {
 		$path = Win32::GetLongPathName($path);
 		local $ENV{PERLDB_OPTS} = "RemotePort=$host:$port";
 
-		sleep(0.080);
-		# Win32::Process::Create(
-			# $pid,
-			# $EXECUTABLE_NAME,
-			# # qq(perl -d $file ),
-			# qq(perl -d $file > "$path/out" 2> "$path/err"),
-			# 1,
-			# NORMALPRIORITYCLASS,
-			# '.',
-		# ) or die Win32::FormatMessage( Win32::GetLastError() );
+		sleep 1;
 		system( 1, qq($^X -d $file > "$path/out" 2> "$path/err") );
 		#spawns an external process and immediately returns its process designator, without waiting for it to terminate
 
 	} else {
 
-		my $pid = fork();
+		$pid = fork();
 		die if not defined $pid;
 
 		if ( not $pid ) {
 			local $ENV{PERLDB_OPTS} = "RemotePort=$host:$port";
-			sleep(0.080);
-			# exec qq($EXECUTABLE_NAME -d $file );
+			
+			sleep 1;
 			exec qq($EXECUTABLE_NAME -d $file > "$path/out" 2> "$path/err");
 			exit 0;
 		}
 	}
 
-	return ($dir);
+	return ($dir, $pid);
 }
 
 sub start_debugger {
 	require Debug::Client;
-	my $debugger = Debug::Client->new( host => $host, port => $port, );	
-	# $debugger->listener;
+	my $debugger = Debug::Client->new( host => $host, port => $port, );
 	return $debugger;
 }
 

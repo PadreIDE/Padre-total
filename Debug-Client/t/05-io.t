@@ -6,6 +6,7 @@ use warnings FATAL => 'all';
 
 # Turn on $OUTPUT_AUTOFLUSH
 local $| = 1;
+#use Data::Printer { caller_info => 1, colored => 1, };
 
 use Test::More tests => 11;
 use Test::Deep;
@@ -13,6 +14,7 @@ use t::lib::Debugger;
 
 my ( $dir, $pid ) = start_script('t/eg/05-io.pl');
 my $path = $dir;
+
 if ( $^O =~ /Win32/i ) {
 	require Win32;
 	$path = Win32::GetLongPathName($dir);
@@ -21,9 +23,10 @@ if ( $^O =~ /Win32/i ) {
 # Patch for Debug::Client ticket #831 (MJGARDNER)
 # Turn off ReadLine ornaments
 local $ENV{PERL_RL} = ' ornaments=0';
-
-my $debugger = start_debugger();
-
+say 'mk3';
+#sleep 1;
+my $debugger = t::lib::Debugger::start_debugger();
+say 'mk4';
 SCOPE:{
 	my $out = $debugger->get;
 
