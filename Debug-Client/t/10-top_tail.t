@@ -7,12 +7,12 @@ use warnings FATAL => 'all';
 # Turn on $OUTPUT_AUTOFLUSH
 local $| = 1;
 
-use Test::More tests => 5;
+use Test::More tests => 4;
 use Test::Deep;
 use PadWalker;
 use t::lib::Debugger;
 
-ok( start_script('t/eg/14-y_zero.pl'), 'start script' );
+start_script('t/eg/14-y_zero.pl');
 
 my $debugger;
 ok( $debugger = start_debugger(), 'start debugger' );
