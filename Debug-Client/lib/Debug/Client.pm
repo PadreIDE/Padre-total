@@ -7,7 +7,7 @@ use warnings FATAL => 'all';
 use English qw( -no_match_vars );
 local $OUTPUT_AUTOFLUSH = 1;
 
-our $VERSION = '0.24_03';
+our $VERSION = '0.24_04';
 
 use utf8;
 use IO::Socket::IP 0.18;
@@ -36,7 +36,7 @@ sub new {
 sub _initialize {
 	my ( $self, %args ) = @_;
 
-	$self->{local_host} = $args{host} // 'localhost';
+	$self->{local_host} = $args{host} // '127.0.0.1';
 	$self->{local_port} = $args{port} // 24_642;
 
 	#for IO::Socket::IP
@@ -681,7 +681,7 @@ Debug::Client - debugger client side code for Padre, The Perl IDE.
 
 =head1 VERSION
 
-This document describes Debug::Client version: 0.24_03
+This document describes Debug::Client version: 0.24_04
 
 =head1 SYNOPSIS
 
@@ -740,7 +740,7 @@ Once the script under test was launched we can call the following:
   my @args   = ('param', 'param');
   
   my $perl = $^X; # the perl might be a different perl
-  my $host = 'localhost';
+  my $host = '127.0.0.1';
   my $port = 24642;
   my $pid = fork();
   die if not defined $pid;

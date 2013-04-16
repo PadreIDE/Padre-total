@@ -9,7 +9,7 @@ use Pod::Usage qw(pod2usage);
 my %opt = (
 	port => 12345,
 	perl => $^X, # allow the user to supply the path to another perl
-	host => 'localhost',
+	host => '127.0.0.1',
 );
 
 usage() if not @ARGV;

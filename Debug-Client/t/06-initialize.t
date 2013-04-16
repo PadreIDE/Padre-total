@@ -19,7 +19,7 @@ use Test::Deep;
 use File::Temp qw(tempdir);
 my ( $host, $port, $porto, $listen, $reuse_addr );
 SCOPE: {
-	$host       = 'localhost';
+	$host       = '127.0.0.1';
 	$port       = 24642;
 	$porto      = 'tcp';
 	# $listen     = 'SOMAXCONN';
@@ -45,7 +45,7 @@ SCOPE: {
 }
 
 SCOPE: {
-	$host = 'localhost';
+	$host = '127.0.0.1';
 	$port = 24642;
 	my ( $dir, $pid ) = run_perl5db( 't/eg/05-io.pl', $host, $port );
 	require Debug::Client;
