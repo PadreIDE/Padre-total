@@ -7,7 +7,7 @@ use warnings FATAL => 'all';
 use English qw( -no_match_vars );
 local $OUTPUT_AUTOFLUSH = 1;
 
-our $VERSION = '0.24_04';
+our $VERSION = '0.25';
 
 use utf8;
 use IO::Socket::IP 0.18;
@@ -681,7 +681,7 @@ Debug::Client - debugger client side code for Padre, The Perl IDE.
 
 =head1 VERSION
 
-This document describes Debug::Client version: 0.24_04
+This document describes Debug::Client version: 0.25
 
 =head1 SYNOPSIS
 
