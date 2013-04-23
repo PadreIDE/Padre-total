@@ -4,10 +4,13 @@ use 5.010;
 use strict;
 use warnings FATAL => 'all';
 
+# turn of experimental warnings
+no if $] > 5.017010, warnings => 'experimental::smartmatch';
+
 use English qw( -no_match_vars );
 local $OUTPUT_AUTOFLUSH = 1;
 
-our $VERSION = '0.25';
+our $VERSION = '0.25_01';
 
 use utf8;
 use IO::Socket::IP 0.18;
@@ -681,7 +684,7 @@ Debug::Client - debugger client side code for Padre, The Perl IDE.
 
 =head1 VERSION
 
-This document describes Debug::Client version: 0.25
+This document describes Debug::Client version: 0.25_01
 
 =head1 SYNOPSIS
 

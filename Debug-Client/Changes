@@ -1,5 +1,8 @@
 Changes for Debug::Client
 
+{{$NEXT}}
+ - Tweak for perl-5.17.11 compatablity (BOWTIE)
+
 0.25 2013-04-17
  - bump version and release (BOWTIE)
 
