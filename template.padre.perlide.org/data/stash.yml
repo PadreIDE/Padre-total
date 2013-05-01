@@ -17,6 +17,12 @@ navigation:
   - name: About
     href: /about.html
 about:
+  - title: y2013
+    events:
+      - date: 2013 April 30
+        url: http://blogs.perl.org/users/peter_lavender/2013/04/padre-098-has-finally-been-released.html
+        title: Padre 0.98 has FINALLY been released
+        comment: by Peter Lavender
   - title: y2012
     events:
       - date: 2012 November 15
