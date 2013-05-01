@@ -1,11 +1,13 @@
 Revision history for Padre-Plugin-SpellCheck
 
-{{$NEXT}}
+1.32 2013-05-01
+ - Tweak
+
 1.31_03 2013-01-14
  - Tweak perl version dependancy and Makefile (BOWTIE)
 
 1.31_02 2013-01-11
- - Bumped perl dependancie to 5.12.5 as test 05-Checker.t was failing under 
+ - Bumped perl dependancie to 5.12.5 as test 05-Checker.t was failing under
    perl 5.10.1 with Class::Accessor (BOWTIE)
  - Update Changes file to CPAN::Changes::Spec (BOWTIE)
 
@@ -104,7 +106,7 @@ Revision history for Padre-Plugin-SpellCheck
 
 1.1.0 2009-04-29
  - possibility to choose dictionary language (but wx::stc has unicode bugs
-   which prevents this feature to be really useful on non-ascii texts)	 
+   which prevents this feature to be really useful on non-ascii texts)
  - plugin i18n-ed, ready to accept translations
  - arabic translation added (azawawi)
  - brazilian portuguese translation added (garu)
@@ -126,4 +128,3 @@ Revision history for Padre-Plugin-SpellCheck
 
 0.01 2009-02-01
  - First version, released on an unsuspecting world.
- 

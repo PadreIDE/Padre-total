@@ -34,6 +34,7 @@
 \.rej$
 \btmp
 \bTODO
+\bDebian_CPANTS.txt
 
 # Avoid OS-specific files/dirs
 #   Mac OSX metadata
