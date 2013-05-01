@@ -4,14 +4,14 @@ use v5.10;
 use warnings;
 use strict;
 
-our $VERSION = '1.31_03';
+our $VERSION = '1.32';
 
 use Padre::Logger;
 use Padre::Unload ();
 
 use Class::Accessor 'antlers';
 has _ignore  => ( is => 'rw', isa => 'Str' ); # list of words to ignore
-has _speller => ( is => 'rw', isa => 'Str' ); # real text::aspell object
+has _speller => ( is => 'rw', isa => 'Str' ); # real text::Aspell object
 
 # FIXME: as soon as wxWidgets/wxPerl supports
 # newer version 1.31_03
@@ -59,7 +59,7 @@ sub _init {
 		if ( exists $MIMETYPE_MODE{$mimetype} ) {
 			if ( not defined $speller->set_option( 'mode', $MIMETYPE_MODE{$mimetype} ) ) {
 				my $err = $speller->errstr;
-				warn "Could not set aspell mode '$MIMETYPE_MODE{$mimetype}': $err\n";
+				warn "Could not set Aspell mode '$MIMETYPE_MODE{$mimetype}': $err\n";
 			}
 		}
 
@@ -167,7 +167,7 @@ Padre::Plugin::SpellCheck::Engine - Check spelling in Padre, The Perl IDE.
 
 =head1 VERSION
 
-version 1.31_03
+version: 1.32
 
 =head1 PUBLIC METHODS
 
@@ -198,10 +198,10 @@ Tell engine to ignore C<$word> for rest of the spell check.
 
 =item * my @dictionaries = $engine->dictionaries;
 
-Return a (reduced) list of dictionaries installed with aspell. The
-names returned are the dictionary locale names (eg C<en_US>). Note
+Return a (reduced) list of dictionaries installed with Aspell. The
+names returned are the dictionary locale names (e.g. C<en_US>). Note
 that only plain locales are reported, the variations coming with
-aspell are stripped.
+Aspell are stripped.
 
 =item * my @suggestions = $engine->get_suggestions( $word );
 

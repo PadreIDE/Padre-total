@@ -10,7 +10,7 @@ use Padre::Locale                           ();
 use Padre::Unload                           ();
 use Padre::Plugin::SpellCheck::FBP::Checker ();
 
-our $VERSION = '1.31_03';
+our $VERSION = '1.32';
 use parent qw(
 	Padre::Plugin::SpellCheck::FBP::Checker
 	Padre::Plugin
@@ -342,7 +342,7 @@ Padre::Plugin::SpellCheck::Checker - Check spelling in Padre, The Perl IDE.
 
 =head1 VERSION
 
-version 1.31_03
+version: 1.32
 
 =head1 DESCRIPTION
 
@@ -357,7 +357,7 @@ with the user when spelling mistakes have been spotted.
 
 	$self->{dialog} = Padre::Plugin::SpellCheck::Checker->new( $self );
 
-Create and return a new dialogue window. 
+Create and return a new dialogue window.
 
 =item * padre_locale_label
 
@@ -371,8 +371,8 @@ Text::Hunspell hard coded for /usr/share/hunspell/
 
 =head1 DEPENDENCIES
 
-Padre, Padre::Locale, Class::XSAccessor, Padre::Plugin::SpellCheck::FBP::Checker, 
-and either or ( Text::Hunspell or Text::Aspell )
+Padre, Padre::Locale, Class::XSAccessor, Padre::Plugin::SpellCheck::FBP::Checker,
+ and either or ( Text::Hunspell or Text::Aspell )
 
 =head1 SEE ALSO
 

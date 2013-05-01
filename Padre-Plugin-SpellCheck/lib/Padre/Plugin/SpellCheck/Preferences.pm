@@ -11,7 +11,7 @@ use Padre::Locale                               ();
 use Padre::Unload                               ();
 use Padre::Plugin::SpellCheck::FBP::Preferences ();
 
-our $VERSION = '1.31_03';
+our $VERSION = '1.32';
 use parent qw(
 	Padre::Plugin::SpellCheck::FBP::Preferences
 	Padre::Plugin
@@ -239,7 +239,6 @@ sub on_dictionary_chosen {
 		TRACE("Hunspell chosen") if DEBUG;
 		$self->_local_hunspell_dictionaries;
 	}
-
 	$self->_display_dictionaries;
 
 	return;
@@ -273,12 +272,12 @@ Padre::Plugin::SpellCheck::Preferences - Check spelling in Padre, The Perl IDE.
 
 =head1 VERSION
 
-version 1.31_03
+version: 1.32
 
 =head1 DESCRIPTION
 
-This module handles the Preferences dialogue window that is used to set your 
-chosen dictionary and preferred language.
+This module handles the Preferences dialogue window that is used to set your
+ chosen dictionary and preferred language.
 
 
 =head1 METHODS
@@ -289,7 +288,7 @@ chosen dictionary and preferred language.
 
 	$self->{dialog} = Padre::Plugin::SpellCheck::Preferences->new( $self );
 
-Create and return a new dialogue window. 
+Create and return a new dialogue window.
 
 =item * on_dictionary_chosen
 event handler

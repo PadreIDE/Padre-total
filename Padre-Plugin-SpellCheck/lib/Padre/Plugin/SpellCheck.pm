@@ -9,7 +9,7 @@ use Padre::Unload ();
 use File::Which   ();
 use Try::Tiny;
 
-our $VERSION = '1.31_03';
+our $VERSION = '1.32';
 use parent qw( Padre::Plugin );
 
 # Child modules we need to unload when disabled
@@ -297,16 +297,17 @@ Padre::Plugin::SpellCheck - Check spelling in Padre, The Perl IDE.
 
 =head1 VERSION
 
-version 1.31_03
+version: 1.32
 
 =head1 DESCRIPTION
 
-For Padre 0.97+
+For Padre 0.98
 
 This plug-in allows one to check there spelling within Padre using
-C<F7> (standard spelling short-cut across text processors). 
+C<F7> (standard spelling short-cut across text processors).
 
-One can change the dictionary language used (based upon install languages) in the preferences window via Plug-in Manager. 
+One can change the dictionary language used (based upon install languages) in
+ the preferences window via Plug-in Manager.
 Note that preferences can B<only> be setup while the plugin is B<disabled>.
 Preferences are persistent. You need to Save your preferred language.
 
@@ -349,7 +350,7 @@ Return the plug-in's configuration, or a suitable default one if none exist prev
 
 =item plugin_preferences()
 
-Spelling preferences window normaly access via Plug-in Manager
+Spelling preferences window normally access via Plug-in Manager
 
 =item plugin_icon()
 
@@ -375,9 +376,9 @@ Spell checks the current selection (or the whole document).
 
 =head1 BUGS and LIMITATIONS
 
-If you upgrade your os, and run Perl from a local/lib, 
-you may find Hunspell stops showing local dictionary s in preferences, 
-you will need to un-install Text::Hunspell and re-install in cpan.
+If you upgrade your OS, and run Perl from a local/lib,
+ you may find Hunspell stops showing local dictionary’s in preferences,
+ you will need to un-install Text::Hunspell and re-install in CPAN.
 
 
 Spell-checking non-ascii files has bugs: the selection does not
@@ -406,11 +407,11 @@ L<http://www.famfamfam.com/lab/icons/silk/>.
 
 L<http://padre.perlide.org/trac/wiki/PadrePluginSpellCheck>
 
-=item * Our svn repository 
+=item * Our svn repository
 
-L<http://svn.perlide.org/padre/trunk/Padre-Plugin-SpellCheck>, 
-and can be browsed at 
-L<http://padre.perlide.org/browser/trunk/Padre-Plugin-SpellCheck>.
+L<http://svn.perlide.org/padre/trunk/Padre-Plugin-SpellCheck>,
+ and can be browsed at
+ L<http://padre.perlide.org/browser/trunk/Padre-Plugin-SpellCheck>.
 
 =back
 
