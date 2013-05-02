@@ -34,3 +34,4 @@ $test_object = new_ok('Padre::Plugin::SpellCheck::FBP::Checker');
 done_testing();
 
 __END__
+
