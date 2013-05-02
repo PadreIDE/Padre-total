@@ -290,6 +290,9 @@ sub menu_plugins_simple {
 	];
 }
 
+=pod
+
+=encoding utf8
 
 =head1 NAME
 
@@ -377,7 +380,7 @@ Spell checks the current selection (or the whole document).
 =head1 BUGS and LIMITATIONS
 
 If you upgrade your OS, and run Perl from a local/lib,
- you may find Hunspell stops showing local dictionary’s in preferences,
+ you may find Hunspell stops showing local dictionary in preferences,
  you will need to un-install Text::Hunspell and re-install in CPAN.
 
 
