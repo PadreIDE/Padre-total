@@ -18,3 +18,4 @@ pod_coverage_ok( "Padre::Plugin::SpellCheck::Preferences", $trustme );
 done_testing();
 
 __END__
+
