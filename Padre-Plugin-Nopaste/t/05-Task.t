@@ -1,9 +1,16 @@
-use Test::More tests => 6;
+use strict;
+use warnings FATAL => 'all';
 
-use_ok( 'Padre::Unload', '0.96' );
-use_ok( 'Padre::Task',   '0.96' );
-use_ok( 'App::Nopaste',  '0.35' );
+use English qw( -no_match_vars );
+local $OUTPUT_AUTOFLUSH = 1;
 
+use Test::More tests => 5;
+
+BEGIN {
+	use_ok( 'Padre::Unload', '0.96' );
+	use_ok( 'Padre::Task',   '0.96' );
+	use_ok( 'App::Nopaste',  '0.35' );
+}
 
 ######
 # let's check our subs/methods.
@@ -11,14 +18,13 @@ use_ok( 'App::Nopaste',  '0.35' );
 
 my @subs = qw( new run );
 
-use_ok( 'Padre::Plugin::Nopaste::Task', @subs );
-
-foreach my $subs (@subs) {
-	can_ok( 'Padre::Plugin::Nopaste::Task', $subs );
+BEGIN {
+	use_ok( 'Padre::Plugin::Nopaste::Task', @subs );
 }
 
-done_testing();
+can_ok( 'Padre::Plugin::Nopaste::Task', @subs );
 
-1;
+
+done_testing();
 
 __END__

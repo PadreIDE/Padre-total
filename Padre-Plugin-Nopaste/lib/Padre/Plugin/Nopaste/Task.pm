@@ -4,7 +4,7 @@ use v5.10;
 use strictures 1;
 
 use Carp qw( croak );
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 use Padre::Task   ();
 use Padre::Unload ();
@@ -47,7 +47,7 @@ sub run {
 
 		# private       => 1,                        # default: 0
 		# # this is the default, but maybe you want to do something different
-		
+
 		error_handler => sub {
 			my ( $error, $service ) = @_;
 			$self->{error}   = 1;
@@ -77,8 +77,9 @@ sub run {
 
 __END__
 
-
 =pod
+
+=encoding utf8
 
 =head1 NAME
 
@@ -86,7 +87,7 @@ Padre::Plugin::Nopaste::Task - NoPaste plugin for Padre, The Perl IDE.
 
 =head1 VERSION
 
-version: 0.06
+version: 0.07
 
 =head1 SYNOPSIS
 
@@ -128,27 +129,27 @@ Padre::Task, App::Nopaste
 
 =head1 SEE ALSO
 
-For all related information (bug reporting, source code repository,
-etc.), refer to L<Padre::Plugin::Nopaste>.
+See L<Padre::Plugin::Nopaste>.
 
 =head1 AUTHOR
 
-Kevin Dawson E<lt>bowtie@cpan.orgE<gt>
+See L<Padre::Plugin::Nopaste>
 
-Jerome Quelin, E<lt>jquelin@cpan.orgE<gt>
+=head2 CONTRIBUTORS
 
-Alexandr Ciornii,
+See L<Padre::Plugin::Nopaste>
 
-=head1 COPYRIGHT AND LICENSE
+=head1 COPYRIGHT
 
-Copyright 2008-2012 The Padre development team as listed in Padre.pm.
+See L<Padre::Plugin::Nopaste>
 
-This program is free software; you can redistribute it and/or
-modify it under the same terms as Perl 5 itself.
+=head1 LICENSE
+
+See L<Padre::Plugin::Nopaste>
 
 =cut
 
-# Copyright 2008-2012 The Padre development team as listed in Padre.pm.
+# Copyright 2008-2013 The Padre development team as listed in Padre.pm.
 # LICENSE
 # This program is free software; you can redistribute it and/or
 # modify it under the same terms as Perl 5 itself.

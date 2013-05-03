@@ -1,6 +1,6 @@
 Revision history for Padre-Plugin-Nopaste
 
-{{$NEXT}}
+0.07 2013-05-03
  - Update Changes to changes-strict (BOWTIE)
  - Tweak plugin_enable to throw a more human readable error (BOWTIE)
  - Update Makefile with midgen output (BOWTIE)

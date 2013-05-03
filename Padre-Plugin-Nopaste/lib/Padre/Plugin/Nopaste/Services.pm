@@ -3,7 +3,7 @@ package Padre::Plugin::Nopaste::Services;
 use v5.10;
 use English qw( -no_match_vars ); # Avoids regex performance penalty
 local $OUTPUT_AUTOFLUSH = 1;
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 use Padre::Unload ();
 use Moo;
@@ -123,18 +123,20 @@ __END__
 
 =pod
 
+=encoding utf8
+
 =head1 NAME
 
 Padre::Plugin::Nopaste::Services - NoPaste plugin for Padre, The Perl IDE.
 
 =head1 VERSION
 
-version: 0.06
+version: 0.07
 
 =head1 DESCRIPTION
 
-This just a utility module with information about App::Nopaste Services and 
-Channels respectively serviced known to us.
+This just a utility module with information about App::Nopaste Services and
+ Channels respectively serviced known to us.
 
 
 =head1 ATTRIBUTES
@@ -175,24 +177,28 @@ Moo
 
 =head1 SEE ALSO
 
-For all related information (bug reporting, source code repository,
-etc.), refer to L<Padre::Plugin::Nopaste>.
+See L<Padre::Plugin::Nopaste>.
 
 =head1 AUTHOR
 
-Kevin Dawson E<lt>bowtie@cpan.orgE<gt>
+See L<Padre::Plugin::Nopaste>
 
-=head1 COPYRIGHT AND LICENSE
+=head2 CONTRIBUTORS
 
-Copyright (c) 2012 kevin dawson, all rights reserved.
+See L<Padre::Plugin::Nopaste>
 
-This is free software; you can redistribute it and/or modify it under
-the same terms as the Perl 5 programming language system itself.
+=head1 COPYRIGHT
+
+See L<Padre::Plugin::Nopaste>
+
+=head1 LICENSE
+
+See L<Padre::Plugin::Nopaste>
 
 =cut
 
 
-# Copyright 2008-2012 The Padre development team as listed in Padre.pm.
+# Copyright 2008-2013 The Padre development team as listed in Padre.pm.
 # LICENSE
 # This program is free software; you can redistribute it and/or
 # modify it under the same terms as Perl 5 itself.

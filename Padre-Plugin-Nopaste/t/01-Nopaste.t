@@ -1,4 +1,10 @@
-use Test::More tests => 20;
+use strict;
+use warnings FATAL => 'all';
+
+use English qw( -no_match_vars );
+local $OUTPUT_AUTOFLUSH = 1;
+
+use Test::More tests => 10;
 
 use_ok( 'Padre',                 '0.94' );
 use_ok( 'Padre::Plugin',         '0.94' );
@@ -15,15 +21,17 @@ use_ok( 'Padre::Wx::Role::Main', '0.94' );
 
 my @subs = qw( _config clean_dialog event_on_context_menu menu_plugins on_finish
 	padre_interfaces paste_it plugin_disable plugin_enable plugin_icon
-	plugin_name plugin_preferences 
+	plugin_name plugin_preferences
 );
 
-use_ok( 'Padre::Plugin::Nopaste', @subs );
-
-foreach my $subs (@subs) {
-	can_ok( 'Padre::Plugin::Nopaste', $subs );
+BEGIN {
+	use_ok( 'Padre::Plugin::Nopaste', @subs );
 }
 
+can_ok( 'Padre::Plugin::Nopaste', @subs );
+
+my @needs = Padre::Plugin::Nopaste::padre_interfaces();
+cmp_ok( @needs % 2, '==', 0, 'plugin interface check' );
 
 ######
 # let's check our lib's are here.
@@ -47,7 +55,5 @@ my $test_object;
 
 
 done_testing();
-
-1;
 
 __END__
