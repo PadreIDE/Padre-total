@@ -4,7 +4,7 @@ all_from lib/Debug/Client.pm
 requires_from lib/Debug/Client.pm
 
 requires Carp                 1.26
-requires IO::Socket::IP       0.2
+requires IO::Socket::IP       0.21
 requires PadWalker            1.96
 requires Term::ReadKey        2.30
 requires Term::ReadLine       1.10
