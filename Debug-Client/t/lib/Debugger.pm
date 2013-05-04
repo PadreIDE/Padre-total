@@ -6,6 +6,12 @@ use warnings FATAL => 'all';
 use English qw( -no_match_vars );
 local $OUTPUT_AUTOFLUSH = 1;
 
+BEGIN {
+	use Term::ReadKey;
+	use Term::ReadLine;
+	use Term::ReadLine::Perl;
+}
+
 if ( $OSNAME eq 'MSWin32' ) {
 	require Win32::Process;
 	require Win32;

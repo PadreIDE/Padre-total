@@ -1,32 +1,39 @@
-#!/usr/bin/perl
-
-use 5.010;
 use strict;
 use warnings FATAL => 'all';
 
-# Turn on $OUTPUT_AUTOFLUSH
-local $| = 1;
+use English qw( -no_match_vars );
+local $OUTPUT_AUTOFLUSH = 1;
 #use Data::Printer { caller_info => 1, colored => 1, };
 
-use Test::More tests => 11;
+use Test::More tests => 14;
 use Test::Deep;
 use t::lib::Debugger;
+
+BEGIN {
+	use_ok( 'Term::ReadLine', '1.10' );
+	use_ok( 'Term::ReadKey', '2.30' );
+	use_ok( 'Term::ReadLine::Perl', '1.0303' );
+}
+
+print "env-columns - $ENV{COLUMNS}\n" if defined $ENV{COLUMNS};
+print "env-lines - $ENV{LINES}\n" if defined $ENV{LINES};
 
 my ( $dir, $pid ) = start_script('t/eg/05-io.pl');
 my $path = $dir;
 
-if ( $^O =~ /Win32/i ) {
+if ( $OSNAME  =~ /Win32/i ) {
 	require Win32;
 	$path = Win32::GetLongPathName($dir);
 }
 
 # Patch for Debug::Client ticket #831 (MJGARDNER)
 # Turn off ReadLine ornaments
-local $ENV{PERL_RL} = ' ornaments=0';
-say 'mk3';
+#local $ENV{PERL_RL} = ' ornaments=0';
+print "mk3 \n";
 #sleep 1;
 my $debugger = t::lib::Debugger::start_debugger();
-say 'mk4';
+print "mk4 \n";
+
 SCOPE:{
 	my $out = $debugger->get;
 
@@ -35,7 +42,7 @@ SCOPE:{
 }
 # diag("Info: Perl version '$]'"); old
 # diag("Info: Perl version '$^V'"); new
-my $prefix = ( substr( $], 0, 5 ) eq '5.008006' ) ? "Default die handler restored.\n" : '';
+my $prefix = ( substr( $] , 0, 5 ) eq '5.008006' ) ? "Default die handler restored.\n" : '';
 # diag("prefix: $prefix");
 
 # see relevant fail report here:

@@ -1,6 +1,3 @@
-#!/usr/bin/perl
-
-use 5.010;
 use strict;
 use warnings FATAL => 'all';
 
@@ -20,7 +17,7 @@ use File::Temp qw(tempdir);
 my ( $host, $port, $porto, $listen, $reuse_addr );
 SCOPE: {
 	$host       = '127.0.0.1';
-	$port       = 24642;
+	$port       = 24_642;
 	$porto      = 'tcp';
 	# $listen     = 'SOMAXCONN';
 	$listen     = 1;
@@ -37,6 +34,7 @@ SCOPE: {
 		'initialize with prams'
 	);
 	$debugger->run;
+	sleep 1;
 	# sleep(0.01) if $OSNAME eq 'MSWin32'; #helps against extra processes after exit
 	ok( $debugger->quit, 'quit with prams' );
 	if ( $OSNAME eq 'MSWin32' ) {
@@ -46,11 +44,12 @@ SCOPE: {
 
 SCOPE: {
 	$host = '127.0.0.1';
-	$port = 24642;
+	$port = 24_642;
 	my ( $dir, $pid ) = run_perl5db( 't/eg/05-io.pl', $host, $port );
 	require Debug::Client;
 	ok( my $debugger = Debug::Client->new(), 'initialize without prams' );
 	$debugger->run;
+	sleep 1;
 	# sleep(0.01) if $OSNAME eq 'MSWin32'; #helps against extra processes after exit
 	ok( $debugger->quit, 'quit witout prams' );
 	if ( $OSNAME eq 'MSWin32' ) {
@@ -84,8 +83,8 @@ sub run_perl5db {
 		if ( not $pid ) {
 			local $ENV{PERLDB_OPTS} = "RemotePort=$host:$port";
 			sleep 1;
-			exec qq($EXECUTABLE_NAME -d $file );
-			# exec qq($EXECUTABLE_NAME -d $file > "$path/out" 2> "$path/err");
+			# exec qq($EXECUTABLE_NAME -d $file );
+			exec qq($EXECUTABLE_NAME -d $file > "$path/out" 2> "$path/err");
 			exit 0;
 		}
 	}
