@@ -9,11 +9,7 @@ local $OUTPUT_AUTOFLUSH = 1;
 BEGIN {
 	use Term::ReadKey;
 	use Term::ReadLine;	
-	if ( $^O eq 'MSWin32'){
-		use Term::ReadLine::Perl;
-	} else {
-		use Term::ReadLine::Gnu;
-	}
+	$ENV{TERM} = 'dumb' if $OSNAME eq 'MSWin32';
 }
 
 # Patch for Debug::Client ticket #831 (MJGARDNER)
