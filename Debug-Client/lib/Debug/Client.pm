@@ -15,7 +15,7 @@ our $VERSION = '0.25_04';
 BEGIN {
 	use Term::ReadKey;
 	use Term::ReadLine;
-	$ENV{TERM} = 'dumb' if $OSNAME eq 'MSWin32';
+	#$ENV{TERM} = 'dumb' if $OSNAME eq 'MSWin32';
 }
 
 use utf8;

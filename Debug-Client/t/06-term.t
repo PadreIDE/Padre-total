@@ -10,7 +10,7 @@ use constant {
 	NONE  => q{},
 };
 use version;
-use Test::More;
+use Test::More tests => 14;
 
 BEGIN {
 	use_ok( 'Term::ReadKey', '2.30' );
@@ -67,7 +67,7 @@ SKIP: {
 	
 SKIP: {
     eval { require Term::ReadLine::Gnu };
-    skip 'Term::ReadLine::Gnu not installed', 1 if $@;
+    skip 'Term::ReadLine::Gnu not installed', 2 if $@;
     use_ok( 'Term::ReadLine::Gnu' );
     cmp_ok( version->parse( $Term::ReadLine::Gnu::VERSION ), 'ge', 0, 'Term::ReadLine::Gnu version = '. version->parse( $Term::ReadLine::Gnu::VERSION ) );
 
@@ -96,7 +96,7 @@ diag 'Info: Using ReadLine implementation -> '.$term->ReadLine;
 # Patch for Debug::Client ticket #831 (MJGARDNER)
 # Turn off ReadLine ornaments
 ##local $ENV{PERL_RL} = ' ornaments=0';
-$ENV{TERM} = 'dumb' if ! exists $ENV{TERM};
+##$ENV{TERM} = 'dumb' if ! exists $ENV{TERM};
 diag 'INFO: $ENV{TERM} -> '.$ENV{TERM}."\n" if defined $ENV{TERM};
 ok( $ENV{TERM} !~ /undef/, '$ENV{TERM} is set to -> '.$ENV{TERM} );
 
