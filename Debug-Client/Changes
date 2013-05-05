@@ -1,7 +1,9 @@
 Changes for Debug::Client
 
-{{$NEXT}}
+0.25_04 2013-05-05
  - Tweak for perl-5.17.11 compatablity (BOWTIE)
+ - test tweaks to hack #1494 (BOWTIE)
+ - Use a more appropiate Term::ReadLine::... (BOWTIE)
 
 0.25 2013-04-17
  - bump version and release (BOWTIE)
