@@ -648,7 +648,7 @@ sub new_user {
 	push @info, "You have found #Padre, the Perl IDE.";
 	push @info, "It's nice to see you, some guidance follows, which may be of help to you.";
 	push @info,
-		"Please Ask your question and wait, 'Please be Patient', do not give up after two minutes. Remember this is a community channel. May be you just popied by to say Hi that's ok to. ";
+		"Please Ask your question and wait, 'Please be Patient', do not give up after two minutes. Remember this is a community channel. Maybe you just popped by to say hi that's ok too. ";
 	push @info,
 		"You did look in our wiki -> http://padre.perlide.org/trac/wiki. Don't forget to Register, Login and join in.";
 	push @info, 'If you need to show us code/errors, Please use the no-paste service http://scsys.co.uk:8001 ';
@@ -819,8 +819,8 @@ sub trac_check {
 	}, "id", {}, $last_trac_check * $microseconds, $trac_check_time * $microseconds
 	);
 
-	for my $type (qw(change attachment)) {
-		for my $ticket_id ( keys %{ $tickets{$type} } ) {
+	foreach my $type (qw(change attachment)) {
+		foreach my $ticket_id ( keys %{ $tickets{$type} } ) {
 			my $text = trac_ticket_text( $ticket_id, $type );
 			if ($text) {
 				$irc->yield( privmsg => $_, $text ) for @{ $config->{channels} };
@@ -839,7 +839,7 @@ sub trac_check {
 	}, "name", {}, $last_trac_check * $microseconds, $trac_check_time * $microseconds
 	);
 
-	for my $page ( keys %$wiki ) {
+	foreach my $page ( keys %$wiki ) {
 		my $text = "wiki page http://padre.perlide.org/trac/wiki/$page changed by $wiki->{$page}{author}";
 		$irc->yield( privmsg => $_, $text ) for @{ $config->{channels} };
 	}
