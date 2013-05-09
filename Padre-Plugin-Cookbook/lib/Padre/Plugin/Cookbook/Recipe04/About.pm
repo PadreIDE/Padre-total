@@ -74,7 +74,7 @@ sub licence_clicked {
 	$output->clear;
 
 	my $licence = <<'END_LICENCE';
-LICENSE & COPYRIGHT 
+LICENSE & COPYRIGHT
 
 Copyright 2008-2011 The Padre development team as listed in Padre.pm.
 
@@ -83,12 +83,13 @@ the same terms as the Perl 5 programming language system itself.
 
 Terms of the Perl programming language system itself
 
- a) the GNU General Public License as published by the Free
-    Software Foundation; either version 1, or (at your option) any
-    later version, or
- b) the "Artistic License"
+	a) the GNU General Public License as published by the Free
+		Software Foundation; either version 1, or (at your option) any later
+		version, or
+	b) the "Artistic License"
 
-The full text of the license can be found in the LICENSE file included with this module.
+The full text of the license can be found in the LICENSE file included with
+this module.
 
 END_LICENCE
 
@@ -100,6 +101,10 @@ END_LICENCE
 1;
 
 __END__
+
+=pod
+
+=encoding utf8
 
 =head1 NAME
 

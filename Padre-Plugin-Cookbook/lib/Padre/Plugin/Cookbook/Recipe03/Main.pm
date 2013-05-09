@@ -99,6 +99,10 @@ sub clean_dialog {
 
 __END__
 
+=pod
+
+=encoding utf8
+
 =head1 NAME
 
 Padre::Plugin::Cookbook::Recipe03::Main

@@ -3,7 +3,7 @@ package Padre::Plugin::Cookbook::Recipe04::Main;
 use v5.10.1;
 use strict;
 use warnings;
-
+no if $] > 5.017010, warnings => 'experimental';
 # Avoids regex performance penalty
 use English qw( -no_match_vars );
 
@@ -719,17 +719,16 @@ sub help_menu_clicked {
 	my $licence = <<'MENU_HELP';
 	Info for Recipe-04 viewer.
 
-1,	Pick a relation and click UPDATE to view it's contents, only the
-	first 127 tuples will be displayed, then you can use some of the other features.
-2,	MEDIUM SEA GREEN for an old school look.
-3,	Use SHOW to peek inside after first Updating;
-	tip start with Syntax Highlight,
-	all of Shows output goes to terminal, using Data::Printer
-	tip set your terminal to white on black
-4,	CLEAN works with History, Session, Session Files & LastPositionInFile
-5,	Clicking on Session tuple displays it's children in terminal.
-6,	you can sort on any attribute heading excluding index.
-7,	Adjust Width is a toggle: have fun
+1, Pick a relation and click UPDATE to view it's contents, only the first
+ 127 tuples will be displayed, then you can use some of the other features.
+2, MEDIUM SEA GREEN for an old school look.
+3, Use SHOW to peek inside after first Updating; tip start with Syntax
+ Highlight, all of Shows output goes to terminal, using Data::Printer tip set
+ your terminal to white on black
+4, CLEAN works with History, Session, Session Files & LastPositionInFile
+5, Clicking on Session tuple displays it's children in terminal.
+6, You can sort on any attribute heading excluding index.
+7, Adjust Width is a toggle: have fun
 
 ps outputs go-to terminal, Padre-Sataus_Bar and Padre-Output.
 
@@ -815,6 +814,10 @@ no Moose;
 1;
 
 __END__
+
+=pod
+
+=encoding utf8
 
 =head1 NAME
 

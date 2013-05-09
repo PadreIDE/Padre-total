@@ -1,12 +1,15 @@
-use Test::More tests => 26;
+use strict;
+use warnings FATAL => 'all';
 
-use_ok( 'Padre',                 '0.96' );
-use_ok( 'Padre::Plugin',         '0.96' );
-use_ok( 'Padre::Wx::Role::Main', '0.96' );
+use English qw( -no_match_vars );
+local $OUTPUT_AUTOFLUSH = 1;
 
-TODO: {
-	local $TODO = "Error: Can't locate Wx/Dialog.pm in \@INC";
-	use_ok( 'Wx::Dialog', '0.96' );
+use Test::More tests => 18;
+
+BEGIN {
+	use_ok( 'Padre',                 '0.96' );
+	use_ok( 'Padre::Plugin',         '0.96' );
+	use_ok( 'Padre::Wx::Role::Main', '0.96' );
 }
 
 ######
@@ -16,11 +19,15 @@ TODO: {
 my @subs = qw( padre_interfaces plugin_name menu_plugins_simple
 	plugin_disable plugin_icon load_dialog_recipe01_main load_dialog_recipe02_main
 	load_dialog_recipe03_main load_dialog_recipe04_main );
-use_ok( 'Padre::Plugin::Cookbook', @subs );
 
-foreach my $subs (@subs) {
-	can_ok( 'Padre::Plugin::Cookbook', $subs );
+BEGIN {
+	use_ok( 'Padre::Plugin::Cookbook', @subs );
 }
+
+can_ok( 'Padre::Plugin::Cookbook', @subs );
+
+my @needs = Padre::Plugin::Cookbook::padre_interfaces();
+cmp_ok( @needs % 2, '==', 0, 'plugin interface check' );
 
 ######
 # let's check our lib's are here.
@@ -61,4 +68,8 @@ $test_object = new_ok('Padre::Plugin::Cookbook::Recipe04::About');
 
 require Padre::Plugin::Cookbook::Recipe04::FBP::AboutFB;
 $test_object = new_ok('Padre::Plugin::Cookbook::Recipe04::FBP::AboutFB');
+
 done_testing();
+
+__END__
+

@@ -33,6 +33,10 @@ sub new {
 
 __END__
 
+=pod
+
+=encoding utf8
+
 =head1 NAME
 
 Padre::Plugin::Cookbook::Recipe01::Main

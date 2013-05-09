@@ -3,10 +3,7 @@ package Padre::Plugin::Cookbook::Recipe02::Main;
 use v5.10.1;
 use strict;
 use warnings;
-
-# use diagnostics;
-# use utf8;
-# use autodie;
+no if $] > 5.017010, warnings => 'experimental';
 
 # Version required
 our $VERSION = '0.24';
@@ -166,7 +163,12 @@ sub set_name_label_value {
 }
 
 1;
+
 __END__
+
+=pod
+
+=encoding utf8
 
 =head1 NAME
 
