@@ -19,7 +19,7 @@ start_script('t/eg/14-y_zero.pl');
 my $debugger;
 $debugger = start_debugger();
 $debugger->get;
-$debugger->set_breakpoint( 't/eg/14-y_zero.pl', '14' );
+$debugger->set_breakpoint( 't/eg/14-y_zero.pl', '13' );
 $debugger->run;
 
 

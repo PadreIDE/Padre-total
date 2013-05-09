@@ -2,7 +2,7 @@
 
 use 5.010;
 use strict;
-use warnings FATAL => 'all';    
+use warnings FATAL => 'all';
 
 # Turn on $OUTPUT_AUTOFLUSH
 local $| = 1;
@@ -87,8 +87,7 @@ my $perl5db_ver;
 1  'foo
 bar'
 2  'moo');
-		cmp_deeply( \@out, [ 'main::', 't/eg/03-return.pl', 10, '$x++;' ], 'line 10' )
-			or diag( $debugger->buffer );
+		cmp_deeply( \@out, [ 'main::', 't/eg/03-return.pl', 10, '$x++;' ], 'line 10' ) or diag( $debugger->buffer );
 	}
 }
 

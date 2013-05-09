@@ -2,7 +2,7 @@
 
 use 5.010;
 use strict;
-use warnings FATAL => 'all';    
+use warnings FATAL => 'all';
 
 # Turn on $OUTPUT_AUTOFLUSH
 local $| = 1;
@@ -45,15 +45,17 @@ my $debugger = start_debugger();
 	#   h q, h R or h o to get additional info.
 	#   DB<1>
 	my $out = $debugger->run;
+
 	# like( $out, qr/Debugged program terminated/ );
 }
 
 {
 	my $out = $debugger->quit;
+
 	# like( $out, qr/1/, 'debugger quit' );
 }
 
-done_testing( );
+done_testing();
 
 1;
 

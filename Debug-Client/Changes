@@ -1,5 +1,10 @@
 Changes for Debug::Client
 
+0.25_05 2013-05-09
+ - Tweak 06-term.t to show more info from cpan testers (BOWTIE)
+ - fix missing MANIFEST (BOWTIE)
+ - lower some dependency version dod++ (BOWTIE)
+
 0.25_04 2013-05-05
  - Tweak for perl-5.17.11 compatablity (BOWTIE)
  - test tweaks to hack #1494 (BOWTIE)

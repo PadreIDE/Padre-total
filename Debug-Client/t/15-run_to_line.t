@@ -46,7 +46,7 @@ SKIP: {
 	skip( "perl5db $] dose not support c [line|sub]", 1 ) if $] =~ m/5.01500(3|4|5)/;SKIP: {
 		skip( "perl5db v$perl5db_ver dose not support list context", 1 ) if $perl5db_ver == 1.35;
 		my @out = $debugger->run(17);
-		cmp_deeply( \@out, [ 'main::func1', 't/eg/02-sub.pl', 17, '   my $multi = $q * $w;' ], 'line 17' )
+		cmp_deeply( \@out, [ 'main::func1', 't/eg/02-sub.pl', 17, '  my $multi = $q * $w;' ], 'line 17' )
 			or diag( $debugger->buffer );
 	}
 }

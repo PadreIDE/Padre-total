@@ -8,7 +8,7 @@ local $OUTPUT_AUTOFLUSH = 1;
 
 BEGIN {
 	use Term::ReadKey;
-	use Term::ReadLine;	
+	use Term::ReadLine;
 	#$ENV{TERM} = 'dumb' if $OSNAME eq 'MSWin32';
 }
 
@@ -55,7 +55,7 @@ sub start_script {
 
 		if ( not $pid ) {
 			local $ENV{PERLDB_OPTS} = "RemotePort=$host:$port";
-			
+
 			sleep 1;
 			exec qq($EXECUTABLE_NAME -d $file > "$path/out" 2> "$path/err");
 			exit 0;

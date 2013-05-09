@@ -10,7 +10,7 @@ no if $] > 5.017010, warnings => 'experimental::smartmatch';
 use English qw( -no_match_vars );
 local $OUTPUT_AUTOFLUSH = 1;
 
-our $VERSION = '0.25_04';
+our $VERSION = '0.25_05';
 
 BEGIN {
 	use Term::ReadKey;
@@ -394,10 +394,10 @@ sub get_x_vars {
 #######
 sub get_h_var {
 	my ( $self, $var ) = @_;
-	
+
 	#added a flush buffer to stop help appending in an initional case
 	$self->{buffer} = undef;
-	
+
 	if ( defined $var ) {
 		$self->_send("h $var");
 	} else {
@@ -614,7 +614,7 @@ sub _process_line {
 # See 00-internal.t for test cases
 sub _prompt {
 	my $self = shift;
-	
+
 	my $prompt;
 	if ( $self->{buffer} =~ s/\s*DB<(?<prompt>\d+)>\s*$// ) {
 		$prompt = $+{prompt};
@@ -690,7 +690,7 @@ Debug::Client - debugger client side code for Padre, The Perl IDE.
 
 =head1 VERSION
 
-This document describes Debug::Client version: 0.25_04
+This document describes Debug::Client version: 0.25_05
 
 =head1 SYNOPSIS
 
@@ -702,9 +702,9 @@ to access the machine where Debug::Client runs. If they are on the same machine
 this should be C<localhost>.
 $port can be any port number where the Debug::Client could listen.
 
-This is the point where the external SUT needs to be launched 
-by first setting 
-     
+This is the point where the external SUT needs to be launched
+ by first setting
+
   $ENV{PERLDB_OPTS} = "RemotePort=$host:$port"
 
 then running
@@ -737,8 +737,7 @@ Once the script under test was launched we can call the following:
   $debugger->execute_code( '%phone_book = (foo => 123, bar => 456)' );
 
   my $value = $debugger->get_value('%phone_book'); # $value is the dumped data?
-  
-  
+
   $debugger->set_breakpoint( "file", 23 ); # set breakpoint on file, line
 
   $debugger->get_stack_trace
@@ -747,19 +746,19 @@ Once the script under test was launched we can call the following:
 
   my $script = 'script_to_debug.pl';
   my @args   = ('param', 'param');
-  
+
   my $perl = $^X; # the perl might be a different perl
   my $host = '127.0.0.1';
   my $port = 24642;
   my $pid = fork();
   die if not defined $pid;
-  
+
   if (not $pid) {
 	local $ENV{PERLDB_OPTS} = "RemotePort=$host:$port"
   	exec("$perl -d $script @args");
   }
-  
-  
+
+
   require Debug::Client;
   my $debugger = Debug::Client->new(
     host => $host,
@@ -774,7 +773,8 @@ Once the script under test was launched we can call the following:
 
 This is a DEVELOPMENT Release only, you have been warned!
 
-The primary use of this module is to provide debugger functionality for Padre 0.98 and beyond, 
+The primary use of this module is to provide debugger functionality for
+ Padre 0.98 and beyond,
 
 This module has been tested against Perl 5.17.8.
 
@@ -810,9 +810,9 @@ Return the internal debugger pointer to the line last executed, and print out th
 
 =item get_lineinfo
 
-Return the internal debugger pointer to the line last executed, 
-and generate file-name and row for where are we now. 
-trying to use perl5db line-info in naff way,
+Return the internal debugger pointer to the line last executed,
+ and generate file-name and row for where are we now.
+ trying to use perl5db line-info in naff way,
 
  $debugger->get_lineinfo();
 
@@ -820,7 +820,7 @@ Then use the following as and when.
 
  $debugger->get_filename;
  $debugger->get_row;
- 
+
 to get filename and row for ide due to changes in perl5db v1.35 see perl5156delta
 
 =item show_view
@@ -835,13 +835,13 @@ View a few lines of code around the current line.
 
 s [expr]
 
-Single step. 
-Executes until the beginning of another statement, descending into subroutine calls. 
-If an expression is supplied that includes function calls, it too will be single-stepped.
+Single step.
+Executes until the beginning of another statement, descending into subroutine calls.
+ If an expression is supplied that includes function calls, it too will be single-stepped.
 
  $debugger->step_in();
 
-Expressions not supported. 
+Expressions not supported.
 
 =item step_over
 
@@ -877,13 +877,13 @@ Sends the stack trace command C<t> Toggle trace mode.
 
 =item list_subroutine_names
 
-Sends the stack trace command C<S> [[!]pattern] 
-List subroutine names [not] matching pattern.
+Sends the stack trace command C<S> [[!]pattern]
+ List subroutine names [not] matching pattern.
 
 =item run
 
   $debugger->run;
-  
+
 Will run till the next breakpoint or watch or the end of
 the script. (Like pressing c in the debugger).
 
@@ -917,12 +917,12 @@ value of that reference?
 
 p expr
 
-Same as print {$DB::OUT} expr in the current package. 
-In particular, because this is just Perl's own print function, 
-this means that nested data structures and objects are not dumped, 
+Same as print {$DB::OUT} expr in the current package.
+In particular, because this is just Perl's own print function,
+this means that nested data structures and objects are not dumped,
 unlike with the x command.
 
-The DB::OUT filehandle is opened to /dev/tty, 
+The DB::OUT filehandle is opened to /dev/tty,
 regardless of where STDOUT may be redirected to.
 From perldebug, but defaulted to y 0
 
@@ -934,24 +934,25 @@ From perldebug, but defaulted to y 0
 
  y [level [vars]]
 
-Display all (or some) lexical variables (mnemonic: my variables) in the current 
-scope or level scopes higher. You can limit the variables that you see with vars 
-which works exactly as it does for the V and X commands. Requires that the PadWalker 
-module be installed
-Output is pretty-printed in the same style as for V and the format is controlled by the same options.
+Display all (or some) lexical variables (mnemonic: my variables) in the
+current scope or level scopes higher. You can limit the variables that you see
+with vars which works exactly as it does for the V and X commands. Requires
+that the PadWalker module be installed
+Output is pretty-printed in the same style as for V and the format is
+controlled by the same options.
 
   $debugger->get_y_zero();
 
-which is now y=1 since perl 5.17.6, 
+which is now y=1 since perl 5.17.6,
 
 =item get_v_vars
 
 V [pkg [vars]]
 
-Display all (or some) variables in package (defaulting to main ) 
-using a data pretty-printer (hashes show their keys and values so you see what's what, 
-control characters are made printable, etc.). 
-Make sure you don't put the type specifier (like $ ) there, just the symbol names, like this:
+Display all (or some) variables in package (defaulting to main ) using a data
+pretty-printer (hashes show their keys and values so you see what's what,
+control characters are made printable, etc.). Make sure you don't put the type
+specifier (like $ ) there, just the symbol names, like this:
 
  $debugger->get_v_vars(regex);
 
@@ -978,18 +979,20 @@ o anyoption? ...
 Print out the value of one or more options.
 o option=value ...
 
-Set the value of one or more options. If the value has internal white-space, 
-it should be quoted. For example, you could set o pager="less -MQeicsNfr" to 
-call less with those specific options. You may use either single or double quotes, 
-but if you do, you must escape any embedded instances of same sort of quote you began with, 
-as well as any escaping any escapes that immediately precede that quote but 
-which are not meant to escape the quote itself. In other words, you follow 
-single-quoting rules irrespective of the quote; eg: o option='this isn\'t bad' or o option="She said, \"Isn't it?\"" .
+Set the value of one or more options. If the value has internal white-space,
+it should be quoted. For example, you could set o pager="less -MQeicsNfr" to
+call less with those specific options. You may use either single or double
+quotes, but if you do, you must escape any embedded instances of same sort of
+quote you began with, as well as any escaping any escapes that immediately
+precede that quote but which are not meant to escape the quote itself.
+In other words, you follow single-quoting rules irrespective of the quote;
+eg: o option='this isn\'t bad' or o option="She said, \"Isn't it?\"" .
 
-For historical reasons, the =value is optional, but defaults to 1 only where 
-it is safe to do so--that is, mostly for Boolean options. 
-It is always better to assign a specific value using = . The option can be abbreviated, 
-but for clarity probably should not be. Several options can be set together. 
+For historical reasons, the =value is optional, but defaults to 1 only where
+it is safe to do so--that is, mostly for Boolean options.
+It is always better to assign a specific value using = . The option can be
+abbreviated, but for clarity probably should not be. Several options can be
+set together.
 See Configurable Options for a list of these.
 
  $debugger->set_option();
@@ -1009,11 +1012,12 @@ Actually I think this is an internal method....
 In SCALAR context will return all the buffer collected since the last command.
 
 In LIST context will return ($prompt, $module, $file, $row, $content)
-Where $prompt is the what the standard debugger uses for prompt. Probably not too
-interesting.
+Where $prompt is the what the standard debugger uses for prompt. Probably not
+too interesting.
 $file and $row describe the location of the next instructions.
-$content is the actual line - this is probably not too interesting as it is 
-in the editor. $module is just the name of the module in which the current execution is.
+$content is the actual line - this is probably not too interesting as it is
+in the editor. $module is just the name of the module in which the current
+execution is.
 
 =item get_filename
 
@@ -1049,17 +1053,19 @@ in the editor. $module is just the name of the module in which the current execu
 
 Warning if you use List request you may get spurious results.
 
-When using against perl5db.pl v1.35 list mode gives an undef response, also leading single quote now correct. 
+When using against perl5db.pl v1.35 list mode gives an undef response, also
+leading single quote now correct.
 Tests are skipped for list mode against v1.35 now.
 
-Debug::Client 0.12 tests are failing, due to changes in perl debugger, 
+Debug::Client 0.12 tests are failing, due to changes in perl debugger,
 when using perl5db.pl v1.34
 
 Debug::Client 0.13_01 skips added to failing tests.
 
  c [line|sub]
 
-Continue, optionally inserting a one-time-only breakpoint at the specified line or subroutine.
+Continue, optionally inserting a one-time-only breakpoint at the specified
+line or subroutine.
 
  c is now ignoring options [line|sub]
 
@@ -1073,7 +1079,8 @@ Perl::Critic Error Subroutine name is a homonym for built-in function
 
 Use $debugger->listener instead
 
-It will work against perl 5.17.6-7 with rindolf patch 7a0fe8d applied for watches
+It will work against perl 5.17.6-7 with rindolf patch 7a0fe8d applied for
+watches
 
 =head1 AUTHORS
 
@@ -1114,7 +1121,7 @@ that's your problem.
 
 =head1 CREDITS and THANKS
 
-Originally started out from the remote-port.pl script from 
+Originally started out from the remote-port.pl script from
 Pro Perl Debugging written by Richard Foley.
 
 =head1 See Also
