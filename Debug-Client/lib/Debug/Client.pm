@@ -10,7 +10,7 @@ no if $] > 5.017010, warnings => 'experimental::smartmatch';
 use English qw( -no_match_vars );
 local $OUTPUT_AUTOFLUSH = 1;
 
-our $VERSION = '0.25_05';
+our $VERSION = '0.25_06';
 
 BEGIN {
 	use Term::ReadKey;
@@ -20,7 +20,7 @@ BEGIN {
 
 use utf8;
 use IO::Socket::IP 0.21;
-use Carp 1.26 qw(carp croak);
+use Carp qw(carp croak);
 
 use constant {
 	BLANK => qq{ },
@@ -690,7 +690,7 @@ Debug::Client - debugger client side code for Padre, The Perl IDE.
 
 =head1 VERSION
 
-This document describes Debug::Client version: 0.25_05
+This document describes Debug::Client version: 0.25_06
 
 =head1 SYNOPSIS
 
