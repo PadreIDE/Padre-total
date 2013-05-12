@@ -1,7 +1,8 @@
-#!perl
-
 use strict;
-use warnings;
+use warnings FATAL => 'all';
+
+use English qw( -no_match_vars );
+local $OUTPUT_AUTOFLUSH = 1;
 
 use Test::More;
 
@@ -53,3 +54,8 @@ $plan ? ( plan tests => $plan ) : ( plan skip_all => "no tests to run" );
 		}
 	}
 }
+
+done_testing();
+
+__END__
+

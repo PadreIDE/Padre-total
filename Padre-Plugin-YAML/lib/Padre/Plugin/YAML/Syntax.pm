@@ -4,12 +4,15 @@ use v5.10.1;
 use strict;
 use warnings;
 
+# turn of experimental warnings
+no if $] > 5.017010, warnings => 'experimental::smartmatch';
+
 use Padre::Logger;
 use Padre::Task::Syntax ();
 use Padre::Wx           ();
 use Try::Tiny;
 
-our $VERSION = '0.06';
+our $VERSION = '0.08';
 use parent qw(Padre::Task::Syntax);
 
 sub new {
@@ -178,7 +181,7 @@ Padre::Plugin::YAML::Syntax - YAML document syntax-checking in the background
 
 =head1 VERSION
 
-This document describes Padre::Plugin::YAML::Syntax version 0.06
+version: 0.08
 
 
 =head1 DESCRIPTION
@@ -221,7 +224,7 @@ Ahmad M. Zawawi E<lt>ahmad.zawawi@gmail.comE<gt>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2011-2012, Zeno Gantner E<lt>zenog@cpan.orgE<gt>. All rights reserved.
+Copyright (c) 2011-2013, Zeno Gantner E<lt>zenog@cpan.orgE<gt>. All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlartistic>.

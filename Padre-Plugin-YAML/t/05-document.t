@@ -1,7 +1,14 @@
-use Test::More tests => 6;
+use strict;
+use warnings FATAL => 'all';
 
-use_ok( 'Padre::Document', '0.96' );
+use English qw( -no_match_vars );
+local $OUTPUT_AUTOFLUSH = 1;
 
+use Test::More tests => 3;
+
+BEGIN {
+	use_ok( 'Padre::Document', '0.96' );
+}
 
 ######
 # let's check our subs/methods.
@@ -9,15 +16,13 @@ use_ok( 'Padre::Document', '0.96' );
 
 my @subs = qw( task_functions task_outline task_syntax comment_lines_str );
 
-use_ok( 'Padre::Plugin::YAML::Document', @subs );
-
-foreach my $subs (@subs) {
-	can_ok( 'Padre::Plugin::YAML::Document', $subs );
+BEGIN {
+	use_ok( 'Padre::Plugin::YAML::Document', @subs );
 }
 
+can_ok( 'Padre::Plugin::YAML::Document', @subs );
 
 done_testing();
 
-1;
-
 __END__
+
