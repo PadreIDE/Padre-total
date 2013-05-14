@@ -96,7 +96,7 @@ bar'
 		skip( "perl5db v$perl5db_ver dose not support list context", 1 ) unless $perl5db_ver < 1.35;
 		my @out = $debugger->step_in;
 		cmp_deeply(
-			\@out, [ 'main::', 't/eg/03-return.pl', 11, q{my %q = h(bar => "foo\nbar", moo => 42);} ],
+			\@out, [ 'main::', 't/eg/03-return.pl', 11, q{my %q = h( bar => "foo\nbar", moo => 42 );} ],
 			'line 11'
 		) or diag( $debugger->buffer );
 	}
