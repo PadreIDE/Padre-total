@@ -49,7 +49,7 @@ my $perl5db_ver;
 	SKIP: {
 		skip( "perl5db v$perl5db_ver dose not support list context", 1 ) unless $perl5db_ver < 1.35;
 		my @out = $debugger->step_in;
-		cmp_deeply( \@out, [ 'main::f', 't/eg/03-return.pl', 16, '   my ($in) = @_;' ], 'line 16' )
+		cmp_deeply( \@out, [ 'main::f', 't/eg/03-return.pl', 16, '    my ($in) = @_;' ], 'line 16' )
 			or diag( $debugger->buffer );
 	}
 }
