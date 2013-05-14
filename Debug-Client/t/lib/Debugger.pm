@@ -7,9 +7,13 @@ use English qw( -no_match_vars );
 local $OUTPUT_AUTOFLUSH = 1;
 
 BEGIN {
-	use Term::ReadKey;
 	use Term::ReadLine;
-	#$ENV{TERM} = 'dumb' if $OSNAME eq 'MSWin32';
+	$ENV{TERM} = 'dumb' if !exists $ENV{TERM};
+	eval { my $term = Term::ReadLine->new('none') };
+	if ($EVAL_ERROR) {
+		local $ENV{PERL_RL} = ' ornaments=0';
+	}
+
 }
 
 # Patch for Debug::Client ticket #831 (MJGARDNER)
@@ -23,6 +27,7 @@ if ( $OSNAME eq 'MSWin32' ) {
 	require Win32;
 	use constant NORMALPRIORITYCLASS => 0x00000020;
 }
+
 #use Data::Printer { caller_info => 1, colored => 1, };
 use Exporter ();
 use File::Temp qw(tempdir);
@@ -40,12 +45,13 @@ sub start_script {
 	my $path = $dir;
 	my $pid;
 	if ( $OSNAME eq 'MSWin32' ) {
-		$pid = 'fudge'; # as we don't get one from win32
+		$pid  = 'fudge';                      # as we don't get one from win32
 		$path = Win32::GetLongPathName($path);
 		local $ENV{PERLDB_OPTS} = "RemotePort=$host:$port";
 
 		sleep 1;
 		system( 1, qq($^X -d $file > "$path/out" 2> "$path/err") );
+
 		#spawns an external process and immediately returns its process designator, without waiting for it to terminate
 
 	} else {
@@ -62,7 +68,7 @@ sub start_script {
 		}
 	}
 
-	return ($dir, $pid);
+	return ( $dir, $pid );
 }
 
 sub start_debugger {

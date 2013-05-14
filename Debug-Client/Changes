@@ -1,5 +1,13 @@
 Changes for Debug::Client
 
+0.25_08 2013-05-12
+ - fix dependency inconsistencies
+ - add new test 00-check-deps.t
+ - add test to see if we invoke $ENV{PERL_RL} (BOWTIE)
+
+0.25_07 2013-05-12
+ - use M::I to load Term::ReadLine::Gnu (BOWTIE)
+
 0.25_06 2013-05-10
  - contradicting module definitions oops (BOWTIE)
 

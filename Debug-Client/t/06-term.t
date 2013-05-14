@@ -5,11 +5,10 @@ use English qw( -no_match_vars );
 local $OUTPUT_AUTOFLUSH = 1;
 
 use version;
-use Test::More tests => 14;
+use Test::More tests => 13;
 
 BEGIN {
-	use_ok( 'Term::ReadKey',  '2.30' );
-	use_ok( 'Term::ReadLine', '1.04' );
+	use_ok( 'Term::ReadLine', '1.07' );
 }
 
 diag("\nInfo: Perl $PERL_VERSION");
@@ -52,8 +51,10 @@ SKIP: {
 	eval { require Term::ReadLine::Perl5 };
 	skip 'Term::ReadLine::Perl5 not installed', 2 if $EVAL_ERROR;
 	use_ok('Term::ReadLine::Perl5');
-	cmp_ok( version->parse($Term::ReadLine::Perl5::VERSION), 'ge', 0,
-		'Term::ReadLine::Perl5 version = ' . version->parse($Term::ReadLine::Perl5::VERSION) );
+	cmp_ok(
+		version->parse($Term::ReadLine::Perl5::VERSION), 'ge', 0,
+		'Term::ReadLine::Perl5 version = ' . version->parse($Term::ReadLine::Perl5::VERSION)
+	);
 }
 
 {
@@ -69,8 +70,10 @@ SKIP: {
 	eval { require Term::ReadLine::Gnu };
 	skip 'Term::ReadLine::Gnu not installed', 2 if $EVAL_ERROR;
 	use_ok('Term::ReadLine::Gnu');
-	cmp_ok( version->parse($Term::ReadLine::Gnu::VERSION), 'ge', 0,
-		'Term::ReadLine::Gnu version = ' . version->parse($Term::ReadLine::Gnu::VERSION) );
+	cmp_ok(
+		version->parse($Term::ReadLine::Gnu::VERSION), 'ge', 0,
+		'Term::ReadLine::Gnu version = ' . version->parse($Term::ReadLine::Gnu::VERSION)
+	);
 
 }
 
@@ -87,8 +90,10 @@ SKIP: {
 	eval { require Term::ReadLine::EditLine };
 	skip 'Term::ReadLine::EditLine not installed', 2 if $EVAL_ERROR;
 	use_ok('Term::ReadLine::EditLine');
-	cmp_ok( version->parse($Term::ReadLine::EditLine::VERSION), 'ge', 0,
-		'Term::ReadLine::EditLine version = ' . version->parse($Term::ReadLine::EditLine::VERSION) );
+	cmp_ok(
+		version->parse($Term::ReadLine::EditLine::VERSION), 'ge', 0,
+		'Term::ReadLine::EditLine version = ' . version->parse($Term::ReadLine::EditLine::VERSION)
+	);
 }
 
 {
@@ -96,6 +101,8 @@ SKIP: {
 	eval { $term = Term::ReadLine->new('none') };
 	if ($EVAL_ERROR) {
 		diag 'Warning: If test fail consider installing Term::ReadLine::Gnu' if $OSNAME ne 'MSWin32';
+		local $ENV{PERL_RL} = ' ornaments=0';
+		diag 'INFO: Setting $ENV{PERL_RL} -> ' . $ENV{PERL_RL};		
 	} else {
 		diag 'Info: Using ReadLine implementation -> ' . $term->ReadLine;
 	}
@@ -104,8 +111,17 @@ SKIP: {
 # Patch for Debug::Client ticket #831 (MJGARDNER)
 # Turn off ReadLine ornaments
 ##local $ENV{PERL_RL} = ' ornaments=0';
-##$ENV{TERM} = 'dumb' if ! exists $ENV{TERM};
-diag 'INFO: $ENV{TERM} -> ' . $ENV{TERM} . "\n" if defined $ENV{TERM};
+if ( !exists $ENV{TERM} ) {
+	if ( $OSNAME eq 'MSWin32' ) {
+		$ENV{TERM} = 'dumb';
+		diag 'INFO: Setting $ENV{TERM} -> ' . $ENV{TERM};
+	} else {
+		local $ENV{PERL_RL} = ' ornaments=0';
+		diag 'INFO: Setting $ENV{PERL_RL} -> ' . $ENV{PERL_RL};
+	}
+}
+
+diag 'INFO: $ENV{TERM} -> ' . $ENV{TERM};
 ok( $ENV{TERM} !~ /undef/, '$ENV{TERM} is set to -> ' . $ENV{TERM} );
 
 

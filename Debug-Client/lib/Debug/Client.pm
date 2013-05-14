@@ -10,12 +10,15 @@ no if $] > 5.017010, warnings => 'experimental::smartmatch';
 use English qw( -no_match_vars );
 local $OUTPUT_AUTOFLUSH = 1;
 
-our $VERSION = '0.25_06';
+our $VERSION = '0.25_08';
 
 BEGIN {
-	use Term::ReadKey;
 	use Term::ReadLine;
-	#$ENV{TERM} = 'dumb' if $OSNAME eq 'MSWin32';
+	$ENV{TERM} = 'dumb' if !exists $ENV{TERM};
+	eval { my $term = Term::ReadLine->new('none') };
+	if ($EVAL_ERROR) {
+		local $ENV{PERL_RL} = ' ornaments=0';
+	}
 }
 
 use utf8;
@@ -248,6 +251,7 @@ sub set_breakpoint {
 			return 1;
 		}
 		when ( $_ =~ /\S/sxm ) {
+
 			# say 'Non-whitespace charter found';
 			return 0;
 		}
@@ -341,6 +345,7 @@ sub get_y_zero {
 
 	# say 'running on perl '. $PERL_VERSION;
 	if ( $PERL_VERSION >= 5.017006 ) {
+
 		# say 'using y=1 instead as running on perl ' . $PERL_VERSION;
 		$self->_send('y 1');
 	} else {
@@ -690,7 +695,7 @@ Debug::Client - debugger client side code for Padre, The Perl IDE.
 
 =head1 VERSION
 
-This document describes Debug::Client version: 0.25_06
+This document describes Debug::Client version: 0.25_08
 
 =head1 SYNOPSIS
 
