@@ -36,7 +36,7 @@ my $debugger = start_debugger();
 {
 	my @out = $debugger->step_in;
 	cmp_deeply( \@out, [ 'main::', 't/eg/02-sub.pl', 6, 'my $x = 11;' ], 'line 6' )
-		or diag( $debugger->buffer );
+		or diag( $debugger->get_buffer );
 }
 {
 

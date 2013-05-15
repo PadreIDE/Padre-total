@@ -39,7 +39,7 @@ my $perl5db_index;
 {
 	my @out = $debugger->step_in;
 	cmp_deeply( \@out, [ 'main::', 't/eg/02-sub.pl', 6, 'my $x = 11;' ], 'line 6' )
-		or diag( $debugger->buffer );
+		or diag( $debugger->get_buffer );
 }
 
 SKIP: {
@@ -47,7 +47,7 @@ SKIP: {
 		skip( "perl5db v$perl5db_ver dose not support list context", 1 ) if $perl5db_ver == 1.35;
 		my @out = $debugger->run(17);
 		cmp_deeply( \@out, [ 'main::func1', 't/eg/02-sub.pl', 17, '  my $multi = $q * $w;' ], 'line 17' )
-			or diag( $debugger->buffer );
+			or diag( $debugger->get_buffer );
 	}
 }
 

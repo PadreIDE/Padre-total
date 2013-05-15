@@ -31,7 +31,7 @@ foreach ( 1 .. 3 ) {
 
 	my @out;
 	@out = $debugger->get_y_zero();
-	cmp_deeply( \@out, ["\$line = $_"], "y (0) \$line = $_" ) or diag( $debugger->buffer );
+	cmp_deeply( \@out, ["\$line = $_"], "y (0) \$line = $_" ) or diag( $debugger->get_buffer );
 
 }
 

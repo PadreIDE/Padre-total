@@ -5,7 +5,7 @@ use English qw( -no_match_vars );
 local $OUTPUT_AUTOFLUSH = 1;
 #use Data::Printer { caller_info => 1, colored => 1, };
 
-use Test::More tests => 11;
+use Test::More tests => 12;
 use Test::Deep;
 use t::lib::Debugger;
 
@@ -46,14 +46,15 @@ my $prefix = ( substr( $] , 0, 5 ) eq '5.008006' ) ? "Default die handler restor
 
 {
 	my @out = $debugger->step_in;
-	# cmp_deeply( \@out, [ 'main::', 't/eg/05-io.pl', 6, 'print "One\n";' ], 'line 6' )
-		# or diag( $debugger->buffer );
+diag ( "\n @out" );
+	cmp_deeply( \@out, [ 'main::', 't/eg/05-io.pl', 6, 'print "One\n";' ], 'line 6' ) or diag( $debugger->get_buffer );
+diag( $debugger->get_buffer );
 }
 
 {
 	my @out = $debugger->step_in;
 	cmp_deeply( \@out, [ 'main::', 't/eg/05-io.pl', 7, 'print STDERR "Two\n";' ], 'line 7' )
-		or diag( $debugger->buffer );
+		or diag( $debugger->get_buffer );
 }
 
 {
@@ -69,7 +70,7 @@ my $prefix = ( substr( $] , 0, 5 ) eq '5.008006' ) ? "Default die handler restor
 {
 	my @out = $debugger->step_in;
 	cmp_deeply( \@out, [ 'main::', 't/eg/05-io.pl', 8, 'print "Three\n";' ], 'line 8' )
-		or diag( $debugger->buffer );
+		or diag( $debugger->get_buffer );
 }
 
 {
@@ -85,7 +86,7 @@ my $prefix = ( substr( $] , 0, 5 ) eq '5.008006' ) ? "Default die handler restor
 {
 	my @out = $debugger->step_in;
 	cmp_deeply( \@out, [ 'main::', 't/eg/05-io.pl', 9, 'print "Four";' ], 'line 9' )
-		or diag( $debugger->buffer );
+		or diag( $debugger->get_buffer );
 }
 
 {

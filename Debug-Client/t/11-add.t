@@ -57,7 +57,7 @@ isa_ok( $debugger, 'Debug::Client' );
 
 	# diag("@out");
 	# cmp_deeply( \@out, [ 'main::', 't/eg/01-add.pl', 6, 'my $x = 1;' ], 'line 6' )
-	# or diag( $debugger->buffer );
+	# or diag( $debugger->get_buffer );
 }
 
 {
@@ -74,7 +74,7 @@ isa_ok( $debugger, 'Debug::Client' );
 
 	# diag($out);
 	is( $out, "main::(t/eg/01-add.pl:7):\tmy \$y = 2;", 'show_line line 7' )
-		or diag( $debugger->buffer );
+		or diag( $debugger->get_buffer );
 }
 
 {
@@ -90,7 +90,7 @@ isa_ok( $debugger, 'Debug::Client' );
 10:	1;
 11 	
 12 	__END__", 'show_view8'
-	) or diag( $debugger->buffer );
+	) or diag( $debugger->get_buffer );
 }
 
 {
@@ -101,7 +101,7 @@ isa_ok( $debugger, 'Debug::Client' );
 {
 	my @out = $debugger->step_in;
 	cmp_deeply( \@out, [ 'main::', 't/eg/01-add.pl', 8, 'my $z = $x + $y;' ], 'line 8' )
-		or diag( $debugger->buffer );
+		or diag( $debugger->get_buffer );
 }
 
 {
