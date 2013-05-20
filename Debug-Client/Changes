@@ -1,5 +1,10 @@
 Changes for Debug::Client
 
+0.25_10 2013-05-20
+ - Change the running order of test (BOWTIE)
+ - check testing $ENV{PERL_RL} = ornaments=0
+ - as we only want to do this when necessary (BOWTIE)
+
 0.25_09 2013-05-15
  - fix buffer call to $debugger->get_buffer
 

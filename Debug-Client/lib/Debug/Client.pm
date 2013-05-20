@@ -10,11 +10,12 @@ no if $] > 5.017010, warnings => 'experimental::smartmatch';
 use English qw( -no_match_vars );
 local $OUTPUT_AUTOFLUSH = 1;
 
-our $VERSION = '0.25_09';
+our $VERSION = '0.25_10';
 
 BEGIN {
 	use Term::ReadLine;
 	$ENV{TERM} = 'dumb' if !exists $ENV{TERM};
+
 	eval { my $term = Term::ReadLine->new('none') };
 	if ($EVAL_ERROR) {
 		local $ENV{PERL_RL} = ' ornaments=0';
@@ -695,7 +696,7 @@ Debug::Client - debugger client side code for Padre, The Perl IDE.
 
 =head1 VERSION
 
-This document describes Debug::Client version: 0.25_09
+This document describes Debug::Client version: 0.25_10
 
 =head1 SYNOPSIS
 
