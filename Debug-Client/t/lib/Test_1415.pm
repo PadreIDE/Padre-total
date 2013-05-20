@@ -1,5 +1,8 @@
 package t::lib::Test_1415;
 
+use strict;
+use warnings FATAL => 'all';
+
 use parent qw(Test::Class);
 use Test::More;
 use Test::Deep;

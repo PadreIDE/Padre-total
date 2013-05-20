@@ -1,8 +1,13 @@
 use strict;
 use warnings FATAL => 'all';
 
-use English qw( -no_match_vars ); # Avoids regex performance penalty
+use English qw( -no_match_vars );
 local $OUTPUT_AUTOFLUSH = 1;
+
+BEGIN {
+	use Term::ReadLine;
+	$ENV{TERM} = 'dumb' if !exists $ENV{TERM};
+}
 
 if ( $OSNAME eq 'MSWin32' ) {
 	require Win32::Process;
@@ -16,11 +21,9 @@ use Test::Deep;
 use File::Temp qw(tempdir);
 my ( $host, $port, $porto, $listen, $reuse_addr );
 SCOPE: {
-	$host  = '127.0.0.1';
-	$port  = 24_642;
-	$porto = 'tcp';
-
-	# $listen     = 'SOMAXCONN';
+	$host       = '127.0.0.1';
+	$port       = 24_642 + int rand(1000);
+	$porto      = 'tcp';
 	$listen     = 1;
 	$reuse_addr = 1;
 	my ( $dir, $pid ) = run_perl5db( 't/eg/05-io.pl', $host, $port );
@@ -35,9 +38,9 @@ SCOPE: {
 		'initialize with prams'
 	);
 	$debugger->run;
+
 	sleep 1;
 
-	# sleep(0.01) if $OSNAME eq 'MSWin32'; #helps against extra processes after exit
 	ok( $debugger->quit, 'quit with prams' );
 	if ( $OSNAME eq 'MSWin32' ) {
 		$pid->Kill(0) or die "Cannot kill '$pid'";
@@ -51,9 +54,9 @@ SCOPE: {
 	require Debug::Client;
 	ok( my $debugger = Debug::Client->new(), 'initialize without prams' );
 	$debugger->run;
+
 	sleep 1;
 
-	# sleep(0.01) if $OSNAME eq 'MSWin32'; #helps against extra processes after exit
 	ok( $debugger->quit, 'quit witout prams' );
 	if ( $OSNAME eq 'MSWin32' ) {
 		$pid->Kill(0) or die "Cannot kill '$pid'";
@@ -66,37 +69,31 @@ sub run_perl5db {
 	my $path = $dir;
 	my $pid;
 	if ( $OSNAME eq 'MSWin32' ) {
-
-		# require Win32;
 		$path = Win32::GetLongPathName($path);
 		local $ENV{PERLDB_OPTS} = "RemotePort=$host:$port";
+
 		sleep 1;
+
 		Win32::Process::Create(
 			$pid,
 			$EXECUTABLE_NAME,
 			qq(perl -d $file ),
-
-			# qq(perl -d $file > "$path/out" 2> "$path/err"),
 			1,
 			NORMALPRIORITYCLASS,
 			'.',
 		) or die Win32::FormatMessage( Win32::GetLastError() );
-
-		# system( 1, qq($OSNAME -d $file > "$path/out" 2> "$path/err") );
 	} else {
 		my $pid = fork();
 		die if not defined $pid;
 		if ( not $pid ) {
 			local $ENV{PERLDB_OPTS} = "RemotePort=$host:$port";
+
 			sleep 1;
 
-			# exec qq($EXECUTABLE_NAME -d $file );
 			exec qq($EXECUTABLE_NAME -d $file > "$path/out" 2> "$path/err");
 			exit 0;
 		}
 	}
-
-	# return ($dir);
 	return ( $dir, $pid );
 }
 

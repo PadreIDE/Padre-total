@@ -1,19 +1,16 @@
-#!/usr/bin/env perl
-
 use strict;
-use warnings;
+use warnings FATAL => 'all';
 
-# Turn on $OUTPUT_AUTOFLUSH
-$| = 1;
+use English qw( -no_match_vars );
+local $OUTPUT_AUTOFLUSH = 1;
 
 use FindBin qw($Bin);
 use lib map "$Bin/$_", 'lib', '../lib';
 
 use t::lib::Test_1415;
 
-# run all the test methods in Example::Test
+# run all the test methods
 Test::Class->runtests;
 
-1;
-
 __END__
+

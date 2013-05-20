@@ -9,11 +9,11 @@ local $OUTPUT_AUTOFLUSH = 1;
 BEGIN {
 	use Term::ReadLine;
 	$ENV{TERM} = 'dumb' if !exists $ENV{TERM};
-#	eval { my $term = Term::ReadLine->new('none') };
-#	if ($EVAL_ERROR) {
-#		local $ENV{PERL_RL} = ' ornaments=0';
-#	}
 
+	#	eval { my $term = Term::ReadLine->new('none') };
+	#	if ($EVAL_ERROR) {
+	#		local $ENV{PERL_RL} = ' ornaments=0';
+	#	}
 }
 
 # Patch for Debug::Client ticket #831 (MJGARDNER)
@@ -45,7 +45,7 @@ sub start_script {
 	my $path = $dir;
 	my $pid;
 	if ( $OSNAME eq 'MSWin32' ) {
-		$pid  = 'fudge';                      # as we don't get one from win32
+		$pid  = 'fudge'; # as we don't get one from win32
 		$path = Win32::GetLongPathName($path);
 		local $ENV{PERLDB_OPTS} = "RemotePort=$host:$port";
 

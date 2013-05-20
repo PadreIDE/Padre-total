@@ -1,24 +1,16 @@
-#!/usr/bin/perl
-
-use 5.010;
 use strict;
 use warnings FATAL => 'all';
 
-# Turn on $OUTPUT_AUTOFLUSH
-local $| = 1;
+use English qw( -no_match_vars );
+local $OUTPUT_AUTOFLUSH = 1;
 
-use Test::More tests => 5;
-use Test::Deep;
-use PadWalker;
-use t::lib::Debugger;
+use FindBin qw($Bin);
+use lib map "$Bin/$_", 'lib', '../lib';
 
-ok( start_script('t/eg/14-y_zero.pl'), 'start script' );
+use t::lib::Top_Tail;
 
-my $debugger;
-ok( $debugger = start_debugger(), 'start debugger' );
+# run all the test methods
+Test::Class->runtests;
 
-ok( $debugger->get, 'get debugger' );
+__END__
 
-like( $debugger->run, qr/Debugged program terminated/, 'Debugged program terminated' );
-
-like( $debugger->quit, qr/1/, 'debugger quit' );
