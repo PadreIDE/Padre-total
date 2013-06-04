@@ -1,5 +1,8 @@
 Changes for Debug::Client
 
+0.26 2013-06-03
+ - bump version and release (BOWTIE)
+
 0.25_10 2013-05-20
  - Change the running order of test (BOWTIE)
  - check testing $ENV{PERL_RL} = ornaments=0

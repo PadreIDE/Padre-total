@@ -10,7 +10,7 @@ no if $] > 5.017010, warnings => 'experimental::smartmatch';
 use English qw( -no_match_vars );
 local $OUTPUT_AUTOFLUSH = 1;
 
-our $VERSION = '0.25_10';
+our $VERSION = '0.26';
 
 BEGIN {
 	use Term::ReadLine;
@@ -696,7 +696,7 @@ Debug::Client - debugger client side code for Padre, The Perl IDE.
 
 =head1 VERSION
 
-This document describes Debug::Client version: 0.25_10
+This document describes Debug::Client version: 0.26
 
 =head1 SYNOPSIS
 
@@ -780,9 +780,9 @@ Once the script under test was launched we can call the following:
 This is a DEVELOPMENT Release only, you have been warned!
 
 The primary use of this module is to provide debugger functionality for
- Padre 0.98 and beyond,
+Padre 0.98 and beyond,
 
-This module has been tested against Perl 5.17.8.
+This module has been tested against Perl 5.18.0
 
 =head1 METHODS
 
@@ -1057,6 +1057,8 @@ execution is.
 
 =head1 BUGS AND LIMITATIONS
 
+If you get any issues installing, try install L<Term::ReadLine::Gnu> first.
+
 Warning if you use List request you may get spurious results.
 
 When using against perl5db.pl v1.35 list mode gives an undef response, also
@@ -1112,7 +1114,7 @@ Alexandr Ciornii E<lt>alexchorny@gmail.comE<gt>
 
 Copyright 2008-2011 Gabor Szabo
 
-Some parts copyright 2011-2013 Kevin Dawson and CONTRIBUTORS as listed above.
+Some parts Copyright E<copy> 2011-2013 Kevin Dawson and CONTRIBUTORS as listed above.
 
 =head1 LICENSE
 
