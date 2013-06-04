@@ -3,16 +3,10 @@ use warnings FATAL => 'all';
 
 use English qw( -no_match_vars );
 local $OUTPUT_AUTOFLUSH = 1;
-#use Data::Printer { caller_info => 1, colored => 1, };
 
 use Test::More tests => 12;
 use Test::Deep;
 use t::lib::Debugger;
-
-# BEGIN {
-	# use_ok( 'Term::ReadKey', '2.30' );
-	# use_ok( 'Term::ReadLine', '1.10' );
-# }
 
 my ( $dir, $pid ) = start_script('t/eg/05-io.pl');
 my $path = $dir;
@@ -46,9 +40,9 @@ my $prefix = ( substr( $] , 0, 5 ) eq '5.008006' ) ? "Default die handler restor
 
 {
 	my @out = $debugger->step_in;
-diag ( "\n @out" );
+## diag ( "\n @out" );
 	cmp_deeply( \@out, [ 'main::', 't/eg/05-io.pl', 6, 'print "One\n";' ], 'line 6' ) or diag( $debugger->get_buffer );
-diag( $debugger->get_buffer );
+## diag( $debugger->get_buffer );
 }
 
 {

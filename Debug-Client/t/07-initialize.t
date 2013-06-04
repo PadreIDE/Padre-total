@@ -7,6 +7,11 @@ local $OUTPUT_AUTOFLUSH = 1;
 BEGIN {
 	use Term::ReadLine;
 	$ENV{TERM} = 'dumb' if !exists $ENV{TERM};
+
+	eval { my $term = Term::ReadLine->new('none') };
+	if ($EVAL_ERROR) {
+		local $ENV{PERL_RL} = ' ornaments=0';
+	}
 }
 
 if ( $OSNAME eq 'MSWin32' ) {
