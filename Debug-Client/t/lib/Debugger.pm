@@ -7,13 +7,18 @@ use English qw( -no_match_vars );
 local $OUTPUT_AUTOFLUSH = 1;
 
 BEGIN {
-	use Term::ReadLine;
-	$ENV{TERM} = 'dumb' if !exists $ENV{TERM};
+  if ($^O eq 'MSWin32') {
+    use Term::ReadLine;
+    $ENV{TERM} = 'dumb' if !exists $ENV{TERM};
 
-	eval { my $term = Term::ReadLine->new('none') };
-	if ($EVAL_ERROR) {
-		local $ENV{PERL_RL} = ' ornaments=0';
-	}
+    eval { my $term = Term::ReadLine->new('none') };
+    if ($EVAL_ERROR) {
+      local $ENV{PERL_RL} = ' ornaments=0';
+    }
+  }
+#  else {
+#    use Term::ReadLine::Gnu;
+#  }
 }
 
 # Patch for Debug::Client ticket #831 (MJGARDNER)

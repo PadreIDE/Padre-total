@@ -10,16 +10,21 @@ no if $] > 5.017010, warnings => 'experimental::smartmatch';
 use English qw( -no_match_vars );
 local $OUTPUT_AUTOFLUSH = 1;
 
-our $VERSION = '0.26';
+our $VERSION = '0.27_01';
 
 BEGIN {
-	use Term::ReadLine;
-	$ENV{TERM} = 'dumb' if !exists $ENV{TERM};
+  if ($^O eq 'MSWin32') {
+    use Term::ReadLine;
+    $ENV{TERM} = 'dumb' if !exists $ENV{TERM};
 
-	eval { my $term = Term::ReadLine->new('none') };
-	if ($EVAL_ERROR) {
-		local $ENV{PERL_RL} = ' ornaments=0';
-	}
+    eval { my $term = Term::ReadLine->new('none') };
+    if ($EVAL_ERROR) {
+      local $ENV{PERL_RL} = ' ornaments=0';
+    }
+  }
+  else {
+    use Term::ReadLine::Gnu;
+  }
 }
 
 use utf8;
@@ -696,7 +701,7 @@ Debug::Client - debugger client side code for Padre, The Perl IDE.
 
 =head1 VERSION
 
-This document describes Debug::Client version: 0.26
+This document describes Debug::Client version: 0.27_01
 
 =head1 SYNOPSIS
 

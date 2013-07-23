@@ -14,14 +14,15 @@ if ($^O =~ /Win32/i) {
   requires 'Term::ReadLine'       => '1.1';
   requires 'Term::ReadLine::Perl' => '1.0303';
 }
-elsif ($^O =~ /darwin|openbsd|freebsd/i) {
+#elsif ($^O =~ /darwin|openbsd|freebsd/i) {
+else {
   requires 'Term::ReadLine'       => '1.07';
   requires 'Term::ReadLine::Gnu'  => '1.2';
 }
-else {
-  requires 'Term::ReadLine'       => '1.07';
-  requires 'Term::ReadLine::Perl' => '1.0303';
-}
+#else {
+#  requires 'Term::ReadLine'       => '1.07';
+#  requires 'Term::ReadLine::Perl' => '1.0303';
+#}
 
 requires 'constant' => '1.21';
 

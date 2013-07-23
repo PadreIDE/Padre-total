@@ -1,5 +1,8 @@
 Changes for Debug::Client
 
+0.27_01 2013-07-10
+ - switch to Term::ReadLine::Gnu or nought (BOWTIE)
+
 0.26 2013-06-03
  - bump version and release (BOWTIE)
 
