@@ -12,20 +12,26 @@ local $OUTPUT_AUTOFLUSH = 1;
 
 our $VERSION = '0.27_01';
 
-BEGIN {
-  if ($^O eq 'MSWin32') {
-    use Term::ReadLine;
-    $ENV{TERM} = 'dumb' if !exists $ENV{TERM};
-
-    eval { my $term = Term::ReadLine->new('none') };
-    if ($EVAL_ERROR) {
-      local $ENV{PERL_RL} = ' ornaments=0';
-    }
-  }
-  else {
-    use Term::ReadLine::Gnu;
-  }
+use Term::ReadLine;
+if ( $OSNAME eq 'MSWin32' ) {
+	$ENV{TERM} = 'dumb';
+	local $ENV{PERL_RL} = ' ornaments=0';
 }
+
+# BEGIN {
+  # if ($^O eq 'MSWin32') {
+    # use Term::ReadLine;
+    # $ENV{TERM} = 'dumb' if !exists $ENV{TERM};
+
+    # eval { my $term = Term::ReadLine->new('none') };
+    # if ($EVAL_ERROR) {
+      # local $ENV{PERL_RL} = ' ornaments=0';
+    # }
+  # }
+  # else {
+    # use Term::ReadLine::Gnu;
+  # }
+# }
 
 use utf8;
 use IO::Socket::IP 0.21;
