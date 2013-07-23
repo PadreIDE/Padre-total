@@ -25,30 +25,23 @@ use List::Util qw/max/;
 
 my @modules = qw(
 	Carp
-	IO::Socket::IP
-	PadWalker
-	constant
-	Data::Printer
 	Exporter
 	File::HomeDir
 	File::Spec
 	File::Temp
+	IO::Socket::IP
 	List::Util
+	PadWalker
 	Term::ReadLine
-	Term::ReadKey
-	Term::ReadLine::Perl
+	Test::CheckDeps  
 	Test::Class
 	Test::Deep
 	Test::More
-	Test::Pod
-	Test::Pod::Coverage
 	Test::Requires
 	Win32
 	Win32::Process
 	parent
 	version
-	ExtUtils::MakeMaker
-	List::Util
 );
 
 # replace modules with dynamic results from MYMETA.json if we can

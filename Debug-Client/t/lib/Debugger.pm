@@ -6,23 +6,11 @@ use warnings FATAL => 'all';
 use English qw( -no_match_vars );
 local $OUTPUT_AUTOFLUSH = 1;
 
-# BEGIN {
 use Term::ReadLine;
 if ( $OSNAME eq 'MSWin32' ) {
 	$ENV{TERM} = 'dumb';
 	local $ENV{PERL_RL} = ' ornaments=0';
 }
-
-#  else {
-#    use Term::ReadLine::Gnu;
-#  }
-#}
-
-# Patch for Debug::Client ticket #831 (MJGARDNER)
-# Turn off ReadLine ornaments
-##local $ENV{PERL_RL} = ' ornaments=0';
-##$ENV{TERM} = 'dumb' if ! exists $ENV{TERM};
-
 
 if ( $OSNAME eq 'MSWin32' ) {
 	require Win32::Process;

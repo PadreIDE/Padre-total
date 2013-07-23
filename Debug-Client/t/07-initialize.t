@@ -9,22 +9,7 @@ if ( $OSNAME eq 'MSWin32' ) {
 	$ENV{TERM} = 'dumb';
 	local $ENV{PERL_RL} = ' ornaments=0';
 }
-# BEGIN {
-  # if ($^O eq 'MSWin32') {
-    # use Term::ReadLine;
-    # $ENV{TERM} = 'dumb' if !exists $ENV{TERM};
 
-    # eval { my $term = Term::ReadLine->new('none') };
-    # if ($EVAL_ERROR) {
-      # local $ENV{PERL_RL} = ' ornaments=0';
-    # }
-  # }
-#  else {
-#    use Term::ReadLine::Gnu;
-#  }
-#}
-
-#use Term::ReadLine;
 if ($OSNAME eq 'MSWin32') {
   require Win32::Process;
   require Win32;

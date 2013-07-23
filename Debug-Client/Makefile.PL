@@ -12,17 +12,12 @@ requires 'PadWalker'      => '1.96';
 
 if ($^O =~ /Win32/i) {
   requires 'Term::ReadLine'       => '1.1';
-  requires 'Term::ReadLine::Perl' => '1.0303';
 }
-#elsif ($^O =~ /darwin|openbsd|freebsd/i) {
+
 else {
-  requires 'Term::ReadLine'       => '1.07';
+  requires 'Term::ReadLine'       => '1.1';
   requires 'Term::ReadLine::Gnu'  => '1.2';
 }
-#else {
-#  requires 'Term::ReadLine'       => '1.07';
-#  requires 'Term::ReadLine::Perl' => '1.0303';
-#}
 
 requires 'constant' => '1.21';
 
@@ -30,11 +25,11 @@ test_requires 'Exporter'        => '5.64';
 test_requires 'File::HomeDir'   => '1';
 test_requires 'File::Spec'      => '3.4';
 test_requires 'File::Temp'      => '0.2301';
-test_requires 'Test::CheckDeps' => '0.004';
+test_requires 'Test::CheckDeps' => '0.006';
 test_requires 'Test::Class'     => '0.39';
 test_requires 'Test::Deep'      => '0.11';
 test_requires 'Test::More'      => '0.98';
-test_requires 'Test::Requires'  => '0.06';
+test_requires 'Test::Requires'  => '0.07';
 
 if ($^O =~ /Win32/i) {
   test_requires 'Win32'          => '0.47';
@@ -42,7 +37,7 @@ if ($^O =~ /Win32/i) {
 }
 
 test_requires 'parent'  => '0.225';
-test_requires 'version' => '0.94';
+test_requires 'version' => '0.9902';
 
 recommends 'ExtUtils::MakeMaker'   => '6.66';
 recommends 'File::Spec::Functions' => '3.4';
