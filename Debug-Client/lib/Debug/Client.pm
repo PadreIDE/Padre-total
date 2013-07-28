@@ -10,7 +10,7 @@ no if $] > 5.017010, warnings => 'experimental::smartmatch';
 use English qw( -no_match_vars );
 local $OUTPUT_AUTOFLUSH = 1;
 
-our $VERSION = '0.27_02';
+our $VERSION = '0.28';
 
 use Term::ReadLine;
 if ( $OSNAME eq 'MSWin32' ) {
@@ -692,7 +692,7 @@ Debug::Client - debugger client side code for Padre, The Perl IDE.
 
 =head1 VERSION
 
-This document describes Debug::Client version: 0.27_02
+This document describes Debug::Client version: 0.28
 
 =head1 SYNOPSIS
 

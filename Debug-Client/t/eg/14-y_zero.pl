@@ -8,9 +8,9 @@ use warnings;
 $| = 1;
 
 foreach ( 0 .. 3 ) {
-  my $line = $_;
-  last unless defined $line;
-  print "$_ : $line \n";
+	my $line = $_;
+	last unless defined $line;
+	print "$_ : $line \n";
 }
 
 1;

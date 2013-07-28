@@ -24,7 +24,7 @@ BEGIN {
 	use_ok( 'Test::Class',     '0.39' );
 	use_ok( 'Test::Deep',      '0.11' );
 	use_ok( 'Test::More',      '0.98' );
-	use_ok( 'Test::Requires',   '0.07' );
+	use_ok( 'Test::Requires',  '0.07' );
 	use_ok( 'parent',          '0.225' );
 	use_ok( 'version',         '0.9902' );
 }

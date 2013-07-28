@@ -1,5 +1,8 @@
 Changes for Debug::Client
 
+0.28 2013-07-28
+ - bump version and release (BOWTIE)
+
 0.27_02 2013-07-10
  - remove BEGIN block and force Win32 Term::ReadLine settings (BOWTIE)
 

@@ -22,41 +22,6 @@ SKIP: {
 
 is( $ENV{PERL_RL}, undef, '$ENV{PERL_RL} is undefined' );
 
-#{
-#	eval 'use Term::ReadLine::Perl';
-#	if ($EVAL_ERROR) {
-#		diag 'Info: Term::ReadLine::Perl is not installed';
-#	} else {
-#		diag 'Info: Term::ReadLine::Perl installed';
-#	}
-#}
-
-#SKIP: {
-#	eval { require Term::ReadLine::Perl };
-#	skip 'Term::ReadLine::Perl not installed', 2 if $EVAL_ERROR;
-#	use_ok('Term::ReadLine::Perl');
-#	cmp_ok( version->parse($Term::ReadLine::Perl::VERSION), 'ge', 0, 'Term::ReadLine::Perl version = ' . version->parse($Term::ReadLine::Perl::VERSION) );
-#}
-
-#{
-#	eval 'use Term::ReadLine::Perl5';
-#	if ($EVAL_ERROR) {
-#		diag 'Info: Term::ReadLine::Perl5 is not installed';
-#	} else {
-#		diag 'Info: Term::ReadLine::Perl5 installed';
-#	}
-#}
-#
-#SKIP: {
-#	eval { require Term::ReadLine::Perl5 };
-#	skip 'Term::ReadLine::Perl5 not installed', 2 if $EVAL_ERROR;
-#	use_ok('Term::ReadLine::Perl5');
-#	cmp_ok(
-#		version->parse($Term::ReadLine::Perl5::VERSION), 'ge', 0,
-#		'Term::ReadLine::Perl5 version = ' . version->parse($Term::ReadLine::Perl5::VERSION)
-#	);
-#}
-
 {
 	eval 'use Term::ReadLine::Gnu';
 	if ($EVAL_ERROR) {
@@ -77,32 +42,13 @@ SKIP: {
 
 }
 
-#{
-#	eval 'use Term::ReadLine::EditLine';
-#	if ($EVAL_ERROR) {
-#		diag 'Info: Term::ReadLine::EditLine is not installed';
-#	} else {
-#		diag 'Info: Term::ReadLine::EditLine installed';
-#	}
-#}
-
-#SKIP: {
-#	eval { require Term::ReadLine::EditLine };
-#	skip 'Term::ReadLine::EditLine not installed', 2 if $EVAL_ERROR;
-#	use_ok('Term::ReadLine::EditLine');
-#	cmp_ok(
-#		version->parse($Term::ReadLine::EditLine::VERSION), 'ge', 0,
-#		'Term::ReadLine::EditLine version = ' . version->parse($Term::ReadLine::EditLine::VERSION)
-#	);
-#}
-
 {
 	my $term;
 	eval { $term = Term::ReadLine->new('none') };
 	if ($EVAL_ERROR) {
 		diag 'Warning: If test fail consider installing Term::ReadLine::Gnu' if $OSNAME ne 'MSWin32';
 		local $ENV{PERL_RL} = ' ornaments=0';
-		diag 'INFO: Setting $ENV{PERL_RL} -> ' . $ENV{PERL_RL};		
+		diag 'INFO: Setting $ENV{PERL_RL} -> ' . $ENV{PERL_RL};
 	} else {
 		diag 'Info: Using ReadLine implementation -> ' . $term->ReadLine;
 	}
