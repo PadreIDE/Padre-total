@@ -1,5 +1,8 @@
 Changes for Debug::Client
 
+0.29 2013-07-29
+ - ouch typo, tab v spaces (BOWTIE)
+
 0.28 2013-07-28
  - bump version and release (BOWTIE)
 
