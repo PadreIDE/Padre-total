@@ -1,8 +1,8 @@
 Revision history for Parse-ErrorString-Perl
 
 {{$NEXT}}
-
         * Convert to Module::Install (SZABGAB)
+        * Fix RT #87458 "This has become very noisy of late" (BOWTIE, AZAWAWI)
 
 0.15    2010.11.29
         * Bumped Pod::POM dependency to version 0.27 to fix RT #54062 "Test failure

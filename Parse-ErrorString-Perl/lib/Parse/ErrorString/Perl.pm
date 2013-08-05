@@ -127,10 +127,10 @@ sub _prepare_diagnostics {
 				}
 			}
 			my $lhs = join( '', @toks );
-			$transfmt{$header}{pat} = "    s{^$lhs}\n     {\Q$header\E}s\n\t&& return 1;\n";
+			$transfmt{$header}{pat} = "    s<^$lhs>\n     <\Q$header\E>s\n\t&& return 1;\n";
 			$transfmt{$header}{len} = $conlen;
 		} else {
-			$transfmt{$header}{pat} = "    m{^\Q$header\E} && return 1;\n";
+			$transfmt{$header}{pat} = "    m<^\Q$header\E> && return 1;\n";
 			$transfmt{$header}{len} = length($header);
 		}
 	}
