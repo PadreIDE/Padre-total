@@ -6,7 +6,7 @@ use v5.8.7;
 use strict;
 use warnings;
 
-our $VERSION = '0.17';
+our $VERSION = '0.18';
 
 use Carp qw(carp cluck);
 use Pod::Find ();
@@ -427,6 +427,10 @@ sub _prepare_localized_diagnostics {
 1;
 
 __END__
+
+=head1 NAME
+
+Parse::ErrorString::Perl - Parse error messages from the perl interpreter
 
 =head1 SYNOPSIS
 

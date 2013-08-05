@@ -1,5 +1,8 @@
 Revision history for Parse-ErrorString-Perl
 
+0.18    2013.08.05
+	* Fix the missing =head1 NAME (AZAWAWI)
+
 0.17    2013.08.05
 	* Emergency release to fix the Changes file (AZAWAWI)
 
