@@ -85,19 +85,19 @@ sub registered_documents {
 ######
 # new api 
 ######
-sub registered_highlighters {
-	'Padre::Plugin::XS::C' => {
-		name => _T('XS HighLighter'),
-		mime => [
-			qw{
-				text/x-csrc
-				text/x-c++src
-				text/x-perlxs
-				}
-		],
-		},
-		;
-}
+# sub registered_highlighters {
+	# 'Padre::Plugin::XS::C' => {
+		# name => _T('XS HighLighter'),
+		# mime => [
+			# qw{
+				# text/x-csrc
+				# text/x-c++src
+				# text/x-perlxs
+				# }
+		# ],
+		# },
+		# ;
+# }
 
 ######
 # old api
