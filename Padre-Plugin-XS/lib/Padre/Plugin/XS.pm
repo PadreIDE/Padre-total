@@ -1,59 +1,132 @@
 package Padre::Plugin::XS;
 
-use Modern::Perl;
+use 5.010001;
+use strictures 1;
 
-our $VERSION = '0.11';
+# use warnings;
+# use strict;
 
+use Padre::Unload;
 use Padre::Wx ();
 use Padre::Current;
+use Padre::Logger;
+use constant DEBUG => 1;
+use Modern::Perl;
+use Try::Tiny;
 
-use base 'Padre::Plugin';
+our $VERSION = '0.11_01';
+use parent qw(Padre::Plugin);
 
+# Child modules we need to unload when disabled
+use constant CHILDREN => qw{
+	Padre::Plugin::XS
+	Padre::Plugin::XS::C
+	Padre::Plugin::XS::Document
+	Perl::APIReference
+};
 
-sub load_modules {
-	require Perl::APIReference;
-}
-
-sub padre_interfaces {
-	'Padre::Plugin' => 0.94;
-}
-
+#######
+# Called by padre to know the plugin name
+#######
 sub plugin_name {
-	Wx::gettext('XS Support');
+	return Wx::gettext('XS Support');
+}
+
+#######
+# Called by padre to check the required interface
+#######
+sub padre_interfaces {
+	return (
+		'Padre::Plugin'   => '0.94',
+		'Padre::Document' => '0.94',
+		'Padre::Wx'       => '0.94',
+		'Padre::Logger'   => '0.94',
+	);
 }
 
 
+#########
+# We need plugin_enable
+# as we have an external dependency
+#########
+sub plugin_enable {
+	my $self         = shift;
+	my $perl_api_ref = 0;
+
+	# Tests for externals used
+	try {
+		if ( require Perl::APIReference ) {
+			$perl_api_ref = 1;
+		}
+	};
+
+	return $perl_api_ref;
+}
+
+#######
+# Add Plugin to Padre Menu
+#######
 sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
-		Wx::gettext('About') => sub { $self->about },
+		Wx::gettext('About...') => sub { $self->plugin_about },
 	];
 }
 
+#######
+# Called by padre to know which document to register for this plugin
+#######
 sub registered_documents {
-	'text/x-perlxs' => 'Padre::Plugin::XS::Document',;
-}
-
-sub provided_highlighters {
 	return (
-		[ 'Padre::Plugin::XS', 'XS highlighter', 'Scintilla C lexer with additional XS keywords' ],
+		'text/x-perlxs' => 'Padre::Plugin::XS::Document',
 	);
 }
 
-sub highlighting_mime_types {
-	return (
-		'Padre::Plugin::XS' => [
-			'text/x-perlxs',
+######
+# new api 
+######
+sub registered_highlighters {
+	'Padre::Plugin::XS::C' => {
+		name => _T('XS HighLighter'),
+		mime => [
+			qw{
+				text/x-csrc
+				text/x-c++src
+				text/x-perlxs
+				}
 		],
-	);
+		},
+		;
 }
+
+######
+# old api
+######
+# sub provided_highlighters {
+	# return (
+		# [ 'Padre::Plugin::XS', 'XS highlighter', 'Scintilla C lexer with additional XS keywords' ],
+	# );
+# }
+
+######
+# old api
+######
+# sub highlighting_mime_types {
+	# return (
+		# 'Padre::Plugin::XS' => [
+			# 'text/x-perlxs',
+		# ],
+	# );
+# }
 
 sub colorize {
 	my $self = shift;
+	my $module = $self->highlighter;
 
 	# these are arguments: (maybe use for from/to?)
 	#$current->editor->GetEndStyled,
 	#$event->GetPosition
+TRACE("Call $module") if DEBUG;
 
 	my $doc = Padre::Current->document;
 
@@ -137,17 +210,69 @@ sub colorize {
 	return ();
 }
 
+#######
+# Add icon to Plugin
+#######
+# Core plugins may reuse the page icon
+sub plugin_icon {
+	require Padre::Wx::Icon;
+	Padre::Wx::Icon::find('logo');
+}
 
-sub about {
-	my ($main) = @_;
 
-	my $about = Wx::AboutDialogInfo->new;
-	$about->SetName(__PACKAGE__);
-	$about->SetDescription( Wx::gettext('Padre XS and perlapi support') );
-	$about->SetVersion($Padre::Plugin::XS::VERSION);
-	Wx::AboutBox($about);
+
+#######
+# plugin_about
+#######
+sub plugin_about {
+	my $self = shift;
+
+	# my $share = $self->plugin_directory_share or return;
+	# my $file = File::Spec->catfile( $share, 'icons', '48x48', 'git.png' );
+	# return unless -f $file;
+	# return unless -r $file;
+
+	my $info = Wx::AboutDialogInfo->new;
+
+	# $info->SetIcon( Wx::Icon->new( $file, Wx::wxBITMAP_TYPE_PNG ) );
+	$info->SetName('Padre::Plugin::XS');
+	$info->SetVersion($VERSION);
+	$info->SetDescription( Wx::gettext('Padre XS and perlapi support') );
+	$info->SetCopyright('(c) 2008-2013 The Padre development team');
+	$info->SetWebSite('http://padre.perlide.org/trac/wiki/PadrePluginXS');
+	$info->AddDeveloper('Steffen Mueller <smueller@cpan.org>');
+	$info->AddDeveloper('Ahmad M. Zawawi <ahmad.zawawi@gmail.com>');
+	$info->AddDeveloper('Kevin Dawson <bowtie@cpan.org>');
+
+	# $info->SetArtists(
+	# [   'Scott Chacon <https://github.com/github/gitscm-next>',
+	# 'Licence <http://creativecommons.org/licenses/by/3.0/>'
+	# ]
+	# );
+	Wx::AboutBox($info);
 	return;
 }
+
+########
+# plugin_disable
+########
+sub plugin_disable {
+	my $self = shift;
+
+	# Close the dialog if it is hanging around
+	$self->clean_dialog;
+
+	# Unload all our child classes
+	for my $package (CHILDREN) {
+		require Padre::Unload;
+		Padre::Unload->unload($package);
+	}
+
+	$self->SUPER::plugin_disable(@_);
+
+	return 1;
+}
+
 
 1;
 
@@ -180,11 +305,12 @@ encouraged to enable the C<XS highlighter> feature.
 
 =head1 AUTHORS
 
-Steffen Mueller <smueller@cpan.org>
+Steffen Mueller E<lt>smueller@cpan.orgE<gt>
 
 =head1 CONTRIBUTORS
 
-Ahmad M. Zawawi <ahmad.zawawi@gmail.com>
+Ahmad M. Zawawi E<lt>ahmad.zawawi@gmail.comE<gt>
+Kevin Dawson E<lt>bowtie@cpan.orgE<gt>
 
 =head1 ACKNOWLEDGMENTS
 
@@ -194,7 +320,7 @@ right that us. Looking at his code has helped me write this.
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2010-2012 by Steffen Mueller
+This software is copyright (c) 2010-2013 by Steffen Mueller
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

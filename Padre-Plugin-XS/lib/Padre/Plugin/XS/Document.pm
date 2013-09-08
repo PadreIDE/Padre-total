@@ -1,11 +1,15 @@
 package Padre::Plugin::XS::Document;
 
+use v5.10.1;
+use strict;
+use warnings;
+
 use Modern::Perl;
 use Padre::Document ();
 
-our $VERSION = '0.11';
+our $VERSION = '0.11_01';
+use parent qw(Padre::Document);
 
-our @ISA = 'Padre::Document';
 
 # TODO better highlighting. Can vim do better? Can we steal? Add an STC highlighter? ...
 
