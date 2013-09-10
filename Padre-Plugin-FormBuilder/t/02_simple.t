@@ -81,7 +81,7 @@ SCOPE: {
 	# Generate the entire dialog constructor
 	my $have = $code->dialog_class($dialog);
 	my $want = slurp($naive);
-	$want =~ s/2011/$year/g;
+	$want =~ s/\b20[1-9]\d\b/$year/g;
 	code( $have, $want, '->dialog_super ok' );
 	compiles( $have, 'Dialog class compiled' );
 	Padre::Unload::unload($dialog->name);
@@ -102,7 +102,7 @@ SCOPE: {
 	# Generate the entire dialog constructor
 	my $have = $code->dialog_class($dialog);
 	my $want = slurp($strict);
-	$want =~ s/2011/$year/g;
+	$want =~ s/\b20[1-9]\d\b/$year/g;
 	code( $have, $want, '->dialog_super ok' );
 	compiles( $have, 'Dialog class compiled' );
 }
