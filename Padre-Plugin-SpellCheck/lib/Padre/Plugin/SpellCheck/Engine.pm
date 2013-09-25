@@ -4,7 +4,7 @@ use v5.10;
 use warnings;
 use strict;
 
-our $VERSION = '1.32';
+our $VERSION = '1.33';
 
 use Padre::Logger;
 use Padre::Unload ();
@@ -167,7 +167,7 @@ Padre::Plugin::SpellCheck::Engine - Check spelling in Padre, The Perl IDE.
 
 =head1 VERSION
 
-version: 1.32
+version: 1.33
 
 =head1 PUBLIC METHODS
 
@@ -223,29 +223,22 @@ Padre, Class::XSAccessor and either or ( Text::Hunspell or Text::Aspell )
 For all related information (bug reporting, source code repository,
 etc.), refer to L<Padre::Plugin::SpellCheck>.
 
-=head1 AUTHORS
 
-Kevin Dawson E<lt>bowtie@cpan.orgE<gt>
+=head1 AUTHOR
 
-Ahmad M. Zawawi E<lt>ahmad.zawawi@gmail.comE<gt>
+See L<Padre::Plugin::SpellCheck>
 
-Fayland Lam E<lt>fayland@gmail.comE<gt>
+=head2 CONTRIBUTORS
 
-Jerome Quelin E<lt>jquelin@gmail.comE<gt>
+See L<Padre::Plugin::SpellCheck>
 
+=head1 COPYRIGHT
 
-=head1 COPYRIGHT AND LICENSE
+See L<Padre::Plugin::SpellCheck>
 
-This software is copyright (c) 2010 by Fayland Lam, Jerome Quelin.
-Also Copyright E<copy> 2012-2013 AUTHORS and "CONTRIBUTORS" as listed above.
+=head1 LICENSE
 
-This is free software; you can redistribute it and/or modify it under
-the same terms as the Perl 5 programming language system itself.
+See L<Padre::Plugin::SpellCheck>
 
 =cut
 
-
-# Copyright 2008-2012 The Padre development team as listed in Padre.pm.
-# LICENSE
-# This program is free software; you can redistribute it and/or
-# modify it under the same terms as Perl 5 itself.

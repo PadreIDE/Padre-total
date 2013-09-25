@@ -11,7 +11,7 @@ use Padre::Locale                               ();
 use Padre::Unload                               ();
 use Padre::Plugin::SpellCheck::FBP::Preferences ();
 
-our $VERSION = '1.32';
+our $VERSION = '1.33';
 use parent qw(
 	Padre::Plugin::SpellCheck::FBP::Preferences
 	Padre::Plugin
@@ -272,7 +272,7 @@ Padre::Plugin::SpellCheck::Preferences - Check spelling in Padre, The Perl IDE.
 
 =head1 VERSION
 
-version: 1.32
+version: 1.33
 
 =head1 DESCRIPTION
 
@@ -312,28 +312,20 @@ Padre, Padre::Plugin::SpellCheck::FBP::Preferences, and either or ( Text::Hunspe
 For all related information (bug reporting, source code repository,
 etc.), refer to L<Padre::Plugin::SpellCheck>.
 
-=head1 AUTHORS
+=head1 AUTHOR
 
-Kevin Dawson E<lt>bowtie@cpan.orgE<gt>
+See L<Padre::Plugin::SpellCheck>
 
-Ahmad M. Zawawi E<lt>ahmad.zawawi@gmail.comE<gt>
+=head2 CONTRIBUTORS
 
-Fayland Lam E<lt>fayland@gmail.comE<gt>
+See L<Padre::Plugin::SpellCheck>
 
-Jerome Quelin E<lt>jquelin@gmail.comE<gt>
+=head1 COPYRIGHT
 
-=head1 COPYRIGHT AND LICENSE
+See L<Padre::Plugin::SpellCheck>
 
-This software is copyright (c) 2010 by Fayland Lam, Jerome Quelin.
-Also Copyright E<copy> 2012-2013 AUTHORS and "CONTRIBUTORS" as listed above.
+=head1 LICENSE
 
-This is free software; you can redistribute it and/or modify it under
-the same terms as the Perl 5 programming language system itself.
+See L<Padre::Plugin::SpellCheck>
 
 =cut
-
-
-# Copyright 2008-2013 The Padre development team as listed in Padre.pm.
-# LICENSE
-# This program is free software; you can redistribute it and/or
-# modify it under the same terms as Perl 5 itself.

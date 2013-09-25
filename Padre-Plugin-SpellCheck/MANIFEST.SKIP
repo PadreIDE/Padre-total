@@ -15,6 +15,7 @@
 \.tar.gz$
 \.log$
 \bxt
+\bMYMETA
 
 # Avoid Module::Build generated and utility files.
 \bBuild$
@@ -42,7 +43,7 @@
 #   Mac OSX SMB mount metadata files
 \B\._
 # Avoid archives of this distribution
-\bPadre-Plugin-YAML-[\d\.\_]+
+\bPadre-Plugin-SpellChecker-[\d\.\_]+
 
 # avoid pot files (gettext)
 \.pot$

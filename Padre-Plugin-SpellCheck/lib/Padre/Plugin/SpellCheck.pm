@@ -9,7 +9,7 @@ use Padre::Unload ();
 use File::Which   ();
 use Try::Tiny;
 
-our $VERSION = '1.32';
+our $VERSION = '1.33';
 use parent qw( Padre::Plugin );
 
 # Child modules we need to unload when disabled
@@ -300,7 +300,7 @@ Padre::Plugin::SpellCheck - Check spelling in Padre, The Perl IDE.
 
 =head1 VERSION
 
-version: 1.32
+version: 1.33
 
 =head1 DESCRIPTION
 
@@ -392,8 +392,9 @@ unfortunately, there's nothing that I can do in this plug-in to
 tackle this bug.
 
 Please report any bugs or feature requests to C<padre-plugin-spellcheck
-at rt.cpan.org>, or through the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Padre-Plugin-
-SpellCheck>. I will be notified, and then you'll automatically be
+at rt.cpan.org>, or through the web interface at
+L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Padre-Plugin-SpellCheck>.
+I will be notified, and then you'll automatically be
 notified of progress on your bug as I make changes.
 
 
@@ -413,8 +414,7 @@ L<http://padre.perlide.org/trac/wiki/PadrePluginSpellCheck>
 =item * Our svn repository
 
 L<http://svn.perlide.org/padre/trunk/Padre-Plugin-SpellCheck>,
- and can be browsed at
- L<http://padre.perlide.org/browser/trunk/Padre-Plugin-SpellCheck>.
+and can be browsed at L<http://padre.perlide.org/browser/trunk/Padre-Plugin-SpellCheck>.
 
 =back
 
@@ -440,7 +440,7 @@ Everything Aspell related: L<http://aspell.net>.
 
 Everything Hunspell related: L<http://hunspell.sourceforge.net/>.
 
-=head1 AUTHORS
+=head1 AUTHOR
 
 Kevin Dawson E<lt>bowtie@cpan.orgE<gt>
 
@@ -451,19 +451,21 @@ Fayland Lam E<lt>fayland at gmail.comE<gt>
 Jerome Quelin E<lt>jquelin@gmail.comE<gt>
 
 
+=head2 CONTRIBUTORS
+
+none at present
+
 =head1 COPYRIGHT
 
-This software is Copyright E<copy> 2010 by Fayland Lam, Jerome Quelin.
-Also Copyright E<copy> 2012-2013 AUTHORS and "CONTRIBUTORS" as listed above.
+Copyright E<copy> 2010 by Fayland Lam, Jerome Quelin.
+
+Also Copyright E<copy> 2009-2013 the Padre::Plugin::Git  L</AUTHOR> and L</CONTRIBUTORS>
+as listed above.
 
 =head1 LICENSE
 
-This program is free software; you can redistribute it and/or
-modify it under the same terms as Perl 5 itself.
+This program is free software; you can redistribute it and/or modify
+ it under the same terms as Perl 5 itself.
 
 =cut
 
-# Copyright 2008-2013 The Padre development team as listed in Padre.pm.
-# LICENSE
-# This program is free software; you can redistribute it and/or
-# modify it under the same terms as Perl 5 itself.

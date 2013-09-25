@@ -1,5 +1,8 @@
 Revision history for Padre-Plugin-SpellCheck
 
+1.33 2013-09-24
+ - Add MYMETA to MANIFEST.SKIP (BOWTIE)
+
 1.32 2013-05-02
  - Update dependainces and bump version (BOWTIE)
  - Tweak tests to increase coverage (BOWTIE)
