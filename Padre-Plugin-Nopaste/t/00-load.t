@@ -14,5 +14,4 @@ diag("Info: Testing Padre::Plugin::Nopaste $Padre::Plugin::Nopaste::VERSION");
 
 done_testing();
 
-
 __END__

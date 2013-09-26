@@ -4,7 +4,13 @@ use warnings FATAL => 'all';
 use English qw( -no_match_vars );
 local $OUTPUT_AUTOFLUSH = 1;
 
-use Test::More;
+BEGIN {
+	unless ($ENV{RELEASE_TESTING}) {
+		use Test::More;
+		Test::More::plan(skip_all => 'Release Candidate testing, not required for installation.');
+	}
+}
+
 use Test::Requires { 'Test::Pod::Coverage' => 1.08 };
 
 # Define the three overridden methods.

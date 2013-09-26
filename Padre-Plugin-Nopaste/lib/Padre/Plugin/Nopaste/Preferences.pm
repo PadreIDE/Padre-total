@@ -1,13 +1,14 @@
 package Padre::Plugin::Nopaste::Preferences;
 
 use v5.10;
-use strictures 1;
+use strict;
+use warnings;
 
 use Padre::Unload                            ();
 use Padre::Plugin::Nopaste::Services         ();
 use Padre::Plugin::Nopaste::FBP::Preferences ();
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 use parent qw(
 	Padre::Plugin::Nopaste::FBP::Preferences
 	Padre::Plugin
@@ -181,7 +182,7 @@ Padre::Plugin::Nopaste::Preferences - NoPaste plugin for Padre, The Perl IDE.
 
 =head1 VERSION
 
-version: 0.07
+version: 0.08
 
 =head1 DESCRIPTION
 
@@ -259,10 +260,4 @@ See L<Padre::Plugin::Nopaste>
 See L<Padre::Plugin::Nopaste>
 
 =cut
-
-
-# Copyright 2008-2013 The Padre development team as listed in Padre.pm.
-# LICENSE
-# This program is free software; you can redistribute it and/or
-# modify it under the same terms as Perl 5 itself.
 

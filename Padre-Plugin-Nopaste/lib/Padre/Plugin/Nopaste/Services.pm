@@ -1,9 +1,13 @@
 package Padre::Plugin::Nopaste::Services;
 
 use v5.10;
-use English qw( -no_match_vars ); # Avoids regex performance penalty
+use strict;
+use warnings;
+
+use English qw( -no_match_vars );
 local $OUTPUT_AUTOFLUSH = 1;
-our $VERSION = '0.07';
+
+our $VERSION = '0.08';
 
 use Padre::Unload ();
 use Moo;
@@ -131,7 +135,7 @@ Padre::Plugin::Nopaste::Services - NoPaste plugin for Padre, The Perl IDE.
 
 =head1 VERSION
 
-version: 0.07
+version: 0.08
 
 =head1 DESCRIPTION
 
@@ -196,10 +200,4 @@ See L<Padre::Plugin::Nopaste>
 See L<Padre::Plugin::Nopaste>
 
 =cut
-
-
-# Copyright 2008-2013 The Padre development team as listed in Padre.pm.
-# LICENSE
-# This program is free software; you can redistribute it and/or
-# modify it under the same terms as Perl 5 itself.
 

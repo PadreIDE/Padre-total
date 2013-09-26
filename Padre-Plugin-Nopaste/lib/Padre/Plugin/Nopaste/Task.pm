@@ -1,10 +1,11 @@
 package Padre::Plugin::Nopaste::Task;
 
 use v5.10;
-use strictures 1;
+use strict;
+use warnings;
 
 use Carp qw( croak );
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 use Padre::Task   ();
 use Padre::Unload ();
@@ -87,7 +88,7 @@ Padre::Plugin::Nopaste::Task - NoPaste plugin for Padre, The Perl IDE.
 
 =head1 VERSION
 
-version: 0.07
+version: 0.08
 
 =head1 SYNOPSIS
 
@@ -149,7 +150,3 @@ See L<Padre::Plugin::Nopaste>
 
 =cut
 
-# Copyright 2008-2013 The Padre development team as listed in Padre.pm.
-# LICENSE
-# This program is free software; you can redistribute it and/or
-# modify it under the same terms as Perl 5 itself.

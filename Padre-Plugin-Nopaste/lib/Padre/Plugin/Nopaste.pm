@@ -1,9 +1,10 @@
 package Padre::Plugin::Nopaste;
 
 use v5.10;
-use strictures 1;
+use strict;
+use warnings;
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 use Try::Tiny;
 use Padre::Unload ();
@@ -15,9 +16,8 @@ use parent qw{
 use Padre::Plugin::Nopaste::Services;
 use Carp;
 
-# Turn on $OUTPUT_AUTOFLUSH
-local $| = 1;
-
+use English qw( -no_match_vars );
+local $OUTPUT_AUTOFLUSH = 1;
 
 # Child modules we need to unload when disabled
 use constant CHILDREN => qw{
@@ -85,22 +85,6 @@ sub plugin_enable {
 sub _config {
 	my $self      = shift;
 	my $config_db = $self->config_read;
-
-	# p $config_db;
-	# p $config_db->{Services};
-	# p $config_db->{Channel};
-
-
-	# my $services = Padre::Plugin::Nopaste::Services->new;
-	# p $services->check_server( $config_db->{Services} );
-	# given ( $config_db->{Services} ) {
-	# when ('Shadowcat') { p $services->$_; }
-	# }
-
-	# p $services->servers;
-	# p $services->channels;
-	# p $services->Shadowcat;
-	# p $services;
 
 	try {
 		if ( defined $config_db->{Services} ) {
@@ -249,7 +233,7 @@ sub paste_it {
 }
 
 #######
-# on compleation of task do this
+# on completion of task do this
 #######
 sub on_finish {
 	my $self = shift;
@@ -268,34 +252,6 @@ sub on_finish {
 	}
 	$output->AppendText( $task->{message} );
 
-	# say $task->{error};
-	# say $task->{message};
-
-	# # Found what we were looking for
-	# if ( $task->{location} ) {
-
-	# #$self->ppi_select( $task->{location} );
-	# #return;
-	# }
-
-	# my $main = $self->current->main;
-
-	# Generate the dump string and set into the output window
-	# $main->output->SetValue( $task->{message} );
-	# $main->output->SetSelection( 0, 0 );
-	# $main->show_output(1);
-
-	# Must have been a clean result
-	# TO DO: Convert this to a call to ->main that doesn't require
-	# us to use Wx directly.
-	#	Wx::MessageBox(
-	#		$task->{message},
-	#		$task->{message},
-	#		Wx::wxOK,
-	#		$self->current->main,
-	#	);
-
-	# say 'start on_finish';
 	return;
 
 }
@@ -347,7 +303,7 @@ Padre::Plugin::Nopaste - NoPaste plugin for Padre, The Perl IDE.
 
 =head1 VERSION
 
-version: 0.07
+version: 0.08
 
 =head1 SYNOPSIS
 
@@ -393,7 +349,7 @@ The following methods are implemented:
 
 =item * plugin_preferences()
 
-Spelling preferences window normaly access via Plug-in Manager
+Spelling preferences window normally access via Plug-in Manager
 
 =item * event_on_context_menu()
 
@@ -416,7 +372,7 @@ The following methods are implemented:
 
 =item * on_finish()
 
-Callback for task runned by nopaste().
+Callback for task run by nopaste().
 
 =back
 
@@ -479,15 +435,11 @@ Alexandr Ciornii E<lt>alexchorny@gmail.comE<gt>
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright E<copy> 2013 the Padre::Plugin::Nopaste L</AUTHOR> and L</CONTRIBUTORS>
- as listed above.
+Copyright E<copy> 2009-2013 the Padre::Plugin::Nopaste L</AUTHOR> and L</CONTRIBUTORS>
+as listed above.
 
 This program is free software; you can redistribute it and/or modify
- it under the same terms as Perl itself.
+it under the same terms as Perl itself.
 
 =cut
 
-# Copyright 2008-2013 The Padre development team as listed in Padre.pm.
-# LICENSE
-# This program is free software; you can redistribute it and/or
-# modify it under the same terms as Perl 5 itself.
