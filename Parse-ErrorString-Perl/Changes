@@ -1,5 +1,9 @@
 Revision history for Parse-ErrorString-Perl
 
+0.20    2013.10.05
+        * Add back copyright and license information
+          and POD headers (RT #89233 by Florian) 
+
 0.19    2013.08.06
         * Fix the missing Test::Differences dependency (AZAWAWI)
         * Reformatted Changes file (AZAWAWI)

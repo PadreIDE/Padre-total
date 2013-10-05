@@ -4,7 +4,7 @@ use v5.8.7;
 use strict;
 use warnings;
 
-our $VERSION = '0.19';
+our $VERSION = '0.20';
 
 use Carp qw(carp cluck);
 use Pod::Find ();
