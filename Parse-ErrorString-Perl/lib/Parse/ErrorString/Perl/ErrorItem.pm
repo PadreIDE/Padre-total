@@ -1,6 +1,5 @@
 package Parse::ErrorString::Perl::ErrorItem;
 
-#ABSTRACT: a Perl error item object
 
 use strict;
 use warnings;
@@ -36,7 +35,11 @@ sub stack {
 
 __END__
 
-=head1 Parse::ErrorString::Perl::ErrorItem
+=head1 NAME 
+
+Parse::ErrorString::Perl::ErrorItem - a Perl error item object
+
+=head1 DESCRIPTION
 
 Each object contains the following accessors (only C<message>, C<file>,
 and C<line> are guaranteed to be present for every error):
@@ -116,3 +119,8 @@ use a pod parser to render into the format you need.
 Callstack for the error. Returns a list of Parse::ErrorString::Perl::StackItem objects.
 
 =back
+
+# Copyright 2008-2013 The Padre development team as listed in Padre.pm.
+# LICENSE
+# This program is free software; you can redistribute it and/or
+# modify it under the same terms as Perl 5 itself.

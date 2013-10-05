@@ -1,6 +1,5 @@
 package Parse::ErrorString::Perl::StackItem;
 
-#ABSTRACT: a Perl stack item object
 
 use strict;
 use warnings;
@@ -25,7 +24,11 @@ use Class::XSAccessor getters => {
 
 __END__
 
-=head1 Parse::ErrorString::Perl::StackItem
+=head1 NAME
+
+Parse::ErrorString::Perl::StackItem - a Perl stack item object
+
+=head1 DESCRIPTION
 
 =over
 
@@ -52,3 +55,9 @@ See C<file_msgpath> in C<Parse::ErrorString::Perl::ErrorItem>.
 The line where the subroutine was called.
 
 =back
+
+# Copyright 2008-2013 The Padre development team as listed in Padre.pm.
+# LICENSE
+# This program is free software; you can redistribute it and/or
+# modify it under the same terms as Perl 5 itself.
+
