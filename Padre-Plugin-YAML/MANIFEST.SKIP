@@ -15,6 +15,7 @@
 \.tar.gz$
 \.log$
 \bxt
+\bMYMETA
 
 # Avoid Module::Build generated and utility files.
 \bBuild$
@@ -34,6 +35,7 @@
 \.rej$
 \btmp
 \bTODO
+\bDebian_CPANTS.txt
 
 # Avoid OS-specific files/dirs
 #   Mac OSX metadata

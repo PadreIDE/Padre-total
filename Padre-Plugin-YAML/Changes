@@ -1,5 +1,8 @@
 Changes for Padre-Plugin-YAML
 
+0.10 2013-10-10
+ - Add MYMETA to MANIFEST.SKIP, Take two (BOWTIE)
+
 0.09 2013-10-09
  - Add MYMETA to MANIFEST.SKIP (BOWTIE)
 

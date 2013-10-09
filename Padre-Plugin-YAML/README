@@ -2,7 +2,7 @@ NAME
     Padre::Plugin::YAML - YAML support for Padre, The Perl IDE.
 
 VERSION
-    This document describes Padre::Plugin::YAML version 0.09
+    This document describes Padre::Plugin::YAML version 0.10
 
 DESCRIPTION
     YAML support for Padre, the Perl Application Development and Refactoring

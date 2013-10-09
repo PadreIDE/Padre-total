@@ -13,7 +13,7 @@ use Padre::Task::Syntax ();
 use Padre::Wx           ();
 use Try::Tiny;
 
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 use parent qw(Padre::Task::Syntax);
 
 sub new {
@@ -183,7 +183,7 @@ Padre::Plugin::YAML::Syntax - YAML document syntax-checking in the background
 
 =head1 VERSION
 
-version: 0.09
+version: 0.10
 
 
 =head1 DESCRIPTION
