@@ -6,7 +6,7 @@ use warnings;
 
 use Padre::Document ();
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 use parent qw(Padre::Document);
 
 
@@ -39,12 +39,12 @@ Padre::Plugin::YAML::Document - YAML support for Padre The Perl IDE
 
 =head1 VERSION
 
-version: 0.08
+version: 0.09
 
 
 =head1 DESCRIPTION
 
-YAML support for Padre, the Perl Application Development and Refactoring
+YAML support for Padre, the Perl Application Development and Re-factoring
 Environment.
 
 	# Called by padre to know which document to register for this plugin
@@ -76,22 +76,20 @@ No bugs have been reported.
 
 =back
 
-
 =head1 AUTHOR
 
-Zeno Gantner E<lt>zenog@cpan.orgE<gt>
+See L<Padre::Plugin::YAML>
 
-=head1 CONTRIBUTORS
+=head2 CONTRIBUTORS
 
-Kevin Dawson  E<lt>bowtie@cpan.orgE<gt>
+See L<Padre::Plugin::YAML>
 
-Ahmad M. Zawawi E<lt>ahmad.zawawi@gmail.comE<gt>
+=head1 COPYRIGHT
 
-=head1 LICENCE AND COPYRIGHT
+See L<Padre::Plugin::YAML>
 
-Copyright (c) 2011-2013, Zeno Gantner E<lt>zenog@cpan.orgE<gt>. All rights reserved.
+=head1 LICENSE
 
-This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See L<perlartistic>.
+See L<Padre::Plugin::YAML>
 
 =cut

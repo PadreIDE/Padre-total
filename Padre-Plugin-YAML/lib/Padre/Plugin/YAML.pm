@@ -4,11 +4,12 @@ use v5.10.1;
 use strict;
 use warnings;
 
+use English qw( -no_match_vars ); # Avoids reg-ex performance penalty
 use Padre::Plugin ();
 use Padre::Wx     ();
 use Try::Tiny;
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 use parent qw(Padre::Plugin);
 
 # Child modules we need to unload when disabled
@@ -48,7 +49,7 @@ sub plugin_enable {
 
 	# Tests for externals used by Preference's
 
-	if ( $^O =~ /Win32/i ) {
+	if ( $OSNAME =~ /Win32/i ) {
 		try {
 			if ( require YAML ) {
 				$correct_yaml_install = 1;
@@ -67,67 +68,78 @@ sub plugin_enable {
 
 
 #######
-	# Called by padre to know which document to register for this plugin
+# Called by padre to know which document to register for this plugin
 #######
-	sub registered_documents {
-		return (
-			'text/x-yaml' => 'Padre::Plugin::YAML::Document',
-		);
+sub registered_documents {
+	return (
+		'text/x-yaml' => 'Padre::Plugin::YAML::Document',
+	);
+}
+
+#######
+# Called by padre to build the menu in a simple way
+#######
+sub menu_plugins_simple {
+	my $self = shift;
+	return $self->plugin_name => [
+		Wx::gettext('About...') => sub {
+			$self->plugin_about;
+		},
+	];
+}
+
+#######
+# plugin_about
+#######
+sub plugin_about {
+	my $self = shift;
+
+	#	my $share = $self->plugin_directory_share or return;
+	#	my $file = File::Spec->catfile( $share, 'icons', '48x48', 'git.png' );
+	#	return unless -f $file;
+	#	return unless -r $file;
+
+	my $info = Wx::AboutDialogInfo->new;
+
+	#	$info->SetIcon( Wx::Icon->new( $file, Wx::wxBITMAP_TYPE_PNG ) );
+	$info->SetName('Padre::Plugin::YAML');
+	$info->SetVersion($VERSION);
+	$info->SetDescription( Wx::gettext('A Simple YAML syntax checker for Padre') );
+	$info->SetCopyright('(c) 2008-2013 The Padre development team');
+	$info->SetWebSite('http://padre.perlide.org/trac/wiki/PadrePluginYAML');
+	$info->AddDeveloper('Zeno Gantner <zenog@cpan.org>');
+	$info->AddDeveloper('Kevin Dawson <bowtie@cpan.org>');
+	$info->AddDeveloper('Ahmad M. Zawawi <ahmad.zawawi@gmail.com>');
+
+	#	$info->SetArtists(
+	#		[   'Scott Chacon <https://github.com/github/gitscm-next>',
+	#			'Licence <http://creativecommons.org/licenses/by/3.0/>'
+	#		]
+	#	);
+	Wx::AboutBox($info);
+	return;
+}
+
+
+#######
+# Called by Padre when this plugin is disabled
+#######
+sub plugin_disable {
+	my $self = shift;
+
+	# Unload all our child classes
+	# TODO: Switch to Padre::Unload once Padre 0.96 is released
+	for my $package (CHILDREN) {
+		require Padre::Unload;
+		Padre::Unload->unload($package);
 	}
 
-#######
-	# Called by padre to build the menu in a simple way
-#######
-	sub menu_plugins_simple {
-		my $self = shift;
-		return $self->plugin_name => [
-			Wx::gettext('About') => sub { $self->show_about },
-		];
-	}
+	$self->SUPER::plugin_disable(@_);
 
-#######
-	# Shows the about dialog for this plugin
-#######
-	sub show_about {
-		my $self = shift;
+	return 1;
+}
 
-		# Generate the About dialog
-		my $about = Wx::AboutDialogInfo->new;
-		$about->SetName( Wx::gettext('YAML Plug-in') );
-		my $authors     = 'Zeno Gantner';
-		my $description = Wx::gettext( <<'END' );
-YAML support for Padre
-
-Copyright 2011-2012 %s
-This plug-in is free software; you can redistribute it and/or modify it under the same terms as Padre.
-END
-		$about->SetDescription( sprintf( $description, $authors ) );
-
-		# Show the About dialog
-		Wx::AboutBox($about);
-
-		return;
-	}
-
-#######
-	# Called by Padre when this plugin is disabled
-#######
-	sub plugin_disable {
-		my $self = shift;
-
-		# Unload all our child classes
-		# TODO: Switch to Padre::Unload once Padre 0.96 is released
-		for my $package (CHILDREN) {
-			require Padre::Unload;
-			Padre::Unload->unload($package);
-		}
-
-		$self->SUPER::plugin_disable(@_);
-
-		return 1;
-	}
-
-	1;
+1;
 
 __END__
 
@@ -140,12 +152,12 @@ Padre::Plugin::YAML - YAML support for Padre, The Perl IDE.
 
 =head1 VERSION
 
-version: 0.08
+version: 0.09
 
 
 =head1 DESCRIPTION
 
-YAML support for Padre, the Perl Application Development and Refactoring
+YAML support for Padre, the Perl Application Development and Re-factoring
 Environment.
 
 Syntax highlighting for YAML is supported by Padre out of the box.
@@ -153,8 +165,8 @@ This plug-in adds some more features to deal with YAML files.
 
 =head2 Example
 
-Example is not revelant as this is a Padre::Plugin
- 
+Example is not relevant as this is a Padre::Plugin
+
 =head1 BUGS AND LIMITATIONS
 
 No bugs have been reported.
@@ -162,7 +174,7 @@ No bugs have been reported.
 
 =head1 METHODS
 
-=over 6
+=over 4
 
 =item * menu_plugins_simple
 
@@ -176,7 +188,7 @@ No bugs have been reported.
 
 =item * registered_documents
 
-=item * show_about
+=item * plugin_about
 
 =back
 
@@ -213,17 +225,20 @@ L<http://search.cpan.org/dist/Padre-Plugin-YAML/>
 
 Zeno Gantner E<lt>zenog@cpan.orgE<gt>
 
-=head1 CONTRIBUTORS
+=head2 CONTRIBUTORS
 
 Kevin Dawson  E<lt>bowtie@cpan.orgE<gt>
 
 Ahmad M. Zawawi E<lt>ahmad.zawawi@gmail.comE<gt>
 
-=head1 LICENCE AND COPYRIGHT
+=head1 COPYRIGHT
 
-Copyright (c) 2011-2013, Zeno Gantner E<lt>zenog@cpan.orgE<gt>. All rights reserved.
+Copyright E<copy> 2009-2013 the Padre::Plugin::YAML  L</AUTHOR> and L</CONTRIBUTORS>
+as listed above.
 
-This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See L<perlartistic>.
+=head1 LICENSE
+
+This program is free software; you can redistribute it and/or modify
+it under the same terms as Perl 5 itself.
 
 =cut

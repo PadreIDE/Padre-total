@@ -4,15 +4,16 @@ use v5.10.1;
 use strict;
 use warnings;
 
-# turn of experimental warnings
+# turn off experimental warnings
 no if $] > 5.017010, warnings => 'experimental::smartmatch';
 
+use English qw( -no_match_vars ); # Avoids reg-ex performance penalty
 use Padre::Logger;
 use Padre::Task::Syntax ();
 use Padre::Wx           ();
 use Try::Tiny;
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 use parent qw(Padre::Task::Syntax);
 
 sub new {
@@ -40,20 +41,20 @@ sub syntax {
 	TRACE("\n$text") if DEBUG;
 
 	try {
-		if ( $^O =~ /Win32/i )
+		if ( $OSNAME =~ /Win32/i )
 		{
 			require YAML;
-			YAML::Load($text);	
+			YAML::Load($text);
 		} else {
 			require YAML::XS;
 			YAML::XS::Load($text);
 		}
 		# No errors...
-		return {};	
+		return {};
 	}
 	catch {
 		TRACE("\nInfo: from YAML::XS::Load:\n $_") if DEBUG;
-		if ( $^O =~ /Win32/i ) {
+		if ( $OSNAME =~ /Win32/i ) {
 			# send errors to syantax panel
 			return $self->_parse_error_win32($_);
 		} else {
@@ -61,6 +62,7 @@ sub syntax {
 			return $self->_parse_error($_);
 		}
 	};
+	return;
 }
 
 sub _parse_error {
@@ -181,7 +183,7 @@ Padre::Plugin::YAML::Syntax - YAML document syntax-checking in the background
 
 =head1 VERSION
 
-version: 0.08
+version: 0.09
 
 
 =head1 DESCRIPTION
@@ -195,7 +197,7 @@ Please read its documentation.
 
 Now using YAML::XS
 
-    supports %TAG = %YAML 1.1 or no %TAG 
+    supports %TAG = %YAML 1.1 or no %TAG
 
 If you receive "Unknown YAML error" please inform dev's with sample code that causes this, Thanks.
 
@@ -211,22 +213,20 @@ If you receive "Unknown YAML error" please inform dev's with sample code that ca
 
 =back
 
-
 =head1 AUTHOR
 
-Zeno Gantner E<lt>zenog@cpan.orgE<gt>
+See L<Padre::Plugin::YAML>
 
-=head1 CONTRIBUTORS
+=head2 CONTRIBUTORS
 
-Kevin Dawson  E<lt>bowtie@cpan.orgE<gt>
+See L<Padre::Plugin::YAML>
 
-Ahmad M. Zawawi E<lt>ahmad.zawawi@gmail.comE<gt>
+=head1 COPYRIGHT
 
-=head1 LICENCE AND COPYRIGHT
+See L<Padre::Plugin::YAML>
 
-Copyright (c) 2011-2013, Zeno Gantner E<lt>zenog@cpan.orgE<gt>. All rights reserved.
+=head1 LICENSE
 
-This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See L<perlartistic>.
+See L<Padre::Plugin::YAML>
 
 =cut

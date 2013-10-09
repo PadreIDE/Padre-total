@@ -4,55 +4,22 @@ use warnings FATAL => 'all';
 use English qw( -no_match_vars );
 local $OUTPUT_AUTOFLUSH = 1;
 
-use Test::More;
+use Test::More tests => 6;
 
+# Check some dependencies used by Padre::Plugin::YAML
 BEGIN {
-	if ( not $ENV{DISPLAY} and not $^O eq 'MSWin32' ) {
-		plan skip_all => 'Needs DISPLAY';
-		exit 0;
-	}
-}
-
-
-use File::Find;
-use File::Temp qw{ tempdir };
-
-my @modules;
-find(
-	sub {
-		return if $File::Find::name !~ /\.pm\z/;
-		my $found = $File::Find::name;
-		$found =~ s{^lib/}{};
-		$found =~ s{[/\\]}{::}g;
-		$found =~ s/\.pm$//;
-
-		# nothing to skip
-		push @modules, $found;
-	},
-	'lib',
-);
-
-my @scripts = glob "bin/*";
-
-my $plan = scalar(@modules) + scalar(@scripts);
-$plan ? ( plan tests => $plan ) : ( plan skip_all => "no tests to run" );
-
-{
-
-	# fake home for cpan-testers
-	# no fake requested ## local $ENV{HOME} = tempdir( CLEANUP => 1 );
-
-	like( qx{ $^X -Ilib -e "require $_; print '$_ ok'" }, qr/^\s*$_ ok/s, "$_ loaded ok" ) for sort @modules;
-
+	use_ok('Padre',     '0.96');
+	use_ok('Try::Tiny', '0.18');
 	SKIP: {
-		eval "use Test::Script 1.05; 1;";
-		skip "Test::Script needed to test script compilation", scalar(@scripts) if $@;
-		foreach my $file (@scripts) {
-			my $script = $file;
-			$script =~ s!.*/!!;
-			script_compiles( $file, "$script script compiles" );
-		}
+		skip 'YAML as we running *inux', 1 if $OSNAME ne 'Win32';
+		use_ok('YAML', '0.84');
 	}
+	SKIP: {
+		skip 'YAML::XS as we running Win32', 1 if $OSNAME eq 'Win32';
+		use_ok('YAML::XS', '0.41');
+	}
+	use_ok('constant', '1.27');
+	use_ok('parent',   '0.228');
 }
 
 done_testing();
