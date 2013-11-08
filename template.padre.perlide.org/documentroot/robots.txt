@@ -1,3 +1,4 @@
+Sitemap: http://padre.perlide.org/sitemap.xml
 User-agent: *
 Disallow: /trac/browser
 Disallow: /trac/log
@@ -5,3 +6,4 @@ Disallow: /trac/changeset
 Disallow: /trac/report
 Disallow: /trac/newticket
 Disallow: /trac/search
+Disallow: /trac/timeline
