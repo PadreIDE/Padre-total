@@ -11,7 +11,7 @@ var channels = {
    parrot:       {title:"Parrot",                        host:"irc.perl.org",     channel:"parrot"},
    perl_qa:      {title:"Perl Quality Assurance",        host:"irc.perl.org",     channel:"perl-qa"},
    locale_fr:    {title:"Perl in French",                host:"irc.perl.org",     channel:"perlfr"},
-   locale_hu:    {title:"Perl in Hungarian",             host:"irc.perl.org",     channel:"magyar.pm"},
+//   locale_hu:    {title:"Perl in Hungarian",             host:"irc.perl.org",     channel:"magyar.pm"},
    locale_de:    {title:"Perl in German",                host:"irc.perl.org",     channel:"perlde"},
    locale_il:    {title:"Perl in Israel",                host:"irc.perl.org",     channel:"israel.pm"},
    locale_it:    {title:"Perl in Italian",               host:"irc.freenode.net", channel:"perl.it"},
