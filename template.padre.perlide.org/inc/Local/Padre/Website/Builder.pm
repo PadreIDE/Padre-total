@@ -52,7 +52,8 @@ sub ACTION_create_sitemap {
 
 	my $date = localtime->ymd;
 	open my $out, '>', $self->destdir . '/sitemap.xml'; 
-	print $out "<urlset>\n";
+	print $out qq{<?xml version="1.0" encoding="UTF-8"?>\n};
+	print $out qq{<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n};
 	foreach my $p (@{ $self->{sitemap} }) {
 		print $out "  <url>\n";
 		print $out "   <loc>http://padre.perlide.org/$p->{file}</loc>\n";
