@@ -1,9 +1,10 @@
 Revision history for Perl extension Padre::Plugin::Autodia.
 
-{{$NEXT}}
+0.04 2013-11-08
  - Update Makefile.PL (BOWTIE)
  - Add Autodia icon (BOWTIE)
- 
+ - Add README (BOWTIE)
+
 0.03 2012-11-21
  - Make Padre API v2 compatable (BOWTIE)
  - Added Tasks for background working (BOWTIE)
@@ -19,6 +20,6 @@ Revision history for Perl extension Padre::Plugin::Autodia.
  - Added Dutch translation (ddn123456 - Dirk De Nijs)
  - Added Brazilian Portuguese translation (GARU)
 
-0.01 2009-11-9
+0.01 2009-11-09
  - Initial release with UML menu options for This File and Selected Files
 

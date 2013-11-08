@@ -1,10 +1,11 @@
 package Padre::Plugin::Autodia::Task::Autodia_cmd;
 
 use v5.10;
-use strictures 1;
+use strict;
+use warnings;
 
 use Carp qw( croak );
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 use Padre::Task ();
 use Padre::Unload;
@@ -57,13 +58,15 @@ __END__
 
 =pod
 
+=encoding UTF-8
+
 =head1 NAME
 
 Padre::Plugin::Autodia::Task::Autodia_cmd - Autodia plugin for Padre, The Perl IDE.
 
 =head1 VERSION
 
-version 0.03
+version 0.04
 
 =head1 SYNOPSIS
 
