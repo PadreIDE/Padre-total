@@ -14,6 +14,7 @@ use Text::Unaccent::PurePerl qw(unac_string);
 use Time::Piece qw(localtime);
 use YAML::Tiny qw(LoadFile);
 use autodie qw(:all copy);
+use Data::Dumper qw(Dumper);
 
 {
 	our %nerfed_methods = # not applicable for building a website
@@ -42,8 +43,23 @@ sub dist_version { return localtime->ymd }
 
 sub ACTION_build {
 	my ($self) = @_;
-	$self->depends_on(qw(copy_static_files process_templates build_docs));
+	$self->depends_on(qw(copy_static_files process_templates build_docs create_sitemap));
 	print "You can run ./Build test now.\n";
+}
+
+sub ACTION_create_sitemap {
+	my ($self) = @_;
+
+	my $date = localtime->ymd;
+	open my $out, '>', $self->destdir . '/sitemap.xml'; 
+	print $out "<urlset>\n";
+	foreach my $p (@{ $self->{sitemap} }) {
+		print $out "  <url>\n";
+		print $out "   <loc>http://padre.perlide.org/$p->{file}</loc>\n";
+		print $out "   <lastmod>$date</lastmod>\n";
+		print $out "  </url>\n";
+	}
+	print $out "</urlset>\n";
 }
 
 sub ACTION_build_docs {
@@ -156,8 +172,14 @@ sub ACTION_process_templates {
 				file($template_file)->relative($templates_dir)->stringify,
 				{ binmode => ':utf8' },
 			) or die $tt->error . ' in ' . $Source;
+
+			push @{ $self->{sitemap} }, {
+				file => file($template_file)->relative($templates_dir)->stringify,
+			};
+
 		}
 	}
+	return;
 }
 
 sub ACTION_install {
