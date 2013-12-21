@@ -7,7 +7,7 @@ use strict;
 use Padre::Unload;
 use Try::Tiny;
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 use parent qw(Padre::Plugin);
 
 # Child modules we need to unload when disabled
@@ -171,7 +171,7 @@ Padre::Plugin::XS - Padre support for perl XS (and perlapi)
 
 =head1 VERSION
 
-version: 0.11
+version: 0.12
 
 =head1 DESCRIPTION
 

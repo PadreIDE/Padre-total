@@ -7,7 +7,7 @@ use warnings;
 use Padre::Logger;
 use YAML::Tiny;
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 use parent qw(Padre::Document);
 
 #######
@@ -113,7 +113,7 @@ Padre::Plugin::XS::Document - A Padre Document that understands XS
 
 =head1 VERSION
 
-version: 0.11
+version: 0.12
 
 =head1 METHODS
 

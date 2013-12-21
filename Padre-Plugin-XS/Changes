@@ -1,5 +1,8 @@
 This is the change log for the Padre::Plugin::XS module:
 
+0.12 2013-12-17
+ - fix mislaid README from last release (BOWTIE)
+
 0.11 2013-12-16
  - Remove MYMETA and fox a typo (BOWTIE)
 
