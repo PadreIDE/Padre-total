@@ -32,7 +32,7 @@ use v5.10;
 my $trac_channel = '#padre';
 my $trac_timeout = 5;
 
-our $VERSION = '0.18';
+our $VERSION = '0.19';
 
 use base 'Exporter';
 
@@ -362,7 +362,7 @@ sub irc_public {
 	}
 
 	# regexp need adjusting, i'm bad at it ;)...
-	if ( $text =~ /r(\d+)/x ) {
+	if ( $text =~ /\br(\d+)/x ) {
 
 		# no check at all... TODO
 		$irc->yield( privmsg => $channel, trac_changeset_text($1) ) if $1 + 0 > 0;

@@ -1,5 +1,8 @@
 Changes of Hyppolit the IRC bot
 
+v0.19 2014-02-03
+- fixed regex for trac ticket numbers #nnnn 
+
 v0.18 2012.07.24
 	- remove Welcome for normal nicks sewi++
 	- Welcome on nick change
